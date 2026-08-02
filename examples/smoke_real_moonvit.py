@@ -17,18 +17,23 @@ from moonvit_glue import (
 parser = argparse.ArgumentParser()
 parser.add_argument("image")
 parser.add_argument("--text-model", default="sshleifer/tiny-gpt2")
+parser.add_argument("--device", default="cpu", help="cpu or cuda; cuda exercises the real GPU path")
 args = parser.parse_args()
 
+device = torch.device(args.device)
+
 moonvit = MoonViTEncoder.from_pretrained(torch_dtype="auto")
+moonvit.to(device)
 image_inputs = moonvit.preprocess(Image.open(args.image).convert("RGB"))
 image_feature_groups = moonvit(**image_inputs)
 
 tokenizer = AutoTokenizer.from_pretrained(args.text_model)
 language_model = AutoModelForCausalLM.from_pretrained(args.text_model)
+language_model.to(device)
 placeholder_id = tokenizer.eos_token_id
 prefix = tokenizer.encode("Image:", add_special_tokens=False)
 suffix = tokenizer.encode(" Describe it.", add_special_tokens=False)
-input_ids = torch.tensor([[*prefix, placeholder_id, *suffix]])
+input_ids = torch.tensor([[*prefix, placeholder_id, *suffix]], device=device)
 labels = input_ids.clone()
 labels[input_ids == placeholder_id] = -100
 
@@ -39,6 +44,7 @@ projector = PatchMergerProjector(
         merge_factor=moonvit.merge_factor,
     )
 )
+projector.to(device)
 model = VisionCausalLM(
     language_model=language_model,
     projector=projector,
