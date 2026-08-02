@@ -179,6 +179,8 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 
 正式候选还应要求 NVLink/P2P、至少 512 GB RAM、至少 1.5 TB 本地盘并现场复核 CUDA/驱动。查询结果中最低价 A100 PCIe 只有约 617 GB 可用盘，不满足完整缓存计划；A100 SXM4 候选有约 10 TB 盘。当前阶段只记录 offer，明确不创建实例。
 
+当晚第二次查询（增加 RAM ≥500 GB、盘 ≥1.5 TB 过滤，33 个 offer）要点：4×A100 SXM4 降至 \$6.41/h（961 GB RAM、2 TB 盘，Gate D 首选）；4×H100 PCIe \$6.93/h（6392 GB 盘，性价比突出）；8×A100 SXM4 \$10.30/h（11 TB 盘，情景 B 兜底）；4×B200 \$21.25/h。新出现的 4×RTX PRO 6000 96 GB（Blackwell，原生 FP4）\$4.54/h 但总线无 NVLink 且 FP4 kernel 支持未验证，仅作探索。
+
 == Gate D：正式租卡前
 
 1. 原生 0731 权重加载成功。
@@ -187,6 +189,27 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 4. LLM/MoonViT 无梯度。
 5. 20 step 无 OOM/NaN。
 6. 新进程恢复 projector 后输出一致。
+
+== 租期闭环排程（2026-08-02 定价）
+
+核心约束：租期一结束就没有机器能跑动 0731 做 benchmark 或回传权重，因此训练、benchmark、上传必须在同一次租期内闭环。交付物只有 projector（fp32 约 160 MB）+ 评测 JSON + 报告，与 GLM 社区只发布 projector 一致，不回传 160 GB 主干。
+
+训练量按 LLaVA 式对齐的标准做法定为 *1 个 epoch*：15–30 万条 caption、global batch 64、约 2500–4500 步、lr 1e-3 cosine，每 500 步存 checkpoint 并立刻后台传 HF。4×H100 估 3–5 s/步（13B 激活、seq 约 300–400、开 activation checkpointing），训练段 2.5–6 h。多轮只会背诵 caption（43 epoch 的 +0.343 即过拟合态），不加轮次。
+
+停训判据不看 loss，看两条 gap：主判据是 benchmark 分数 − blind 分数的 gap 随 checkpoint 的曲线，平台即停；辅助判据是留出集 shuffle\_delta > 0.1。参考锚点：projector-only 的 TextVQA 现实预期 20–30%（blind 约 10–15%，成熟 VLM 60+）；达到 GLM 社区实验同量级（grounding parse 率 >80%、Acc\@50 个位数）即成功。
+
+#table(
+  columns: (2.2fr, 1fr, 3fr),
+  [*阶段*], [*时长*], [*说明*],
+  [装机 + 下载权重], [1–1.5 h], [160 GB；好主机 1–2 GB/s],
+  [Gate D 判定], [0.5–1 h], [FP4 Dgrad 失败则当场退租（损失 <\$10），转情景 B],
+  [Stage 1 对齐训练], [3–5 h], [约 3000 步；checkpoint 随训随传],
+  [benchmark 全套], [1.5–2 h], [TextVQA 500 / DocVQA 200 / OCRBench 200 / ScreenSpot 200；训练 checkpoint × blind × 随机 projector 三组对照，机上完成],
+  [权重与结果回传], [0.5 h], [projector 约 160 MB + 评测 JSON 上传 HF],
+  [*合计*], [*7–10 h*], [4×H100 PCIe（\$6.93/h）约 \$50–70；含一次失败重试按 \$150 预算],
+)
+
+若 FP4 Dgrad 不可用（情景 B）：权重解量化至 bf16（568 GB），需 8×A100 SXM（\$10.30/h），同排程时长大约 ×2–3，预算 \$300–500。
 
 = 评测与验收计划
 

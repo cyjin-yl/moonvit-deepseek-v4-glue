@@ -32,6 +32,7 @@
 2. ~~Overfit check~~ **done on three tracks** — SmolLM2-135M/comfy delta +0.343, Qwen2.5-0.5B/comfy delta +0.282, Qwen2.5-0.5B/flickr8k-1100 delta +0.148 (checkpoint `checkpoints/overfit-qwen05-flickr8k` on the workstation). flickr8k data note: `jxie/flickr8k` (nlphuji is gated); hub fetch kept dying on the proxy, so the 1100 records were decoded offline from the two fully-cached train parquets (script `$HDD/staging/rescue_flickr8k.py`), MANIFEST.json records the resolved revision `56f58c9`. Validation/test parquets were never downloaded — don't need them.
 3. Re-run the read-only Vast offer search immediately before budgeting; do not create an instance without fresh user approval.
 4. On the rented multi-GPU box, run Gate D: native 0731 load → single-image forward → single-batch backward (Dgrad verification) before any training loop exists.
+5. Rental closed-loop schedule (in the report, "租期闭环排程"): one rental must finish setup → Gate D → 1-epoch alignment (~3000 steps, batch 64, checkpoints every 500 steps uploaded to HF immediately) → full benchmarks ON the box (trained × blind × random-projector) → projector (~160MB) + eval JSON upload. 7–10h on 4×H100 PCIe ≈ $50–70. Stop criterion: benchmark-minus-blind gap plateaus, not loss. Deliverable is the projector only — never the 160GB backbone.
 5. HF-cache surgery note: direct `curl -C -` resume loop beats `hf download` on this proxy (it stalls); the blob filename in `blobs/` is the content sha256 — the xet-bridge redirect etag is NOT the file hash.
 
 ## Main unresolved risk
