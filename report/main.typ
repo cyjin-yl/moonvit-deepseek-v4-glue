@@ -91,7 +91,9 @@ K3 的 MoonViT3d（下称 MoonViT-V2）与 MoonViT-SO-400M 的合同差异：vis
 
 移植方式：将 K3 仓库中视觉塔所需的最小代码集 vendor 进本仓库（`src/moonvit_glue/vendor/kimi_k3/`，Apache-2.0 + Kimi K3 License，已附 LICENSE），删除文本模型依赖（`modeling_kimi_linear` 要求更新版 Transformers 的 `OutputRecorder`，与本项目 5.12 基线冲突）与条件生成类；加载不再需要 `trust_remote_code`，也不再需要下载完整 K3 仓库。`moonvit_glue.moonvit_v2` 复用既有 `MoonViTEncoder` 契约（freeze、形状校验、preprocess），新增 sdpa varlen attention（K3 代码只注册 flash-attention-2 与 eager；V100 等无 flash-attn 硬件用 eager/sdpa，数值一致性有测试）。
 
-已验证（工作站，随机权重即可，无需真实权重）：vision-only 模块独立实例化（真实配置 401.2M 参数）；前向输出 `[G,4,1024]` 符合合同；eager 与 sdpa 注意力数值一致；带/不带 `vision_tower.` 前缀的 state-dict 均 strict 加载；processor 适配器产出 `pixel_values`/`image_grid_hws` 合同键；完整测试集 34/34 通过。真实 shard 的 header 元数据与模型 state_dict 已逐项比对：165/165 key、形状、dtype（全 BF16）完全一致，且该 shard 不含任何非视觉权重。*服务器端同样只需部分下载*：干净房间测试（PYTHONPATH 仅含本仓库、无 K3 staging）确认 vendored 代码只依赖 stdlib/torch/transformers/numpy/PIL，租机时视觉塔侧只需 git 仓库 + 抽取产物（约 800 MB，附 sha256 MANIFEST 供下载校验），完整 K3 仓库不进入训练链路。权重分片正在本地下载（断点续传），下完后 `tools/extract_moonvit_v2.py` 产出自包含视觉塔产物（权重 + vision config + processor config + MANIFEST + vendored 代码），经 strict-load 验证后上传项目 HF 仓库。
+已验证（工作站）：vision-only 模块独立实例化（真实配置 401.2M 参数）；前向输出 `[G,4,1024]` 符合合同；eager 与 sdpa 注意力数值一致；带/不带 `vision_tower.` 前缀的 state-dict 均 strict 加载；processor 适配器产出 `pixel_values`/`image_grid_hws` 合同键；完整测试集 34/34 通过。真实 shard 的 header 元数据与模型 state_dict 逐项比对：165/165 key、形状、dtype（全 BF16）完全一致，且该 shard 不含任何非视觉权重。*服务器端同样只需部分下载*：干净房间测试（PYTHONPATH 仅含本仓库、无 K3 staging）确认 vendored 代码只依赖 stdlib/torch/transformers/numpy/PIL，租机时视觉塔侧只需 git 仓库 + 抽取产物（约 800 MB，附 sha256 MANIFEST 供下载校验），完整 K3 仓库不进入训练链路。
+
+*真实权重回归（2026-08-03）*：shard 下载完成（802,448,352 B，sha256 `9d10c74f…`），`tools/extract_moonvit_v2.py` 抽取 165 张量 / 401.2M 参数并 strict-load 通过，产物 `moonvit_v2.safetensors`（BF16，sha256 `01436a95…`）+ MANIFEST（双哈希）。V100 上真实权重前向：1024×1024 图像 → 5476 patches（74×74 grid）→ `[1369,4,1024]`，全部 finite，特征统计健康（mean 0.0003 / std 0.0511 / absmax 0.60，RMSNorm 后典型量级）；两次前向逐位一致（确定性）；eager 与 sdpa 在真实权重上最大绝对差 3.1e-05（fp32 累加顺序的正常量级）。抽取产物上传至项目 HF 仓库 `vision_tower_k3/` 子目录，训练与评测经 `--vision-tower v2 --moonvit-v2-weights` 使用。
 
 = 本地与云端硬件计划
 
@@ -286,6 +288,7 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
   [2026-08-02], [训练器支持流式 checkpoint：每 500 步保存 projector(fp32+bf16)+AdamW+RNG 的完整可续训单元，后台线程传 HF；`--resume` 可从任一 checkpoint 精确续训。],
   [2026-08-02], [对齐社区 GLM-5.2V 配方：确认其视觉塔同为 MoonViT、标志指标为 MMMU-Pro（加入评测集）；记录 grokking（短答案）与 warm-start 两条训练结论；带宽速度与数据集流量成本计入预算。],
   [2026-08-03], [MoonViT-V2 移植验证：K3 视觉代码 vision-only 抽取并 vendor 进仓库（去文本模型依赖）；随机权重前向输出 `[G,4,1024]` 符合 PatchMerger 合同；新增 sdpa varlen attention 并与 eager 数值一致；`moonvit_v2` wrapper 复用 MoonViTEncoder 契约；34/34 测试通过。权重单分片（802 MB/1.56 TB）下载中，HF 写权限已验证。],
+  [2026-08-03], [真实权重回归完成：shard 96 下载（sha256 `9d10c74f…`）→ 抽取 165 张量 strict-load 通过 → V100 真实前向 `[1369,4,1024]`\@1024px、finite、逐位确定、eager/sdpa 差 3.1e-05 → 34/34 回归 → 产物（含 sha256 MANIFEST）上传 HF `vision_tower_k3/`；训练/评测支持 `--vision-tower v2`。],
 )
 
 = 下一位执行者的最短路径
