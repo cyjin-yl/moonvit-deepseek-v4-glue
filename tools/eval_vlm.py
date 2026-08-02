@@ -85,6 +85,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--prompt-template", default="User: {image}\n{question}\nAssistant:")
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--dtype", default="bfloat16")
+    parser.add_argument("--max-image-side", type=int, default=None,
+                        help="Downscale images before MoonViT; required when the text model's "
+                        "context is smaller than the merged token count")
     parser.add_argument("--out", type=Path, default=None, help="Where to write the JSON report")
     parser.add_argument("--blind", action="store_true", help="Also score every record without its image")
     parser.add_argument("--shuffle-loss", action="store_true", help="Teacher-forced true-vs-shuffled image loss")
@@ -138,8 +141,11 @@ def build_model(args: argparse.Namespace):
     return model, moonvit, tokenizer, placeholder_token_id, device
 
 
-def encode_image(moonvit: MoonViTEncoder, image_path: Path):
-    image_inputs = moonvit.preprocess(Image.open(image_path).convert("RGB"))
+def encode_image(moonvit: MoonViTEncoder, image_path: Path, max_image_side: int | None = None):
+    image = Image.open(image_path).convert("RGB")
+    if max_image_side:
+        image.thumbnail((max_image_side, max_image_side), Image.LANCZOS)
+    image_inputs = moonvit.preprocess(image)
     return moonvit(**image_inputs)
 
 
@@ -153,7 +159,7 @@ def run_generation(args, model, moonvit, tokenizer, placeholder_token_id, device
     scored = []
     for index, record in enumerate(records):
         image_path = args.data.parent / record["image"]
-        feature_groups = encode_image(moonvit, image_path)
+        feature_groups = encode_image(moonvit, image_path, args.max_image_side)
         input_ids = build_prompt_ids(
             tokenizer, args.prompt_template, record["question"], placeholder_token_id, device
         )
@@ -188,7 +194,7 @@ def run_shuffle_loss(args, model, moonvit, tokenizer, placeholder_token_id, devi
 
     rows = []
     for index, record in enumerate(records):
-        true_groups = encode_image(moonvit, args.data.parent / record["image"])
+        true_groups = encode_image(moonvit, args.data.parent / record["image"], args.max_image_side)
         prompt_ids = build_prompt_ids(
             tokenizer, args.prompt_template, record["question"], placeholder_token_id, device
         )
@@ -200,7 +206,7 @@ def run_shuffle_loss(args, model, moonvit, tokenizer, placeholder_token_id, devi
         shuffled_losses = []
         for _ in range(args.shuffle_repeats):
             other = rng.choice([r for r in records if r is not record])
-            other_groups = encode_image(moonvit, args.data.parent / other["image"])
+            other_groups = encode_image(moonvit, args.data.parent / other["image"], args.max_image_side)
             shuffled_losses.append(loss_for(other_groups, answer_ids, prompt_ids))
         row = {
             "id": record.get("id", index),
