@@ -28,6 +28,7 @@ MoonViT 约 400M 参数，BF16 权重文件约 834 MB，相对于约 160 GB 级�
 - DeepSeek 权重：#link("https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731")[deepseek-ai/DeepSeek-V4-Flash-0731]，MIT。
 - 独立视觉塔：#link("https://huggingface.co/moonshotai/MoonViT-SO-400M")[moonshotai/MoonViT-SO-400M]，MIT。
 - Kimi-K2.5 技术报告：#link("https://arxiv.org/abs/2602.02276")[Kimi K2.5: Visual Agentic Intelligence]。
+- Vast offer 搜索接口：#link("https://docs.vast.ai/api-reference/search/search-offers")[Vast.ai Search Offers API]。本文只调用搜索接口，不调用创建实例接口。
 
 独立 MoonViT-SO-400M 来自 Kimi-VL；Kimi-K2.5/K2.6 使用演进后的 MoonViT-3D。两者输出形状兼容不代表特征分布相同。视觉塔 revision 是训练 provenance 的组成部分；更换视觉塔必须重训 projector。
 
@@ -109,7 +110,20 @@ MoonViT 本身适合该任务：27 层、hidden size 1152、16 heads、约 400M 
 
 == Gate C：Vast 只读调研
 
-筛选同机 4×H100 SXM 80 GB、H200 或 B200；要求 verified、可靠度高、NVLink/P2P、至少 512 GB RAM、1.5 TB 本地盘。当前阶段只记录 offer，不创建实例。
+2026-08-02 12:23（UTC+8）用官方 Search Offers API 查询 verified、rentable、可靠度至少 0.98、至少 4 张卡、单卡至少 80 GB、总显存至少 320 GB 的 on-demand offer。市场是动态的，以下价格只用于预算，offer ID 不应写进自动租用脚本。
+
+#table(
+  columns: (1.7fr, 1fr, 1fr, 2fr),
+  [*GPU*], [*总显存*], [*约美元/小时*], [*判断*],
+  [4×A100 PCIe 80 GB], [320 GB], [\$4.00], [最便宜；无 NVLink，仅作兼容性/低价 smoke],
+  [4×A100 SXM4 80 GB], [320 GB], [\$6.94], [300 GB/s NVLink；优先训练候选],
+  [4×H100 PCIe 80 GB], [约 319 GB], [\$8.00], [新架构；仍需核验拓扑和 Dgrad],
+  [4×H100 SXM 80 GB], [约 319 GB], [\$10.75], [性能优先候选],
+  [8×A100 SXM4 80 GB], [640 GB], [\$10.37], [显存余量最大且价格低于当时 4×H100 SXM],
+  [4×H200 141 GB], [约 562 GB], [\$15.74], [低 OOM 风险，成本高],
+)
+
+正式候选还应要求 NVLink/P2P、至少 512 GB RAM、至少 1.5 TB 本地盘并现场复核 CUDA/驱动。查询结果中最低价 A100 PCIe 只有约 617 GB 可用盘，不满足完整缓存计划；A100 SXM4 候选有约 10 TB 盘。当前阶段只记录 offer，明确不创建实例。
 
 == Gate D：正式租卡前
 
@@ -129,9 +143,9 @@ MoonViT 本身适合该任务：27 层、hidden size 1152、16 heads、约 400M 
   [2026-08-02], [确认 0731 已有 `<｜image｜>` ID 129279，禁止扩 vocab。],
   [2026-08-02], [真实缩小 DeepSeek-V4 Hash-MoE 完成 backward。],
   [2026-08-02], [发现 Transformers 4.57.6 缺少 DeepSeek-V4；基线切换为 5.12+。],
+  [2026-08-02], [完成 Vast on-demand 只读快照；未创建或租用实例。],
 )
 
 = 下一位执行者的最短路径
 
 先运行 `pytest` 和 `examples/smoke_tiny_text_lm.py`。然后在 V100 工作站使用机械盘作为 `HF_HOME`，验证真实 MoonViT。正式 0731 实验前不要写训练循环，先证明目标 CUDA/量化 runtime 支持 input data-gradient。若失败，优先评估 FP8 可微加载或定制 Dgrad，不要改用 GGUF 假装完成训练链路。
-
