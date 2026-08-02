@@ -113,6 +113,27 @@ MoonViT 本身适合该任务：27 层、hidden size 1152、16 heads、约 400M 
 2. 大文件仅写入 `/run/media/ezra/13D010B6FDBC1A06/`。✔ 已确认 `/home` 89% 占用，机械盘约 3.7 TB 可用。
 3. 跑 MoonViT standalone 与小 LM；记录 SM70 fallback。✔ 真实 MoonViT-SO-400M 前向/反向与评测管线干跑均通过。torch 2.10.0+cu128 wheel 自带 sm\_70，V100 matmul 与 26/26 测试通过，不需要旧版 PyTorch。
 4. 不尝试加载完整 0731。✔ 保持该约束。
+5. 小规模 overfit 训练验证信号。✔ 通过（见下节）。
+
+== Gate B 实测：projector overfit 实验（2026-08-02）
+
+数据：109 条 ComfyUI 产出图的英文描述性 caption（`data/comfy_captions.jsonl`，零下载，93 训练 + 16 评测）。设置：冻结 MoonViT-SO-400M（fp32）与 SmolLM2-135M-Instruct（fp32），只训 40.1M 参数 PatchMerger projector；placeholder 用现有 token `<|endoftext|>`（id 0），不扩 vocab；`--max-image-side 448`（每图 192 token）；batch 4，AdamW。
+
+第一次跑（200 步，lr 1e-3，约 8.6 epoch）：训练 loss 4.25 → 3.74，但 shuffle\_delta 仅 +0.007，在噪声内——模型主要学到 caption 文体先验。第二次跑（1000 步，lr 2e-3，约 43 epoch）信号确立：
+
+#table(
+  columns: (2.2fr, 1.6fr),
+  [*指标*], [*数值*],
+  [训练 loss（首窗 → 末窗）], [4.303 → 3.338],
+  [评测真图 loss], [3.300],
+  [评测打乱图 loss（16 样本 × 5 轮）], [3.642],
+  [*shuffle\_delta*], [*+0.343*],
+  [训练耗时（V100）], [951 秒（1000 步）],
+)
+
+生成对照（8 条评测样本，greedy 48 token）：有图输出随图变化且出现内容词（"Korean dress"、"3D model"、"beard, pastel houses"，token-F1 0.112）；同一模型的 blind 无图输出 8 条逐字节相同（"beautiful, serene landscape..."，token-F1 0.082）。三项证据一致：loss 下降、shuffle\_delta 显著为正、生成随图变化且 blind 恒定——projector 确实把图像信息送进了冻结 LM，训练合同在真实权重上成立。checkpoint 在 `checkpoints/overfit-smollm135-1k`。
+
+注意：评测集 loss（3.30）低于训练集末窗（3.34），且 43 epoch 已过拟合，shuffle\_delta 部分来自对 93 张训练图的记忆；这一 gate 的目的是验证信号通路，不是产出可用 captioner。下一步 Qwen2.5-0.5B + flickr8k（1100 条）轨在更大更干净的数据上复测同一判据。
 
 工作站实测注意项：
 
@@ -163,7 +184,7 @@ MoonViT 本身适合该任务：27 层、hidden size 1152、16 heads、约 400M 
   columns: (1.2fr, 2.6fr, 2fr),
   [*阶段*], [*运行内容*], [*通过判据*],
   [Gate A], [指标单元测试；小模型 shuffle-loss 管线], [测试全绿；管线可跑],
-  [Gate B], [真实 MoonViT + 小 LM：生成、评分、blind 对照], [端到端无报错],
+  [Gate B], [真实 MoonViT + 小 LM：生成、评分、blind 对照；overfit 训练], [端到端无报错；shuffle\_delta = +0.343（显著为正）],
   [Gate C], [训练前/后各一次：TextVQA、DocVQA、OCRBench、ScreenSpot 小子集], [训练后显著高于训练前与 blind],
 )
 
@@ -183,6 +204,7 @@ MoonViT 本身适合该任务：27 层、hidden size 1152、16 heads、约 400M 
   [2026-08-02], [新增评测资产：metrics 指标库、eval\_vlm 评分器（含 blind 与 shuffle-loss 模式）、fetch\_eval\_data 数据清单；新增 generate() 生成路径。],
   [2026-08-02], [V100 工作站：torch 2.10.0+cu128 确认含 sm\_70；26/26 测试通过；记录 NVML mismatch 与 Xet-over-proxy 挂起（HF\_HUB\_DISABLE\_XET=1 解决）。],
   [2026-08-02], [V100 完成真实 MoonViT smoke（fp32）与评测管线端到端干跑；发现 MoonViT remote code 与 Transformers 5.x 两处不兼容并 shim；确认视觉 token 数可顶爆小模型上下文。],
+  [2026-08-02], [Gate B 通过：V100 上冻结 MoonViT + SmolLM2-135M 只训 projector，1000 步后 shuffle\_delta = +0.343；生成随图变化、blind 恒定。数据路径修复为相对 JSONL。],
 )
 
 = 下一位执行者的最短路径

@@ -6,6 +6,7 @@
 - Core glue implemented under `src/moonvit_glue/`; **26/26 tests pass on Linux** (torch 2.10.0+cu128, transformers 5.12.1).
 - Real `DeepseekV4ForCausalLM` tiny Hash-MoE config passed loss/backward and generation.
 - **Gate B complete**: real MoonViT-SO-400M forward/backward on the V100 (`[192,4,1152]` at 448px, `[1064,4,1152]` native 640×480), eval harness dry-run end-to-end (generation + blind + shuffle-loss; untrained projector correctly gives `mean_delta = 0.0`).
+- **Gate B training signal confirmed (2026-08-02)**: overfit on 109 ComfyUI captions (93 train / 16 eval), frozen MoonViT + frozen SmolLM2-135M-Instruct, projector-only training on the V100. 200 steps (lr 1e-3) was inconclusive (delta +0.007); **1000 steps (lr 2e-3) gives train loss 4.303→3.338, eval true 3.300 vs shuffled 3.642, shuffle_delta = +0.343**. Generation check (8 records): with-image outputs vary per image with content words (token-F1 0.112); blind outputs are byte-identical generic text (0.082). Placeholder = existing `<|endoftext|>` id 0 (SmolLM2 has no reserved image token). Checkpoint on the workstation at `checkpoints/overfit-smollm135-1k` (gitignored). Data path convention: `image` fields are relative to the JSONL file (the comfy JSONL was fixed accordingly).
 - Projector shape fixed at MoonViT `[N,4,1152]` → DeepSeek 4096, 40,119,040 params.
 - DeepSeek image placeholder fixed to existing `<｜image｜>` ID 129279; never resize vocab.
 - `VisionCausalLM.generate()` exists for both backbone kinds; generic path returns the full expanded sequence.
@@ -28,9 +29,10 @@
 ## Immediate next actions
 
 1. Fetch real eval datasets on the workstation (`tools/fetch_eval_data.py`, needs `datasets` — install via `pip --target $HDD/moonvit-deps datasets`; set proxy + `HF_HUB_DISABLE_XET=1`), then dry-run `tools/eval_vlm.py --shuffle-loss` on real data.
-2. Overfit check: train the projector on ~1k caption samples with a small text LM on the V100, confirm loss drops and shuffle-delta turns positive.
+2. ~~Overfit check~~ **done (SmolLM2 track, delta +0.343)** — repeat on the Qwen2.5-0.5B + flickr8k track (download was in progress in `tmux moonvit:0.0`: `Qwen2.5-0.5B-Instruct` ~1 GB, then `fetch_eval_data.py --dataset flickr8k --limit 1100`; placeholder auto-resolves to `<|image_pad|>`; suggested `--steps 300+ --limit 1100`).
 3. Re-run the read-only Vast offer search immediately before budgeting; do not create an instance without fresh user approval.
 4. On the rented multi-GPU box, run Gate D: native 0731 load → single-image forward → single-batch backward (Dgrad verification) before any training loop exists.
+5. HF-cache surgery note: direct `curl -C -` resume loop beats `hf download` on this proxy (it stalls); the blob filename in `blobs/` is the content sha256 — the xet-bridge redirect etag is NOT the file hash.
 
 ## Main unresolved risk
 
