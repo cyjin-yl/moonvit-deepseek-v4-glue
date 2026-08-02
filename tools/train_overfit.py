@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import json
 import random
+import sys
 import time
 from pathlib import Path
 
@@ -40,6 +41,22 @@ from moonvit_glue.checkpointing import (
     save_training_checkpoint,
 )
 from tools_common import build_prompt_ids, encode_image
+
+
+class _Tee:
+    """Mirror stdout/stderr into a log file so the training log rides with uploads."""
+
+    def __init__(self, *streams):
+        self.streams = streams
+
+    def write(self, text):
+        for stream in self.streams:
+            stream.write(text)
+        return len(text)
+
+    def flush(self):
+        for stream in self.streams:
+            stream.flush()
 
 
 def parse_args() -> argparse.Namespace:
@@ -114,6 +131,10 @@ def mean_loss_for(args, model, moonvit, tokenizer, placeholder_token_id, device,
 
 def main() -> None:
     args = parse_args()
+    args.out.mkdir(parents=True, exist_ok=True)
+    log_file = open(args.out / "train.log", "a", encoding="utf-8")
+    sys.stdout = _Tee(sys.__stdout__, log_file)
+    sys.stderr = _Tee(sys.__stderr__, log_file)
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     torch.manual_seed(args.seed)

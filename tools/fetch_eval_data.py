@@ -33,6 +33,7 @@ class FetchSpec:
     config: str | None = None
     question_field: str | None = "question"
     answers_field: str = "answers"
+    adapter: str | None = None
 
 
 DATASETS = {
@@ -49,6 +50,13 @@ DATASETS = {
     "screenspot": FetchSpec(
         repo="rootsautomation/ScreenSpot", split="test", metric="grounding",
         question_field="instruction",
+    ),
+    # The headline metric of the community GLM-5.2V recipe (Harry Partridge /
+    # 0xSero): MMMU-Pro multiple choice. Multi-image questions are skipped —
+    # our schema carries exactly one image per record.
+    "mmmu_pro": FetchSpec(
+        repo="MMMU/MMMU_Pro", config="standard", split="test", metric="exact_match",
+        answers_field="answer", adapter="mmmu_pro",
     ),
     # Caption data for projector overfit/alignment runs; question is a constant.
     "flickr8k": FetchSpec(
@@ -85,9 +93,19 @@ def fetch(name: str, spec: FetchSpec, limit: int | None, out_dir: Path, revision
     images_dir.mkdir(parents=True, exist_ok=True)
     records = []
     box_stats = {"max_seen": 0.0}
-    for index, row in enumerate(dataset):
-        if limit is not None and index >= limit:
+    for row in dataset:
+        if limit is not None and len(records) >= limit:
             break
+        if spec.adapter == "mmmu_pro":
+            if row.get("image_2") is not None:
+                continue
+            options = "\n".join(str(option) for option in row["options"])
+            row = {
+                "image": row["image_1"],
+                "question": f"{row['question']}\nOptions:\n{options}",
+                "answer": row["answer"],
+            }
+        index = len(records)
         record_id = f"{name}_{index:06d}"
         image = row["image"].convert("RGB")
         image_name = f"{record_id}.png"
