@@ -192,12 +192,15 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
   [*阶段*], [*时长*], [*费用（4×H100 PCIe \$6.93/h）*],
   [装机 + Docker + 环境调试余量], [1.5 h], [\$10.4],
   [权重下载（160 GB）], [0.5–1 h], [\$3.5–6.9 + 流量约 \$4],
+  [训练与评测数据下载（约 30 GB）], [0.5 h], [\$3.5 + 流量约 \$0.4],
   [Gate D 判定], [1 h], [\$6.9],
   [对齐训练约 3000 步（1 epoch，checkpoint 随传）], [3–5 h], [\$20.8–34.7],
   [机上 benchmark 三组对照], [1.5–2 h], [\$10.4–13.9],
   [权重与结果回传], [0.2 h], [\$1.4],
-  [*情景 A 合计*], [*8.7–11.7 h*], [*约 \$57–81，含余量按 \$100 预算*],
+  [*情景 A 合计*], [*9.2–12.2 h*], [*约 \$60–85，含余量按 \$100 预算*],
 )
+
+带宽与耗时已按报价接口的 inet\_down 字段核算：H100 PCIe 候选实测下行 2217 Mbps（约 277 MB/s），理论 160 GB 约 10 分钟；考虑 HF CDN 单连接限速（40–100 MB/s）与重传，预算放宽到 0.5–1 h，租机筛选条件应要求 inet\_down ≥ 1000 Mbps。checkpoint 上行流量每个约 500 MB（权重 fp32+bf16+优化器），每 500 步一次，分钟级完成，不影响训练计费。训练日志（train.log）与 history.json 随 checkpoint 一并上传，社区可见完整训练过程。
 
 情景 B（FP4 不可反传）：8×A100 SXM4 \$10.30/h，解量化转换 1–2 h 且训练约慢 3 倍，合计 20–30 h ≈ \$210–310（该候选流量 \$1.33/TB，网络几乎免费）。*建议总预算：\$100 起步（情景 A），预留 \$250 兜底，上限 \$350；预期实际花费 \$70–110。* 决策点在租后第 2–3 小时：Gate D 不通过即 destroy 止损，损失约 \$20。
 
@@ -233,13 +236,15 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 
 = 评测与验收计划
 
-没有 benchmark 就无法回答“接上了没有”。评测口径沿用社区 GLM-5.2 视觉实验（坐标格式解析率、归一化 0–999 坐标的 Accuracy\@50、平均点击误差），并补充常规 VQA/OCR 指标。所有数字必须与 blind baseline（同一模型、无图输入）一起报告：VQA 类基准有显著语言先验，无图基线把“模型本来就会答”与“图像带来了信息”分开。
+没有 benchmark 就无法回答“接上了没有”。评测口径对标社区 GLM-5.2V 实验（Harry Partridge 方法、0xSero/fable-glm-vision 复现）：视觉塔同为冻结 MoonViT（他们从 Kimi K2.6 抽取，我们用官方独立仓 MoonViT-SO-400M，同构 1152 维），其标志性指标是 *MMMU-Pro*（原文声称 55%，约 Claude 4.5 Haiku 水平），因此我们的评测集在 TextVQA/DocVQA/OCRBench/ScreenSpot 之外加入 *MMMU-Pro（单图子集，exact match）*。所有数字必须与 blind baseline（同一模型、无图输入）一起报告：VQA 类基准有显著语言先验，无图基线把“模型本来就会答”与“图像带来了信息”分开。
+
+社区配方还有两个直接影响数据计划的实测结论：其一，*grokking*——batch 64 / lr 5e-4 配短答案时 loss 平台数百步后骤降（原文约 step 900）完成对齐，*长描述性答案会阻止 grok*，因此对齐数据应以短 QA 为主、长 caption 为辅，而不是只用长 caption；其二，*warm start*——从已对齐 projector 初始化可跳过大半平台期，多阶段数据混训时应复用上一阶段 checkpoint 而不是重零开始。
 
 已实现的评测资产：
 
 - `moonvit_glue.metrics`：纯 Python 指标，无 torch 依赖。exact match、soft VQA（官方 min(1, 同意人数/3)）、ANLS、token-F1，以及 grounding 的 parse/Acc\@threshold/mean error。
 - `tools/eval_vlm.py`：生成式评分（`--blind` 输出无图基线）与 `--shuffle-loss`（真图 vs 随机图的 teacher-forced loss 差）两种模式。shuffle-loss 是训练前最便宜的信号检验：projector 学到东西后，真图 loss 应显著低于随机图。
-- `tools/fetch_eval_data.py`：固定来源拉取 TextVQA（soft VQA）、DocVQA（ANLS）、OCRBench（exact match）、ScreenSpot（in-box grounding），落盘 JSONL 与 MANIFEST.json（resolved revision sha 与 JSONL sha256），沿用“信任 manifest 而不是 tag”的纪律。
+- `tools/fetch_eval_data.py`：固定来源拉取 TextVQA（soft VQA）、DocVQA（ANLS）、OCRBench（exact match）、ScreenSpot（in-box grounding）、MMMU-Pro（单图子集，exact match），落盘 JSONL 与 MANIFEST.json（resolved revision sha 与 JSONL sha256），沿用“信任 manifest 而不是 tag”的纪律。
 
 #table(
   columns: (1.2fr, 2.6fr, 2fr),
@@ -269,6 +274,7 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
   [2026-08-02], [Gate B 第二 backbone 复测通过：Qwen2.5-0.5B 同条件 shuffle\_delta = +0.282，确认信号与文本主干选型无关。],
   [2026-08-02], [Gate B 第三轨通过：flickr8k 1100 条（jxie 开放镜像，离线 parquet 救援落盘），Qwen2.5-0.5B 1500 步 shuffle\_delta = +0.148；三轨全部通过。],
   [2026-08-02], [训练器支持流式 checkpoint：每 500 步保存 projector(fp32+bf16)+AdamW+RNG 的完整可续训单元，后台线程传 HF；`--resume` 可从任一 checkpoint 精确续训。],
+  [2026-08-02], [对齐社区 GLM-5.2V 配方：确认其视觉塔同为 MoonViT、标志指标为 MMMU-Pro（加入评测集）；记录 grokking（短答案）与 warm-start 两条训练结论；带宽速度与数据集流量成本计入预算。],
 )
 
 = 下一位执行者的最短路径
