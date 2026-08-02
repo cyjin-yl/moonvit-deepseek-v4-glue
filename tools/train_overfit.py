@@ -33,6 +33,7 @@ from moonvit_glue import (
     PatchMergerProjector,
     ProjectorConfig,
     VisionCausalLM,
+    load_moonvit_v2_encoder,
     resolve_placeholder_token_id,
 )
 from moonvit_glue.checkpointing import (
@@ -63,6 +64,13 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--text-model", required=True)
     parser.add_argument("--moonvit-model", default="moonshotai/MoonViT-SO-400M")
+    parser.add_argument("--vision-tower", choices=["v1", "v2"], default="v1",
+                        help="v1 = MoonViT-SO-400M from HF; v2 = Kimi K3 MoonViT-V2 from extracted weights")
+    parser.add_argument("--moonvit-v2-weights", default=None,
+                        help="Path to extracted moonvit_v2.safetensors (required with --vision-tower v2)")
+    parser.add_argument("--moonvit-v2-attn", default="eager",
+                        choices=["eager", "sdpa", "flash_attention_2"],
+                        help="Attention backend for the V2 tower (eager/sdpa on hardware without flash-attn)")
     parser.add_argument("--data", required=True, type=Path)
     parser.add_argument("--limit", type=int, default=512)
     parser.add_argument("--steps", type=int, default=300)
@@ -151,7 +159,16 @@ def main() -> None:
     eval_records = records[-args.eval_samples :]
     train_records = records[: -args.eval_samples]
 
-    moonvit = MoonViTEncoder.from_pretrained(args.moonvit_model, torch_dtype=dtype)
+    if args.vision_tower == "v2":
+        if not args.moonvit_v2_weights:
+            raise ValueError("--vision-tower v2 requires --moonvit-v2-weights")
+        moonvit = load_moonvit_v2_encoder(
+            args.moonvit_v2_weights,
+            attn_implementation=args.moonvit_v2_attn,
+            torch_dtype=dtype,
+        )
+    else:
+        moonvit = MoonViTEncoder.from_pretrained(args.moonvit_model, torch_dtype=dtype)
     moonvit.to(device)
     tokenizer = AutoTokenizer.from_pretrained(args.text_model)
     language_model = AutoModelForCausalLM.from_pretrained(args.text_model, dtype=dtype)

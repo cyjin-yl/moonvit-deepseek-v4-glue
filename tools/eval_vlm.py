@@ -45,6 +45,7 @@ from moonvit_glue import (
     PatchMergerProjector,
     ProjectorConfig,
     VisionCausalLM,
+    load_moonvit_v2_encoder,
     resolve_placeholder_token_id,
 )
 from moonvit_glue.metrics import score_record, summarize
@@ -55,6 +56,12 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--text-model", required=True, help="HF id or local path of the text backbone")
     parser.add_argument("--moonvit-model", default="moonshotai/MoonViT-SO-400M")
+    parser.add_argument("--vision-tower", choices=["v1", "v2"], default="v1",
+                        help="v1 = MoonViT-SO-400M from HF; v2 = Kimi K3 MoonViT-V2 from extracted weights")
+    parser.add_argument("--moonvit-v2-weights", default=None,
+                        help="Path to extracted moonvit_v2.safetensors (required with --vision-tower v2)")
+    parser.add_argument("--moonvit-v2-attn", default="eager",
+                        choices=["eager", "sdpa", "flash_attention_2"])
     parser.add_argument("--projector", help="Directory with projector_config.json + projector.safetensors")
     parser.add_argument("--random-projector", action="store_true", help="Use a freshly initialized projector (smoke runs)")
     parser.add_argument("--data", required=True, type=Path, help="Benchmark JSONL file")
@@ -86,7 +93,16 @@ def build_model(args: argparse.Namespace):
     dtype = getattr(torch, args.dtype)
     device = torch.device(args.device)
 
-    moonvit = MoonViTEncoder.from_pretrained(args.moonvit_model, torch_dtype=dtype)
+    if args.vision_tower == "v2":
+        if not args.moonvit_v2_weights:
+            raise ValueError("--vision-tower v2 requires --moonvit-v2-weights")
+        moonvit = load_moonvit_v2_encoder(
+            args.moonvit_v2_weights,
+            attn_implementation=args.moonvit_v2_attn,
+            torch_dtype=dtype,
+        )
+    else:
+        moonvit = MoonViTEncoder.from_pretrained(args.moonvit_model, torch_dtype=dtype)
     moonvit.to(device)
     tokenizer = AutoTokenizer.from_pretrained(args.text_model)
     language_model = AutoModelForCausalLM.from_pretrained(args.text_model, dtype=dtype)
