@@ -42,6 +42,16 @@ def _key_prefix_report(weights_path: Path) -> dict[str, int]:
     return dict(prefixes)
 
 
+def _sha256(path: Path) -> str:
+    import hashlib
+
+    digest = hashlib.sha256()
+    with open(path, "rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("shard", type=Path, help="K3 shard with vision_tower.* keys")
@@ -61,9 +71,13 @@ def main() -> None:
     print("Strict load into MoonViT3d (1024-wide, 27-layer): OK")
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
+    # Sort keys for a deterministic byte layout so the artifact sha256 is
+    # reproducible across machines.
+    state = {key: state[key] for key in sorted(state)}
+    weights_path = args.out_dir / "moonvit_v2.safetensors"
     save_file(
         state,
-        str(args.out_dir / "moonvit_v2.safetensors"),
+        str(weights_path),
         metadata={"format": "pt", "source": "moonshotai/Kimi-K3 vision_tower"},
     )
     vision_config = KimiK3VisionConfig()
@@ -79,7 +93,24 @@ def main() -> None:
     if code_dir.exists():
         shutil.rmtree(code_dir)
     shutil.copytree(_VENDOR_DIR, code_dir, ignore=shutil.ignore_patterns("__pycache__"))
+
+    manifest = {
+        "weights_file": weights_path.name,
+        "weights_sha256": _sha256(weights_path),
+        "tensor_count": len(state),
+        "parameter_count": total,
+        "source_repo": "moonshotai/Kimi-K3",
+        "source_shard": args.shard.name,
+        "source_shard_sha256": _sha256(args.shard),
+        "vision_width": 1024,
+        "merge_factor": 4,
+    }
+    (args.out_dir / "MANIFEST.json").write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     print(f"Artifact written to {args.out_dir}")
+    print(f"MANIFEST: weights sha256 {manifest['weights_sha256'][:16]}..., "
+          f"shard sha256 {manifest['source_shard_sha256'][:16]}...")
 
 
 if __name__ == "__main__":
