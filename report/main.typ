@@ -214,7 +214,7 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 
 核心约束：租期一结束就没有机器能跑动 0731 做 benchmark 或回传权重，因此训练、benchmark、上传必须在同一次租期内闭环。交付物只有 projector + 评测 JSON + 报告，与 GLM 社区只发布 projector 一致，不回传 160 GB 主干。checkpoint 发两个精度：fp32 master（约 160 MB，复现/续训用）与 bf16 serving（约 80 MB,0731 激活为 bf16)，租期内由训练产物现场转换。推理侧接入（vLLM/SGLang 补丁方案、Hash-MoE 注意事项、验收检查）已写成 `docs/inference-integration.md`，作为后续给推理引擎提 PR 的合同文档；要点：vLLM 与 SGLang 均已内置 Kimi-VL 的 MoonViT 实现可直接复用，placeholder 固定为现有 `<｜image｜>`(id 129279）禁止扩 vocab，合并只替换 embedding 向量、input\_ids 保留 placeholder 供 Hash-MoE 路由。
 
-训练量按 LLaVA 式对齐的标准做法定为 *1 个 epoch*：15–30 万条 caption、global batch 64、约 2500–4500 步、lr 1e-3 cosine，每 500 步存 checkpoint 并立刻后台传 HF。4×H100 估 3–5 s/步（13B 激活、seq 约 300–400、开 activation checkpointing），训练段 2.5–6 h。多轮只会背诵 caption（43 epoch 的 +0.343 即过拟合态），不加轮次。
+训练量按 LLaVA 式对齐的标准做法定为 *1 个 epoch*：15–30 万条 caption、global batch 64、约 2500–4500 步、lr 1e-3 cosine，每 500 步存 checkpoint 并立刻后台传 HF。checkpoint 是完整可续训单元（projector fp32 + bf16、AdamW 状态、RNG、步数、loss 历史，见 `moonvit_glue.checkpointing`)：实例中断不丢成果，社区可实时看到训练曲线形成，任何 checkpoint 可用 `--resume <repo-id>` 精确续训。4×H100 估 3–5 s/步（13B 激活、seq 约 300–400、开 activation checkpointing），训练段 2.5–6 h。多轮只会背诵 caption（43 epoch 的 +0.343 即过拟合态），不加轮次。
 
 停训判据不看 loss，看两条 gap：主判据是 benchmark 分数 − blind 分数的 gap 随 checkpoint 的曲线，平台即停；辅助判据是留出集 shuffle\_delta > 0.1。参考锚点：projector-only 的 TextVQA 现实预期 20–30%（blind 约 10–15%，成熟 VLM 60+）；达到 GLM 社区实验同量级（grounding parse 率 >80%、Acc\@50 个位数）即成功。
 
@@ -268,6 +268,7 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
   [2026-08-02], [Gate B 通过：V100 上冻结 MoonViT + SmolLM2-135M 只训 projector，1000 步后 shuffle\_delta = +0.343；生成随图变化、blind 恒定。数据路径修复为相对 JSONL。],
   [2026-08-02], [Gate B 第二 backbone 复测通过：Qwen2.5-0.5B 同条件 shuffle\_delta = +0.282，确认信号与文本主干选型无关。],
   [2026-08-02], [Gate B 第三轨通过：flickr8k 1100 条（jxie 开放镜像，离线 parquet 救援落盘），Qwen2.5-0.5B 1500 步 shuffle\_delta = +0.148；三轨全部通过。],
+  [2026-08-02], [训练器支持流式 checkpoint：每 500 步保存 projector(fp32+bf16)+AdamW+RNG 的完整可续训单元，后台线程传 HF；`--resume` 可从任一 checkpoint 精确续训。],
 )
 
 = 下一位执行者的最短路径
