@@ -24,6 +24,14 @@ parser.add_argument(
     choices=["auto", "float32", "bfloat16"],
     help="'auto' follows the checkpoint (bfloat16); float32 sidesteps mixed-dtype bugs",
 )
+parser.add_argument(
+    "--max-image-side",
+    type=int,
+    default=None,
+    help="Downscale the longest image side before preprocessing. Tiny text models "
+    "have small context windows: 1064 merged MoonViT tokens from a 640x480 photo "
+    "already exceed tiny-gpt2's 1024 positions, so use e.g. 448 there.",
+)
 args = parser.parse_args()
 
 device = torch.device(args.device)
@@ -31,7 +39,10 @@ moonvit_dtype = args.moonvit_dtype if args.moonvit_dtype == "auto" else getattr(
 
 moonvit = MoonViTEncoder.from_pretrained(torch_dtype=moonvit_dtype)
 moonvit.to(device)
-image_inputs = moonvit.preprocess(Image.open(args.image).convert("RGB"))
+image = Image.open(args.image).convert("RGB")
+if args.max_image_side:
+    image.thumbnail((args.max_image_side, args.max_image_side), Image.LANCZOS)
+image_inputs = moonvit.preprocess(image)
 image_feature_groups = moonvit(**image_inputs)
 
 tokenizer = AutoTokenizer.from_pretrained(args.text_model)
