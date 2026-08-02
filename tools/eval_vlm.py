@@ -180,6 +180,9 @@ def run_generation(args, model, moonvit, tokenizer, placeholder_token_id, device
 
 def run_shuffle_loss(args, model, moonvit, tokenizer, placeholder_token_id, device, records):
     rng = random.Random(args.seed)
+    records = [record for record in records if record.get("answers")]
+    if not records:
+        raise ValueError("shuffle-loss mode needs records with an 'answers' field")
 
     def loss_for(feature_groups, answer_ids, prompt_ids):
         input_ids = torch.cat([prompt_ids, answer_ids], dim=1)
