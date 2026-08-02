@@ -133,7 +133,9 @@ MoonViT 本身适合该任务：27 层、hidden size 1152、16 heads、约 400M 
 
 生成对照（8 条评测样本，greedy 48 token）：有图输出随图变化且出现内容词（"Korean dress"、"3D model"、"beard, pastel houses"，token-F1 0.112）；同一模型的 blind 无图输出 8 条逐字节相同（"beautiful, serene landscape..."，token-F1 0.082）。三项证据一致：loss 下降、shuffle\_delta 显著为正、生成随图变化且 blind 恒定——projector 确实把图像信息送进了冻结 LM，训练合同在真实权重上成立。checkpoint 在 `checkpoints/overfit-smollm135-1k`。
 
-注意：评测集 loss（3.30）低于训练集末窗（3.34），且 43 epoch 已过拟合，shuffle\_delta 部分来自对 93 张训练图的记忆；这一 gate 的目的是验证信号通路，不是产出可用 captioner。下一步 Qwen2.5-0.5B + flickr8k（1100 条）轨在更大更干净的数据上复测同一判据。
+注意：评测集 loss（3.30）低于训练集末窗（3.34），且 43 epoch 已过拟合，shuffle\_delta 部分来自对 93 张训练图的记忆；这一 gate 的目的是验证信号通路，不是产出可用 captioner。
+
+第二个 backbone 复测（同一数据与超参，placeholder 自动解析为 `<|image_pad|>`）：Qwen2.5-0.5B-Instruct 1000 步后训练 loss 3.898 → 3.160，评测真图 3.310 vs 打乱图 3.592，*shuffle\_delta = +0.282*，耗时 1194 秒，checkpoint 在 `checkpoints/overfit-qwen05-1k`。两条 backbone 轨给出同量级正 delta，说明该信号来自胶水层与 projector 通路本身，与文本主干选型无关。下一步在更大更干净的 flickr8k（1100 条）上复测同一判据。
 
 工作站实测注意项：
 
@@ -205,6 +207,7 @@ MoonViT 本身适合该任务：27 层、hidden size 1152、16 heads、约 400M 
   [2026-08-02], [V100 工作站：torch 2.10.0+cu128 确认含 sm\_70；26/26 测试通过；记录 NVML mismatch 与 Xet-over-proxy 挂起（HF\_HUB\_DISABLE\_XET=1 解决）。],
   [2026-08-02], [V100 完成真实 MoonViT smoke（fp32）与评测管线端到端干跑；发现 MoonViT remote code 与 Transformers 5.x 两处不兼容并 shim；确认视觉 token 数可顶爆小模型上下文。],
   [2026-08-02], [Gate B 通过：V100 上冻结 MoonViT + SmolLM2-135M 只训 projector，1000 步后 shuffle\_delta = +0.343；生成随图变化、blind 恒定。数据路径修复为相对 JSONL。],
+  [2026-08-02], [Gate B 第二 backbone 复测通过：Qwen2.5-0.5B 同条件 shuffle\_delta = +0.282，确认信号与文本主干选型无关。],
 )
 
 = 下一位执行者的最短路径

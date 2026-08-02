@@ -29,7 +29,7 @@
 ## Immediate next actions
 
 1. Fetch real eval datasets on the workstation (`tools/fetch_eval_data.py`, needs `datasets` — install via `pip --target $HDD/moonvit-deps datasets`; set proxy + `HF_HUB_DISABLE_XET=1`), then dry-run `tools/eval_vlm.py --shuffle-loss` on real data.
-2. ~~Overfit check~~ **done (SmolLM2 track, delta +0.343)** — repeat on the Qwen2.5-0.5B + flickr8k track (download was in progress in `tmux moonvit:0.0`: `Qwen2.5-0.5B-Instruct` ~1 GB, then `fetch_eval_data.py --dataset flickr8k --limit 1100`; placeholder auto-resolves to `<|image_pad|>`; suggested `--steps 300+ --limit 1100`).
+2. ~~Overfit check~~ **done on two backbones** — SmolLM2-135M delta +0.343, Qwen2.5-0.5B delta +0.282 (same data/hyperparams, placeholder `<|image_pad|>` auto-resolved; checkpoint `checkpoints/overfit-qwen05-1k` on the workstation). Remaining: repeat the same criterion on the larger/cleaner flickr8k (1100 records) — fetch was queued in `tmux moonvit:0.0` (`pip install datasets` into `$HDD/moonvit-deps`, then `fetch_eval_data.py --dataset flickr8k --limit 1100`).
 3. Re-run the read-only Vast offer search immediately before budgeting; do not create an instance without fresh user approval.
 4. On the rented multi-GPU box, run Gate D: native 0731 load → single-image forward → single-batch backward (Dgrad verification) before any training loop exists.
 5. HF-cache surgery note: direct `curl -C -` resume loop beats `hf download` on this proxy (it stalls); the blob filename in `blobs/` is the content sha256 — the xet-bridge redirect etag is NOT the file hash.
