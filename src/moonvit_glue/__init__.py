@@ -9,6 +9,9 @@ from importlib import import_module
 from typing import Any
 
 _LAZY_EXPORTS = {
+    "CheckpointUploader": "checkpointing",
+    "load_training_checkpoint": "checkpointing",
+    "save_training_checkpoint": "checkpointing",
     "DEEPSEEK_FLASH_0731": "loaders",
     "DEFAULT_IMAGE_TOKEN": "loaders",
     "LoadedVisionLM": "loaders",

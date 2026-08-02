@@ -34,6 +34,11 @@ from moonvit_glue import (
     VisionCausalLM,
     resolve_placeholder_token_id,
 )
+from moonvit_glue.checkpointing import (
+    CheckpointUploader,
+    load_training_checkpoint,
+    save_training_checkpoint,
+)
 from tools_common import build_prompt_ids, encode_image
 
 
@@ -59,6 +64,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--log-every", type=int, default=20)
     parser.add_argument("--eval-samples", type=int, default=32)
     parser.add_argument("--shuffle-repeats", type=int, default=3)
+    parser.add_argument("--checkpoint-every", type=int, default=500,
+                        help="Save a resumable checkpoint every N steps (0 disables)")
+    parser.add_argument("--upload-repo", default=None,
+                        help="HF repo id; each checkpoint is uploaded in the background")
+    parser.add_argument("--resume", default=None,
+                        help="Local checkpoint dir or HF repo id to resume from")
     return parser.parse_args()
 
 
@@ -152,10 +163,19 @@ def main() -> None:
 
     optimizer = torch.optim.AdamW(projector.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 
-    history = []
-    cursor = 0
+    uploader = CheckpointUploader(args.upload_repo) if args.upload_repo else None
+    start_step = 0
+    if args.resume:
+        start_step, history, rng, resume_dir = load_training_checkpoint(
+            source=args.resume, projector=projector, optimizer=optimizer, device=device
+        )
+        print(f"resumed from {resume_dir} at step {start_step}", flush=True)
+    else:
+        history = []
+
+    cursor = start_step * args.batch_size
     started = time.time()
-    for step in range(1, args.steps + 1):
+    for step in range(start_step + 1, args.steps + 1):
         batch = [train_records[cursor % len(train_records)] for _ in range(args.batch_size)]
         cursor += args.batch_size
         optimizer.zero_grad(set_to_none=True)
@@ -177,6 +197,18 @@ def main() -> None:
         if step % args.log_every == 0 or step == 1:
             window = [row["loss"] for row in history[-args.log_every :]]
             print(f"step {step}/{args.steps} loss={sum(window) / len(window):.4f}", flush=True)
+        if args.checkpoint_every and step % args.checkpoint_every == 0:
+            checkpoint_dir = save_training_checkpoint(
+                directory=args.out / "checkpoints" / f"step-{step:06d}",
+                projector=projector,
+                optimizer=optimizer,
+                step=step,
+                history=history,
+                rng=rng,
+            )
+            print(f"checkpoint saved: {checkpoint_dir}", flush=True)
+            if uploader:
+                uploader.upload_async(checkpoint_dir, f"checkpoints/step-{step:06d}")
 
     # Acceptance check: true-vs-shuffled image loss gap on held-out records.
     true_loss = mean_loss_for(
@@ -218,6 +250,22 @@ def main() -> None:
         json.dumps({"report": report, "history": history}, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+    final_dir = save_training_checkpoint(
+        directory=args.out / "checkpoints" / f"step-{args.steps:06d}",
+        projector=projector,
+        optimizer=optimizer,
+        step=args.steps,
+        history=history,
+        rng=rng,
+    )
+    print(f"final checkpoint: {final_dir}", flush=True)
+    if uploader:
+        uploader.upload_async(args.out, "")
+        uploader.wait()
+        if uploader.errors:
+            print(f"[uploader] completed with {len(uploader.errors)} error(s):", flush=True)
+            for error in uploader.errors:
+                print(f"  {error}", flush=True)
     print(json.dumps(report, ensure_ascii=False, indent=2), flush=True)
 
 
