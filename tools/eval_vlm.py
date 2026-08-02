@@ -49,6 +49,26 @@ from moonvit_glue import (
 )
 from moonvit_glue.metrics import score_record, summarize
 
+_IMAGE_SENTINEL = "\x00image\x00"
+
+
+def build_prompt_ids(tokenizer, template: str, question: str, placeholder_token_id: int, device):
+    """Tokenize a prompt template, inserting the placeholder as exactly one token.
+
+    The image token string of one tokenizer (e.g. DeepSeek's <｜image｜>) splits
+    into many tokens under another tokenizer, so the placeholder must be placed
+    by id, not by text.
+    """
+
+    rendered = template.replace("{image}", _IMAGE_SENTINEL).format(question=question)
+    before, after = rendered.split(_IMAGE_SENTINEL)
+    ids = (
+        tokenizer.encode(before, add_special_tokens=False)
+        + [placeholder_token_id]
+        + tokenizer.encode(after, add_special_tokens=False)
+    )
+    return torch.tensor([ids], device=device)
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -134,8 +154,9 @@ def run_generation(args, model, moonvit, tokenizer, placeholder_token_id, device
     for index, record in enumerate(records):
         image_path = args.data.parent / record["image"]
         feature_groups = encode_image(moonvit, image_path)
-        prompt = args.prompt_template.format(image=args.image_token, question=record["question"])
-        input_ids = tokenizer.encode(prompt, return_tensors="pt").to(device)
+        input_ids = build_prompt_ids(
+            tokenizer, args.prompt_template, record["question"], placeholder_token_id, device
+        )
         output = model.generate(
             input_ids=input_ids,
             image_feature_groups=feature_groups,
@@ -168,8 +189,9 @@ def run_shuffle_loss(args, model, moonvit, tokenizer, placeholder_token_id, devi
     rows = []
     for index, record in enumerate(records):
         true_groups = encode_image(moonvit, args.data.parent / record["image"])
-        prompt = args.prompt_template.format(image=args.image_token, question=record["question"])
-        prompt_ids = tokenizer.encode(prompt, return_tensors="pt").to(device)
+        prompt_ids = build_prompt_ids(
+            tokenizer, args.prompt_template, record["question"], placeholder_token_id, device
+        )
         answer_ids = tokenizer.encode(
             " " + record["answers"][0], return_tensors="pt", add_special_tokens=False
         ).to(device)
