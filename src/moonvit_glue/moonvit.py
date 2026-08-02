@@ -87,12 +87,32 @@ class MoonViTEncoder(nn.Module):
             "revision": revision,
             "trust_remote_code": True,
         }
-        model = AutoModel.from_pretrained(
-            model_id,
-            torch_dtype=torch_dtype,
-            device_map=device_map,
-            **common,
-        )
+        try:
+            model = AutoModel.from_pretrained(
+                model_id,
+                torch_dtype=torch_dtype,
+                device_map=device_map,
+                **common,
+            )
+        except AttributeError as exc:
+            # The MoonViT remote code predates Transformers v5 and never
+            # defines all_tied_weights_keys, which v5's loader requires.
+            # MoonViT is a plain ViT with no tied weights, so an empty
+            # mapping is the semantically correct shim.
+            if "all_tied_weights_keys" not in str(exc):
+                raise
+            from transformers.dynamic_module_utils import get_class_from_dynamic_module
+
+            remote_cls = get_class_from_dynamic_module(
+                "modeling_moonvit.MoonVitPretrainedModel", model_id, revision=revision
+            )
+            remote_cls.all_tied_weights_keys = {}
+            model = AutoModel.from_pretrained(
+                model_id,
+                torch_dtype=torch_dtype,
+                device_map=device_map,
+                **common,
+            )
         processor = AutoImageProcessor.from_pretrained(model_id, **common)
         config = model.config
         merge_kernel = tuple(getattr(config, "merge_kernel_size", (2, 2)))
