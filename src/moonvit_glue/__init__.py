@@ -21,6 +21,10 @@ _LAZY_EXPORTS = {
     "expand_image_placeholders": "merge",
     "VisionCausalLM": "model",
     "MoonViTEncoder": "moonvit",
+    "build_moonvit_v2": "moonvit_v2",
+    "load_moonvit_v2_encoder": "moonvit_v2",
+    "load_moonvit_v2_processor": "moonvit_v2",
+    "register_sdpa_attention": "moonvit_v2",
     "PatchMergerProjector": "projector",
     "ProjectorConfig": "projector",
 }

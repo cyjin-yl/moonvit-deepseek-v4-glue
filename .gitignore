@@ -9,4 +9,7 @@ build/
 checkpoints/
 data/
 report/*.pdf
+.env
+.env.*
+!.env.example
 
