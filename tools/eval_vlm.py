@@ -48,26 +48,7 @@ from moonvit_glue import (
     resolve_placeholder_token_id,
 )
 from moonvit_glue.metrics import score_record, summarize
-
-_IMAGE_SENTINEL = "\x00image\x00"
-
-
-def build_prompt_ids(tokenizer, template: str, question: str, placeholder_token_id: int, device):
-    """Tokenize a prompt template, inserting the placeholder as exactly one token.
-
-    The image token string of one tokenizer (e.g. DeepSeek's <｜image｜>) splits
-    into many tokens under another tokenizer, so the placeholder must be placed
-    by id, not by text.
-    """
-
-    rendered = template.replace("{image}", _IMAGE_SENTINEL).format(question=question)
-    before, after = rendered.split(_IMAGE_SENTINEL)
-    ids = (
-        tokenizer.encode(before, add_special_tokens=False)
-        + [placeholder_token_id]
-        + tokenizer.encode(after, add_special_tokens=False)
-    )
-    return torch.tensor([ids], device=device)
+from tools_common import build_prompt_ids, encode_image
 
 
 def parse_args() -> argparse.Namespace:
@@ -139,14 +120,6 @@ def build_model(args: argparse.Namespace):
     )
     model.eval()
     return model, moonvit, tokenizer, placeholder_token_id, device
-
-
-def encode_image(moonvit: MoonViTEncoder, image_path: Path, max_image_side: int | None = None):
-    image = Image.open(image_path).convert("RGB")
-    if max_image_side:
-        image.thumbnail((max_image_side, max_image_side), Image.LANCZOS)
-    image_inputs = moonvit.preprocess(image)
-    return moonvit(**image_inputs)
 
 
 def expanded_length(input_ids: torch.Tensor, placeholder_token_id: int, feature_groups) -> int:

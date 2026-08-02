@@ -31,7 +31,7 @@ class FetchSpec:
     split: str
     metric: str
     config: str | None = None
-    question_field: str = "question"
+    question_field: str | None = "question"
     answers_field: str = "answers"
 
 
@@ -49,6 +49,11 @@ DATASETS = {
     "screenspot": FetchSpec(
         repo="rootsautomation/ScreenSpot", split="test", metric="grounding",
         question_field="instruction",
+    ),
+    # Caption data for projector overfit/alignment runs; question is a constant.
+    "flickr8k": FetchSpec(
+        repo="nlphuji/flickr8k", split="train", metric="token_f1",
+        question_field=None, answers_field="caption",
     ),
 }
 
@@ -91,7 +96,7 @@ def fetch(name: str, spec: FetchSpec, limit: int | None, out_dir: Path, revision
         record = {
             "id": record_id,
             "image": f"images/{image_name}",
-            "question": row[spec.question_field],
+            "question": row[spec.question_field] if spec.question_field else "Describe the image.",
             "metric": spec.metric,
         }
         if spec.metric == "grounding":
