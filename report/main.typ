@@ -135,7 +135,23 @@ MoonViT 本身适合该任务：27 层、hidden size 1152、16 heads、约 400M 
 
 注意：评测集 loss（3.30）低于训练集末窗（3.34），且 43 epoch 已过拟合，shuffle\_delta 部分来自对 93 张训练图的记忆；这一 gate 的目的是验证信号通路，不是产出可用 captioner。
 
-第二个 backbone 复测（同一数据与超参，placeholder 自动解析为 `<|image_pad|>`）：Qwen2.5-0.5B-Instruct 1000 步后训练 loss 3.898 → 3.160，评测真图 3.310 vs 打乱图 3.592，*shuffle\_delta = +0.282*，耗时 1194 秒，checkpoint 在 `checkpoints/overfit-qwen05-1k`。两条 backbone 轨给出同量级正 delta，说明该信号来自胶水层与 projector 通路本身，与文本主干选型无关。下一步在更大更干净的 flickr8k（1100 条）上复测同一判据。
+第二个 backbone 复测（同一数据与超参，placeholder 自动解析为 `<|image_pad|>`）：Qwen2.5-0.5B-Instruct 1000 步后训练 loss 3.898 → 3.160，评测真图 3.310 vs 打乱图 3.592，*shuffle\_delta = +0.282*，耗时 1194 秒，checkpoint 在 `checkpoints/overfit-qwen05-1k`。两条 backbone 轨给出同量级正 delta，说明该信号来自胶水层与 projector 通路本身，与文本主干选型无关。
+
+第三轨在更大更干净的数据上复测：flickr8k 训练分片 1100 条（1036 训练 + 64 评测；`jxie/flickr8k` 镜像，nlphuji 原仓为 gated；因代理网络反复断流，最终直接从 HF 缓存的 train parquet 离线解出，MANIFEST 记录 resolved revision）。Qwen2.5-0.5B，1500 步、batch 8、lr 2e-3（约 11.6 epoch，记忆成分远小于 comfy 小集）：训练 loss 3.091 → 2.435，评测真图 2.574 vs 打乱图 2.722（64 样本 × 5 轮），*shuffle\_delta = +0.148*，耗时 2102 秒，checkpoint 在 `checkpoints/overfit-qwen05-flickr8k`。在 10 倍数据、1/4 epoch 数下 delta 仍显著为正——信号不依赖小集记忆。
+
+该 checkpoint 的生成对照同样干净：8 条评测样本有图输出为正常 flickr8k 风格 caption（"A boy in a red shirt and blue shorts is holding a toy"，token-F1 *0.284*）；blind 无图输出全部退化为同一句拒绝话术（"I'm sorry, but you haven't provided an image..."，token-F1 *0.0*）。
+
+三轨汇总（判据均为真图 vs 打乱图 teacher-forced loss 差）：
+
+#table(
+  columns: (1.7fr, 1.9fr, 1.3fr, 1.1fr, 1.2fr),
+  [*数据*], [*文本主干*], [*步数/epoch*], [*delta*], [*结论*],
+  [comfy 109 条], [SmolLM2-135M], [1000 / 43], [+0.343], [通过],
+  [comfy 109 条], [Qwen2.5-0.5B], [1000 / 43], [+0.282], [通过],
+  [flickr8k 1100 条], [Qwen2.5-0.5B], [1500 / 11.6], [+0.148], [通过],
+)
+
+Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本主干、两个数据集上全部成立，可以进入 Gate D（租卡验证 0731 大权重的 Dgrad 通路）。
 
 工作站实测注意项：
 
@@ -208,6 +224,7 @@ MoonViT 本身适合该任务：27 层、hidden size 1152、16 heads、约 400M 
   [2026-08-02], [V100 完成真实 MoonViT smoke（fp32）与评测管线端到端干跑；发现 MoonViT remote code 与 Transformers 5.x 两处不兼容并 shim；确认视觉 token 数可顶爆小模型上下文。],
   [2026-08-02], [Gate B 通过：V100 上冻结 MoonViT + SmolLM2-135M 只训 projector，1000 步后 shuffle\_delta = +0.343；生成随图变化、blind 恒定。数据路径修复为相对 JSONL。],
   [2026-08-02], [Gate B 第二 backbone 复测通过：Qwen2.5-0.5B 同条件 shuffle\_delta = +0.282，确认信号与文本主干选型无关。],
+  [2026-08-02], [Gate B 第三轨通过：flickr8k 1100 条（jxie 开放镜像，离线 parquet 救援落盘），Qwen2.5-0.5B 1500 步 shuffle\_delta = +0.148；三轨全部通过。],
 )
 
 = 下一位执行者的最短路径
