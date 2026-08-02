@@ -1,0 +1,8 @@
+{
+  "language_width": 4096,
+  "layer_norm_eps": 1e-05,
+  "merge_factor": 4,
+  "projector_width": 4608,
+  "vision_width": 1152
+}
+
