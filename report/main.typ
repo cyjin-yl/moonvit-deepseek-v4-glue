@@ -64,10 +64,14 @@ DeepSeek-V4 的早期 Hash-MoE 通过 `tid2eid[input_ids]` 选 expert。只给 `
   [冻结普通 GPT-2 的 backward], [通过], [通用文本主干],
   [真实 `DeepseekV4ForCausalLM` 1 层 Hash-MoE], [通过], [DeepSeek 路由合同],
   [MoonViT 输出 shape/freeze 合同], [通过], [视觉边界],
+  [真实 MoonViT-SO-400M + 小 LM 前向/反向], [通过], [V100 CUDA fp32],
+  [eval\_vlm 生成/blind/shuffle-loss 干跑], [通过], [评测管线端到端],
   [generate()：generic 与 deepseek_v4 两种路径], [通过], [评测/推理前置],
   [指标库（VQA/ANLS/token-F1/grounding）], [通过], [纯 Python，无 torch],
   [完整测试集], [26/26], [Linux + torch 2.10.0+cu128],
 )
+
+V100 实测：MoonViT-SO-400M 在 448px 输入下输出 `[192,4,1152]`，原生 640×480 下 `[1064,4,1152]`，符合合同；loss/backward 正常。评测管线用随机 projector + tiny-gpt2 干跑：生成、评分、blind 基线与 shuffle-loss 全部端到端通过；shuffle-loss 在未训练 projector 上给出 `mean_delta = 0.0` 的正确零结果——训练后该值应当变正，这是对齐信号最便宜的读数。
 
 离线 smoke 结果：输入 6 token 扩展为 8 token；projector 六组参数均获得梯度；语言模型参数梯度数为 0。同一结果在 doesworkstation（V100）上复现。
 
@@ -107,14 +111,17 @@ MoonViT 本身适合该任务：27 层、hidden size 1152、16 heads、约 400M 
 
 1. 在不占用现有 Qwen 优化任务的情况下盘点 CUDA/PyTorch/磁盘。✔ 已完成，并经 tmux 向 fastllm 任务留言协调。
 2. 大文件仅写入 `/run/media/ezra/13D010B6FDBC1A06/`。✔ 已确认 `/home` 89% 占用，机械盘约 3.7 TB 可用。
-3. 跑 MoonViT standalone 与小 LM；记录 SM70 fallback。◐ torch 2.10.0+cu128 wheel 自带 sm\_70，V100 matmul 与 26/26 测试通过，不需要旧版 PyTorch。
+3. 跑 MoonViT standalone 与小 LM；记录 SM70 fallback。✔ 真实 MoonViT-SO-400M 前向/反向与评测管线干跑均通过。torch 2.10.0+cu128 wheel 自带 sm\_70，V100 matmul 与 26/26 测试通过，不需要旧版 PyTorch。
 4. 不尝试加载完整 0731。✔ 保持该约束。
 
 工作站实测注意项：
 
 - NVML 版本不匹配（内核模块 580.159.04 vs 用户态库 580.173）：`nvidia-smi` 不可用，但 CUDA 初始化与 kernel 运行正常。不要为修复它而重载驱动或重启——同机其他任务正在使用 GPU。
+- MoonViT remote code 与 Transformers 5.x 有两处不兼容：缺 `all_tied_weights_keys`（已在 `moonvit.py` shim，ViT 无 tied weights，空映射语义正确）；bf16 下 remote code 内部存在 float32/bf16 混用的 layer\_norm 调用，V100 上 MoonViT 以 fp32 运行（约 1.6 GB，可接受）。
+- 小上下文文本模型装不下原生分辨率视觉 token：640×480 照片产生 1064 个合并 token，加 prompt 后超过 tiny-gpt2 的 1024 positions，表现为 scatter-gather device assert（异步报错会漂移到无关位置，需 CUDA\_LAUNCH\_BLOCKING=1 定位）。`--max-image-side` 控制 token 数；正式 0731 的 128k 上下文无此问题。
 - HF 下载须走本机代理 `127.0.0.1:7890`（约 0.4–0.5 MB/s），且该仓库默认 Xet 传输在代理下会挂起，必须设 `HF_HUB_DISABLE_XET=1`。
 - 复用现有 venv（torch 2.10.0+cu128 + transformers 5.12.1）；pytest 用 `pip --target` 装在独立目录，不改对方环境。
+- 工作站负载高（其他 agent 编译/跑 inference server）时，机械盘上的 torch import 可达 90 秒以上；批处理脚本超时预算要放宽。
 
 == Gate C：Vast 只读调研
 
@@ -175,6 +182,7 @@ MoonViT 本身适合该任务：27 层、hidden size 1152、16 heads、约 400M 
   [2026-08-02], [公开仓库 cyjin-yl/moonvit-deepseek-v4-glue 上线并推送。],
   [2026-08-02], [新增评测资产：metrics 指标库、eval\_vlm 评分器（含 blind 与 shuffle-loss 模式）、fetch\_eval\_data 数据清单；新增 generate() 生成路径。],
   [2026-08-02], [V100 工作站：torch 2.10.0+cu128 确认含 sm\_70；26/26 测试通过；记录 NVML mismatch 与 Xet-over-proxy 挂起（HF\_HUB\_DISABLE\_XET=1 解决）。],
+  [2026-08-02], [V100 完成真实 MoonViT smoke（fp32）与评测管线端到端干跑；发现 MoonViT remote code 与 Transformers 5.x 两处不兼容并 shim；确认视觉 token 数可顶爆小模型上下文。],
 )
 
 = 下一位执行者的最短路径
