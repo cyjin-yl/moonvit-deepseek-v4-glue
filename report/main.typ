@@ -134,6 +134,26 @@ MoonViT 本身适合该任务：27 层、hidden size 1152、16 heads、约 400M 
 5. 20 step 无 OOM/NaN。
 6. 新进程恢复 projector 后输出一致。
 
+= 评测与验收计划
+
+没有 benchmark 就无法回答“接上了没有”。评测口径沿用社区 GLM-5.2 视觉实验（坐标格式解析率、归一化 0–999 坐标的 Accuracy\@50、平均点击误差），并补充常规 VQA/OCR 指标。所有数字必须与 blind baseline（同一模型、无图输入）一起报告：VQA 类基准有显著语言先验，无图基线把“模型本来就会答”与“图像带来了信息”分开。
+
+已实现的评测资产：
+
+- `moonvit_glue.metrics`：纯 Python 指标，无 torch 依赖。exact match、soft VQA（官方 min(1, 同意人数/3)）、ANLS、token-F1，以及 grounding 的 parse/Acc\@threshold/mean error。
+- `tools/eval_vlm.py`：生成式评分（`--blind` 输出无图基线）与 `--shuffle-loss`（真图 vs 随机图的 teacher-forced loss 差）两种模式。shuffle-loss 是训练前最便宜的信号检验：projector 学到东西后，真图 loss 应显著低于随机图。
+- `tools/fetch_eval_data.py`：固定来源拉取 TextVQA（soft VQA）、DocVQA（ANLS）、OCRBench（exact match）、ScreenSpot（in-box grounding），落盘 JSONL 与 MANIFEST.json（resolved revision sha 与 JSONL sha256），沿用“信任 manifest 而不是 tag”的纪律。
+
+#table(
+  columns: (1.2fr, 2.6fr, 2fr),
+  [*阶段*], [*运行内容*], [*通过判据*],
+  [Gate A], [指标单元测试；小模型 shuffle-loss 管线], [测试全绿；管线可跑],
+  [Gate B], [真实 MoonViT + 小 LM：生成、评分、blind 对照], [端到端无报错],
+  [Gate C], [训练前/后各一次：TextVQA、DocVQA、OCRBench、ScreenSpot 小子集], [训练后显著高于训练前与 blind],
+)
+
+预期锚点：0xSero 的 GLM-5.2 projector-only checkpoint 报告坐标格式解析率 92%、Accuracy\@50 4.3%、平均点击误差约 564/999。第一阶段的成功定义是 DeepSeek 路径达到同量级信号，而不是成熟 VLM 水平；grounding 在 projector-only 阶段大概率仍很弱。
+
 = 变更日志
 
 #table(

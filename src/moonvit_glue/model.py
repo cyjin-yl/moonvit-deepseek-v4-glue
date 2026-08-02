@@ -176,7 +176,11 @@ class VisionCausalLM(nn.Module):
             ignore_index=self.ignore_index,
         )
         if self.backbone_kind == "generic":
+            # Passing routing IDs alongside inputs_embeds makes generate return
+            # the full sequence (expanded prefix + continuation), matching the
+            # deepseek_v4 branch instead of a continuation-only tensor.
             return self.language_model.generate(
+                input_ids=merged.routing_input_ids,
                 inputs_embeds=merged.inputs_embeds,
                 attention_mask=merged.attention_mask,
                 **generate_kwargs,
