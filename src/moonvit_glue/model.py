@@ -15,16 +15,24 @@ BackboneKind = Literal["auto", "generic", "deepseek_v4"]
 
 @contextmanager
 def _override_embedding_lookup(
-    embedding: nn.Module, replacement: Tensor
+    embedding: nn.Module, replacement: Tensor, *, strict: bool = True
 ) -> Iterator[None]:
-    """Temporarily replace one embedding lookup while preserving its token IDs."""
+    """Temporarily replace one embedding lookup while preserving its token IDs.
+
+    In strict mode a shape mismatch raises, since training forwards must never
+    silently skip the replacement. Generation runs non-strict: the override
+    fires only while the lookup shape matches the (expanded) prefill, and
+    single-token decode steps fall back to the normal embedding lookup.
+    """
 
     def replace_output(_module: nn.Module, _args: tuple[Any, ...], output: Tensor) -> Tensor:
         if output.shape != replacement.shape:
-            raise ValueError(
-                "DeepSeek routing IDs and multimodal embeddings disagree: "
-                f"lookup produced {tuple(output.shape)}, replacement is {tuple(replacement.shape)}"
-            )
+            if strict:
+                raise ValueError(
+                    "DeepSeek routing IDs and multimodal embeddings disagree: "
+                    f"lookup produced {tuple(output.shape)}, replacement is {tuple(replacement.shape)}"
+                )
+            return output
         return replacement.to(device=output.device, dtype=output.dtype)
 
     handle = embedding.register_forward_hook(replace_output)
@@ -129,3 +137,57 @@ class VisionCausalLM(nn.Module):
             ignore_index=self.ignore_index,
         )
         return self._language_forward(merged, **language_model_kwargs)
+
+    @torch.no_grad()
+    def generate(
+        self,
+        *,
+        input_ids: Tensor,
+        image_feature_groups: Sequence[Tensor] | None = None,
+        image_embeddings: Sequence[Tensor] | None = None,
+        attention_mask: Tensor | None = None,
+        **generate_kwargs: Any,
+    ) -> Tensor:
+        """Decode with image tokens injected at the placeholder positions.
+
+        For DeepSeek-V4 the expanded routing IDs stay attached for the whole
+        decode so Hash-MoE keeps its routing table; the embedding override
+        fires only on the prefill (its shape matches the expanded sequence),
+        while single-token decode steps use the normal embedding lookup.
+        Position IDs are left to the model's own generate bookkeeping.
+        """
+
+        if (image_feature_groups is None) == (image_embeddings is None):
+            raise ValueError(
+                "Provide exactly one of image_feature_groups or image_embeddings"
+            )
+        if image_embeddings is None:
+            image_embeddings = self.projector(image_feature_groups or [])
+
+        embedding = self.language_model.get_input_embeddings()
+        text_embeddings = embedding(input_ids)
+        merged = expand_image_placeholders(
+            input_ids=input_ids,
+            text_embeddings=text_embeddings,
+            image_embeddings=image_embeddings,
+            placeholder_token_id=self.placeholder_token_id,
+            attention_mask=attention_mask,
+            pad_token_id=self.pad_token_id,
+            ignore_index=self.ignore_index,
+        )
+        if self.backbone_kind == "generic":
+            return self.language_model.generate(
+                inputs_embeds=merged.inputs_embeds,
+                attention_mask=merged.attention_mask,
+                **generate_kwargs,
+            )
+        if self.backbone_kind == "deepseek_v4":
+            with _override_embedding_lookup(
+                embedding, merged.inputs_embeds, strict=False
+            ):
+                return self.language_model.generate(
+                    input_ids=merged.routing_input_ids,
+                    attention_mask=merged.attention_mask,
+                    **generate_kwargs,
+                )
+        raise ValueError(f"Unsupported backbone_kind: {self.backbone_kind}")
