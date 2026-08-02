@@ -212,7 +212,7 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 
 == 租期闭环排程（2026-08-02 定价）
 
-核心约束：租期一结束就没有机器能跑动 0731 做 benchmark 或回传权重，因此训练、benchmark、上传必须在同一次租期内闭环。交付物只有 projector（fp32 约 160 MB）+ 评测 JSON + 报告，与 GLM 社区只发布 projector 一致，不回传 160 GB 主干。
+核心约束：租期一结束就没有机器能跑动 0731 做 benchmark 或回传权重，因此训练、benchmark、上传必须在同一次租期内闭环。交付物只有 projector + 评测 JSON + 报告，与 GLM 社区只发布 projector 一致，不回传 160 GB 主干。checkpoint 发两个精度：fp32 master（约 160 MB，复现/续训用）与 bf16 serving（约 80 MB,0731 激活为 bf16)，租期内由训练产物现场转换。推理侧接入（vLLM/SGLang 补丁方案、Hash-MoE 注意事项、验收检查）已写成 `docs/inference-integration.md`，作为后续给推理引擎提 PR 的合同文档；要点：vLLM 与 SGLang 均已内置 Kimi-VL 的 MoonViT 实现可直接复用，placeholder 固定为现有 `<｜image｜>`(id 129279）禁止扩 vocab，合并只替换 embedding 向量、input\_ids 保留 placeholder 供 Hash-MoE 路由。
 
 训练量按 LLaVA 式对齐的标准做法定为 *1 个 epoch*：15–30 万条 caption、global batch 64、约 2500–4500 步、lr 1e-3 cosine，每 500 步存 checkpoint 并立刻后台传 HF。4×H100 估 3–5 s/步（13B 激活、seq 约 300–400、开 activation checkpointing），训练段 2.5–6 h。多轮只会背诵 caption（43 epoch 的 +0.343 即过拟合态），不加轮次。
 
