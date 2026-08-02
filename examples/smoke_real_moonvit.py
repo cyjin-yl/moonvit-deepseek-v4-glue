@@ -18,11 +18,18 @@ parser = argparse.ArgumentParser()
 parser.add_argument("image")
 parser.add_argument("--text-model", default="sshleifer/tiny-gpt2")
 parser.add_argument("--device", default="cpu", help="cpu or cuda; cuda exercises the real GPU path")
+parser.add_argument(
+    "--moonvit-dtype",
+    default="auto",
+    choices=["auto", "float32", "bfloat16"],
+    help="'auto' follows the checkpoint (bfloat16); float32 sidesteps mixed-dtype bugs",
+)
 args = parser.parse_args()
 
 device = torch.device(args.device)
+moonvit_dtype = args.moonvit_dtype if args.moonvit_dtype == "auto" else getattr(torch, args.moonvit_dtype)
 
-moonvit = MoonViTEncoder.from_pretrained(torch_dtype="auto")
+moonvit = MoonViTEncoder.from_pretrained(torch_dtype=moonvit_dtype)
 moonvit.to(device)
 image_inputs = moonvit.preprocess(Image.open(args.image).convert("RGB"))
 image_feature_groups = moonvit(**image_inputs)
