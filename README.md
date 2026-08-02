@@ -96,6 +96,24 @@ python -m pip install -e ".[large-model]"
 
 最大的剩余风险是 FP4/FP8 推理 kernel 是否实现 input-gradient，而不是 glue 的 token/shape 逻辑。若原生 kernel 不可微，需要可微的 FP8/BF16 loader 或定制 data-gradient kernel。
 
+## 评测与验收（Benchmark）
+
+没有 benchmark 就不知道接没接上。口径沿用社区 GLM-5.2 视觉实验：grounding 报 parse rate、归一化 0–999 坐标的 Accuracy@50 与平均点击误差；文本类报 exact match / soft VQA / ANLS。**所有能力数字必须与 blind baseline（同模型、无图输入）一起报告**，VQA 基准的语言先验不能冒充视觉能力。
+
+- `moonvit_glue.metrics`：纯 Python 指标实现，无 torch 依赖，可在任何机器上验证。
+- `tools/fetch_eval_data.py`：按 pin 的 revision 拉取 TextVQA / DocVQA / OCRBench / ScreenSpot，写 JSONL 与 `MANIFEST.json`（resolved sha + 文件 sha256）。
+- `tools/eval_vlm.py`：生成式评分（`--blind` 输出无图基线）；`--shuffle-loss` 模式给出真图 vs 随机图的 teacher-forced loss 差，是训练前最便宜的信号检验。
+
+```bash
+python tools/fetch_eval_data.py --dataset screenspot --limit 200
+python tools/eval_vlm.py --text-model <model> --projector <dir> \
+    --data data/eval/textvqa.jsonl --limit 100 --blind
+python tools/eval_vlm.py --text-model <model> --random-projector \
+    --placeholder-token-id <id> --data data/eval/textvqa.jsonl --shuffle-loss --limit 50
+```
+
+预期锚点：0xSero 的 GLM-5.2 projector-only checkpoint 报告 parse rate 92%、Accuracy@50 4.3%、平均点击误差约 564/999。第一阶段目标是 DeepSeek 路径达到同量级信号，不是成熟 VLM。
+
 ## 本地运行边界
 
 - 只跑 MoonViT：普通 CPU 或单张消费 GPU 可以；建议至少 8 GB VRAM，CPU 建议 16 GB RAM 以上。
