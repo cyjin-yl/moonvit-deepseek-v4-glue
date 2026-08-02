@@ -52,8 +52,8 @@ DATASETS = {
     ),
     # Caption data for projector overfit/alignment runs; question is a constant.
     "flickr8k": FetchSpec(
-        repo="nlphuji/flickr8k", split="train", metric="token_f1",
-        question_field=None, answers_field="caption",
+        repo="jxie/flickr8k", split="train", metric="token_f1",
+        question_field=None, answers_field="caption_0",
     ),
 }
 
