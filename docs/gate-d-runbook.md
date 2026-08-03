@@ -187,6 +187,10 @@ EOF
 - 产物托管：dataset repo `cyjin-yl/moonvit-dsv4-data`（train_v1/ + eval_v1/），
   含来源、固定 revision sha、行数、sha256 与 README 复现命令。
   租机时 `snapshot_download` + 解包即用，不在机上拼装。
+  机上网络注意：租的盒在境外（日本），HF 直连全速，**不需要 ModelScope**；
+  若个别源被 HF 限速可用 ModelScope 镜像兜底（`lmms-lab/textvqa`、`lmms-lab/DocVQA`、
+  `AI-ModelScope/MMMU_Pro`、`showlab/ShowUI-desktop`，布局与 HF 一致），token 在本地
+  `.env` 的 `MODELSCOPE_TOKEN`，上机时经环境变量注入、不落盘进镜像。
 - **续训**：`--resume cyjin-yl/DeepSeek-V4-Flash-0731-Vision` 自动拉取 HF 上最新
   `checkpoints/step-*` 精确续训（权重+优化器动量+RNG+步数；跨机器 GPU 数不同也能恢复，
   见 `src/moonvit_glue/checkpointing.py`）。租第二台机器继续训练只需这一条。

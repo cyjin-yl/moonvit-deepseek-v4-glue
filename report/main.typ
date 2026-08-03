@@ -189,6 +189,8 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 
 本轮同时打通了下载通道的完整答案（此前三种路径全部失败）：hf\_transfer 在代理下 0 字节挂起、hf-mirror 限流、工作站的 datasets+dill 无法 pickle pyarrow 的 MonthDayNano（任何本地 parquet 都炸 `load_dataset`）。最终方案：aria2 `-x8 -c --max-tries=0` 预取 parquet 分片（xet-bridge CDN 随机 TLS 重置/403，无限重试磨过去）+ fetch 全程离线读本地 parquet（raw pyarrow，跳过 datasets 指纹层），新增 `tools/prefetch_parquet.py` 与 `tools/fetch_art_data.py`（0xSero art 数据集的离线复刻，schema 与 `build_train_mix` 兼容，有测试）。另修正一处数据规格错误：MMMU-Pro 仓库不存在裸 `standard` config，已固定为 `standard (10 options)`。
 
+同日下午的带宽攻防补充了一课：(1) ModelScope 存在与 HF 逐字节一致的镜像（`lmms-lab/textvqa`、`lmms-lab/DocVQA`、`AI-ModelScope/MMMU_Pro`、`showlab/ShowUI-desktop`），境内直连可达 8.8 MB/s，但工作站 IP 在约 1.5 小时高强度拉取后被 CDN 边缘渐进限速至 0 B/s（按 IP 不按账号，token 与 IPv6 均无效；本机家庭 IP 同文件仍有 5.3 MB/s）；(2) 随即搭建的"本机 ModelScope → scp 回传工作站"中继受 Tailscale 链路限制（3.7 s RTT，多流聚合仅约 250–400 KB/s），与代理通道同速且挤占家庭带宽，应用户要求退役；(3) 最终全部十个数据源统一由工作站经 Clash 代理直下（`moondata` 八个评测/训练集 + `moonart` 的 WikiArt/fashion），代理总带宽封顶约 250 KB/s（并行不扩展，单连接约 50 KB/s 即节点拥塞），剩余约 15 GB 预计 16 小时；mihomo 核心未开 external-controller，换节点只能由用户在 GUI 操作，这是当前唯一可能提速一个数量级的杠杆。也曾评估 \$0.056/h 的香港数据盒（2–3 小时收工、总成本 < \$0.5）作为替代，用户选择免费慢磨方案。
+
 == Gate C：Vast 只读调研
 
 2026-08-02 12:23（UTC+8）用官方 Search Offers API 查询 verified、rentable、可靠度至少 0.98、至少 4 张卡、单卡至少 80 GB、总显存至少 320 GB 的 on-demand offer。市场是动态的，以下价格只用于预算，offer ID 不应写进自动租用脚本。
