@@ -42,13 +42,25 @@ def list_parquet_shards(repo: str, split: str, revision: str, path_prefix: str) 
     last_error: Exception | None = None
     for attempt in range(5):
         try:
-            entries = HfApi().list_repo_tree(repo, repo_type="dataset", revision=revision,
-                                             recursive=True, expand=True)
+            api = HfApi()
+            entries = api.list_repo_tree(repo, repo_type="dataset", revision=revision, recursive=True)
             shards = sorted(
-                (entry.path, entry.size, entry.lfs.oid if entry.lfs else None)
+                (entry.path, entry.size)
                 for entry in entries
                 if matches_shard(entry.path, split, path_prefix)
             )
+            # list_repo_tree(expand=True) leaves .lfs empty on hub 1.21, so fetch
+            # LFS digests separately; the attribute is .oid on some versions and
+            # .sha256 on others.
+            hashes: dict[str, str] = {}
+            paths = [path for path, _ in shards]
+            for i in range(0, len(paths), 100):
+                for info in api.get_paths_info(repo, paths[i:i + 100], repo_type="dataset",
+                                               revision=revision, expand=True):
+                    lfs = getattr(info, "lfs", None)
+                    digest = (getattr(lfs, "oid", None) or getattr(lfs, "sha256", None)) if lfs else None
+                    if digest:
+                        hashes[info.path] = digest
             break
         except Exception as exc:  # noqa: BLE001 — any transient hub/SSL failure
             last_error = exc
@@ -60,7 +72,11 @@ def list_parquet_shards(repo: str, split: str, revision: str, path_prefix: str) 
         raise SystemExit(f"list_repo_tree failed after 5 attempts: {last_error}")
     if not shards:
         raise SystemExit(f"no parquet shards match split={split!r} prefix={path_prefix!r} in {repo}")
-    return shards
+    missing = [path for path, _ in shards if path not in hashes]
+    if missing:
+        print(f"WARNING: no LFS digest for {len(missing)}/{len(shards)} shard(s); "
+              f"those fall back to size-only verification", flush=True)
+    return [(path, size, hashes.get(path)) for path, size in shards]
 
 
 def sha256_of(path: Path) -> str:
