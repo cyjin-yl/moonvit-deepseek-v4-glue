@@ -96,7 +96,7 @@ export HF_TOKEN=<from .env> HF_HUB_ENABLE_HF_TRANSFER=1
 # 0731 主干 160GB（断点续传）
 hf download deepseek-ai/DeepSeek-V4-Flash-0731 --local-dir /root/weights/dsv4f
 # 视觉塔（我们自己抽取的 MoonViT-V2，含 MANIFEST 双哈希）
-hf download 255doesnotexist/DeepSeek-V4-Flash-0731-Vision \
+hf download cyjin-yl/DeepSeek-V4-Flash-0731-Vision \
   --include "vision_tower_k3/*" --local-dir /root/weights/vision
 python - <<'EOF'  # sha256 校验，必须匹配 MANIFEST
 import hashlib, json, pathlib
@@ -125,21 +125,26 @@ EOF
   长描述性答案会阻止 grokking**（Baseten 原文结论）。
 - 命令：`tools/train_overfit.py --vision-tower v2 --moonvit-v2-weights <path> \
   --lr 5e-4 --batch-size 64 --steps 2100 --checkpoint-every 500 \
-  --upload-repo 255doesnotexist/DeepSeek-V4-Flash-0731-Vision`
+  --upload-repo cyjin-yl/DeepSeek-V4-Flash-0731-Vision`
   checkpoint（projector fp32+bf16、AdamW、RNG、history、train.log）每 500 步流式上传。
 - grokking 观察：loss 平台数百步后应在 step ~900–1100（第一 epoch 末）骤降；
   骤降前后的 checkpoint 都要留，benchmark 时择优。
 - 训练数据（已预生产，泄露受控）：TextVQA train 34.6k + DocVQA train 25k（官方 split，
-  评测只用 validation）+ 0xSero art 子集约 10k（WikiArt/fashion，与五个基准零交集；
-  其 GUI 子集 screenshots/multistep 约占其 mix 六成，因 ScreenSpot 泄露风险整组排除）。
-  flickr8k caption 偏长，不进正式训练 mix，仅用于 Gate B 冒烟。
+  评测只用 validation）+ 0xSero art 子集约 10k（WikiArt/fashion，与五个基准零交集）
+  + **ShowUI-desktop 8k GUI grounding**（用户决定的 computer-use 方向：答案用 0xSero
+  动作格式 `click(start_box=[x,y])`，0..999 同尺度，我们的 grounding parser 原生兼容）。
+  0xSero 的 screenshots/multistep 行本身不直接用（其图像为改名文件无法回 join 源数据；
+  multistep 为轨迹格式跳过），改为从同源公开数据集 ShowUI-desktop 自取。
+- 泄露处理：GUI 数据与 ScreenSpot **同域**——报告中 ScreenSpot 必须标注为"域内"基准；
+  机械保障不变，组装时对全部训练图与全部评测图做 average-hash 去重（hamming ≤ 6 丢弃），
+  丢弃数随 `decontamination_report.json` 公开。flickr8k caption 偏长，不进正式 mix。
 - 机械保障：fetch 的 train 规格强制 `max_answer_words ≤ 20`（短答案红线）；
   `tools/build_train_mix.py` 组装时对全部训练图与全部评测图做 average-hash 去重
   （hamming ≤ 6 丢弃），报告落盘 `decontamination_report.json` 随数据发布。
-- 产物托管：dataset repo `255doesnotexist/moonvit-dsv4-data`（train_v1/ + eval_v1/），
+- 产物托管：dataset repo `cyjin-yl/moonvit-dsv4-data`（train_v1/ + eval_v1/），
   含来源、固定 revision sha、行数、sha256 与 README 复现命令。
   租机时 `snapshot_download` + 解包即用，不在机上拼装。
-- **续训**：`--resume 255doesnotexist/DeepSeek-V4-Flash-0731-Vision` 自动拉取 HF 上最新
+- **续训**：`--resume cyjin-yl/DeepSeek-V4-Flash-0731-Vision` 自动拉取 HF 上最新
   `checkpoints/step-*` 精确续训（权重+优化器动量+RNG+步数；跨机器 GPU 数不同也能恢复，
   见 `src/moonvit_glue/checkpointing.py`）。租第二台机器继续训练只需这一条。
 - Benchmark：`tools/eval_vlm.py`，TextVQA/DocVQA/OCRBench/ScreenSpot/MMMU-Pro 小子集，

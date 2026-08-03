@@ -295,7 +295,7 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 
 社区配方还有两个直接影响数据计划的实测结论：其一，*grokking*——batch 64 / lr 5e-4 配短答案时 loss 平台数百步后骤降（原文约 step 900）完成对齐，*长描述性答案会阻止 grok*，因此对齐数据应以短 QA 为主、长 caption 为辅，而不是只用长 caption；其二，*warm start*——从已对齐 projector 初始化可跳过大半平台期，多阶段数据混训时应复用上一阶段 checkpoint 而不是重零开始。
 
-训练数据泄露控制（2026-08-03 定稿）：正式 mix 只含 TextVQA train（34.6k）、DocVQA train（25k）与 0xSero art 子集（约 10k）三类短答案 QA；0xSero 的 GUI 子集（screenshots/multistep，约占其 mix 六成）因与 ScreenSpot 基准同域而整组排除，flickr8k caption 因偏长不进正式 mix。fetch 规格机械执行 max\_answer\_words ≤ 20；组装时对全部训练图与五个基准的全部评测图做 average-hash 去重（hamming ≤ 6 丢弃），去重报告随数据发布。数据产物托管于 dataset repo 255doesnotexist/moonvit-dsv4-data，含来源、固定 revision 与 sha256，租机上一次下载即用。
+训练数据泄露控制（2026-08-03 定稿，GUI 修订）：正式 mix 含 TextVQA train（34.6k）、DocVQA train（25k）、0xSero art 子集（约 10k）与 ShowUI-desktop（8k）四类短答案监督；GUI 数据按用户决定纳入以建立 computer-use 基础，答案统一为 0xSero 动作格式 `click(start\_box=[x,y])`（0..999 尺度，评测 parser 原生兼容）。0xSero 自带的 screenshots/multistep 行不直接复用（图像改名无法回 join；multistep 为轨迹格式），改为从同源公开数据集自取。代价与处理：ScreenSpot 自此为*域内*基准，报告中必须标注；fetch 规格机械执行 max\_answer\_words ≤ 20；组装时对全部训练图与五个基准的全部评测图做 average-hash 去重（hamming ≤ 6 丢弃），去重报告随数据发布。数据产物托管于 dataset repo cyjin-yl/moonvit-dsv4-data，含来源、固定 revision 与 sha256，租机上一次下载即用。
 
 已实现的评测资产：
 

@@ -22,6 +22,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
+from PIL import Image
+
 SCALE = 999.0
 
 
@@ -36,11 +38,25 @@ class FetchSpec:
     adapter: str | None = None
     image_format: str = "png"  # "jpeg" for photo datasets: archive size matters at 66k rows
     max_answer_words: int | None = None  # Baseten recipe: short answers only, or no grokking
+    save_max_side: int | None = None  # downscale before saving (GUI screenshots are 3k+ px)
 
 
 def image_name_for(record_id: str, image_format: str) -> str:
     extension = "jpg" if image_format == "jpeg" else "png"
     return f"{record_id}.{extension}"
+
+
+def maybe_downscale(image: Image.Image, max_side: int | None) -> Image.Image:
+    if max_side:
+        image.thumbnail((max_side, max_side), Image.LANCZOS)
+    return image
+
+
+def format_click_answer(point, scale: float = SCALE) -> str:
+    """0xSero/ShowUI action format on the shared 0..999 coordinate scale."""
+
+    x, y = round(float(point[0]) * scale), round(float(point[1]) * scale)
+    return f"click(start_box=[{x},{y}])"
 
 
 def keep_record(answers: list, max_words: int | None) -> bool:
@@ -94,6 +110,16 @@ DATASETS = {
         question_field=None, answers_field="caption_0",
         image_format="jpeg", max_answer_words=25,
     ),
+    # GUI grounding for computer-use, mirroring the community mix: ShowUI-desktop
+    # 8k PC screenshots (OmniAct + GPT-4o augmented instructions), answers in the
+    # 0xSero action format `click(start_box=[x,y])` on the shared 0..999 scale.
+    # In-domain for ScreenSpot by construction; the mixer's hash decontamination
+    # still drops any image colliding with the ScreenSpot eval images.
+    "showui_desktop": FetchSpec(
+        repo="showlab/ShowUI-desktop", split="train", metric="exact_match",
+        answers_field="answer", adapter="showui_desktop",
+        image_format="jpeg", save_max_side=1920,
+    ),
 }
 
 
@@ -123,6 +149,7 @@ def fetch(name: str, spec: FetchSpec, limit: int | None, out_dir: Path, revision
     images_dir = out_dir / "images"
     images_dir.mkdir(parents=True, exist_ok=True)
     records = []
+    skipped_long_answer = 0
     box_stats = {"max_seen": 0.0}
     for row in dataset:
         if limit is not None and len(records) >= limit:
@@ -136,11 +163,16 @@ def fetch(name: str, spec: FetchSpec, limit: int | None, out_dir: Path, revision
                 "question": f"{row['question']}\nOptions:\n{options}",
                 "answer": row["answer"],
             }
+        if spec.adapter == "showui_desktop":
+            row = {
+                "image": row["image"],
+                "question": str(row["instruction"]).strip(),
+                "answer": format_click_answer(row["point"]),
+            }
         index = len(records)
         record_id = f"{name}_{index:06d}"
-        image = row["image"].convert("RGB")
-        image_name = f"{record_id}.png"
-        image.save(images_dir / image_name)
+        image = maybe_downscale(row["image"].convert("RGB"), spec.save_max_side)
+        image_name = image_name_for(record_id, spec.image_format)
 
         record = {
             "id": record_id,
@@ -155,7 +187,12 @@ def fetch(name: str, spec: FetchSpec, limit: int | None, out_dir: Path, revision
             record["image_size"] = [image.width, image.height]
         else:
             answers = row[spec.answers_field]
-            record["answers"] = [answers] if isinstance(answers, str) else list(answers)
+            answers = [answers] if isinstance(answers, str) else list(answers)
+            if not keep_record(answers, spec.max_answer_words):
+                skipped_long_answer += 1
+                continue
+            record["answers"] = answers
+        image.save(images_dir / image_name, **({"quality": 90} if spec.image_format == "jpeg" else {}))
         records.append(record)
 
     jsonl_path = out_dir / f"{name}.jsonl"
@@ -172,6 +209,7 @@ def fetch(name: str, spec: FetchSpec, limit: int | None, out_dir: Path, revision
         "requested_revision": revision,
         "resolved_revision": resolved_revision,
         "rows": len(records),
+        "skipped_long_answers": skipped_long_answer,
         "jsonl": jsonl_path.name,
         "jsonl_sha256": hashlib.sha256(body.encode("utf-8")).hexdigest(),
         "fetched_at": datetime.now(timezone.utc).isoformat(),
