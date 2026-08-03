@@ -1,8 +1,9 @@
 """Prefetch hub parquet shards with aria2 for fully offline dataset builds.
 
 The workstation proxy passes the HF API quickly but stalls both single-stream
-curl and hf_transfer on LFS payloads; aria2 with ``-x8`` segments sustains
-multi-MB/s through it. This tool lists the parquet shards of a
+curl and hf_transfer on LFS payloads; aria2 through the same proxy sustains a
+few hundred KB/s per stream (segmented -x8 was dropped: per-range signed CDN
+URLs made retries write wrong-range bytes into the file — silent corruption). This tool lists the parquet shards of a
 (config, split) via the hub API, downloads missing/incomplete ones with
 aria2 (``-c`` resume), then sha256-verifies every shard against the repo's
 LFS oid (a ``.sha256ok`` marker caches the pass; corrupt shards are purged
@@ -121,7 +122,14 @@ def aria2_fetch(url: str, size: int, expected: str | None, out_path: Path) -> No
         print(f"skip (complete): {out_path.name}", flush=True)
         return
     cmd = [
-        "aria2c", "-x8", "-s8", "-k", "4M", "-c", "--file-allocation=none",
+        # Single connection on purpose: the xet-bridge CDN signs its redirect
+        # URLs per byte-range, and segmented (-x8) retries can reuse a stale
+        # signed URL for a DIFFERENT range — the bridge then returns 200 with
+        # bytes for the authorized range, which land at the wrong file offset
+        # (TLS stays valid, so the corruption is silent until sha256). One
+        # connection = one range = the signature always matches; -c resumes
+        # re-follow the redirect and get a fresh, correct signed URL.
+        "aria2c", "-x1", "-s1", "-k", "4M", "-c", "--file-allocation=none",
         # The xet-bridge CDN behind the proxy drops TLS handshakes and 403s
         # range-signed URLs at random; unlimited retries are the working strategy.
         "--max-tries=0", "--retry-wait=5", "--timeout=30", "--connect-timeout=20",
