@@ -147,8 +147,14 @@ EOF
 - **续训**：`--resume cyjin-yl/DeepSeek-V4-Flash-0731-Vision` 自动拉取 HF 上最新
   `checkpoints/step-*` 精确续训（权重+优化器动量+RNG+步数；跨机器 GPU 数不同也能恢复，
   见 `src/moonvit_glue/checkpointing.py`）。租第二台机器继续训练只需这一条。
-- Benchmark：`tools/eval_vlm.py`，TextVQA/DocVQA/OCRBench/ScreenSpot/MMMU-Pro 小子集，
-  trained × blind（无图基线）× random-projector 三组对照，结果 JSON 一并上传。
+- Benchmark：`tools/eval_vlm.py --blind --upload-repo cyjin-yl/DeepSeek-V4-Flash-0731-Vision
+  --run-tag <tag>`，TextVQA/DocVQA/OCRBench/ScreenSpot(域内，须标注)/MMMU-Pro 小子集，
+  trained × blind × random-projector 三组对照。每条记录的原始预测（含 question、
+  参考答案、gt_box、raw prediction、逐项分数）+ 运行元数据（模型/权重/git/时间戳）
+  随 report JSON 直接传 `eval/<tag>/`。
+- 聚合：`tools/aggregate_eval.py --results-dir <dir> --upload-repo ... --run-tag <tag>`
+  生成 SUMMARY.json（benchmark × vision/blind/gap 矩阵，ScreenSpot 标 in_domain），
+  整个结果目录（原始输出 + 汇总）一并上传——租期结束前必须完成。
 - 收尾：projector fp32+bf16、eval JSON、报告更新 → **`destroy` 实例（不是 stop，
   stop 后存储仍计费）**。
 

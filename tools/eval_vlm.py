@@ -33,7 +33,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import platform
 import random
+import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 
 import torch
@@ -77,6 +80,9 @@ def parse_args() -> argparse.Namespace:
                         help="Downscale images before MoonViT; required when the text model's "
                         "context is smaller than the merged token count")
     parser.add_argument("--out", type=Path, default=None, help="Where to write the JSON report")
+    parser.add_argument("--upload-repo", default=None,
+                        help="HF repo id; the report JSON is uploaded to eval/<tag>/")
+    parser.add_argument("--run-tag", default=None, help="HF path segment; default UTC timestamp")
     parser.add_argument("--blind", action="store_true", help="Also score every record without its image")
     parser.add_argument("--shuffle-loss", action="store_true", help="Teacher-forced true-vs-shuffled image loss")
     parser.add_argument("--shuffle-repeats", type=int, default=3)
@@ -138,6 +144,53 @@ def build_model(args: argparse.Namespace):
     return model, moonvit, tokenizer, placeholder_token_id, device
 
 
+def make_scored_row(record: dict, prediction: str, index: int) -> dict:
+    """Self-contained per-record output: question, references, prediction, scores.
+
+    Published to HF, so each row must be interpretable without the source JSONL.
+    """
+
+    row = {"id": record.get("id", index), "question": record.get("question")}
+    if record.get("answers") is not None:
+        row["answers"] = record["answers"]
+    for key in ("gt_box", "gt_point"):
+        if record.get(key) is not None:
+            row[key] = record[key]
+    row["prediction"] = prediction
+    row.update(score_record(prediction, record))
+    return row
+
+
+def build_metadata(args: argparse.Namespace, git_sha: str | None = None) -> dict:
+    """Run context embedded in every report; aggregate_eval keys on ``data``."""
+
+    return {
+        "text_model": args.text_model,
+        "vision_tower": args.vision_tower,
+        "vision_weights": args.moonvit_v2_weights if args.vision_tower == "v2" else args.moonvit_model,
+        "projector": args.projector or "random",
+        "data": args.data.name,
+        "limit": args.limit,
+        "max_new_tokens": args.max_new_tokens,
+        "dtype": args.dtype,
+        "seed": args.seed,
+        "git": git_sha,
+        "torch": torch.__version__,
+        "host": platform.node(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+def _git_sha() -> str | None:
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "HEAD"], capture_output=True, text=True, timeout=5
+        )
+        return result.stdout.strip() or None
+    except Exception:
+        return None
+
+
 def expanded_length(input_ids: torch.Tensor, placeholder_token_id: int, feature_groups) -> int:
     placeholders = int(input_ids.eq(placeholder_token_id).sum().item())
     image_tokens = sum(group.shape[0] for group in feature_groups)
@@ -161,8 +214,7 @@ def run_generation(args, model, moonvit, tokenizer, placeholder_token_id, device
         )
         prompt_length = expanded_length(input_ids, placeholder_token_id, feature_groups)
         prediction = tokenizer.decode(output[0, prompt_length:], skip_special_tokens=True)
-        scores = score_record(prediction, record)
-        scored.append({"id": record.get("id", index), "prediction": prediction, **scores})
+        scored.append(make_scored_row(record, prediction, index))
         print(f"[{index + 1}/{len(records)}] {record.get('id', index)} -> {prediction!r}")
     return scored
 
@@ -250,15 +302,27 @@ def main() -> None:
                     pad_token_id=model.pad_token_id,
                 )
                 prediction = tokenizer.decode(output[0, input_ids.shape[1]:], skip_special_tokens=True)
-                scores = score_record(prediction, record)
-                blind_scored.append({"id": record.get("id", index), "prediction": prediction, **scores})
+                blind_scored.append(make_scored_row(record, prediction, index))
             report["blind_summary"] = summarize(blind_scored)
             report["blind_records"] = blind_scored
 
+    report["metadata"] = build_metadata(args, _git_sha())
     rendered = json.dumps(report, ensure_ascii=False, indent=2)
+    tag = args.run_tag or datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+    if args.out is None and args.upload_repo:
+        args.out = Path("eval_results") / f"{args.data.stem}.{tag}.json"
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(rendered + "\n", encoding="utf-8")
+    if args.upload_repo:
+        from huggingface_hub import HfApi
+
+        api = HfApi()
+        api.create_repo(args.upload_repo, repo_type="model", exist_ok=True)
+        path_in_repo = f"eval/{tag}/{args.out.name}"
+        api.upload_file(path_or_fileobj=str(args.out), repo_id=args.upload_repo,
+                        path_in_repo=path_in_repo)
+        print(f"[upload] {path_in_repo} -> {args.upload_repo}", flush=True)
     print(json.dumps(report.get("summary", {}), ensure_ascii=False, indent=2))
     if "blind_summary" in report:
         print("blind:")
