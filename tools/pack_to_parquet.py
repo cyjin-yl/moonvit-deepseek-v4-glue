@@ -33,6 +33,13 @@ def pack_jsonl(jsonl_path: Path, out_path: Path, shard_rows: int = 20000,
     base = base_dir or jsonl_path.parent
     records = [json.loads(line) for line in jsonl_path.read_text(encoding="utf-8").splitlines()
                if line.strip()]
+    # from_pylist infers the schema from the first row, so normalize every row
+    # to the union of keys (missing -> null) or later fields vanish silently.
+    keys: list[str] = []
+    for record in records:
+        for key in record:
+            if key not in keys:
+                keys.append(key)
     n_shards = max(1, -(-len(records) // shard_rows))
     out_path.parent.mkdir(parents=True, exist_ok=True)
     written: list[Path] = []
@@ -40,7 +47,7 @@ def pack_jsonl(jsonl_path: Path, out_path: Path, shard_rows: int = 20000,
         chunk = records[shard_index * shard_rows:(shard_index + 1) * shard_rows]
         rows = []
         for record in chunk:
-            row = dict(record)
+            row = {key: record.get(key) for key in keys}
             image_rel = record.get("image")
             row["image_bytes"] = (base / image_rel).read_bytes() if image_rel else None
             rows.append(row)
