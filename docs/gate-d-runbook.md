@@ -25,7 +25,7 @@ offer `45766633`（verified, reliability 0.999, 当前空闲）：
 | 创建+装机 | 0.5h | 镜像/torch 与 sm_120 不匹配 → 换镜像一次，仍不行退租 |
 | 下载权重 160GB + 视觉塔 0.8GB | 1.0h | 实测 <150MB/s 且 30min 无改善 → 退租 |
 | Gate D（加载→前向→backward→20步） | 1.0h | Dgrad 失败（projector 无梯度）→ 当场 destroy，转情景 A′/B |
-| 对齐训练 ~3000 步 | ≤4h | 实测单步耗时反推总时长超预算 → 减步数保 benchmark |
+| 对齐训练 ~2100 步（66k 短QA × 2 epoch, batch 64, constant lr 5e-4） | ≤4h | step ~1400 仍无 grokking（loss 骤降）→ 停训查数据是否混入长答案；单步耗时反推超预算 → 减步数保 benchmark |
 | Benchmark（5 基准 × 3 对照） | 1.5h | 时间不足时砍 ScreenSpot，保留 TextVQA/DocVQA/MMMU-Pro |
 | 回传 + destroy | 0.5h | 必须完成：projector fp32+bf16、eval JSON、报告 |
 
@@ -120,9 +120,18 @@ EOF
 
 ## 8. 训练 + benchmark + 回传（train / eval 窗口）
 
-- 训练：`tools/train_overfit.py --vision-tower v2 --moonvit-v2-weights ... \
-  --upload-repo 255doesnotexist/DeepSeek-V4-Flash-0731-Vision --checkpoint-every 500`
+- 训练配方（Baseten 社区实测，唯一公开同级成功案例）：constant lr 5e-4（无调度器）、
+  batch 64、约 66k 条**短 QA**、2 epoch ≈ 2100 步。**数据红线：只用短答案 QA；
+  长描述性答案会阻止 grokking**（Baseten 原文结论）。
+- 命令：`tools/train_overfit.py --vision-tower v2 --moonvit-v2-weights <path> \
+  --lr 5e-4 --batch-size 64 --steps 2100 --checkpoint-every 500 \
+  --upload-repo 255doesnotexist/DeepSeek-V4-Flash-0731-Vision`
   checkpoint（projector fp32+bf16、AdamW、RNG、history、train.log）每 500 步流式上传。
+- grokking 观察：loss 平台数百步后应在 step ~900–1100（第一 epoch 末）骤降；
+  骤降前后的 checkpoint 都要留，benchmark 时择优。
+- ⚠️ 预飞行缺口：66k 规模短 QA 训练数据的抓取规格还没进 `tools/fetch_eval_data.py`
+  （现有的是 flickr8k 8k caption 与各基准的 validation 评测集，不含 train split）。
+  租机前需补 train-split 短 QA 源（如 TextVQA/DocVQA train），或在机上现配。
 - **续训**：`--resume 255doesnotexist/DeepSeek-V4-Flash-0731-Vision` 自动拉取 HF 上最新
   `checkpoints/step-*` 精确续训（权重+优化器动量+RNG+步数；跨机器 GPU 数不同也能恢复，
   见 `src/moonvit_glue/checkpointing.py`）。租第二台机器继续训练只需这一条。

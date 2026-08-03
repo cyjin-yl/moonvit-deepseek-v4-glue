@@ -272,7 +272,7 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 
 核心约束：租期一结束就没有机器能跑动 0731 做 benchmark 或回传权重，因此训练、benchmark、上传必须在同一次租期内闭环。交付物只有 projector + 评测 JSON + 报告，与 GLM 社区只发布 projector 一致，不回传 160 GB 主干。checkpoint 发两个精度：fp32 master（约 134 MB，复现/续训用）与 bf16 serving（约 67 MB,0731 激活为 bf16)，租期内由训练产物现场转换。推理侧接入（vLLM/SGLang/llama.cpp/fastllm 补丁点、Hash-MoE 注意事项、验收检查）已写成 `docs/inference-integration.md`（2026-08-03 重写为 MoonViT-V2 版），作为后续给推理引擎提 PR 的合同文档；要点：vLLM 与 SGLang 均已 Day-0 支持 Kimi-K3（含 MoonViT3d 视觉塔）且均有 DeepSeek-V4 文本栈，patch 面只剩 projector 模块、placeholder 扩展与 Hash-MoE 路由检查；placeholder 固定为现有 `<｜image｜>`(id 129279）禁止扩 vocab，合并只替换 embedding 向量、input\_ids 保留 placeholder 供 Hash-MoE 路由。
 
-训练量按 LLaVA 式对齐的标准做法定为 *1 个 epoch*：15–30 万条 caption、global batch 64、约 2500–4500 步、lr 1e-3 cosine，每 500 步存 checkpoint 并立刻后台传 HF。checkpoint 是完整可续训单元（projector fp32 + bf16、AdamW 状态、RNG、步数、loss 历史，见 `moonvit_glue.checkpointing`)：实例中断不丢成果，社区可实时看到训练曲线形成，任何 checkpoint 可用 `--resume <repo-id>` 精确续训。4×H100 估 3–5 s/步（13B 激活、seq 约 300–400、开 activation checkpointing），训练段 2.5–6 h。多轮只会背诵 caption（43 epoch 的 +0.343 即过拟合态），不加轮次。
+训练配方直接采用 Baseten 社区实验的实测方案（baseten.co/blog/glm-52-with-vision，checkpoint baseten/GLM-5.2-Vision-NVFP4，唯一公开的同级成功案例）：*constant lr 5e-4*——原文未使用任何 LR schedule，LLaVA 式 cosine 属于未在此场景验证的外推，因此不引入调度器，checkpoint 也无需保存调度器状态（该待办关闭）；global batch 64；约 66k 条*短 QA* 配对；2 个 epoch ≈ 2070 步。grokking 预期在第一 epoch 末（约 step 900–1100）出现 loss 骤降；每 500 步存 checkpoint 并立刻后台传 HF，使我们能在 pre/post-grokking checkpoint 间择优。checkpoint 是完整可续训单元（projector fp32 + bf16、AdamW 状态、RNG、步数、loss 历史，见 `moonvit_glue.checkpointing`)：实例中断不丢成果，社区可实时看到训练曲线形成，任何 checkpoint 可用 `--resume <repo-id>` 精确续训（跨机器 GPU 数不同亦可恢复）。4×RTX PRO 6000 估 3–6 s/步（13B 激活、seq 约 300–400、开 activation checkpointing），训练段 2–4 h。若 step 约 1400 仍无 grokking 迹象，先查数据是否混入长答案，而不是盲目加步数。
 
 停训判据不看 loss，看两条 gap：主判据是 benchmark 分数 − blind 分数的 gap 随 checkpoint 的曲线，平台即停；辅助判据是留出集 shuffle\_delta > 0.1。参考锚点：projector-only 的 TextVQA 现实预期 20–30%（blind 约 10–15%，成熟 VLM 60+）；达到 GLM 社区实验同量级（grounding parse 率 >80%、Acc\@50 个位数）即成功。
 
@@ -281,17 +281,17 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
   [*阶段*], [*时长*], [*说明*],
   [装机 + 下载权重], [1–1.5 h], [160 GB；好主机 1–2 GB/s],
   [Gate D 判定], [0.5–1 h], [FP4 Dgrad 失败则当场退租（损失约 \$10），转情景 B],
-  [Stage 1 对齐训练], [3–5 h], [约 3000 步；checkpoint 随训随传],
+  [Stage 1 对齐训练], [2–4 h], [约 2100 步（66k 短 QA × 2 epoch，batch 64，constant lr 5e-4）；checkpoint 随训随传；step 约 1400 无 grokking 则停训查数据],
   [benchmark 全套], [1.5–2 h], [TextVQA 500 / DocVQA 200 / OCRBench 200 / ScreenSpot 200；训练 checkpoint × blind × 随机 projector 三组对照，机上完成],
   [权重与结果回传], [0.5 h], [projector 约 134 MB + 评测 JSON 上传 HF],
-  [*合计*], [*7–10 h*], [4×H100 PCIe（\$6.93/h）约 \$50–70；含一次失败重试按 \$150 预算],
+  [*合计*], [*6.5–9 h*], [4×RTX PRO 6000（\$5.18/h 含 400 GB 挂盘）约 \$34–47；\$50 余额单次闭环可行，失败重试需追加],
 )
 
 若 FP4 Dgrad 不可用（情景 B）：权重解量化至 bf16（568 GB），需 8×A100 SXM（\$10.30/h），同排程时长大约 ×2–3，预算 \$300–500。
 
 = 评测与验收计划
 
-没有 benchmark 就无法回答“接上了没有”。评测口径对标社区 GLM-5.2V 实验（Harry Partridge 方法、0xSero/fable-glm-vision 复现）：视觉塔同为冻结 MoonViT（他们从 Kimi K2.6 抽取，我们用官方独立仓 MoonViT-SO-400M，同构 1152 维），其标志性指标是 *MMMU-Pro*（原文声称 55%，约 Claude 4.5 Haiku 水平），因此我们的评测集在 TextVQA/DocVQA/OCRBench/ScreenSpot 之外加入 *MMMU-Pro（单图子集，exact match）*。所有数字必须与 blind baseline（同一模型、无图输入）一起报告：VQA 类基准有显著语言先验，无图基线把“模型本来就会答”与“图像带来了信息”分开。
+没有 benchmark 就无法回答“接上了没有”。评测口径对标 Baseten 社区 GLM-5.2V 实验（原文 baseten.co/blog/glm-52-with-vision,0xSero/fable-glm-vision 复现）：视觉塔同为冻结 MoonViT（他们从 Kimi K2.6 抽取，我们用官方独立仓 MoonViT-SO-400M，同构 1152 维），其标志性指标是 *MMMU-Pro*（原文声称 55%，约 Claude 4.5 Haiku 水平），因此我们的评测集在 TextVQA/DocVQA/OCRBench/ScreenSpot 之外加入 *MMMU-Pro（单图子集，exact match）*。所有数字必须与 blind baseline（同一模型、无图输入）一起报告：VQA 类基准有显著语言先验，无图基线把“模型本来就会答”与“图像带来了信息”分开。
 
 社区配方还有两个直接影响数据计划的实测结论：其一，*grokking*——batch 64 / lr 5e-4 配短答案时 loss 平台数百步后骤降（原文约 step 900）完成对齐，*长描述性答案会阻止 grok*，因此对齐数据应以短 QA 为主、长 caption 为辅，而不是只用长 caption；其二，*warm start*——从已对齐 projector 初始化可跳过大半平台期，多阶段数据混训时应复用上一阶段 checkpoint 而不是重零开始。
 

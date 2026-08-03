@@ -41,7 +41,7 @@ from moonvit_glue.checkpointing import (
     load_training_checkpoint,
     save_training_checkpoint,
 )
-from tools_common import build_prompt_ids, encode_image
+from tools_common import build_prompt_ids, encode_image, next_batch
 
 
 class _Tee:
@@ -75,7 +75,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--limit", type=int, default=512)
     parser.add_argument("--steps", type=int, default=300)
     parser.add_argument("--batch-size", type=int, default=4)
-    parser.add_argument("--lr", type=float, default=1e-3)
+    parser.add_argument("--lr", type=float, default=5e-4,
+                        help="Constant LR (no schedule). 5e-4 and short QA pairs match the "
+                             "community-validated Baseten GLM-5.2V projector recipe")
     parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--grad-clip", type=float, default=1.0)
     parser.add_argument("--max-image-side", type=int, default=448)
@@ -214,8 +216,7 @@ def main() -> None:
     cursor = start_step * args.batch_size
     started = time.time()
     for step in range(start_step + 1, args.steps + 1):
-        batch = [train_records[cursor % len(train_records)] for _ in range(args.batch_size)]
-        cursor += args.batch_size
+        batch, cursor = next_batch(train_records, cursor, args.batch_size)
         optimizer.zero_grad(set_to_none=True)
         step_loss = 0.0
         for record in batch:
