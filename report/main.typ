@@ -240,18 +240,18 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 
 #table(
   columns: (2.4fr, 1.9fr, 1.9fr),
-  [*组成（每卡）*], [*情景 A：4×H100，FP4 权重 TP=4*], [*情景 B：8×A100，bf16 权重 TP=8*],
+  [*组成（每卡）*], [*情景 A：4×RTX PRO 6000，FP4 权重 TP=4*], [*情景 B：8×A100，bf16 权重 TP=8*],
   [LLM 权重], [160/4 = 40 GB], [568/8 = 71 GB],
   [LLM optimizer + 参数梯度], [0（冻结）], [0（冻结）],
   [MoonViT-V2 权重（bf16/fp32）], [0.8–1.6 GB], [0.8–1.6 GB],
   [projector 权重 + AdamW + 梯度], [约 0.55 GB], [约 0.55 GB],
-  [LLM 激活（grad ckpt，seq 约 600）], [1–3 GB], [1–2 GB],
+  [LLM 激活（grad ckpt，seq ≤700）], [1–3 GB], [1–2 GB],
   [杂项（CUDA ctx/碎片/通信 bucket）], [5–10 GB], [4–6 GB],
-  [*合计 / 可用*], [*约 47–55 / 80 GB*], [*约 77–79 / 79.1 GB*],
-  [*判定*], [*余量 25–32 GB，健康*], [*贴顶，高风险*],
+  [*合计 / 可用*], [*约 47–55 / 96 GB*], [*约 77–79 / 79.1 GB*],
+  [*判定*], [*余量 41–49 GB，健康*], [*贴顶，高风险*],
 )
 
-激活估算依据：开 gradient checkpointing 后只存段边界（61 层 × seq 600 × 4096 × bf16 约 0.3 GB）加段内重算临时；micro-batch 4–16 线性放大。情景 A 的生命线是 FP4/FP8 原生加载成立（R1–R3）；一旦需要 bf16，4×H100/H200 都装不下（568/4 = 142 GB > 80/141 GB），只剩 8 卡。情景 B 在 8×A100 上余量不足 2 GB，必须 micro-batch 1 + 更激进 checkpointing，实测 OOM 即升 4×B200（142 GB/卡，余量约 50 GB，\$21.25/h，账单已含）。
+激活估算依据：开 gradient checkpointing 后只存段边界（61 层 × seq 700 × 4096 × bf16 约 0.35 GB）加段内重算临时；micro-batch 4–16 线性放大。seq 上限来自已写死的视觉 token 预算：训练 `--max-image-side 640`（方形图最坏 529 视觉 token + 文本 ≤ 700；1024px 原生分辨率只用于评测推理，不进训练回路）。情景 A 的生命线是 FP4/FP8 原生加载成立（R1–R3）；一旦需要 bf16，任何 4×96GB 级机器都装不下（568/4 = 142 GB > 96 GB），只剩 8 卡。情景 B 在 8×A100 上余量不足 2 GB，必须 micro-batch 1 + 更激进 checkpointing，实测 OOM 即升 4×B200（142 GB/卡，余量约 50 GB，\$21.25/h，账单已含）。
 
 == Gate D 风险清单（租卡前预演）
 
@@ -262,7 +262,7 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
   [*风险*], [*概率*], [*缓解 / 止损*],
   [R1 NVFP4 权重 Dgrad 不可用（推理内核不支持对输入 embedding 求梯度）], [中–高], [核心风险。Gate D 单 batch backward 判定；失败即退租转情景 B（解量化 bf16）或情景 A′（B200 原生 FP4 内核重试）。],
   [R2 Transformers 加载原生 0731 大权重失败（quantization config 格式未被 5.x 支持）], [中], [Gate D 第一步即原生加载测试；备选为 vLLM loader 导出 bf16 权重副本（同时解决 R1）。],
-  [R3 H100 上 FP4 前向本身不可用（官方 NVFP4 验证环境是 Blackwell）], [中], [情景 A 的直接死因；Gate D 前 30 分钟判定。转 4×B200（\$21.25/h）或情景 B。],
+  [R3 FP4 前向内核在目标卡上不可用], [低–中], [主机器 RTX PRO 6000 即 Blackwell（sm_120，原生 NVFP4），此项已从"中"降级；但硬件支持 ≠ 内核带 Dgrad——Gate D 第 0 步用 `tools/gate_d_dgrad.py` 单层 reproducer 单独判定。失败转 4×B200（\$21.25/h）或情景 B。],
   [R4 权重下载断流/限速], [高], [本地实测 802 MB 在慢代理下耗时 2h46m；租机标称 2217 Mbps 但 HF CDN 单连接限速 40–100 MB/s，160 GB 理论 27–67 分钟，断流可拖至 2h+。用 aria2/hf\_transfer 多连接 + 断点续传循环（已验证的做法），账单已含 0.5–2h 敏感性。],
   [R5 marketplace 实例被中断], [中], [checkpoint 流式上传（每 500 步，含 optimizer/RNG，28/28 测试）；中断后换机 `--resume` 精确续训，损失不足 10 分钟训练。],
   [R6 机器环境与宣传不符（NVLink 拓扑、驱动、盘速）], [低–中], [开机 10 分钟内 `nvidia-smi topo -m` + 盘速快测，不符当场退租换机，损失不足 1h 租金。],
@@ -271,23 +271,27 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
   [R9 训练数据下载（约 30 GB）经代理再耗 1–2 h], [中], [提前把训练数据镜像到项目 HF 仓库（随 checkpoint 上行通道同路），租机从 HF 直下；计入装机时间。],
   [R10 MoonViT-V2 bf16 与 fp32 参考的特征偏差], [低], [fp32 参考已锚定（eager/sdpa 差 3.1e-05）；Gate D 记录 bf16 实测差（预期约 1e-2 相对），超差则视觉塔回 fp32（仅多约 800 MB 显存）。],
   [R11 租期内时间不够闭环], [低–中], [checkpoint 流式上传保证权重永不丢；benchmark 三组对照在机上跑但数据落盘 JSON 可增量上传；最坏情况先公开 checkpoint + 部分指标。],
-  [R12 多卡分布策略与 PCIe 拓扑（4×H100 PCIe 无 NVLink，TP=4 每层 all-reduce 走 PCIe）], [中], [训练吞吐的直接风险：3–5 s/步 的估计在 PCIe + 重算下可能偏乐观。Gate D 实测单步耗时，>15 s/步 即换 NVLink 机型（H100 SXM \$10.75/h）或改流水线并行（冻结 LLM 下 PP 通信最小，但需 DeepSpeed/pippy，工程复杂度上升）；账单按 5 h 悲观档已可吸收 2 倍减速。],
+  [R12 多卡分布策略与 PCIe 拓扑（4×RTX PRO 6000 无 NVLink，PCIe 5.0 x16 54.2 GB/s；`device_map="auto"` 朴素模型并行的激活回传走 PCIe）], [中], [训练吞吐的直接风险：3–5 s/步 的估计在 PCIe + 重算下可能偏乐观。多卡路径已定型为单进程 `device_map="auto"`（LLM 冻结，无需权重梯度分片；vLLM/SGLang 推理 TP 不可用于反向训练）。Gate D 实测单步耗时：≤8 s 维持；8–15 s 重算步数保 benchmark；>15 s 验证 transformers 原生 `tp_plan` 或换 NVLink 机型（H100 SXM \$10.75/h）；账单按 5 h 悲观档已可吸收 2 倍减速。],
 )
 
 == Gate D：正式租卡前
 
-1. 原生 0731 权重加载成功。
-2. 单图短序列 forward。
-3. 单 batch backward，projector 梯度有限且非零。
-4. LLM/MoonViT 无梯度。
-5. 20 step 无 OOM/NaN。
-6. 新进程恢复 projector 后输出一致。
+分阶段判定（完整版见 `docs/gate-d-runbook.md` §7，2026-08-03 评审修订，各步独立记录不合并）：
+
+0. 配置发现 + 最小 Dgrad reproducer（`tools/gate_d_dgrad.py`：打印量化方案；只取一层真实 quantized linear 权重切片，判定 input.grad 有限非零、weight.grad 为 None）。
+1. `nvidia-smi topo -m` + 盘速快测（不符当场退租）。
+2. 原生 0731 权重加载成功；文本短前向正常。
+3. 单图短序列 forward（placeholder 注入）。
+4. 单 batch backward，projector 梯度有限且非零，LLM/MoonViT 无梯度。
+5. hook × activation checkpointing 数值一致性（开/关梯度检查点 projector 梯度 allclose）+ batch>1 多图位置一致。
+6. 多卡路径定型（`device_map="auto"`）+ 实测单步耗时分档（≤8 / 8–15 / >15 s）。
+7. 20 step 无 OOM/NaN；`--resume` 从流式 checkpoint 恢复一次且轨迹连续。
 
 == 租期闭环排程（2026-08-02 定价）
 
 核心约束：租期一结束就没有机器能跑动 0731 做 benchmark 或回传权重，因此训练、benchmark、上传必须在同一次租期内闭环。交付物只有 projector + 评测 JSON + 报告，与 GLM 社区只发布 projector 一致，不回传 160 GB 主干。checkpoint 发两个精度：fp32 master（约 134 MB，复现/续训用）与 bf16 serving（约 67 MB,0731 激活为 bf16)，租期内由训练产物现场转换。推理侧接入（vLLM/SGLang/llama.cpp/fastllm 补丁点、Hash-MoE 注意事项、验收检查）已写成 `docs/inference-integration.md`（2026-08-03 重写为 MoonViT-V2 版），作为后续给推理引擎提 PR 的合同文档；要点：vLLM 与 SGLang 均已 Day-0 支持 Kimi-K3（含 MoonViT3d 视觉塔）且均有 DeepSeek-V4 文本栈，patch 面只剩 projector 模块、placeholder 扩展与 Hash-MoE 路由检查；placeholder 固定为现有 `<｜image｜>`(id 129279）禁止扩 vocab，合并只替换 embedding 向量、input\_ids 保留 placeholder 供 Hash-MoE 路由。
 
-训练配方直接采用 Baseten 社区实验的实测方案（baseten.co/blog/glm-52-with-vision，checkpoint baseten/GLM-5.2-Vision-NVFP4，唯一公开的同级成功案例）：*constant lr 5e-4*——原文未使用任何 LR schedule，LLaVA 式 cosine 属于未在此场景验证的外推，因此不引入调度器，checkpoint 也无需保存调度器状态（该待办关闭）；global batch 64；约 66k 条*短 QA* 配对；2 个 epoch ≈ 2070 步。grokking 预期在第一 epoch 末（约 step 900–1100）出现 loss 骤降；每 500 步存 checkpoint 并立刻后台传 HF，使我们能在 pre/post-grokking checkpoint 间择优。checkpoint 是完整可续训单元（projector fp32 + bf16、AdamW 状态、RNG、步数、loss 历史，见 `moonvit_glue.checkpointing`)：实例中断不丢成果，社区可实时看到训练曲线形成，任何 checkpoint 可用 `--resume <repo-id>` 精确续训（跨机器 GPU 数不同亦可恢复）。4×RTX PRO 6000 估 3–6 s/步（13B 激活、seq 约 300–400、开 activation checkpointing），训练段 2–4 h。若 step 约 1400 仍无 grokking 迹象，先查数据是否混入长答案，而不是盲目加步数。
+训练配方直接采用 Baseten 社区实验的实测方案（baseten.co/blog/glm-52-with-vision，checkpoint baseten/GLM-5.2-Vision-NVFP4，唯一公开的同级成功案例）：*constant lr 5e-4*——原文未使用任何 LR schedule，LLaVA 式 cosine 属于未在此场景验证的外推，因此不引入调度器，checkpoint 也无需保存调度器状态（该待办关闭）；global batch 64；约 66k 条*短 QA* 配对；2 个 epoch ≈ 2070 步。grokking 预期在第一 epoch 末（约 step 900–1100）出现 loss 骤降；每 500 步存 checkpoint 并立刻后台传 HF，使我们能在 pre/post-grokking checkpoint 间择优。checkpoint 是完整可续训单元（projector fp32 + bf16、AdamW 状态、RNG、步数、loss 历史，见 `moonvit_glue.checkpointing`)：实例中断不丢成果，社区可实时看到训练曲线形成，任何 checkpoint 可用 `--resume <repo-id>` 精确续训（跨机器 GPU 数不同亦可恢复）。4×RTX PRO 6000 估 3–6 s/步（13B 激活、seq 典型约 450–700——训练 `--max-image-side 640` 已写死，1024px 仅用于评测推理、不进训练回路——开 activation checkpointing），训练段 2–4 h。若 step 约 1400 仍无 grokking 迹象，按配方谦逊条款执行：先查数据是否混入长答案，数据无误则用剩余预算做 200 步 LR 探针（{1e-3, 2e-4} 各一），仍无则照常 benchmark 并如实报告负结果；另注意我们的 MoonViT-V2 projector 为 1024 维输入（GLM 侧 1152），无法 warm-start，全程从零训练。
 
 停训判据不看 loss，看两条 gap：主判据是 benchmark 分数 − blind 分数的 gap 随 checkpoint 的曲线，平台即停；辅助判据是留出集 shuffle\_delta > 0.1。参考锚点：projector-only 的 TextVQA 现实预期 20–30%（blind 约 10–15%，成熟 VLM 60+）；达到 GLM 社区实验同量级（grounding parse 率 >80%、Acc\@50 个位数）即成功。
 
@@ -310,7 +314,7 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 
 社区配方还有两个直接影响数据计划的实测结论：其一，*grokking*——batch 64 / lr 5e-4 配短答案时 loss 平台数百步后骤降（原文约 step 900）完成对齐，*长描述性答案会阻止 grok*，因此对齐数据应以短 QA 为主、长 caption 为辅，而不是只用长 caption；其二，*warm start*——从已对齐 projector 初始化可跳过大半平台期，多阶段数据混训时应复用上一阶段 checkpoint 而不是重零开始。
 
-训练数据泄露控制（2026-08-03 定稿，GUI 修订）：正式 mix 含 TextVQA train（34.6k）、DocVQA train（25k）、0xSero art 子集（约 10k）与 ShowUI-desktop（8k）四类短答案监督；GUI 数据按用户决定纳入以建立 computer-use 基础，答案统一为 0xSero 动作格式 `click(start\_box=[x,y])`（0..999 尺度，评测 parser 原生兼容）。0xSero 自带的 screenshots/multistep 行不直接复用（图像改名无法回 join；multistep 为轨迹格式），改为从同源公开数据集自取。代价与处理：ScreenSpot 自此为*域内*基准，报告中必须标注；fetch 规格机械执行 max\_answer\_words ≤ 20；组装时对全部训练图与五个基准的全部评测图做 average-hash 去重（hamming ≤ 6 丢弃），去重报告随数据发布。数据产物托管于 dataset repo cyjin-yl/moonvit-dsv4-data，含来源、固定 revision 与 sha256，租机上一次下载即用。
+训练数据泄露控制（2026-08-03 定稿，GUI 修订）：正式 mix 含 TextVQA train（34.6k）、DocVQA train（25k）、0xSero art 子集（约 10k）与 ShowUI-desktop（8k）四类短答案监督；GUI 数据按用户决定纳入以建立 computer-use 基础，答案统一为 0xSero 动作格式 `click(start\_box=[x,y])`（0..999 尺度，评测 parser 原生兼容）。0xSero 自带的 screenshots/multistep 行不直接复用（图像改名无法回 join；multistep 为轨迹格式），改为从同源公开数据集自取。代价与处理：ScreenSpot 自此为*域内*基准，报告中必须标注；fetch 规格机械执行 max\_answer\_words ≤ 20；组装去重为三道独立机制（2026-08-03 评审加固）：感知 aHash（hamming ≤ 6，抓缩放/重压缩重复）+ 精确像素 sha256（抓跨容器同内容）+ 归一化问题文本近重复（`--eval-jsonl` 抓跨 split 文本泄露），各机制的丢弃数分别计入 `decontamination_report.json` 随数据发布。数据产物托管于 dataset repo cyjin-yl/moonvit-dsv4-data，含来源、固定 revision 与 sha256，租机上一次下载即用（上传通道已实测：新 huggingface\_hub 分块上传经代理约 2.6 MB/s，全量数据约 1.5–2 h，见变更日志）。
 
 已实现的评测资产：
 
