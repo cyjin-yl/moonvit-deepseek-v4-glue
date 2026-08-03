@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import os
 import subprocess
 import time
 from pathlib import Path
@@ -77,8 +78,15 @@ def aria2_fetch(url: str, size: int, out_path: Path) -> None:
         # range-signed URLs at random; unlimited retries are the working strategy.
         "--max-tries=0", "--retry-wait=5", "--timeout=30", "--connect-timeout=20",
         "--summary-interval=15",
-        "-d", str(out_path.parent), "-o", out_path.name, url,
     ]
+    # aria2 does NOT honor the (uppercase) HTTPS_PROXY env var and silently goes
+    # direct otherwise — from the workstation, direct HF is GFW-throttled to
+    # ~250 KB/s aggregate while the Clash node does ~460 KB/s per target.
+    proxy = (os.environ.get("PREFETCH_ARIA2_PROXY") or os.environ.get("https_proxy")
+             or os.environ.get("HTTPS_PROXY"))
+    if proxy:
+        cmd += [f"--all-proxy={proxy}"]
+    cmd += ["-d", str(out_path.parent), "-o", out_path.name, url]
     # aria2 treats TLS handshake failures as fatal per invocation regardless of
     # --max-tries, so re-invoke the whole process; -c resumes each time.
     for attempt in range(10):
