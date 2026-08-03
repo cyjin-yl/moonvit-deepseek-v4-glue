@@ -90,3 +90,45 @@ def test_resume_from_hf_repo_picks_latest_checkpoint(tmp_path, monkeypatch):
     assert step == 300
     assert history == [{"step": 300, "loss": 1.0 / 300}]
     assert directory.name == "step-000300"
+
+
+def test_resume_tolerates_gpu_count_mismatch(tmp_path, monkeypatch):
+    """A checkpoint saved on N GPUs must still load on a machine with fewer."""
+
+    projector = _toy_projector()
+    optimizer = torch.optim.AdamW(projector.parameters(), lr=1e-3)
+    save_training_checkpoint(
+        directory=tmp_path / "ckpt",
+        projector=projector,
+        optimizer=optimizer,
+        step=7,
+        history=[],
+        rng=random.Random(0),
+    )
+    state_path = tmp_path / "ckpt" / "training_state.pt"
+    state = torch.load(state_path, weights_only=False)
+    state["cuda_rng"] = [b"gpu0-state", b"gpu1-state"]  # saved on a 2-GPU box
+    torch.save(state, state_path)
+
+    captured = []
+    monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
+    monkeypatch.setattr(torch.cuda, "device_count", lambda: 1)
+    monkeypatch.setattr(torch.cuda, "set_rng_state_all", captured.append)
+
+    fresh = _toy_projector()
+    step, _, _, _ = load_training_checkpoint(
+        source=tmp_path / "ckpt", projector=fresh,
+        optimizer=torch.optim.AdamW(fresh.parameters(), lr=1e-3), device="cpu",
+    )
+    assert step == 7
+    assert captured == [[b"gpu0-state"]]  # clipped to the single visible GPU
+
+    def explode(_states):
+        raise RuntimeError("driver mismatch")
+
+    monkeypatch.setattr(torch.cuda, "set_rng_state_all", explode)
+    step, _, _, _ = load_training_checkpoint(
+        source=tmp_path / "ckpt", projector=fresh,
+        optimizer=torch.optim.AdamW(fresh.parameters(), lr=1e-3), device="cpu",
+    )
+    assert step == 7  # RNG restore failure must not abort the resume

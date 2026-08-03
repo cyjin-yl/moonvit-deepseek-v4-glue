@@ -102,7 +102,14 @@ def load_training_checkpoint(
     rng.setstate(state["python_rng"])
     torch.set_rng_state(state["torch_rng"])
     if state.get("cuda_rng") and torch.cuda.is_available():
-        torch.cuda.set_rng_state_all(state["cuda_rng"])
+        # Checkpoints may move between machines with different GPU counts
+        # (e.g. V100 dev box -> 4-GPU rental); extra states would index past
+        # the device list, so clip and treat any mismatch as non-fatal.
+        states = list(state["cuda_rng"])[: torch.cuda.device_count()]
+        try:
+            torch.cuda.set_rng_state_all(states)
+        except RuntimeError as exc:
+            print(f"[checkpoint] WARNING: CUDA RNG state not restored: {exc}", flush=True)
     return state["step"], state["history"], rng, directory
 
 
