@@ -1,0 +1,111 @@
+"""Prefetch hub parquet shards with aria2 for fully offline dataset builds.
+
+The workstation proxy passes the HF API quickly but stalls both single-stream
+curl and hf_transfer on LFS payloads; aria2 with ``-x8`` segments sustains
+multi-MB/s through it. This tool lists the parquet shards of a
+(config, split) via the hub API, downloads missing/incomplete ones with
+aria2 (``-c`` resume), size-verifies against the API listing, prints sha256,
+and emits the ``--data-files`` line for ``tools/fetch_eval_data.py``.
+
+Example::
+
+    python tools/prefetch_parquet.py --repo jxie/flickr8k --split train \
+        --out-dir $HDD/staging/parquet/flickr8k
+    python tools/prefetch_parquet.py --repo MMMU/MMMU_Pro --split test \
+        --path-prefix "standard (10 options)/" --out-dir $HDD/staging/parquet/mmmu_pro
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import subprocess
+from pathlib import Path
+from urllib.parse import quote
+
+RESOLVE = "https://huggingface.co/datasets/{repo}/resolve/{revision}/{path}"
+
+
+def matches_shard(path: str, split: str, path_prefix: str) -> bool:
+    name = path.rsplit("/", 1)[-1]
+    return name.endswith(".parquet") and path.startswith(path_prefix) and f"{split}-" in name
+
+
+def list_parquet_shards(repo: str, split: str, revision: str, path_prefix: str) -> list[tuple[str, int]]:
+    from huggingface_hub import HfApi
+
+    # The proxy drops API TLS connections at random (SSL EOF); retry briefly.
+    last_error: Exception | None = None
+    for attempt in range(5):
+        try:
+            entries = HfApi().list_repo_tree(repo, repo_type="dataset", revision=revision, recursive=True)
+            shards = sorted(
+                (entry.path, entry.size)
+                for entry in entries
+                if matches_shard(entry.path, split, path_prefix)
+            )
+            break
+        except Exception as exc:  # noqa: BLE001 — any transient hub/SSL failure
+            last_error = exc
+            print(f"list_repo_tree attempt {attempt + 1}/5 failed: {type(exc).__name__}: {exc}", flush=True)
+            import time
+
+            time.sleep(5)
+    else:
+        raise SystemExit(f"list_repo_tree failed after 5 attempts: {last_error}")
+    if not shards:
+        raise SystemExit(f"no parquet shards match split={split!r} prefix={path_prefix!r} in {repo}")
+    return shards
+
+
+def sha256_of(path: Path) -> str:
+    digest = hashlib.sha256()
+    with open(path, "rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 24), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def aria2_fetch(url: str, size: int, out_path: Path) -> None:
+    if out_path.exists() and out_path.stat().st_size == size:
+        print(f"skip (complete): {out_path.name}", flush=True)
+        return
+    cmd = [
+        "aria2c", "-x8", "-s8", "-k", "4M", "-c", "--file-allocation=none",
+        # The xet-bridge CDN behind the proxy drops TLS handshakes and 403s
+        # range-signed URLs at random; unlimited retries are the working strategy.
+        "--max-tries=0", "--retry-wait=5", "--timeout=30", "--connect-timeout=20",
+        "--summary-interval=15",
+        "-d", str(out_path.parent), "-o", out_path.name, url,
+    ]
+    subprocess.run(cmd, check=True)
+    actual = out_path.stat().st_size
+    if actual != size:
+        raise SystemExit(f"size mismatch after aria2: {out_path.name} got {actual}, want {size}")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--repo", required=True)
+    parser.add_argument("--split", required=True)
+    parser.add_argument("--revision", default="main")
+    parser.add_argument("--path-prefix", default="", help="restrict to paths under this prefix (config dir)")
+    parser.add_argument("--out-dir", type=Path, required=True)
+    args = parser.parse_args()
+
+    args.out_dir.mkdir(parents=True, exist_ok=True)
+    shards = list_parquet_shards(args.repo, args.split, args.revision, args.path_prefix)
+    total = sum(size for _, size in shards)
+    print(f"{len(shards)} shard(s), {total / 1e9:.2f} GB -> {args.out_dir}", flush=True)
+    files = []
+    for path, size in shards:
+        url = RESOLVE.format(repo=args.repo, revision=args.revision, path=quote(path))
+        out_path = args.out_dir / path.rsplit("/", 1)[-1]
+        aria2_fetch(url, size, out_path)
+        print(f"sha256 {sha256_of(out_path)}  {out_path.name}", flush=True)
+        files.append(out_path)
+    print("\n--data-files " + " ".join(str(f) for f in files))
+
+
+if __name__ == "__main__":
+    main()

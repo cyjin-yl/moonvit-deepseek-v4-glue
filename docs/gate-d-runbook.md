@@ -5,7 +5,7 @@
 
 ## 1. 机器选择（已核实，2026-08-03）
 
-offer `45766633`（verified, reliability 0.999, 当前空闲）：
+offer `45766633`（verified, reliability 0.999，当前空闲）：
 
 - GPU：4×RTX PRO 6000 WS，96GB/卡，共 382GB；sm_120（Blackwell，原生 NVFP4，利好 R3 风险）
 - 互联：PCIe 5.0 x16（54.2GB/s），无 NVLink —— 短序列 TP 通信量小，非刚需；单步 >15s 再升级
@@ -16,16 +16,21 @@ offer `45766633`（verified, reliability 0.999, 当前空闲）：
 - 价格：$5.069/h；存储 $0.20/GB/月（挂盘 400GB ≈ +$0.11/h）；流量 下 $0.0026/GB、上 $0.0039/GB
   （160GB 权重下载 ≈ $0.42，可忽略）
 
+**注意（评审修正 2026-08-03）**：Blackwell 有 FP4 Tensor Core ≠ DeepSeek 0731 的 NVFP4
+kernel 在这张卡上能对输入 embedding 求梯度。Gate D 第 0 步必须用最小 reproducer 单独判定
+（见 §7），不能把"FP4 支持"当成一句话的结论。
+
 ## 2. 预算与时间盒
 
-账户余额 $50（credit）。有效时价 ≈ $5.18/h → 约 9.6h。排程：
+账户余额 $50（credit）+ Visa auto top-up $60。有效时价 ≈ $5.18/h → 约 9.6h（不触发 top-up）。
+排程：
 
 | 阶段 | 预算 | 终止条件（kill criteria） |
 |---|---|---|
 | 创建+装机 | 0.5h | 镜像/torch 与 sm_120 不匹配 → 换镜像一次，仍不行退租 |
 | 下载权重 160GB + 视觉塔 0.8GB | 1.0h | 实测 <150MB/s 且 30min 无改善 → 退租 |
-| Gate D（加载→前向→backward→20步） | 1.0h | Dgrad 失败（projector 无梯度）→ 当场 destroy，转情景 A′/B |
-| 对齐训练 ~2100 步（66k 短QA × 2 epoch, batch 64, constant lr 5e-4） | ≤4h | step ~1400 仍无 grokking（loss 骤降）→ 停训查数据是否混入长答案；单步耗时反推超预算 → 减步数保 benchmark |
+| Gate D（§7 全部子步） | 1.0h | Dgrad 失败（projector 无梯度）→ 当场 destroy，转情景 A′/B |
+| 对齐训练 ~2100 步（66k 短QA × 2 epoch, batch 64, constant lr 5e-4） | ≤4h | step ~1400 仍无 grokking → 先查数据再决定是否 LR 探针（§8）；单步耗时反推超预算 → 减步数保 benchmark |
 | Benchmark（5 基准 × 3 对照） | 1.5h | 时间不足时砍 ScreenSpot，保留 TextVQA/DocVQA/MMMU-Pro |
 | 回传 + destroy | 0.5h | 必须完成：projector fp32+bf16、eval JSON、报告 |
 
@@ -68,12 +73,16 @@ tmux neww -t gated -n eval   # benchmark
 
 用户观察：`ssh -t root@106.185.159.136 -p <port> 'tmux attach -t gated'`。
 
-## 5. 装机（setup 窗口）
+## 5. 装机（setup 窗口）—— 版本固定，禁止漂移
+
+评审修正：模型适配依赖 transformers 内部类与量化 API，5.x 小版本漂移即可改变行为。
+初始安装**精确固定**在工作站已验证的组合；任何被迫的升级只允许一次，之后立即
+`pip freeze > /root/env/pip_freeze.txt` 封存，续租恢复必须逐包对齐。
 
 ```bash
 apt-get update && apt-get install -y aria2 tmux git
 pip install -U pip
-pip install "transformers>=5.12,<6" "safetensors" "huggingface_hub[hf_transfer]" \
+pip install "transformers==5.12.1" "safetensors" "huggingface_hub[hf_transfer]" \
             datasets accelerate pillow numpy
 git clone https://github.com/cyjin-yl/moonvit-deepseek-v4-glue /root/moonvit
 cd /root/moonvit && pip install -e .
@@ -82,6 +91,11 @@ import torch
 assert torch.cuda.get_device_capability(0) == (12, 0), "sm_120 expected"
 print(torch.__version__, torch.cuda.device_count(), "GPUs OK")
 EOF
+mkdir -p /root/env
+pip freeze > /root/env/pip_freeze.txt
+python -VV >> /root/env/pip_freeze.txt 2>&1
+nvidia-smi >> /root/env/pip_freeze.txt
+# pip_freeze.txt 随最终产物一并上传 HF（eval/<tag>/env/）
 ```
 
 环境变量（HF token 从本机 .env 带入，只写进程环境，不落盘到仓库）：
@@ -109,20 +123,49 @@ print("vision tower hashes OK")
 EOF
 ```
 
-## 7. Gate D 判定（gate 窗口，生死点）
+## 7. Gate D 判定（gate 窗口，生死点）—— 分阶段，不合并
 
-1. `nvidia-smi` + `nvidia-smi topo -m` + `fio` 快测（不符当场退租）
-2. 原生加载 0731（Transformers 5.x，TP=4 或 device_map=auto）
-3. 文本短前向正常 → 单图短序列前向（placeholder 注入）
-4. **单 batch backward：projector 6 组参数梯度有限非零、LLM 梯度为零 = Dgrad 通过**
-5. 20 步无 OOM/NaN，实测单步耗时；>15s/步 → 重新核算训练步数或换 NVLink 机型
-6. 判定失败 → 立即 destroy（损失 <$15），报告转情景 A′（B200）或 B（解量化）
+评审修正：以下各步**分开判定、分开记录**，任何一步失败都有独立结论，
+禁止用一句"FP4 支持"打包。多卡训练路径也在此定型（见第 6 步）。
+
+0. **配置发现 + 最小 Dgrad reproducer**：`tools/gate_d_dgrad.py --weights /root/weights/dsv4f`
+   - 打印 config.json 的 quantization 配置（FP4/FP8 方案、kernel 来源）；
+   - 只取一层真实 quantized linear 的权重切片：input.requires_grad 前向+backward，
+     判定 input.grad 有限且非零、weight.grad 为 None（冻结）——这一步不过，后面全免谈；
+   - 失败 → 记录 kernel 类名与报错，直接转情景 A′/B。
+1. `nvidia-smi` + `nvidia-smi topo -m` + `fio` 快测（不符当场退租）。
+2. 原生加载 0731（Transformers 5.x），文本短前向正常。
+3. 单图短序列前向（placeholder 注入，embedding hook）。
+4. **单 batch backward：projector 6 组参数梯度有限非零、LLM 梯度为零 = Dgrad 通过**。
+5. **hook × activation checkpointing 兼容性**：`gradient_checkpointing_enable()` 后重复第 4 步。
+   HF 的梯度检查点按 decoder block 重算，embedding 不在重算区，hook 应只触发一次——
+   必须用梯度数值一致性（checkpoint 开/关 projector 梯度 allclose）证明，不许假设。
+   另测 batch>1 多图（placeholder 数与图像 embedding 数逐样本一致）。
+6. **多卡启动路径定型**：默认 `device_map="auto"` 单进程朴素模型并行（LLM 冻结，无需
+   权重梯度分片；反向沿设备顺序回流；train_overfit.py 循环不变）。实测单步耗时：
+   - ≤8s/步：维持；
+   - 8–15s/步：重算训练步数保 benchmark；
+   - >15s/步：评估 transformers 原生 `tp_plan`（DeepseekV4 支持度当场验证）或换 NVLink 机型。
+   vLLM/SGLang 的推理 TP **不可**用于反向训练，此条已写死。
+7. 20 步无 OOM/NaN；`--resume` 从流式 checkpoint 恢复一次，确认轨迹连续（step/优化器/RNG）。
+8. 判定失败 → 立即 destroy（损失 <$15），报告转情景 A′（B200）或 B（解量化）。
 
 ## 8. 训练 + benchmark + 回传（train / eval 窗口）
 
 - 训练配方（Baseten 社区实测，唯一公开同级成功案例）：constant lr 5e-4（无调度器）、
   batch 64、约 66k 条**短 QA**、2 epoch ≈ 2100 步。**数据红线：只用短答案 QA；
   长描述性答案会阻止 grokking**（Baseten 原文结论）。
+- **配方谦逊条款（评审修正）**：该配方是 GLM-5.2V 上的经验先验，不是 DeepSeek-V4 的
+  排程承诺；且我们的 MoonViT-V2 projector 是 1024 维输入（GLM 侧为 1152），无法
+  warm-start，全程从零训练。若 step ~1400 仍无 grokking：(a) 先查数据是否混入长答案；
+  (b) 数据无误则用剩余预算做 200 步 LR 探针 {1e-3, 2e-4} 各一，取优续训；
+  (c) 仍无 → 照常完成 benchmark 并如实报告负结果，不追加预算。
+- **视觉 token 预算（写死）**：训练 `--max-image-side 640`——VQA/照片典型 640×480 →
+  约 391 视觉 token，最坏方形 529；GUI 截图 640×360 → 276；加文本后序列典型 ≤700。
+  评测 `--max-image-side 1024`（推理侧显存独立核算，保 benchmark 保真）。
+  Gate D 第 6 步必须用真实 mix 的 token 分布重测单步耗时，此前一切 3–6s/步的
+  估算都只是假设。视觉塔已冻结，特征不预缓存（每 epoch 重算的塔前向约占总步时
+  <10%，换来实现简单——若实测塔前向占比 >20% 再考虑缓存）。
 - 命令：`tools/train_overfit.py --vision-tower v2 --moonvit-v2-weights <path> \
   --lr 5e-4 --batch-size 64 --steps 2100 --checkpoint-every 500 \
   --upload-repo cyjin-yl/DeepSeek-V4-Flash-0731-Vision`
@@ -147,6 +190,14 @@ EOF
 - **续训**：`--resume cyjin-yl/DeepSeek-V4-Flash-0731-Vision` 自动拉取 HF 上最新
   `checkpoints/step-*` 精确续训（权重+优化器动量+RNG+步数；跨机器 GPU 数不同也能恢复，
   见 `src/moonvit_glue/checkpointing.py`）。租第二台机器继续训练只需这一条。
+- **评测纪律（评审修正）**：
+  - 每个基准先按记录 id 交错切两半：**selection 半**用于 checkpoint 选择（gap 最大者胜），
+    **final 半**只对胜出的 checkpoint 跑一次——禁止看完所有 checkpoint 的 final 分数再挑。
+  - 结果表分三组：**域内**（ScreenSpot，受 ShowUI 训练域覆盖，单独标注）、
+    **跨域**（TextVQA/DocVQA/OCRBench，训练集为同源 train split）、
+    **零样本**（MMMU-Pro，无任何同源训练数据）。
+  - shuffle-loss 对照跑 3 个种子，报告 mean±std 与相对提升比例；
+    固定随机-projector 基线一并给出。单次 shuffle delta > 0.1 不构成"对齐成功"。
 - Benchmark：`tools/eval_vlm.py --blind --upload-repo cyjin-yl/DeepSeek-V4-Flash-0731-Vision
   --run-tag <tag>`，TextVQA/DocVQA/OCRBench/ScreenSpot(域内，须标注)/MMMU-Pro 小子集，
   trained × blind × random-projector 三组对照。每条记录的原始预测（含 question、
@@ -155,8 +206,8 @@ EOF
 - 聚合：`tools/aggregate_eval.py --results-dir <dir> --upload-repo ... --run-tag <tag>`
   生成 SUMMARY.json（benchmark × vision/blind/gap 矩阵，ScreenSpot 标 in_domain），
   整个结果目录（原始输出 + 汇总）一并上传——租期结束前必须完成。
-- 收尾：projector fp32+bf16、eval JSON、报告更新 → **`destroy` 实例（不是 stop，
-  stop 后存储仍计费）**。
+- 收尾：projector fp32+bf16、eval JSON、`pip_freeze.txt`、报告更新 →
+  **`destroy` 实例（不是 stop，stop 后存储仍计费）**。
 
 ## 9. 回退方案
 

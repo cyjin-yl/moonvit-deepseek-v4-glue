@@ -174,6 +174,21 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 - 复用现有 venv（torch 2.10.0+cu128 + transformers 5.12.1）；pytest 用 `pip --target` 装在独立目录，不改对方环境。
 - 工作站负载高（其他 agent 编译/跑 inference server）时，机械盘上的 torch import 可达 90 秒以上；批处理脚本超时预算要放宽。
 
+== Gate B+：租前全链路彩排（2026-08-03，正式训练的对照组）
+
+目的不是能力验证，而是把租期闭环的每一个环节在 V100 上先炸一遍：离线取数 → 切分 → 训练（checkpoint 流式传 HF）→ trained/blind/random 三组评测 → 聚合 → 全部产物落 HF。设置：SmolLM2-135M-Instruct + 真实 K3 MoonViT-V2 权重（eager），flickr8k 1200 条（train parquet 本地直读，零下载；该数据集每行一图、只用 caption_0，行切分即图切分，无泄露），1000 训练 / 200 评测，400 步、batch 4、lr 5e-4（Baseten 配方默认值），placeholder 为现有 token `<|endoftext|>`，`--max-image-side 448`。
+
+#table(
+  columns: (2.4fr, 1.5fr, 1.5fr, 1.5fr),
+  [*组别*], [*vision token-F1*], [*blind token-F1*], [*gap*],
+  [训练后 projector（400 步）], [0.1565], [0.0391], [*+0.117*],
+  [随机 projector（管线对照）], [0.0584], [0.0391], [+0.019],
+)
+
+训练 loss 4.30 → 3.06（前 200 步）。三点结论：(1) 训练组 gap 是对照组的 6 倍，管线对"是否训练过"可判别——评测不是摆设；(2) checkpoint 流式上传经代理真实落地（HF 上 step-000200/000400 含 projector fp32+bf16、training_state、history.json），租期中断不丢训练；(3) 全部评测原始输出（逐条预测 + 元数据）与 SUMMARY 已公开在 `eval/v100-smoke-smollm135/`。注意：400 步远低于 grokking 区间（约 900 步起），135M 主干 + caption 任务的绝对 F1 不代表正式结果；此表是正式训练的*对照组基线*。
+
+本轮同时打通了下载通道的完整答案（此前三种路径全部失败）：hf\_transfer 在代理下 0 字节挂起、hf-mirror 限流、工作站的 datasets+dill 无法 pickle pyarrow 的 MonthDayNano（任何本地 parquet 都炸 `load_dataset`）。最终方案：aria2 `-x8 -c --max-tries=0` 预取 parquet 分片（xet-bridge CDN 随机 TLS 重置/403，无限重试磨过去）+ fetch 全程离线读本地 parquet（raw pyarrow，跳过 datasets 指纹层），新增 `tools/prefetch_parquet.py` 与 `tools/fetch_art_data.py`（0xSero art 数据集的离线复刻，schema 与 `build_train_mix` 兼容，有测试）。另修正一处数据规格错误：MMMU-Pro 仓库不存在裸 `standard` config，已固定为 `standard (10 options)`。
+
 == Gate C：Vast 只读调研
 
 2026-08-02 12:23（UTC+8）用官方 Search Offers API 查询 verified、rentable、可靠度至少 0.98、至少 4 张卡、单卡至少 80 GB、总显存至少 320 GB 的 on-demand offer。市场是动态的，以下价格只用于预算，offer ID 不应写进自动租用脚本。
@@ -335,6 +350,9 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
   [2026-08-03], [MoonViT-V2 移植验证：K3 视觉代码 vision-only 抽取并 vendor 进仓库（去文本模型依赖）；随机权重前向输出 `[G,4,1024]` 符合 PatchMerger 合同；新增 sdpa varlen attention 并与 eager 数值一致；`moonvit_v2` wrapper 复用 MoonViTEncoder 契约；34/34 测试通过。权重单分片（802 MB/1.56 TB）下载中，HF 写权限已验证。],
   [2026-08-03], [真实权重回归完成：shard 96 下载（sha256 `9d10c74f…`）→ 抽取 165 张量 strict-load 通过 → V100 真实前向 `[1369,4,1024]`\@1024px、finite、逐位确定、eager/sdpa 差 3.1e-05 → 34/34 回归 → 产物（含 sha256 MANIFEST）上传 HF `vision_tower_k3/`；训练/评测支持 `--vision-tower v2`。],
   [2026-08-03], [推理集成文档重写为 MoonViT-V2 版：确认 vLLM/SGLang 均 Day-0 支持 K3（含 MoonViT3d）且均有 DeepSeek-V4 文本栈，patch 面收敛为 projector 模块 + placeholder 扩展 + Hash-MoE 路由检查；llama.cpp/fastllm patch 点记录在案但 v1 不做。新增 Gate D 风险清单（R1–R11，每条带缓解与止损）与三档最终账单（情景 A \$55/\$75/\$110，预算 \$120；情景 A′ B200 与情景 B 约 \$210–310；上限 \$350）；projector 合同更新为 V2 的 33,564,672 参数。],
+  [2026-08-03], [下载通道定论：aria2 多连接预取 parquet + 离线 pyarrow fetch（`--data-files`），绕开 hf\_transfer 挂起、hf-mirror 限流与 datasets+dill 的 MonthDayNano pickle 崩溃；新增 prefetch\_parquet 与 fetch\_art\_data（0xSero art 离线复刻）；MMMU-Pro config 修正为 `standard (10 options)`；62/62 测试通过。],
+  [2026-08-03], [租前全链路彩排通过（Gate B+）：V100 上 400 步训练 + checkpoint 流式上传 + 三组评测 + 聚合全部闭环并落 HF；训练组 gap +0.117 vs 随机对照 +0.019，管线可判别；作为正式训练的对照组基线。],
+  [2026-08-03], [外部评审（Max）并入 runbook：Gate D 分阶段化（含 `gate\_d\_dgrad.py` 单层 Dgrad reproducer、hook×梯度检查点数值一致性、`device\_map="auto"` 步时定律）；版本固定 + pip freeze 随产物；视觉 token 预算写死（训练 640 / 评测 1024）；配方谦逊条款（LR 探针兜底）；评测纪律（selection/final 两半、域内/跨域/零样本三组、3 种子 shuffle 统计）。],
 )
 
 = 下一位执行者的最短路径

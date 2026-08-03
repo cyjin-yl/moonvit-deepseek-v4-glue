@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -83,10 +84,12 @@ DATASETS = {
         question_field="instruction",
     ),
     # The headline metric of the community GLM-5.2V recipe (Harry Partridge /
-    # 0xSero): MMMU-Pro multiple choice. Multi-image questions are skipped —
-    # our schema carries exactly one image per record.
+    # 0xSero): MMMU-Pro multiple choice. Config is the canonical 10-option
+    # standard (the repo has no bare "standard" config — verified via the tree
+    # API 2026-08-03). Multi-image questions are skipped — our schema carries
+    # exactly one image per record.
     "mmmu_pro": FetchSpec(
-        repo="MMMU/MMMU_Pro", config="standard", split="test", metric="exact_match",
+        repo="MMMU/MMMU_Pro", config="standard (10 options)", split="test", metric="exact_match",
         answers_field="answer", adapter="mmmu_pro",
     ),
     # Caption data for projector overfit/alignment runs; question is a constant.
@@ -139,21 +142,59 @@ def normalize_box(box, width: int, height: int) -> list[float]:
     return [min(max(v, 0.0), SCALE) for v in normalized]
 
 
-def fetch(name: str, spec: FetchSpec, limit: int | None, out_dir: Path, revision: str | None) -> dict:
-    from datasets import load_dataset
-    from huggingface_hub import HfApi
+def decode_image_value(value):
+    """pyarrow image struct ``{"bytes": ..., "path": ...}`` -> eagerly decoded PIL image."""
 
-    dataset = load_dataset(spec.repo, spec.config, split=spec.split, revision=revision)
-    resolved_revision = HfApi().dataset_info(spec.repo, revision=revision).sha
+    if isinstance(value, dict) and value.get("bytes") is not None:
+        image = Image.open(io.BytesIO(value["bytes"]))
+        image.load()
+        return image
+    return value
+
+
+def iter_parquet_rows(data_files: list[Path]):
+    """Row dicts straight from parquet shards — no datasets-lib fingerprinting/pickling.
+
+    The workstation's datasets+dill stack cannot pickle pyarrow's MonthDayNano,
+    which kills ``load_dataset``/``cast_column`` on any offline file; raw pyarrow
+    iteration sidesteps that whole layer (and skips hashing GBs of fingerprints).
+    """
+
+    import pyarrow.parquet as pq
+
+    for data_file in data_files:
+        parquet = pq.ParquetFile(str(data_file))
+        for batch in parquet.iter_batches(batch_size=256):
+            yield from batch.to_pylist()
+
+
+def fetch(name: str, spec: FetchSpec, limit: int | None, out_dir: Path, revision: str | None,
+          data_files: list[Path] | None = None) -> dict:
+    if data_files:
+        # Offline path: aria2-prefetched parquet, zero hub traffic.
+        rows_iter = iter_parquet_rows(data_files)
+        resolved_revision = "local-parquet"
+        data_files_sha256 = {
+            Path(f).name: hashlib.sha256(Path(f).read_bytes()).hexdigest() for f in data_files
+        }
+    else:
+        from datasets import load_dataset
+        from huggingface_hub import HfApi
+
+        rows_iter = iter(load_dataset(spec.repo, spec.config, split=spec.split, revision=revision))
+        resolved_revision = HfApi().dataset_info(spec.repo, revision=revision).sha
+        data_files_sha256 = None
 
     images_dir = out_dir / "images"
     images_dir.mkdir(parents=True, exist_ok=True)
     records = []
     skipped_long_answer = 0
     box_stats = {"max_seen": 0.0}
-    for row in dataset:
+    for row in rows_iter:
         if limit is not None and len(records) >= limit:
             break
+        if data_files:
+            row = {key: decode_image_value(value) for key, value in row.items()}
         if spec.adapter == "mmmu_pro":
             if row.get("image_2") is not None:
                 continue
@@ -201,7 +242,7 @@ def fetch(name: str, spec: FetchSpec, limit: int | None, out_dir: Path, revision
     if spec.metric == "grounding":
         print(f"bbox sanity: max raw value seen = {box_stats['max_seen']} (pixels expected > 1)")
 
-    return {
+    entry = {
         "dataset": name,
         "repo": spec.repo,
         "config": spec.config,
@@ -214,6 +255,9 @@ def fetch(name: str, spec: FetchSpec, limit: int | None, out_dir: Path, revision
         "jsonl_sha256": hashlib.sha256(body.encode("utf-8")).hexdigest(),
         "fetched_at": datetime.now(timezone.utc).isoformat(),
     }
+    if data_files_sha256 is not None:
+        entry["data_files_sha256"] = data_files_sha256
+    return entry
 
 
 def main() -> None:
@@ -222,10 +266,13 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--out-dir", type=Path, default=Path("data/eval"))
     parser.add_argument("--revision", default=None, help="Pin a hub revision; resolved sha is always recorded")
+    parser.add_argument("--data-files", type=Path, nargs="+", default=None,
+                        help="Local parquet files (aria2-prefetched); bypasses hub download entirely")
     args = parser.parse_args()
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
-    entry = fetch(args.dataset, DATASETS[args.dataset], args.limit, args.out_dir, args.revision)
+    entry = fetch(args.dataset, DATASETS[args.dataset], args.limit, args.out_dir, args.revision,
+                  data_files=args.data_files)
 
     manifest_path = args.out_dir / "MANIFEST.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else []

@@ -64,3 +64,39 @@ def test_maybe_downscale_caps_long_side_only():
     out = maybe_downscale(image.copy(), 1920)
     assert max(out.size) == 1920
     assert maybe_downscale(image.copy(), None).size == (3360, 2100)
+
+
+def test_fetch_from_local_parquet_roundtrip(tmp_path):
+    """Offline path: aria2-prefetched parquet feeds fetch() with zero hub traffic."""
+
+    import hashlib
+
+    import pytest
+
+    pa = pytest.importorskip("pyarrow")
+    pq = pytest.importorskip("pyarrow.parquet")
+    import io
+
+    from fetch_eval_data import fetch
+
+    frames = {"image": [], "caption_0": []}
+    for i in range(3):
+        buffer = io.BytesIO()
+        Image.new("RGB", (8, 8), (i, 2, 3)).save(buffer, format="PNG")
+        frames["image"].append({"bytes": buffer.getvalue(), "path": f"{i}.png"})
+        frames["caption_0"].append(f"cap {i}")
+    image_struct = pa.struct([pa.field("bytes", pa.binary()), pa.field("path", pa.string())])
+    table = pa.table(
+        {"image": pa.array(frames["image"], type=image_struct), "caption_0": frames["caption_0"]}
+    )
+    parquet_path = tmp_path / "train-00000-of-00001-deadbeef.parquet"
+    pq.write_table(table, str(parquet_path))
+
+    entry = fetch("flickr8k_train", DATASETS["flickr8k_train"], None, tmp_path / "out", None,
+                  data_files=[parquet_path])
+
+    assert entry["rows"] == 3
+    assert entry["resolved_revision"] == "local-parquet"
+    assert entry["data_files_sha256"][parquet_path.name] == hashlib.sha256(parquet_path.read_bytes()).hexdigest()
+    saved = sorted((tmp_path / "out" / "images").iterdir())
+    assert [p.name for p in saved] == [f"flickr8k_train_00000{i}.jpg" for i in range(3)]
