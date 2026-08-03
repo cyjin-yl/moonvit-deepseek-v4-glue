@@ -34,6 +34,21 @@ class FetchSpec:
     question_field: str | None = "question"
     answers_field: str = "answers"
     adapter: str | None = None
+    image_format: str = "png"  # "jpeg" for photo datasets: archive size matters at 66k rows
+    max_answer_words: int | None = None  # Baseten recipe: short answers only, or no grokking
+
+
+def image_name_for(record_id: str, image_format: str) -> str:
+    extension = "jpg" if image_format == "jpeg" else "png"
+    return f"{record_id}.{extension}"
+
+
+def keep_record(answers: list, max_words: int | None) -> bool:
+    """Data red line for grokking: the row must have at least one short answer."""
+
+    if max_words is None:
+        return True
+    return any(len(str(answer).split()) <= max_words for answer in answers)
 
 
 DATASETS = {
@@ -62,6 +77,22 @@ DATASETS = {
     "flickr8k": FetchSpec(
         repo="jxie/flickr8k", split="train", metric="token_f1",
         question_field=None, answers_field="caption_0",
+    ),
+    # Train splits for the Baseten alignment recipe (~66k short QA total).
+    # max_answer_words mechanically enforces the "short answers or no grokking"
+    # red line; photo datasets save JPEG to keep the upload archive small.
+    "textvqa_train": FetchSpec(
+        repo="lmms-lab/textvqa", split="train", metric="soft_vqa",
+        image_format="jpeg", max_answer_words=20,
+    ),
+    "docvqa_train": FetchSpec(
+        repo="lmms-lab/DocVQA", config="DocVQA", split="train", metric="anls",
+        max_answer_words=20,
+    ),
+    "flickr8k_train": FetchSpec(
+        repo="jxie/flickr8k", split="train", metric="token_f1",
+        question_field=None, answers_field="caption_0",
+        image_format="jpeg", max_answer_words=25,
     ),
 }
 

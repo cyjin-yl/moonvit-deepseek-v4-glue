@@ -295,6 +295,8 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 
 社区配方还有两个直接影响数据计划的实测结论：其一，*grokking*——batch 64 / lr 5e-4 配短答案时 loss 平台数百步后骤降（原文约 step 900）完成对齐，*长描述性答案会阻止 grok*，因此对齐数据应以短 QA 为主、长 caption 为辅，而不是只用长 caption；其二，*warm start*——从已对齐 projector 初始化可跳过大半平台期，多阶段数据混训时应复用上一阶段 checkpoint 而不是重零开始。
 
+训练数据泄露控制（2026-08-03 定稿）：正式 mix 只含 TextVQA train（34.6k）、DocVQA train（25k）与 0xSero art 子集（约 10k）三类短答案 QA；0xSero 的 GUI 子集（screenshots/multistep，约占其 mix 六成）因与 ScreenSpot 基准同域而整组排除，flickr8k caption 因偏长不进正式 mix。fetch 规格机械执行 max\_answer\_words ≤ 20；组装时对全部训练图与五个基准的全部评测图做 average-hash 去重（hamming ≤ 6 丢弃），去重报告随数据发布。数据产物托管于 dataset repo 255doesnotexist/moonvit-dsv4-data，含来源、固定 revision 与 sha256，租机上一次下载即用。
+
 已实现的评测资产：
 
 - `moonvit_glue.metrics`：纯 Python 指标，无 torch 依赖。exact match、soft VQA（官方 min(1, 同意人数/3)）、ANLS、token-F1，以及 grounding 的 parse/Acc\@threshold/mean error。
