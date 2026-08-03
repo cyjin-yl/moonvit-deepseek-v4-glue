@@ -69,6 +69,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--random-projector", action="store_true", help="Use a freshly initialized projector (smoke runs)")
     parser.add_argument("--data", required=True, type=Path, help="Benchmark JSONL file")
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--record-slice", choices=["even", "odd"], default=None,
+                        help="Deterministic half-split: even=checkpoint-selection, odd=final (run once)")
     parser.add_argument("--max-new-tokens", type=int, default=32)
     parser.add_argument("--image-token", default=DEFAULT_IMAGE_TOKEN)
     parser.add_argument("--placeholder-token-id", type=int, default=None,
@@ -219,6 +221,39 @@ def run_generation(args, model, moonvit, tokenizer, placeholder_token_id, device
     return scored
 
 
+def slice_records(records: list, which: str | None) -> list:
+    """Deterministic half-split for eval discipline (review, 2026-08-03).
+
+    ``even`` is the checkpoint-selection half, ``odd`` the final half that is
+    run exactly once for the winning checkpoint. Same parity rule across all
+    benchmarks and checkpoints, so halves never drift.
+    """
+
+    if which == "even":
+        return records[::2]
+    if which == "odd":
+        return records[1::2]
+    return records
+
+
+def summarize_shuffle(rows: list) -> dict:
+    """Shuffle-loss summary with spread and relative lift (single delta is not proof)."""
+
+    mean_true = sum(r["true_loss"] for r in rows) / len(rows)
+    mean_shuffled = sum(r["shuffled_loss"] for r in rows) / len(rows)
+    mean_delta = mean_shuffled - mean_true
+    deltas = [r["delta"] for r in rows]
+    variance = sum((d - mean_delta) ** 2 for d in deltas) / len(deltas)
+    return {
+        "count": len(rows),
+        "mean_true_loss": mean_true,
+        "mean_shuffled_loss": mean_shuffled,
+        "mean_delta": mean_delta,
+        "delta_std": variance ** 0.5,
+        "relative_improvement": mean_delta / mean_shuffled if mean_shuffled else 0.0,
+    }
+
+
 def run_shuffle_loss(args, model, moonvit, tokenizer, placeholder_token_id, device, records):
     rng = random.Random(args.seed)
     records = [record for record in records if record.get("answers")]
@@ -261,16 +296,13 @@ def run_shuffle_loss(args, model, moonvit, tokenizer, placeholder_token_id, devi
         rows.append(row)
         print(f"[{index + 1}/{len(records)}] {row['id']} delta={row['delta']:+.4f}")
 
-    mean_true = sum(r["true_loss"] for r in rows) / len(rows)
-    mean_shuffled = sum(r["shuffled_loss"] for r in rows) / len(rows)
-    return rows, {"count": len(rows), "mean_true_loss": mean_true,
-                  "mean_shuffled_loss": mean_shuffled,
-                  "mean_delta": mean_shuffled - mean_true}
+    return rows, summarize_shuffle(rows)
 
 
 def main() -> None:
     args = parse_args()
     records = [json.loads(line) for line in args.data.read_text(encoding="utf-8").splitlines() if line.strip()]
+    records = slice_records(records, args.record_slice)
     if args.limit:
         records = records[: args.limit]
 

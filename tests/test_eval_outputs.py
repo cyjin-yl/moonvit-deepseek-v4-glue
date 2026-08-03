@@ -71,3 +71,31 @@ def test_aggregate_marks_in_domain_benchmarks_and_skips_shuffle_loss():
     assert summary["benchmarks"]["screenspot"]["in_domain"] is True
     assert "flickr8k" not in summary["benchmarks"]
     assert summary["skipped_non_generation"] == ["flickr8k"]
+
+
+def test_record_slice_is_deterministic_parity_split():
+    from eval_vlm import slice_records
+
+    records = [{"id": i} for i in range(7)]
+    assert [r["id"] for r in slice_records(records, "even")] == [0, 2, 4, 6]
+    assert [r["id"] for r in slice_records(records, "odd")] == [1, 3, 5]
+    assert slice_records(records, None) == records
+    # the two halves are disjoint and exhaustive — selection can never touch final
+    even = {r["id"] for r in slice_records(records, "even")}
+    odd = {r["id"] for r in slice_records(records, "odd")}
+    assert not (even & odd) and even | odd == set(range(7))
+
+
+def test_shuffle_summary_reports_spread_and_relative_lift():
+    from eval_vlm import summarize_shuffle
+
+    rows = [
+        {"true_loss": 2.0, "shuffled_loss": 3.0, "delta": 1.0},
+        {"true_loss": 3.0, "shuffled_loss": 3.4, "delta": 0.4},
+        {"true_loss": 2.5, "shuffled_loss": 3.2, "delta": 0.7},
+    ]
+    summary = summarize_shuffle(rows)
+    assert summary["count"] == 3
+    assert abs(summary["mean_delta"] - 0.7) < 1e-9
+    assert abs(summary["delta_std"] - (0.06) ** 0.5) < 1e-9
+    assert abs(summary["relative_improvement"] - 0.7 / 3.2) < 1e-9

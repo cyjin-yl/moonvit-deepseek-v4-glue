@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import subprocess
+import time
 from pathlib import Path
 from urllib.parse import quote
 
@@ -78,10 +79,17 @@ def aria2_fetch(url: str, size: int, out_path: Path) -> None:
         "--summary-interval=15",
         "-d", str(out_path.parent), "-o", out_path.name, url,
     ]
-    subprocess.run(cmd, check=True)
-    actual = out_path.stat().st_size
-    if actual != size:
-        raise SystemExit(f"size mismatch after aria2: {out_path.name} got {actual}, want {size}")
+    # aria2 treats TLS handshake failures as fatal per invocation regardless of
+    # --max-tries, so re-invoke the whole process; -c resumes each time.
+    for attempt in range(10):
+        proc = subprocess.run(cmd, check=False)
+        if out_path.exists() and out_path.stat().st_size == size:
+            return
+        current = out_path.stat().st_size if out_path.exists() else 0
+        print(f"aria2 attempt {attempt + 1}/10 exited {proc.returncode}; "
+              f"at {current / 1e6:.1f}/{size / 1e6:.1f} MB; resuming in 5s", flush=True)
+        time.sleep(5)
+    raise SystemExit(f"aria2 could not complete {out_path.name} after 10 attempts")
 
 
 def main() -> None:
