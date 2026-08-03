@@ -41,7 +41,7 @@ from moonvit_glue.checkpointing import (
     load_training_checkpoint,
     save_training_checkpoint,
 )
-from tools_common import build_prompt_ids, encode_image, next_batch
+from tools_common import build_prompt_ids, encode_image, load_records, next_batch
 
 
 class _Tee:
@@ -108,7 +108,7 @@ def build_sample(args, model, moonvit, tokenizer, placeholder_token_id, device, 
     """
 
     source = record if image_record is None else image_record
-    groups = encode_image(moonvit, args.data.parent / source["image"], args.max_image_side)
+    groups = encode_image(moonvit, source, args.max_image_side, base_dir=args.data.parent)
     prompt_ids = build_prompt_ids(
         tokenizer, args.prompt_template, record["question"], placeholder_token_id, device
     )
@@ -152,7 +152,7 @@ def main() -> None:
     dtype = getattr(torch, args.dtype)
     device = torch.device(args.device)
 
-    records = [json.loads(line) for line in args.data.read_text(encoding="utf-8").splitlines() if line.strip()]
+    records = load_records(args.data)
     records = [record for record in records if record.get("answers")]
     rng.shuffle(records)
     records = records[: args.limit]

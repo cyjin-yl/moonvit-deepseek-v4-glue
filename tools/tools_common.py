@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import io
+import json
 from pathlib import Path
 
 import torch
@@ -41,8 +43,47 @@ def next_batch(records: list, cursor: int, batch_size: int) -> tuple[list, int]:
     return batch, cursor + batch_size
 
 
-def encode_image(moonvit: MoonViTEncoder, image_path: Path, max_image_side: int | None = None):
-    image = Image.open(image_path).convert("RGB")
+def load_records(data_path: Path) -> list[dict]:
+    """Load ``{image, question, answers}`` records from JSONL or packed parquet.
+
+    Parquet mode reads every ``*.parquet`` under a directory (or a single
+    file) in sorted order and preserves the packed row order (see
+    ``tools/pack_to_parquet.py``); ``image_bytes`` stays compressed until
+    ``encode_image`` decodes it per record.
+    """
+    data_path = Path(data_path)
+    if data_path.is_dir():
+        files = sorted(data_path.glob("*.parquet"))
+        if not files:
+            raise FileNotFoundError(f"no parquet shards in {data_path}")
+    elif data_path.suffix == ".parquet":
+        files = [data_path]
+    else:
+        return [json.loads(line) for line in data_path.read_text(encoding="utf-8").splitlines()
+                if line.strip()]
+    import pyarrow.parquet as pq
+
+    records = []
+    for shard in files:
+        records.extend(pq.read_table(shard).to_pylist())
+    return records
+
+
+def encode_image(moonvit: MoonViTEncoder, source, max_image_side: int | None = None,
+                 base_dir: Path | None = None):
+    """Encode one image through frozen MoonViT.
+
+    ``source`` is either an image path, or a dataset record dict — packed
+    parquet rows carry their bytes in ``image_bytes``; JSONL rows resolve
+    ``image`` against ``base_dir``.
+    """
+    if isinstance(source, dict):
+        if source.get("image_bytes"):
+            image = Image.open(io.BytesIO(source["image_bytes"])).convert("RGB")
+        else:
+            image = Image.open(Path(base_dir) / source["image"]).convert("RGB")
+    else:
+        image = Image.open(source).convert("RGB")
     if max_image_side:
         image.thumbnail((max_image_side, max_image_side), Image.LANCZOS)
     image_inputs = moonvit.preprocess(image)

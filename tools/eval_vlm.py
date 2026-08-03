@@ -52,7 +52,7 @@ from moonvit_glue import (
     resolve_placeholder_token_id,
 )
 from moonvit_glue.metrics import score_record, summarize
-from tools_common import build_prompt_ids, encode_image
+from tools_common import build_prompt_ids, encode_image, load_records
 
 
 def parse_args() -> argparse.Namespace:
@@ -202,8 +202,7 @@ def expanded_length(input_ids: torch.Tensor, placeholder_token_id: int, feature_
 def run_generation(args, model, moonvit, tokenizer, placeholder_token_id, device, records):
     scored = []
     for index, record in enumerate(records):
-        image_path = args.data.parent / record["image"]
-        feature_groups = encode_image(moonvit, image_path, args.max_image_side)
+        feature_groups = encode_image(moonvit, record, args.max_image_side, base_dir=args.data.parent)
         input_ids = build_prompt_ids(
             tokenizer, args.prompt_template, record["question"], placeholder_token_id, device
         )
@@ -273,7 +272,7 @@ def run_shuffle_loss(args, model, moonvit, tokenizer, placeholder_token_id, devi
 
     rows = []
     for index, record in enumerate(records):
-        true_groups = encode_image(moonvit, args.data.parent / record["image"], args.max_image_side)
+        true_groups = encode_image(moonvit, record, args.max_image_side, base_dir=args.data.parent)
         prompt_ids = build_prompt_ids(
             tokenizer, args.prompt_template, record["question"], placeholder_token_id, device
         )
@@ -285,7 +284,7 @@ def run_shuffle_loss(args, model, moonvit, tokenizer, placeholder_token_id, devi
         shuffled_losses = []
         for _ in range(args.shuffle_repeats):
             other = rng.choice([r for r in records if r is not record])
-            other_groups = encode_image(moonvit, args.data.parent / other["image"], args.max_image_side)
+            other_groups = encode_image(moonvit, other, args.max_image_side, base_dir=args.data.parent)
             shuffled_losses.append(loss_for(other_groups, answer_ids, prompt_ids))
         row = {
             "id": record.get("id", index),
@@ -301,7 +300,7 @@ def run_shuffle_loss(args, model, moonvit, tokenizer, placeholder_token_id, devi
 
 def main() -> None:
     args = parse_args()
-    records = [json.loads(line) for line in args.data.read_text(encoding="utf-8").splitlines() if line.strip()]
+    records = load_records(args.data)
     records = slice_records(records, args.record_slice)
     if args.limit:
         records = records[: args.limit]
