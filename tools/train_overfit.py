@@ -97,6 +97,11 @@ def parse_args() -> argparse.Namespace:
                         help="HF repo id; each checkpoint is uploaded in the background")
     parser.add_argument("--resume", default=None,
                         help="Local checkpoint dir or HF repo id to resume from")
+    parser.add_argument("--init-projector-trunk", default=None,
+                        help="Donor projector dir: warm-start pre_norm + linear_1 (the "
+                             "language-agnostic trunk) from a projector aligned against a "
+                             "different text backbone; linear_2 keeps its fresh init. "
+                             "--resume overrides this (resume restores the full state)")
     return parser.parse_args()
 
 
@@ -189,6 +194,9 @@ def main() -> None:
         )
     )
     projector.to(device=device, dtype=dtype)
+    if args.init_projector_trunk:
+        projector.load_trunk(args.init_projector_trunk)
+        print(f"warm-started trunk (pre_norm + linear_1) from {args.init_projector_trunk}", flush=True)
 
     pad_token_id = tokenizer.pad_token_id if tokenizer.pad_token_id is not None else 0
     model = VisionCausalLM(

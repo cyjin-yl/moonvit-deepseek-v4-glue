@@ -102,3 +102,37 @@ class PatchMergerProjector(nn.Module):
         state = load_file(str(source / cls.weights_filename), device=str(device))
         projector.load_state_dict(state, strict=True)
         return projector.to(device=device, dtype=dtype)
+
+    def load_trunk(self, directory: str | Path) -> None:
+        """Warm-start the language-agnostic trunk from a donor projector.
+
+        ``pre_norm`` and ``linear_1`` only touch vision-side dimensions, so a
+        projector aligned against a small text model can donate them to a
+        projector targeting DeepSeek-V4; ``linear_2`` keeps its fresh init
+        because its output width differs across backbones. All vision-side
+        config fields must match — a V1 (1152-dim) donor cannot warm-start a
+        V2 (1024-dim) projector.
+        """
+
+        source = Path(directory)
+        donor = ProjectorConfig(
+            **json.loads((source / self.config_filename).read_text(encoding="utf-8"))
+        )
+        for field_name in ("vision_width", "merge_factor", "layer_norm_eps"):
+            if getattr(donor, field_name) != getattr(self.config, field_name):
+                raise ValueError(
+                    f"donor {field_name}={getattr(donor, field_name)} does not match "
+                    f"{getattr(self.config, field_name)}"
+                )
+        if donor.effective_projector_width != self.config.effective_projector_width:
+            raise ValueError(
+                f"donor projector_width={donor.effective_projector_width} does not match "
+                f"{self.config.effective_projector_width}"
+            )
+        state = load_file(str(source / self.weights_filename), device="cpu")
+        trunk = {
+            key: value
+            for key, value in state.items()
+            if key.startswith(("pre_norm.", "linear_1."))
+        }
+        self.load_state_dict(trunk, strict=False)
