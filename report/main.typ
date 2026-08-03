@@ -316,7 +316,7 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 
 社区配方还有两个直接影响数据计划的实测结论：其一，*grokking*——batch 64 / lr 5e-4 配短答案时 loss 平台数百步后骤降（原文约 step 900）完成对齐，*长描述性答案会阻止 grok*，因此对齐数据应以短 QA 为主、长 caption 为辅，而不是只用长 caption；其二，*warm start*——从已对齐 projector 初始化可跳过大半平台期，多阶段数据混训时应复用上一阶段 checkpoint 而不是重零开始。
 
-训练数据泄露控制（2026-08-03 定稿，GUI 修订）：正式 mix 含 TextVQA train（34.6k）、DocVQA train（25k）、0xSero art 子集（约 10k）与 ShowUI-desktop（8k）四类短答案监督；GUI 数据按用户决定纳入以建立 computer-use 基础，答案统一为 0xSero 动作格式 `click(start\_box=[x,y])`（0..999 尺度，评测 parser 原生兼容）。0xSero 自带的 screenshots/multistep 行不直接复用（图像改名无法回 join；multistep 为轨迹格式），改为从同源公开数据集自取。代价与处理：ScreenSpot 自此为*域内*基准，报告中必须标注；fetch 规格机械执行 max\_answer\_words ≤ 20；组装去重为三道独立机制（2026-08-03 评审加固）：感知 aHash（hamming ≤ 6，抓缩放/重压缩重复）+ 精确像素 sha256（抓跨容器同内容）+ 归一化问题文本近重复（`--eval-jsonl` 抓跨 split 文本泄露），各机制的丢弃数分别计入 `decontamination_report.json` 随数据发布。数据产物托管于 dataset repo cyjin-yl/moonvit-dsv4-data，含来源、固定 revision 与 sha256，租机上一次下载即用（上传通道已实测：新 huggingface\_hub 分块上传经代理约 2.6 MB/s，全量数据约 1.5–2 h，见变更日志）。
+训练数据泄露控制（2026-08-03 定稿，GUI 修订）：正式 mix 含 TextVQA train（34.6k）、DocVQA train（25k）、0xSero art 子集（约 10k）与 ShowUI-desktop（8k）四类短答案监督；GUI 数据按用户决定纳入以建立 computer-use 基础，答案统一为 0xSero 动作格式 `click(start_box=[x,y])`（0..999 尺度，评测 parser 原生兼容）。0xSero 自带的 screenshots/multistep 行不直接复用（图像改名无法回 join；multistep 为轨迹格式），改为从同源公开数据集自取。代价与处理：ScreenSpot 自此为*域内*基准，报告中必须标注；fetch 规格机械执行 max\_answer\_words ≤ 20；组装去重为三道独立机制（2026-08-03 评审加固）：感知 aHash（hamming ≤ 6，抓缩放/重压缩重复）+ 精确像素 sha256（抓跨容器同内容）+ 归一化问题文本近重复（`--eval-jsonl` 抓跨 split 文本泄露），各机制的丢弃数分别计入 `decontamination_report.json` 随数据发布。数据产物托管于 dataset repo cyjin-yl/moonvit-dsv4-data，含来源、固定 revision 与 sha256，租机上一次下载即用（上传通道已实测：新 huggingface\_hub 分块上传经代理约 2.6 MB/s，全量数据约 1.5–2 h，见变更日志）。
 
 已实现的评测资产：
 
@@ -333,6 +333,73 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 )
 
 预期锚点：0xSero 的 GLM-5.2 projector-only checkpoint 报告坐标格式解析率 92%、Accuracy\@50 4.3%、平均点击误差约 564/999。第一阶段的成功定义是 DeepSeek 路径达到同量级信号，而不是成熟 VLM 水平；grounding 在 projector-only 阶段大概率仍很弱。
+
+本地对照臂（与租机训练并行，不花租金钱）：(1) 小 VLM（Gate B 各 checkpoint）跑全套 1,400 例，作为“胶水通路在小模型上的能力上限”读数；(2) 原版 4B/9B 视觉模型（官方权重、官方精度）经适配脚本读同一 eval JSONL、输出同格式评分，作为“成熟小 VLM”参照；(3) 小模型 projector 不能直插 0731（hidden 896/576 vs 4096），合法对照臂是“小模型 trunk 热启动（到 GELU 的 4,608 维）+ V4 重训最后一层”，与全程从零的 scratch 臂对比收敛速度。27B 本地全精度跑不动，不作本地对照；如需该读数，挪入租机 benchmark 窗口作为可选臂。
+
+= 数据集挑选过程与构建管线
+
+本章记录正式数据资产的挑选理由、排除项与现行构建做法（2026-08-03 定稿）。所有产物托管于 dataset repo `cyjin-yl/moonvit-dsv4-data`，来源、resolved revision 与逐片 sha256 随数据发布。
+
+== 挑选原则
+
+1. *对标社区实验*：评测集与训练集对齐 Baseten/0xSero 的 GLM-5.2V 配方——他们用的我们照用，保证数字横向可比；其标志指标 MMMU-Pro 必须在内。
+2. *短答案优先*：社区实测长描述性答案会阻止 grokking，正式训练集全部为短答案监督（fetch 机械执行 max\_answer\_words ≤ 20）；长 caption 只用于 Gate B 信号验证，不进正式 mix。
+3. *视觉塔同源*：视觉塔从 Kimi K3 抽取（与 0xSero 从 K2.6 抽取同族）；art 子集离线复刻 0xSero `build_art_dataset.py` 的 QA 模板与 schema（`tools/fetch_art_data.py`），减少配方变量。
+4. *可复现优先*：每个来源固定 resolved revision；逐分片 sha256 对 LFS oid 校验；MANIFEST 随数据发布，信任 manifest 而不是 tag。
+
+== 评测集（1,400 行）
+
+#table(
+  columns: (1.4fr, 2fr, 0.6fr, 1.1fr, 2.3fr),
+  [*数据集*], [*来源（HF）*], [*行数*], [*指标*], [*挑选理由*],
+  [TextVQA val], [`lmms-lab/textvqa`], [500], [soft VQA], [OCR-VQA 基本盘，社区通用口径],
+  [DocVQA val], [`lmms-lab/DocVQA`], [200], [ANLS], [文档理解，与训练同族任务的 held-out],
+  [OCRBench test], [`echo840/OCRBench`], [200], [exact match], [纯文字识别],
+  [ScreenSpot test], [`rootsautomation/ScreenSpot`], [200], [in-box grounding], [GUI 定位；ShowUI 进训练后为*域内*基准，报告中单独标注],
+  [MMMU-Pro test], [`MMMU/MMMU_Pro` `standard (10 options)` 单图子集], [300], [exact match], [社区实验标志指标（原文声称约 55%）],
+)
+
+每行一图，图像落盘，JSONL 附 MANIFEST（resolved revision + 逐分片 sha256 + JSONL sha256）。评测纪律：分 selection/final 两半——checkpoint 选择只看 selection 半，final 半只对最终 checkpoint 跑一次，避免把 test 当训练集；域内（ScreenSpot）/跨域/零样本三组分开报告，不混入一张表。
+
+== 训练集（四类短答案监督）
+
+#table(
+  columns: (1.9fr, 1fr, 1.7fr, 2.3fr),
+  [*来源*], [*行数*], [*答案形态*], [*理由*],
+  [`lmms-lab/textvqa` train], [34,602], [短答案], [与评测同任务不同 split；组装时对 eval 做文本去重],
+  [`lmms-lab/DocVQA` train], [约 25,000], [短答案], [文档 QA；12 个官方 train 分片离线抽取],
+  [`showlab/ShowUI-desktop` train], [7,496], [GUI 动作#linebreak()#text(size: 8pt)[`click(start_box=[x,y])`]#linebreak()（0..999 尺度）], [用户决定纳入，建立 computer-use 基础；答案格式与评测 parser 原生兼容],
+  [`Artificio/WikiArt_Full` + `benitomartin/fashion-product-images-small-384x512`], [池 71,780 + 2,220 val；mix 取约 10,000], [短描述 QA], [与五个评测集零交集；复刻 0xSero schema],
+)
+
+== 排除项与理由
+
+- *长 caption 数据*（flickr8k/COCO 类）：grokking 实证表明长答案阻止对齐；flickr8k 仅用于 Gate B 信号轨，不进正式 mix。
+- *0xSero screenshots / multistep 行*：screenshots 图像经改名无法回 join；multistep 为轨迹格式，与单步 QA 合同不符。GUI 监督改从同源公开集 ShowUI-desktop 自取。
+- *与评测集近重复的任何行*：见下方三道去重机制。
+- *低于发布精度的量化对照*：对照组评测一律官方发布权重精度 + 官方 kernel；fp8 发布的模型升 bf16 无损可做，GGUF Q4/Q6 等降精度量化不做——量化损失会混进“模型能力”读数。本地 V100 跑不动全精度 27B 则放弃该臂，或挪入租机 benchmark 窗口。
+
+== 下载与校验通道（现行做法）
+
+十二种数据源、93 个正式分片全部落 staging，逐片 sha256 对 LFS oid 校验并打 `.sha256ok` 幂等标记，最终 0 mismatch。通道是实测淘汰出来的：
+
+- hf\_transfer 在代理下 0 字节挂起；hf-mirror 限流；工作站 datasets+dill 无法 pickle pyarrow MonthDayNano（任何本地 parquet 都炸 `load_dataset`）→ fetch 全程 raw pyarrow 离线直读（`--data-files`）。
+- ModelScope 镜像境内直连可达 8.8 MB/s，但约 1.5 小时高强度拉取后被 CDN 按 IP 渐进限速至 0；Tailscale 中继（RTT 3.7 s，聚合 250–400 KB/s）与代理同速且挤占家庭带宽，应用户要求退役。
+- 最终方案：工作站经 Clash 代理 aria2 预取 + 离线 fetch。代理上下行共享总带宽（约 250 KB/s 封顶），*上传与下载严禁并行*，HF 上传统一串行排在下载之后。
+- *关键事故*：xet-bridge 签名 URL 按 range 签发，aria2 `-x8` 分段重试拿过期 URL 会读到错 range 的字节并写入错偏移——TLS 合法、文件尺寸正确、内容静默损坏（25 片）。根因定位后改单连接 `-x1 -s1` + 每片 sha256 校验，坏片全部重拉修复；另修 aria2 不认大写 `HTTPS_PROXY` 一处。
+
+== 组装、去重与打包
+
+1. `tools/build_train_mix.py` 按配额组装（TextVQA train 全量 + DocVQA train 25k + ShowUI 8k + art 10k），三道独立去重：感知 aHash（hamming ≤ 6，抓缩放/重压缩）+ 精确像素 sha256（抓跨容器同内容）+ 归一化问题文本近重复（对五份 eval 全量比对，抓跨 split 文本泄露）；各机制丢弃数分别计入 `decontamination_report.json` 随数据发布。
+2. `tools/pack_to_parquet.py` 打包：union-keys schema（`from_pylist` 只按首行推断的坑已修，测试 6/6）；train 按 20,000 行分片，eval 五份各打一包。图像统一为 PNG 字节内嵌 parquet——付费服务器上顺序读、免密集小文件 IO，租机下载一次即用。
+3. 串行上传 `cyjin-yl/moonvit-dsv4-data`（已传文件自动跳过）；README 记录来源、revision、sha256 与复现命令，原数据集协议随产物保留。
+
+== 当前状态（2026-08-03 晚）
+
+- eval\_v1：五个评测集 1,400 行 + 1,400 张图像 + MANIFEST，完成。
+- train\_raw：TextVQA train 34,602 行、ShowUI-desktop 7,496 行完成；DocVQA train 目标 25,000 行抽取中。
+- sft\_art：71,780 train / 2,220 val，完成。
+- 待办：DocVQA 抽取完成 → mix 组装（含去重报告）→ pack → 串行上传 → Gate B 全量 mix 微调（Qwen2.5-0.5B + MoonViT-V2，同时验证 parquet 消费路径）。
 
 = 变更日志
 
@@ -359,6 +426,7 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
   [2026-08-03], [下载通道定论：aria2 多连接预取 parquet + 离线 pyarrow fetch（`--data-files`），绕开 hf\_transfer 挂起、hf-mirror 限流与 datasets+dill 的 MonthDayNano pickle 崩溃；新增 prefetch\_parquet 与 fetch\_art\_data（0xSero art 离线复刻）；MMMU-Pro config 修正为 `standard (10 options)`；62/62 测试通过。],
   [2026-08-03], [租前全链路彩排通过（Gate B+）：V100 上 400 步训练 + checkpoint 流式上传 + 三组评测 + 聚合全部闭环并落 HF；训练组 gap +0.117 vs 随机对照 +0.019，管线可判别；作为正式训练的对照组基线。],
   [2026-08-03], [外部评审（Max）并入 runbook：Gate D 分阶段化（含 `gate\_d\_dgrad.py` 单层 Dgrad reproducer、hook×梯度检查点数值一致性、`device\_map="auto"` 步时定律）；版本固定 + pip freeze 随产物；视觉 token 预算写死（训练 640 / 评测 1024）；配方谦逊条款（LR 探针兜底）；评测纪律（selection/final 两半、域内/跨域/零样本三组、3 种子 shuffle 统计）。],
+  [2026-08-03], [数据管线定稿并写入报告新章节：评测 5 集 1,400 行（TextVQA/DocVQA/OCRBench/ScreenSpot/MMMU-Pro）与训练 4 类来源（TextVQA train 34.6k、DocVQA train 25k、ShowUI-desktop 7.5k、art 池 71.8k 取 10k）的挑选理由与排除项；93 个正式分片 sha256 校验 0 mismatch；三道去重、union-keys parquet 打包与串行上传纪律；DocVQA train 抽取收尾中。],
 )
 
 = 下一位执行者的最短路径
