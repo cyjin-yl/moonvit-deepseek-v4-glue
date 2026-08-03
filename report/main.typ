@@ -9,7 +9,7 @@
   #v(5pt)
   #text(size: 14pt)[训练前架构审计、胶水原型与硬件计划]
   #v(8pt)
-  版本 0.1 · 2026-08-02
+  版本 0.2 · 2026-08-03
 ]
 
 #outline()
@@ -37,14 +37,14 @@ MoonViT 约 400M 参数，BF16 权重文件约 834 MB，相对于约 160 GB 级�
 #table(
   columns: (1.4fr, 2.4fr, 1fr),
   [*组件*], [*合同*], [*状态*],
-  [MoonViT], [`[tokens, 4, 1152]`], [冻结],
-  [PatchMerger], [`LN(1152) → flatten → 4608 → GELU → 4096`], [训练],
+  [MoonViT-V2], [`[tokens, 4, 1024]`], [冻结],
+  [PatchMerger], [`LN(1024) → flatten → 4096 → GELU → 4096`], [训练],
   [DeepSeek embedding], [`vocab → 4096`], [冻结],
   [Placeholder], [`<｜image｜>` / ID 129279], [现有词表],
   [Hash-MoE routing], [扩展后的 placeholder IDs], [冻结],
 )
 
-Projector 精确参数量是 40,119,040。保存格式由 `projector_config.json` 与 `projector.safetensors` 组成，加载时使用 strict state-dict 校验。MoonViT、DeepSeek 与 projector 始终保留为三个可独立哈希和升级的来源，不把大权重复制到自有仓库。
+V2  projector 精确参数量是 33,564,672（fp32 约 134 MB，bf16 约 67 MB；配置见 `configs/deepseek-v4-flash-0731-projector-moonvit-v2.json`）。备选的 V1 塔（MoonViT-SO-400M，1152 维）projector 为 40,119,040 参数，两条配置不得混用。保存格式由 `projector_config.json` 与 `projector.safetensors` 组成，加载时使用 strict state-dict 校验。MoonViT、DeepSeek 与 projector 始终保留为三个可独立哈希和升级的来源，不把大权重复制到自有仓库。
 
 = DeepSeek-V4 特殊适配
 
@@ -195,26 +195,49 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 
 *架构修正*：A100 为 Ampere，无 FP8/FP4 Tensor Core，0731 的 NVFP4 权重在 Ampere 上没有确认的内核路径，只能解量化至 bf16（568 GB），而 4×A100 的 320 GB 装不下——4×A100 实际上无法加载原生权重，Gate D 首选改为 *4×H100 PCIe*（Hopper FP8 + FP4 专用内核）。8×A100 SXM4（640 GB）仅作为解量化情景 B 的兜底。
 
-=== 全成本预算（含网络、存储、装机余量）
+=== 最终账单（含下载时间、网络、存储、装机余量）
 
-流量与存储用报价接口的真实计费字段核算：权重下载 160 GB，H100 PCIe 候选流量 \$13.33/TB 约 \$2.13（重传余量加倍 + 数据集/Docker 镜像约 \$1，共约 \$4）；上传仅 160 MB projector + JSON，几分钱。存储按 storage\_total\_cost 约 \$0.001–0.005/h，租期内几分钱——*但实例 stop 后存储继续按 \$/GB/月计费（约 \$0.107/GB/月，2 TB 停一周约 \$53），结束必须 destroy 而不是 stop*。装机与依赖调试按 +1.5 h GPU 时间计余量。
+流量与存储用报价接口的真实计费字段核算：权重下载 160 GB，H100 PCIe 候选流量 \$13.33/TB 约 \$2.13（重传余量加倍 + 数据集/Docker 镜像约 \$1，共约 \$4）；上传仅约 134 MB projector + 800 MB 视觉塔（首次）+ JSON，约 \$0.01。存储按 storage\_total\_cost 约 \$0.001–0.005/h，租期内几分钱——*但实例 stop 后存储继续按 \$/GB/月计费（约 \$0.107/GB/月，2 TB 停一周约 \$53），结束必须 destroy 而不是 stop*。装机与依赖调试按 +1.5 h GPU 时间计余量。
 
 #table(
-  columns: (2.6fr, 1.2fr, 2.6fr),
-  [*阶段*], [*时长*], [*费用（4×H100 PCIe \$6.93/h）*],
-  [装机 + Docker + 环境调试余量], [1.5 h], [\$10.4],
-  [权重下载（160 GB）], [0.5–1 h], [\$3.5–6.9 + 流量约 \$4],
-  [训练与评测数据下载（约 30 GB）], [0.5 h], [\$3.5 + 流量约 \$0.4],
-  [Gate D 判定], [1 h], [\$6.9],
-  [对齐训练约 3000 步（1 epoch，checkpoint 随传）], [3–5 h], [\$20.8–34.7],
-  [机上 benchmark 三组对照], [1.5–2 h], [\$10.4–13.9],
-  [权重与结果回传], [0.2 h], [\$1.4],
-  [*情景 A 合计*], [*9.2–12.2 h*], [*约 \$60–85，含余量按 \$100 预算*],
+  columns: (2.6fr, 1.1fr, 1.1fr, 1.3fr),
+  [*阶段（4×H100 PCIe，\$6.93/h）*], [*乐观*], [*基准*], [*悲观*],
+  [装机 + Docker + 环境调试余量], [1 h], [1.5 h], [2.5 h],
+  [0731 权重下载 160 GB（27 分钟理论最优；断流重传见 R4）], [0.7 h], [1 h], [2 h],
+  [MoonViT-V2 视觉塔下载 800 MB（sha256 校验）], [约 0.05 h], [约 0.05 h], [0.2 h],
+  [训练与评测数据约 30 GB], [0.3 h], [0.5 h], [1.5 h],
+  [Gate D 判定（加载→前向→单 batch backward→20 步）], [0.5 h], [1 h], [1 h],
+  [对齐训练约 3000 步（checkpoint 随传）], [3 h], [4 h], [5 h],
+  [机上 benchmark 三组对照], [1.5 h], [2 h], [2.5 h],
+  [权重与结果回传], [0.2 h], [0.2 h], [0.3 h],
+  [*合计机时*], [*7.2 h ≈ \$50*], [*10.2 h ≈ \$71*], [*15 h ≈ \$104*],
 )
 
-带宽与耗时已按报价接口的 inet\_down 字段核算：H100 PCIe 候选实测下行 2217 Mbps（约 277 MB/s），理论 160 GB 约 10 分钟；考虑 HF CDN 单连接限速（40–100 MB/s）与重传，预算放宽到 0.5–1 h，租机筛选条件应要求 inet\_down ≥ 1000 Mbps。checkpoint 上行流量每个约 500 MB（权重 fp32+bf16+优化器），每 500 步一次，分钟级完成，不影响训练计费。训练日志（train.log）与 history.json 随 checkpoint 一并上传，社区可见完整训练过程。
+流量费三档均约 \$4–5。*情景 A 最终账单：\$55（乐观）/ \$75（基准）/ \$110（悲观），按 \$120 预算。*
 
-情景 B（FP4 不可反传）：8×A100 SXM4 \$10.30/h，解量化转换 1–2 h 且训练约慢 3 倍，合计 20–30 h ≈ \$210–310（该候选流量 \$1.33/TB，网络几乎免费）。*建议总预算：\$100 起步（情景 A），预留 \$250 兜底，上限 \$350；预期实际花费 \$70–110。* 决策点在租后第 2–3 小时：Gate D 不通过即 destroy 止损，损失约 \$20。
+带宽与耗时已按报价接口的 inet\_down 字段核算：H100 PCIe 候选实测下行 2217 Mbps（约 277 MB/s），理论 160 GB 约 10 分钟；考虑 HF CDN 单连接限速（40–100 MB/s）与断流重传（本地实测 802 MB 在慢代理下耗时 2h46m），基准按 1 h、悲观按 2 h 计，租机筛选条件要求 inet\_down ≥ 1000 Mbps 并用 aria2/hf\_transfer 多连接下载。checkpoint 上行流量每个约 300 MB（projector fp32+bf16+优化器），每 500 步一次，分钟级完成，不影响训练计费。训练日志（train.log）与 history.json 随 checkpoint 一并上传，社区可见完整训练过程。
+
+情景 A′（R3 命中，H100 无法跑 FP4 前向）：转 4×B200（\$21.25/h），同排程基准 10 h ≈ \$213；B200 有原生 FP4 Tensor Core，Dgrad 通过率也更高。决策成本为已耗的装机+下载 1.5–2 h（约 \$10–14）。情景 B（FP4 不可反传且 B200 不可用）：8×A100 SXM4 \$10.30/h，权重解量化至 bf16（568 GB）转换 1–2 h 且训练约慢 3 倍，合计 20–30 h ≈ \$210–310（该候选流量 \$1.33/TB，网络几乎免费）。*建议总预算：\$120 起步（情景 A），预留 \$220（情景 A′/B），上限 \$350；预期实际花费 \$75–110。* 决策点在租后第 2–3 小时：Gate D 不通过即 destroy 止损，损失约 \$20。
+
+== Gate D 风险清单（租卡前预演）
+
+不保证一次成功。下表是全部已识别坑点、概率判断与止损方案；核心原则是*失败成本锁死在租后第 2–3 小时*（Gate D 判定，损失约 \$20），任何一项失败都有明确的下一步，而不是现场想办法。
+
+#table(
+  columns: (1.9fr, 0.7fr, 3.4fr),
+  [*风险*], [*概率*], [*缓解 / 止损*],
+  [R1 NVFP4 权重 Dgrad 不可用（推理内核不支持对输入 embedding 求梯度）], [中–高], [核心风险。Gate D 单 batch backward 判定；失败即退租转情景 B（解量化 bf16）或情景 A′（B200 原生 FP4 内核重试）。],
+  [R2 Transformers 加载原生 0731 大权重失败（quantization config 格式未被 5.x 支持）], [中], [Gate D 第一步即原生加载测试；备选为 vLLM loader 导出 bf16 权重副本（同时解决 R1）。],
+  [R3 H100 上 FP4 前向本身不可用（官方 NVFP4 验证环境是 Blackwell）], [中], [情景 A 的直接死因；Gate D 前 30 分钟判定。转 4×B200（\$21.25/h）或情景 B。],
+  [R4 权重下载断流/限速], [高], [本地实测 802 MB 在慢代理下耗时 2h46m；租机标称 2217 Mbps 但 HF CDN 单连接限速 40–100 MB/s，160 GB 理论 27–67 分钟，断流可拖至 2h+。用 aria2/hf\_transfer 多连接 + 断点续传循环（已验证的做法），账单已含 0.5–2h 敏感性。],
+  [R5 marketplace 实例被中断], [中], [checkpoint 流式上传（每 500 步，含 optimizer/RNG，28/28 测试）；中断后换机 `--resume` 精确续训，损失不足 10 分钟训练。],
+  [R6 机器环境与宣传不符（NVLink 拓扑、驱动、盘速）], [低–中], [开机 10 分钟内 `nvidia-smi topo -m` + 盘速快测，不符当场退租换机，损失不足 1h 租金。],
+  [R7 情景 B 显存算术（bf16 568 GB vs 8×A100 640 GB）], [低], [冻结 LLM + activation checkpointing 下单 batch 激活很小，72 GB 余量足够；4×H200（564 GB）装不下，明确排除。],
+  [R8 Hash-MoE `tid2eid` 在多卡张量并行下的分布行为], [中], [hook 方案已在真实 tiny DeepseekV4 类验证；Gate D 的单 batch backward 在大权重多卡下复验，占位位置路由一致性有断言。],
+  [R9 训练数据下载（约 30 GB）经代理再耗 1–2 h], [中], [提前把训练数据镜像到项目 HF 仓库（随 checkpoint 上行通道同路），租机从 HF 直下；计入装机时间。],
+  [R10 MoonViT-V2 bf16 与 fp32 参考的特征偏差], [低], [fp32 参考已锚定（eager/sdpa 差 3.1e-05）；Gate D 记录 bf16 实测差（预期约 1e-2 相对），超差则视觉塔回 fp32（仅多约 800 MB 显存）。],
+  [R11 租期内时间不够闭环], [低–中], [checkpoint 流式上传保证权重永不丢；benchmark 三组对照在机上跑但数据落盘 JSON 可增量上传；最坏情况先公开 checkpoint + 部分指标。],
+)
 
 == Gate D：正式租卡前
 
@@ -227,7 +250,7 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 
 == 租期闭环排程（2026-08-02 定价）
 
-核心约束：租期一结束就没有机器能跑动 0731 做 benchmark 或回传权重，因此训练、benchmark、上传必须在同一次租期内闭环。交付物只有 projector + 评测 JSON + 报告，与 GLM 社区只发布 projector 一致，不回传 160 GB 主干。checkpoint 发两个精度：fp32 master（约 160 MB，复现/续训用）与 bf16 serving（约 80 MB,0731 激活为 bf16)，租期内由训练产物现场转换。推理侧接入（vLLM/SGLang 补丁方案、Hash-MoE 注意事项、验收检查）已写成 `docs/inference-integration.md`，作为后续给推理引擎提 PR 的合同文档；要点：vLLM 与 SGLang 均已内置 Kimi-VL 的 MoonViT 实现可直接复用，placeholder 固定为现有 `<｜image｜>`(id 129279）禁止扩 vocab，合并只替换 embedding 向量、input\_ids 保留 placeholder 供 Hash-MoE 路由。
+核心约束：租期一结束就没有机器能跑动 0731 做 benchmark 或回传权重，因此训练、benchmark、上传必须在同一次租期内闭环。交付物只有 projector + 评测 JSON + 报告，与 GLM 社区只发布 projector 一致，不回传 160 GB 主干。checkpoint 发两个精度：fp32 master（约 134 MB，复现/续训用）与 bf16 serving（约 67 MB,0731 激活为 bf16)，租期内由训练产物现场转换。推理侧接入（vLLM/SGLang/llama.cpp/fastllm 补丁点、Hash-MoE 注意事项、验收检查）已写成 `docs/inference-integration.md`（2026-08-03 重写为 MoonViT-V2 版），作为后续给推理引擎提 PR 的合同文档；要点：vLLM 与 SGLang 均已 Day-0 支持 Kimi-K3（含 MoonViT3d 视觉塔）且均有 DeepSeek-V4 文本栈，patch 面只剩 projector 模块、placeholder 扩展与 Hash-MoE 路由检查；placeholder 固定为现有 `<｜image｜>`(id 129279）禁止扩 vocab，合并只替换 embedding 向量、input\_ids 保留 placeholder 供 Hash-MoE 路由。
 
 训练量按 LLaVA 式对齐的标准做法定为 *1 个 epoch*：15–30 万条 caption、global batch 64、约 2500–4500 步、lr 1e-3 cosine，每 500 步存 checkpoint 并立刻后台传 HF。checkpoint 是完整可续训单元（projector fp32 + bf16、AdamW 状态、RNG、步数、loss 历史，见 `moonvit_glue.checkpointing`)：实例中断不丢成果，社区可实时看到训练曲线形成，任何 checkpoint 可用 `--resume <repo-id>` 精确续训。4×H100 估 3–5 s/步（13B 激活、seq 约 300–400、开 activation checkpointing），训练段 2.5–6 h。多轮只会背诵 caption（43 epoch 的 +0.343 即过拟合态），不加轮次。
 
@@ -237,10 +260,10 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
   columns: (2.2fr, 1fr, 3fr),
   [*阶段*], [*时长*], [*说明*],
   [装机 + 下载权重], [1–1.5 h], [160 GB；好主机 1–2 GB/s],
-  [Gate D 判定], [0.5–1 h], [FP4 Dgrad 失败则当场退租（损失 <\$10），转情景 B],
+  [Gate D 判定], [0.5–1 h], [FP4 Dgrad 失败则当场退租（损失约 \$10），转情景 B],
   [Stage 1 对齐训练], [3–5 h], [约 3000 步；checkpoint 随训随传],
   [benchmark 全套], [1.5–2 h], [TextVQA 500 / DocVQA 200 / OCRBench 200 / ScreenSpot 200；训练 checkpoint × blind × 随机 projector 三组对照，机上完成],
-  [权重与结果回传], [0.5 h], [projector 约 160 MB + 评测 JSON 上传 HF],
+  [权重与结果回传], [0.5 h], [projector 约 134 MB + 评测 JSON 上传 HF],
   [*合计*], [*7–10 h*], [4×H100 PCIe（\$6.93/h）约 \$50–70；含一次失败重试按 \$150 预算],
 )
 
@@ -289,6 +312,7 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
   [2026-08-02], [对齐社区 GLM-5.2V 配方：确认其视觉塔同为 MoonViT、标志指标为 MMMU-Pro（加入评测集）；记录 grokking（短答案）与 warm-start 两条训练结论；带宽速度与数据集流量成本计入预算。],
   [2026-08-03], [MoonViT-V2 移植验证：K3 视觉代码 vision-only 抽取并 vendor 进仓库（去文本模型依赖）；随机权重前向输出 `[G,4,1024]` 符合 PatchMerger 合同；新增 sdpa varlen attention 并与 eager 数值一致；`moonvit_v2` wrapper 复用 MoonViTEncoder 契约；34/34 测试通过。权重单分片（802 MB/1.56 TB）下载中，HF 写权限已验证。],
   [2026-08-03], [真实权重回归完成：shard 96 下载（sha256 `9d10c74f…`）→ 抽取 165 张量 strict-load 通过 → V100 真实前向 `[1369,4,1024]`\@1024px、finite、逐位确定、eager/sdpa 差 3.1e-05 → 34/34 回归 → 产物（含 sha256 MANIFEST）上传 HF `vision_tower_k3/`；训练/评测支持 `--vision-tower v2`。],
+  [2026-08-03], [推理集成文档重写为 MoonViT-V2 版：确认 vLLM/SGLang 均 Day-0 支持 K3（含 MoonViT3d）且均有 DeepSeek-V4 文本栈，patch 面收敛为 projector 模块 + placeholder 扩展 + Hash-MoE 路由检查；llama.cpp/fastllm patch 点记录在案但 v1 不做。新增 Gate D 风险清单（R1–R11，每条带缓解与止损）与三档最终账单（情景 A \$55/\$75/\$110，预算 \$120；情景 A′ B200 与情景 B 约 \$210–310；上限 \$350）；projector 合同更新为 V2 的 33,564,672 参数。],
 )
 
 = 下一位执行者的最短路径
