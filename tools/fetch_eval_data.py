@@ -75,7 +75,7 @@ DATASETS = {
         repo="lmms-lab/DocVQA", config="DocVQA", split="validation", metric="anls"
     ),
     "ocrbench": FetchSpec(
-        repo="lmms-lab/OCRBench", split="test", metric="exact_match",
+        repo="echo840/OCRBench", split="test", metric="exact_match",
         answers_field="answer",
     ),
     "screenspot": FetchSpec(
