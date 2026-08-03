@@ -43,6 +43,10 @@
 
 Official 0731 FP4/FP8 kernels may support inference but not gradient with respect to input embeddings. The glue contract is tested; the large-quantized-backbone Dgrad path is not.
 
+## Training memory arithmetic (verified 2026-08-03, table in the report)
+
+Optimizer states exist **only for the projector** (`AdamW(projector.parameters())`; LLM + tower are `requires_grad_(False)`, tower forward under `no_grad`): full optimizer+weights+grads ≈ 0.55 GB. Per-card totals with TP-sharded LLM weights: **scenario A (4×H100, FP4, TP=4): ~47–55 / 80 GB — healthy** (25–32 GB headroom); **scenario B (8×A100, bf16 dequant, TP=8): ~77–79 / 79.1 GB — ceiling-level**, needs micro-batch 1 + aggressive checkpointing, escalate to 4×B200 (142 GB/card) on OOM. bf16 on any 4-card box is arithmetically impossible (568/4 = 142 GB > 80/141 GB). New risk R12: 4×H100 PCIe has no NVLink, TP all-reduce over PCIe may blow past the 3–5 s/step estimate — Gate D must measure actual step time; >15 s/step → NVLink host or pipeline parallelism.
+
 ## Safety / repository hygiene
 
 - Never commit HF, GitHub, Vast, or SSH credentials.
