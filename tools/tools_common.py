@@ -14,6 +14,25 @@ from moonvit_glue import MoonViTEncoder
 _IMAGE_SENTINEL = "\x00image\x00"
 
 
+def validate_text_only_backbone_config(config) -> None:
+    """Reject a native VLM as the language-side projector training target.
+
+    A stock multimodal model is useful as an evaluator/data positive control,
+    but training our projector against its already vision-aligned text stack
+    would not establish transfer into a genuinely text-only backbone.
+    """
+
+    vision_config = getattr(config, "vision_config", None)
+    if vision_config is not None:
+        architectures = getattr(config, "architectures", None) or []
+        architecture = architectures[0] if architectures else type(config).__name__
+        raise ValueError(
+            "--text-model must be a text-only causal LM for projector training; "
+            f"{architecture} exposes vision_config and is a native multimodal model. "
+            "Use tools/eval_stock_vlm.py for native-VLM positive controls."
+        )
+
+
 def build_prompt_ids(tokenizer, template: str, question: str, placeholder_token_id: int, device):
     """Tokenize a prompt template, inserting the placeholder as exactly one token.
 

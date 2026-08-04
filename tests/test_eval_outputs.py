@@ -6,7 +6,7 @@ from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
 
-from aggregate_eval import aggregate_reports
+from aggregate_eval import aggregate_reports, load_reports
 from eval_vlm import build_metadata, make_scored_row
 
 
@@ -71,6 +71,36 @@ def test_aggregate_marks_in_domain_benchmarks_and_skips_shuffle_loss():
     assert summary["benchmarks"]["screenspot"]["in_domain"] is True
     assert "flickr8k" not in summary["benchmarks"]
     assert summary["skipped_non_generation"] == ["flickr8k"]
+
+
+def test_aggregate_labels_native_vlm_as_evaluator_positive_control():
+    summary = aggregate_reports(
+        [_report(
+            "screenspot",
+            {"count": 2, "grounding_count": 2, "accuracy": 0.5, "parse_rate": 1.0},
+            {"count": 2, "grounding_count": 2, "accuracy": 0.0, "parse_rate": 1.0},
+        )],
+        control_kind="native_vlm",
+    )
+
+    assert summary["control_kind"] == "native_vlm"
+    assert "in_domain" not in summary["benchmarks"]["screenspot"]
+    assert "grounding_count" not in summary["benchmarks"]["screenspot"]["gap"]
+    assert "not projector/DeepSeek evidence" in summary["notes"]
+
+
+def test_load_reports_ignores_summary_and_provenance_files(tmp_path):
+    (tmp_path / "textvqa.json").write_text(
+        '{"mode":"generation","summary":{"count":1},"metadata":{"data":"textvqa"}}',
+        encoding="utf-8",
+    )
+    (tmp_path / "SUMMARY.json").write_text('{"control_kind":"native_vlm"}', encoding="utf-8")
+    (tmp_path / "PROVENANCE.json").write_text('{"model":"Qwen/Qwen3.5-4B"}', encoding="utf-8")
+
+    reports = load_reports(tmp_path)
+
+    assert len(reports) == 1
+    assert reports[0]["mode"] == "generation"
 
 
 def test_record_slice_is_deterministic_parity_split():

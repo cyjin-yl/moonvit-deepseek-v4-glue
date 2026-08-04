@@ -41,7 +41,13 @@ from moonvit_glue.checkpointing import (
     load_training_checkpoint,
     save_training_checkpoint,
 )
-from tools_common import build_prompt_ids, encode_image, load_records, next_batch
+from tools_common import (
+    build_prompt_ids,
+    encode_image,
+    load_records,
+    next_batch,
+    validate_text_only_backbone_config,
+)
 
 
 class _Tee:
@@ -62,7 +68,11 @@ class _Tee:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--text-model", required=True)
+    parser.add_argument(
+        "--text-model",
+        required=True,
+        help="Text-only causal LM; native VLM configs with vision_config are rejected",
+    )
     parser.add_argument("--moonvit-model", default="moonshotai/MoonViT-SO-400M")
     parser.add_argument("--vision-tower", choices=["v1", "v2"], default="v1",
                         help="v1 = MoonViT-SO-400M from HF; v2 = Kimi K3 MoonViT-V2 from extracted weights")
@@ -151,12 +161,15 @@ def main() -> None:
     log_file = open(args.out / "train.log", "a", encoding="utf-8")
     sys.stdout = _Tee(sys.__stdout__, log_file)
     sys.stderr = _Tee(sys.__stderr__, log_file)
-    from transformers import AutoModelForCausalLM, AutoTokenizer
+    from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
 
     torch.manual_seed(args.seed)
     rng = random.Random(args.seed)
     dtype = getattr(torch, args.dtype)
     device = torch.device(args.device)
+
+    text_config = AutoConfig.from_pretrained(args.text_model)
+    validate_text_only_backbone_config(text_config)
 
     records = load_records(args.data)
     records = [record for record in records if record.get("answers")]
@@ -281,6 +294,8 @@ def main() -> None:
     last = sum(row["loss"] for row in history[-args.log_every :]) / args.log_every
     report = {
         "text_model": args.text_model,
+        "text_model_architectures": getattr(text_config, "architectures", None),
+        "text_backbone_native_multimodal": False,
         "records_train": len(train_records),
         "records_eval": len(eval_records),
         "steps": args.steps,
