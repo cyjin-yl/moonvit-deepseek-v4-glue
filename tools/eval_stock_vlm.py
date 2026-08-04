@@ -21,6 +21,7 @@ Examples::
 from __future__ import annotations
 
 import argparse
+import hashlib
 import io
 import json
 import platform
@@ -52,20 +53,66 @@ def strip_thinking(text: str) -> str:
     return cleaned.strip()
 
 
-def build_messages(question: str, with_image: bool) -> list[dict]:
+def verify_weight_manifest(model_dir: Path, manifest_path: Path) -> None:
+    """Verify local model files against a JSON ``{filename: sha256}`` map."""
+
+    expected = json.loads(Path(manifest_path).read_text(encoding="utf-8"))
+    if not isinstance(expected, dict) or not expected:
+        raise ValueError(f"weight manifest must be a non-empty JSON object: {manifest_path}")
+    for filename, expected_digest in expected.items():
+        weight_path = Path(model_dir) / filename
+        if not weight_path.is_file():
+            raise FileNotFoundError(f"weight manifest file is missing: {weight_path}")
+        digest = hashlib.sha256()
+        with weight_path.open("rb") as handle:
+            for chunk in iter(lambda: handle.read(8 * 1024 * 1024), b""):
+                digest.update(chunk)
+        actual_digest = digest.hexdigest()
+        if actual_digest != expected_digest:
+            raise ValueError(
+                f"sha256 mismatch for {filename}: expected {expected_digest}, got {actual_digest}"
+            )
+
+
+def build_messages(record: dict, with_image: bool) -> list[dict]:
     """One user turn, image first (the Qwen-VL convention)."""
 
     content = [{"type": "image"}] if with_image else []
-    content.append({"type": "text", "text": question})
+    question = record["question"]
+    if record["metric"] == "grounding":
+        instruction = (
+            "Respond with only the target point as (x, y), where x and y are integers "
+            "normalized to 0–999. Do not explain."
+        )
+    elif record["metric"] == "exact_match" and record.get("answers") and all(
+        re.fullmatch(r"[A-Za-z]", str(answer).strip()) for answer in record["answers"]
+    ):
+        instruction = "Respond with only the option letter. Do not explain."
+    else:
+        instruction = "Respond with only the short answer. Do not explain."
+    content.append(
+        {
+            "type": "text",
+            "text": f"{question}\n{instruction}",
+        }
+    )
     return [{"role": "user", "content": content}]
 
 
-def load_record_image(record: dict, base_dir: Path) -> Image.Image:
+def load_record_image(
+    record: dict,
+    base_dir: Path,
+    max_image_side: int | None = None,
+) -> Image.Image:
     """Packed parquet rows carry ``image_bytes``; JSONL rows a relative path."""
 
     if record.get("image_bytes"):
-        return Image.open(io.BytesIO(record["image_bytes"])).convert("RGB")
-    return Image.open(Path(base_dir) / record["image"]).convert("RGB")
+        image = Image.open(io.BytesIO(record["image_bytes"])).convert("RGB")
+    else:
+        image = Image.open(Path(base_dir) / record["image"]).convert("RGB")
+    if max_image_side:
+        image.thumbnail((max_image_side, max_image_side), Image.Resampling.LANCZOS)
+    return image
 
 
 def apply_template(processor, messages: list[dict], thinking: bool) -> str:
@@ -81,11 +128,15 @@ def apply_template(processor, messages: list[dict], thinking: bool) -> str:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--model", required=True, help="HF id or local path of the stock VLM")
+    parser.add_argument("--weight-manifest", type=Path, default=None,
+                        help="JSON filename-to-sha256 map; verified before loading a local model")
     parser.add_argument("--data", required=True, type=Path, help="Benchmark JSONL or packed parquet dir/file")
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--record-slice", choices=["even", "odd"], default=None,
                         help="Same parity rule as eval_vlm: even=selection half, odd=final half")
     parser.add_argument("--max-new-tokens", type=int, default=32)
+    parser.add_argument("--max-image-side", type=int, default=None,
+                        help="Downscale each image so its long side is at most this many pixels")
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--device-map", default=None,
                         help="Optional accelerate device map (e.g. 'auto') for models too large for one GPU")
@@ -106,9 +157,11 @@ def build_metadata(args: argparse.Namespace, git_sha: str | None = None) -> dict
     return {
         "stock": True,
         "model": args.model,
+        "weight_manifest": str(args.weight_manifest) if args.weight_manifest else None,
         "data": args.data.name,
         "limit": args.limit,
         "max_new_tokens": args.max_new_tokens,
+        "max_image_side": args.max_image_side,
         "dtype": args.dtype,
         "thinking": args.thinking,
         "git": git_sha,
@@ -123,10 +176,10 @@ def run_pass(args, model, processor, records, device, blind: bool) -> list[dict]
     scored = []
     for index, record in enumerate(records):
         with_image = not blind and bool(record.get("image") or record.get("image_bytes"))
-        messages = build_messages(record["question"], with_image)
+        messages = build_messages(record, with_image)
         text = apply_template(processor, messages, args.thinking)
         if with_image:
-            image = load_record_image(record, args.data.parent)
+            image = load_record_image(record, args.data.parent, args.max_image_side)
             inputs = processor(text=[text], images=[image], return_tensors="pt")
         else:
             inputs = processor(text=[text], return_tensors="pt")
@@ -149,6 +202,11 @@ def run_pass(args, model, processor, records, device, blind: bool) -> list[dict]
 
 def main() -> None:
     args = parse_args()
+    if args.weight_manifest:
+        model_dir = Path(args.model)
+        if not model_dir.is_dir():
+            raise ValueError("--weight-manifest requires --model to be a local directory")
+        verify_weight_manifest(model_dir, args.weight_manifest)
     records = load_records(args.data)
     records = slice_records(records, args.record_slice)
     if args.limit:
