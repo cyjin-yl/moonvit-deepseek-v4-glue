@@ -82,7 +82,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--grad-clip", type=float, default=1.0)
     parser.add_argument("--max-image-side", type=int, default=448)
     parser.add_argument("--dtype", default="float32")
-    parser.add_argument("--image-token", default="<|image_pad|>")
+    parser.add_argument("--image-token", default=None,
+                        help="Placeholder token; default auto-detects DeepSeek/Qwen candidates")
     parser.add_argument("--placeholder-token-id", type=int, default=None)
     parser.add_argument("--prompt-template", default="User: {image}\n{question}\nAssistant:")
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")

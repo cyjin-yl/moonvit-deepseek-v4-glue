@@ -21,10 +21,28 @@ class LoadedVisionLM:
     tokenizer: Any
 
 
-def resolve_placeholder_token_id(tokenizer: Any, token: str = DEFAULT_IMAGE_TOKEN) -> int:
-    """Resolve a pre-existing token and deliberately refuse vocabulary mutation."""
+# Auto-detect order: DeepSeek's native token first, then the Qwen VL family
+# token that also ships in Qwen text-model vocabularies.
+PLACEHOLDER_CANDIDATES = (DEFAULT_IMAGE_TOKEN, "<|image_pad|>")
+
+
+def resolve_placeholder_token_id(tokenizer: Any, token: str | None = None) -> int:
+    """Resolve a pre-existing token and deliberately refuse vocabulary mutation.
+
+    With ``token=None`` the known candidates are tried in order; an explicit
+    token stays strict so a typo fails loudly instead of silently switching.
+    """
 
     vocab = tokenizer.get_vocab()
+    if token is None:
+        for candidate in PLACEHOLDER_CANDIDATES:
+            if candidate in vocab:
+                return int(vocab[candidate])
+        raise ValueError(
+            f"No known placeholder token in the tokenizer; tried {PLACEHOLDER_CANDIDATES!r}. "
+            "The token must already exist: the frozen language embedding and "
+            "DeepSeek Hash-MoE routing table must not be resized"
+        )
     if token not in vocab:
         raise ValueError(
             f"The placeholder token {token!r} must already exist in the tokenizer; "

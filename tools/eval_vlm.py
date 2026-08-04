@@ -43,7 +43,6 @@ import torch
 from PIL import Image
 
 from moonvit_glue import (
-    DEFAULT_IMAGE_TOKEN,
     MoonViTEncoder,
     PatchMergerProjector,
     ProjectorConfig,
@@ -72,7 +71,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--record-slice", choices=["even", "odd"], default=None,
                         help="Deterministic half-split: even=checkpoint-selection, odd=final (run once)")
     parser.add_argument("--max-new-tokens", type=int, default=32)
-    parser.add_argument("--image-token", default=DEFAULT_IMAGE_TOKEN)
+    parser.add_argument("--image-token", default=None,
+                        help="Placeholder token; default auto-detects DeepSeek/Qwen candidates")
     parser.add_argument("--placeholder-token-id", type=int, default=None,
                         help="Explicit placeholder id for tokenizers without the image token")
     parser.add_argument("--prompt-template", default="User: {image}\n{question}\nAssistant:")
