@@ -1,5 +1,23 @@
 # Handoff
 
+## ⚠️ TAKEOVER NOTE (2026-08-04 ~17:20, quota handoff — read this first)
+
+**One task is still RUNNING**: stock Qwen3.5-4B control eval in tmux `moondata:0.0` on doesworkstation (`bash /tmp/stock_4b_eval.sh | tee /tmp/stock_eval.log`). Progress at handoff: textvqa + ocrbench DONE (JSONs in `$HDD/data/stock_eval/`, auto-uploaded to HF `eval/stock-qwen35-4b/`), docvqa vision ~35/100, then screenspot + mmmu_pro remain (~2-3 h total). Ends with `STOCK_EVAL_ALL_DONE`.
+
+**Next agent's exact job list, in order**:
+1. `ssh doesworkstation 'tail -1 /tmp/stock_eval.log'` until `STOCK_EVAL_ALL_DONE`. Check for `STOCK_EVAL_FAILED` lines — if any, rerun just that benchmark (same command shape as `/tmp/stock_4b_eval.sh`); if the eval ran but the HF upload failed (proxy TLS resets), re-upload the local JSON manually to `eval/stock-qwen35-4b/`.
+2. Read the 5 result JSONs (`summary` + `blind_summary` per benchmark) and write the **stock-4B vs Gate-B-projector comparison table** into `report/main.typ` §9.5 (next to the Gate B final table) + HANDOFF bullet. This is the "how far from a mature small VLM" reference the user asked for.
+3. Rebuild PDF: `.venv/Scripts/python.exe -c "import typst; typst.compile('report/main.typ', output='report/main.pdf')"` on Windows, then **render-check a page** (fitz is in .venv).
+4. Commit + push via the workstation bundle route (local machine cannot reach GitHub directly): `git bundle create /tmp/x.bundle <old>..main` → `scp doesworkstation:/tmp/` → `git -C $HDD/moonvit-deepseek-v4-glue pull /tmp/x.bundle main` → `HTTPS_PROXY=http://127.0.0.1:7890 git push origin main`.
+5. Report to the user and wait for the explicit "rent" instruction. **Do NOT create a Vast instance without it.** Target offer was 45766633 (4×RTX PRO 6000, Japan, $5.18/h — re-query before use; prices/offers churn). Gate D runbook: `docs/gate-d-runbook.md` (staged: config discovery → `tools/gate_d_dgrad.py` single-linear Dgrad reproducer → load → forward → backward → hook×checkpointing equality → batch>1 → device_map step-time law). First 30 min on the box decides FP4 Dgrad viability; abort cost ≤ ~$20 by design.
+
+**Stale cron**: this session's cron `ddd8a001` (every 17 min) fires an outdated smoke/prefetch prompt — ignore it or delete it; the live monitor target is `/tmp/stock_eval.log`.
+
+Everything below this note is current as of commit `578d548` (+ the running stock eval). The HF model repo was **reorganized and verified**: root holds only `README.md` + `.gitattributes`; control experiments live in `gate_b_qwen05_v100/` and `gate_b_smoke_smollm135_v100/`; README explicitly states no DeepSeek weights exist yet.
+
+---
+
+
 ## Current state
 
 - **HF namespace renamed (2026-08-03)**: the user's HF account is now `cyjin-yl` (was `255doesnotexist`). Both repos verified live under the new name: `cyjin-yl/DeepSeek-V4-Flash-0731-Vision` (model: vision tower, projector checkpoints, eval results) and `cyjin-yl/moonvit-dsv4-data` (dataset: train/eval data).
