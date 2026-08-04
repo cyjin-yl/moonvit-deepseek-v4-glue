@@ -1,0 +1,165 @@
+{
+  "format_version": "perception-failure-audit-v1",
+  "created_at_utc": "2026-08-04T22:18:13.948475+00:00",
+  "selection_rule": "lexicographically first sample IDs satisfying each fixed predicate",
+  "checkpoint": "step-002000",
+  "per_task_requested": 20,
+  "candidate_counts": {
+    "color": {
+      "vision_success_blind_failure": 15,
+      "vision_and_blind_failure": 85,
+      "teacher_forced_positive_generation_failure": 32,
+      "patch_permutation_flip": 4,
+      "background_prediction_flip": 1
+    },
+    "coordinate": {
+      "vision_success_blind_failure": 0,
+      "vision_and_blind_failure": 100,
+      "teacher_forced_positive_generation_failure": 50,
+      "patch_permutation_flip": 0,
+      "background_prediction_flip": 0
+    },
+    "count": {
+      "vision_success_blind_failure": 11,
+      "vision_and_blind_failure": 89,
+      "teacher_forced_positive_generation_failure": 37,
+      "patch_permutation_flip": 0,
+      "background_prediction_flip": 0
+    },
+    "ocr": {
+      "vision_success_blind_failure": 0,
+      "vision_and_blind_failure": 100,
+      "teacher_forced_positive_generation_failure": 50,
+      "patch_permutation_flip": 0,
+      "background_prediction_flip": 0
+    },
+    "shape": {
+      "vision_success_blind_failure": 26,
+      "vision_and_blind_failure": 74,
+      "teacher_forced_positive_generation_failure": 24,
+      "patch_permutation_flip": 10,
+      "background_prediction_flip": 0
+    },
+    "spatial": {
+      "vision_success_blind_failure": 33,
+      "vision_and_blind_failure": 67,
+      "teacher_forced_positive_generation_failure": 17,
+      "patch_permutation_flip": 0,
+      "background_prediction_flip": 0
+    }
+  },
+  "selected_records": 318,
+  "shortfalls": [
+    {
+      "task": "color",
+      "case_type": "vision_success_blind_failure",
+      "available": 15,
+      "requested": 20
+    },
+    {
+      "task": "color",
+      "case_type": "patch_permutation_flip",
+      "available": 4,
+      "requested": 20
+    },
+    {
+      "task": "color",
+      "case_type": "background_prediction_flip",
+      "available": 1,
+      "requested": 20
+    },
+    {
+      "task": "coordinate",
+      "case_type": "vision_success_blind_failure",
+      "available": 0,
+      "requested": 20
+    },
+    {
+      "task": "coordinate",
+      "case_type": "patch_permutation_flip",
+      "available": 0,
+      "requested": 20
+    },
+    {
+      "task": "coordinate",
+      "case_type": "background_prediction_flip",
+      "available": 0,
+      "requested": 20
+    },
+    {
+      "task": "count",
+      "case_type": "vision_success_blind_failure",
+      "available": 11,
+      "requested": 20
+    },
+    {
+      "task": "count",
+      "case_type": "patch_permutation_flip",
+      "available": 0,
+      "requested": 20
+    },
+    {
+      "task": "count",
+      "case_type": "background_prediction_flip",
+      "available": 0,
+      "requested": 20
+    },
+    {
+      "task": "ocr",
+      "case_type": "vision_success_blind_failure",
+      "available": 0,
+      "requested": 20
+    },
+    {
+      "task": "ocr",
+      "case_type": "patch_permutation_flip",
+      "available": 0,
+      "requested": 20
+    },
+    {
+      "task": "ocr",
+      "case_type": "background_prediction_flip",
+      "available": 0,
+      "requested": 20
+    },
+    {
+      "task": "shape",
+      "case_type": "patch_permutation_flip",
+      "available": 10,
+      "requested": 20
+    },
+    {
+      "task": "shape",
+      "case_type": "background_prediction_flip",
+      "available": 0,
+      "requested": 20
+    },
+    {
+      "task": "spatial",
+      "case_type": "teacher_forced_positive_generation_failure",
+      "available": 17,
+      "requested": 20
+    },
+    {
+      "task": "spatial",
+      "case_type": "patch_permutation_flip",
+      "available": 0,
+      "requested": 20
+    },
+    {
+      "task": "spatial",
+      "case_type": "background_prediction_flip",
+      "available": 0,
+      "requested": 20
+    }
+  ],
+  "final_half_scored": false,
+  "sources": {
+    "generation_records_sha256": "8d67f5548df3cb71ec9aacb92e542a09c14d9e3095664a843ec24d54a822fb0b",
+    "preference_records_sha256": "f7bf09aa3bc7f383ecca7abf9febf16e37ef0fdec8a04f5b19af8aab2d3b54c8"
+  },
+  "output": {
+    "bytes": 301419,
+    "sha256": "a96d21399973700215bd9af60992fbfea87b472f10e6281d1c9a9529251ce500"
+  }
+}

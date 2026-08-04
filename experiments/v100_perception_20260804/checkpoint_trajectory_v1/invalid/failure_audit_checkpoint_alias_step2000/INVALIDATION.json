@@ -1,0 +1,6 @@
+{
+  "status": "invalid",
+  "reason": "The audit CLI was given non-canonical checkpoint ID step2000, while raw records use step-002000. The old tool accepted zero matching rows and emitted an empty audit.",
+  "replacement": "failure_audit_step2000 generated with checkpoint step-002000",
+  "original_selected_records": 0
+}

@@ -1,0 +1,14 @@
+{
+  "status": "invalid",
+  "invalidated_at_utc": "2026-08-04T21:10:02.238100+00:00",
+  "reason": "screening override incorrectly required the fixed 32-record heldout manifest to contain the requested 128 records",
+  "impact": "runner exited before generation; zero model results produced",
+  "replacement_run": "trajectory_smoke_v5_batch64_retry1",
+  "old_results_must_not_be_used": true,
+  "files": {
+    "CONFIG.json": {
+      "bytes": 4927,
+      "sha256": "83e29373f644e46afb7f86029d82c52c63b723b6524019e396ae98a5cf6725e8"
+    }
+  }
+}

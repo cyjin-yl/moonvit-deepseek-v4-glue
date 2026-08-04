@@ -5,7 +5,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from moonvit_glue.synthetic_perception import SuiteConfig, generate_suite, verify_suite
+from PIL import Image
+
+from moonvit_glue.synthetic_perception import (
+    SuiteConfig,
+    generate_background_matched_aux,
+    generate_suite,
+    verify_suite,
+)
 
 
 TASKS = {"color", "shape", "count", "spatial", "ocr", "coordinate"}
@@ -90,3 +97,32 @@ def test_verifier_checks_all_images_and_rejects_pair_question_tampering(tmp_path
         assert "file hash mismatch" in str(error) or "pair question mismatch" in str(error)
     else:
         raise AssertionError("tampered synthetic suite was accepted")
+
+
+def test_background_aux_changes_only_selection_background(tmp_path):
+    authoritative = tmp_path / "authoritative"
+    auxiliary = tmp_path / "background-matched"
+    config = SuiteConfig(samples_per_task=1, image_size=96, seed=23)
+    generate_suite(authoritative, config)
+
+    manifest = generate_background_matched_aux(
+        authoritative / "selection.jsonl",
+        auxiliary,
+        config,
+    )
+
+    source_rows = _rows(authoritative / "selection.jsonl")
+    aux_rows = _rows(auxiliary / "selection_background_matched_aux.jsonl")
+    assert len(aux_rows) == len(source_rows)
+    for source, aux in zip(source_rows, aux_rows):
+        assert aux["id"] == source["id"]
+        assert aux["question"] == source["question"]
+        assert aux["answers"] == source["answers"]
+        assert aux["generation"] == source["generation"]
+        assert aux["authoritative_image_sha256"] == source["image_sha256"]
+    source_image = Image.open(authoritative / source_rows[0]["image"])
+    aux_image = Image.open(auxiliary / aux_rows[0]["image"])
+    assert source_image.getpixel((0, 0)) != aux_image.getpixel((0, 0))
+    assert aux_image.getpixel((0, 0)) == (237, 243, 248)
+    assert manifest["diagnostic_only"] is True
+    assert manifest["records"] == len(source_rows)

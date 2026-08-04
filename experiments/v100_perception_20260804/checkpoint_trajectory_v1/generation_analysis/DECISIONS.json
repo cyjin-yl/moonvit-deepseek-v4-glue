@@ -1,0 +1,131 @@
+{
+  "status": "valid",
+  "checkpoint_order": [
+    "step-000000",
+    "step-000500",
+    "step-001000",
+    "step-001500",
+    "step-002000"
+  ],
+  "shuffle_delta_onset": "step-000500",
+  "paired_answer_flip_onset": null,
+  "shuffle_delta_earlier_than_paired_generation": true,
+  "task_vision_gap_onsets": {
+    "color": "step-000500",
+    "coordinate": null,
+    "count": "step-000500",
+    "ocr": null,
+    "shape": "step-000500",
+    "spatial": "step-000500"
+  },
+  "step_2000_still_rising": {
+    "supported": false,
+    "mean_pair_accuracy_change_vs_step_1500": 0.0,
+    "ci95": [
+      0.0,
+      0.0
+    ]
+  },
+  "sudden_grokking": {
+    "supported": false,
+    "largest_transition": [
+      "step-000000",
+      "step-000500"
+    ],
+    "largest_pair_accuracy_change": 0.0,
+    "rule": "positive CI, absolute jump >=0.05, and >2x median absolute checkpoint jump"
+  },
+  "best_checkpoint_by_paired_answer_flip": "step-002000",
+  "best_is_last_unique_checkpoint": true,
+  "latest_vision_minus_blind": {
+    "denominator": 300,
+    "sum_a": 42.5,
+    "sum_b": 0.0,
+    "mean_a": 0.14166666666666666,
+    "mean_b": 0.0,
+    "mean_gap": 0.14166666666666666,
+    "a_only_better": 85,
+    "b_only_better": 0,
+    "equal": 215,
+    "ci95_low": 0.11666666666666667,
+    "ci95_high": 0.16833333333333333,
+    "bootstrap_samples": 2000,
+    "seed": 401,
+    "checkpoint": "step-002000",
+    "examples_seen": 16000,
+    "task": "overall",
+    "a": "vision",
+    "b": "blind",
+    "metric": "sample_accuracy"
+  },
+  "latest_vision_minus_blank": {
+    "denominator": 300,
+    "sum_a": 42.5,
+    "sum_b": 31.0,
+    "mean_a": 0.14166666666666666,
+    "mean_b": 0.10333333333333333,
+    "mean_gap": 0.03833333333333333,
+    "a_only_better": 39,
+    "b_only_better": 16,
+    "equal": 245,
+    "ci95_low": 0.015,
+    "ci95_high": 0.06166666666666667,
+    "bootstrap_samples": 2000,
+    "seed": 402,
+    "checkpoint": "step-002000",
+    "examples_seen": 16000,
+    "task": "overall",
+    "a": "vision",
+    "b": "blank",
+    "metric": "sample_accuracy"
+  },
+  "latest_vision_minus_same_image": {
+    "denominator": 300,
+    "sum_a": 42.5,
+    "sum_b": 43.5,
+    "mean_a": 0.14166666666666666,
+    "mean_b": 0.145,
+    "mean_gap": -0.0033333333333333335,
+    "a_only_better": 8,
+    "b_only_better": 10,
+    "equal": 282,
+    "ci95_low": -0.018333333333333333,
+    "ci95_high": 0.01,
+    "bootstrap_samples": 2000,
+    "seed": 403,
+    "checkpoint": "step-002000",
+    "examples_seen": 16000,
+    "task": "overall",
+    "a": "vision",
+    "b": "same_image",
+    "metric": "sample_accuracy"
+  },
+  "latest_vision_minus_shuffled_image": {
+    "denominator": 300,
+    "sum_a": 42.5,
+    "sum_b": 43.5,
+    "mean_a": 0.14166666666666666,
+    "mean_b": 0.145,
+    "mean_gap": -0.0033333333333333335,
+    "a_only_better": 5,
+    "b_only_better": 7,
+    "equal": 288,
+    "ci95_low": -0.015,
+    "ci95_high": 0.008333333333333333,
+    "bootstrap_samples": 2000,
+    "seed": 404,
+    "checkpoint": "step-002000",
+    "examples_seen": 16000,
+    "task": "overall",
+    "a": "vision",
+    "b": "shuffled_image",
+    "metric": "sample_accuracy"
+  },
+  "latest_content_specific_gap_supported": false,
+  "stop_condition_no_significant_synthetic_vision_gap": false,
+  "interpretation_limits": [
+    "bootstrap intervals are descriptive paired resampling, not proof of mechanism",
+    "checkpoint selection uses synthetic/benchmark selection data only; final odd halves remain unscored",
+    "current-final is a bit-identical alias of step-002000"
+  ]
+}

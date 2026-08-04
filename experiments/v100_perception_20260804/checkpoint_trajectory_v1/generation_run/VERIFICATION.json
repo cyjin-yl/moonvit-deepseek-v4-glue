@@ -1,0 +1,13 @@
+{
+  "status": "valid",
+  "run_status": "valid",
+  "generation_rows_verified": 37300,
+  "generation_failures": 0,
+  "shuffle_rows_verified": 160,
+  "shuffle_failures": 0,
+  "failure_events": 0,
+  "unique_checkpoints_verified": 5,
+  "aliases_verified": 1,
+  "final_half_scored": false,
+  "raw_files_verified": 6
+}

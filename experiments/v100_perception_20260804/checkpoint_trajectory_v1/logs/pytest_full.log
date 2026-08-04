@@ -1,0 +1,28 @@
+........................................................................ [ 48%]
+........................................................................ [ 96%]
+......                                                                   [100%]
+=============================== warnings summary ===============================
+../1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/jit/_script.py:362: 14 warnings
+  /run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/jit/_script.py:362: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+tests/test_moonvit_v2.py::test_v2_tower_forward_matches_patch_group_contract
+  /run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+    raw_cnt = _raw_device_count_nvml()
+
+tests/test_train_mix.py::test_average_hash_deterministic_and_sensitive_to_content
+tests/test_train_mix.py::test_average_hash_deterministic_and_sensitive_to_content
+tests/test_train_mix.py::test_average_hash_deterministic_and_sensitive_to_content
+tests/test_train_mix.py::test_average_hash_deterministic_and_sensitive_to_content
+tests/test_train_mix.py::test_average_hash_deterministic_and_sensitive_to_content
+tests/test_train_mix.py::test_average_hash_deterministic_and_sensitive_to_content
+tests/test_train_mix.py::test_pixel_sha256_catches_same_content_across_containers
+  /run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/build_train_mix.py:48: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+    pixels = list(gray.getdata())
+
+tests/test_training_checkpoint.py::test_resume_reproduces_training_trajectory
+  /run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tests/test_training_checkpoint.py:27: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+  Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+    return float(loss)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html

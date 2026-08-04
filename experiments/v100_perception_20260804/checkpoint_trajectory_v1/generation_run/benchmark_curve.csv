@@ -1,0 +1,121 @@
+checkpoint,optimizer_steps,examples_seen,condition,benchmark,metric,raw_score_sum,denominator,score,parse_numerator,parse_denominator,parse_rate,most_common_coordinate,collapse_numerator,collapse_denominator,collapse_rate
+step-000000,0,0,vision,docvqa,anls,0.0,100,0.0,,,,,,,
+step-000000,0,0,vision,mmmu_pro,exact_match,0.0,150,0.0,,,,,,,
+step-000000,0,0,vision,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-000000,0,0,vision,screenspot,accuracy,0.0,100,0.0,0,100,0.0,,0,100,0.0
+step-000000,0,0,vision,textvqa,soft_vqa,0.0,250,0.0,,,,,,,
+step-000000,0,0,blind,docvqa,anls,0.0,100,0.0,,,,,,,
+step-000000,0,0,blind,mmmu_pro,exact_match,0.0,150,0.0,,,,,,,
+step-000000,0,0,blind,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-000000,0,0,blind,screenspot,accuracy,0.0,100,0.0,0,100,0.0,,0,100,0.0
+step-000000,0,0,blind,textvqa,soft_vqa,0.0,250,0.0,,,,,,,
+step-000000,0,0,blank,docvqa,anls,0.0,100,0.0,,,,,,,
+step-000000,0,0,blank,mmmu_pro,exact_match,0.0,150,0.0,,,,,,,
+step-000000,0,0,blank,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-000000,0,0,blank,screenspot,accuracy,0.0,100,0.0,0,100,0.0,,0,100,0.0
+step-000000,0,0,blank,textvqa,soft_vqa,0.0,250,0.0,,,,,,,
+step-000000,0,0,shuffled_image,docvqa,anls,0.0,100,0.0,,,,,,,
+step-000000,0,0,shuffled_image,mmmu_pro,exact_match,0.0,150,0.0,,,,,,,
+step-000000,0,0,shuffled_image,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-000000,0,0,shuffled_image,screenspot,accuracy,0.0,100,0.0,0,100,0.0,,0,100,0.0
+step-000000,0,0,shuffled_image,textvqa,soft_vqa,0.0,250,0.0,,,,,,,
+step-000000,0,0,patch_permutation,docvqa,anls,0.0,100,0.0,,,,,,,
+step-000000,0,0,patch_permutation,mmmu_pro,exact_match,0.0,150,0.0,,,,,,,
+step-000000,0,0,patch_permutation,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-000000,0,0,patch_permutation,screenspot,accuracy,0.0,100,0.0,0,100,0.0,,0,100,0.0
+step-000000,0,0,patch_permutation,textvqa,soft_vqa,0.0,250,0.0,,,,,,,
+step-000500,500,4000,vision,docvqa,anls,2.6,100,0.026000000000000002,,,,,,,
+step-000500,500,4000,vision,mmmu_pro,exact_match,0.0,150,0.0,,,,,,,
+step-000500,500,4000,vision,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-000500,500,4000,vision,screenspot,accuracy,0.0,100,0.0,30,100,0.3,"[108.0, 23.0]",9,100,0.09
+step-000500,500,4000,vision,textvqa,soft_vqa,1.0,250,0.004,,,,,,,
+step-000500,500,4000,blind,docvqa,anls,0.0,100,0.0,,,,,,,
+step-000500,500,4000,blind,mmmu_pro,exact_match,0.0,150,0.0,,,,,,,
+step-000500,500,4000,blind,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-000500,500,4000,blind,screenspot,accuracy,0.0,100,0.0,0,100,0.0,,0,100,0.0
+step-000500,500,4000,blind,textvqa,soft_vqa,0.0,250,0.0,,,,,,,
+step-001000,1000,8000,vision,docvqa,anls,2.2,100,0.022000000000000002,,,,,,,
+step-001000,1000,8000,vision,mmmu_pro,exact_match,1.0,150,0.006666666666666667,,,,,,,
+step-001000,1000,8000,vision,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-001000,1000,8000,vision,screenspot,accuracy,0.0,100,0.0,7,100,0.07,"[108.0, 24.0]",2,100,0.02
+step-001000,1000,8000,vision,textvqa,soft_vqa,1.0,250,0.004,,,,,,,
+step-001000,1000,8000,blind,docvqa,anls,0.0,100,0.0,,,,,,,
+step-001000,1000,8000,blind,mmmu_pro,exact_match,0.0,150,0.0,,,,,,,
+step-001000,1000,8000,blind,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-001000,1000,8000,blind,screenspot,accuracy,0.0,100,0.0,0,100,0.0,,0,100,0.0
+step-001000,1000,8000,blind,textvqa,soft_vqa,0.0,250,0.0,,,,,,,
+step-001000,1000,8000,blank,docvqa,anls,0.5,100,0.005,,,,,,,
+step-001000,1000,8000,blank,mmmu_pro,exact_match,6.0,150,0.04,,,,,,,
+step-001000,1000,8000,blank,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-001000,1000,8000,blank,screenspot,accuracy,0.0,100,0.0,0,100,0.0,,0,100,0.0
+step-001000,1000,8000,blank,textvqa,soft_vqa,0.0,250,0.0,,,,,,,
+step-001000,1000,8000,shuffled_image,docvqa,anls,1.8421052631578947,100,0.018421052631578946,,,,,,,
+step-001000,1000,8000,shuffled_image,mmmu_pro,exact_match,2.0,150,0.013333333333333334,,,,,,,
+step-001000,1000,8000,shuffled_image,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-001000,1000,8000,shuffled_image,screenspot,accuracy,0.0,100,0.0,1,100,0.01,"[104.0, 23.0]",1,100,0.01
+step-001000,1000,8000,shuffled_image,textvqa,soft_vqa,0.6666666666666666,250,0.0026666666666666666,,,,,,,
+step-001000,1000,8000,patch_permutation,docvqa,anls,1.6,100,0.016,,,,,,,
+step-001000,1000,8000,patch_permutation,mmmu_pro,exact_match,1.0,150,0.006666666666666667,,,,,,,
+step-001000,1000,8000,patch_permutation,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-001000,1000,8000,patch_permutation,screenspot,accuracy,0.0,100,0.0,6,100,0.06,"[104.0, 23.0]",3,100,0.03
+step-001000,1000,8000,patch_permutation,textvqa,soft_vqa,1.0,250,0.004,,,,,,,
+step-001500,1500,12000,vision,docvqa,anls,2.1,100,0.021,,,,,,,
+step-001500,1500,12000,vision,mmmu_pro,exact_match,3.0,150,0.02,,,,,,,
+step-001500,1500,12000,vision,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-001500,1500,12000,vision,screenspot,accuracy,0.0,100,0.0,32,100,0.32,"[418.0, 20.0]",5,100,0.05
+step-001500,1500,12000,vision,textvqa,soft_vqa,2.0,250,0.008,,,,,,,
+step-001500,1500,12000,blind,docvqa,anls,0.0,100,0.0,,,,,,,
+step-001500,1500,12000,blind,mmmu_pro,exact_match,0.0,150,0.0,,,,,,,
+step-001500,1500,12000,blind,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-001500,1500,12000,blind,screenspot,accuracy,0.0,100,0.0,0,100,0.0,,0,100,0.0
+step-001500,1500,12000,blind,textvqa,soft_vqa,0.0,250,0.0,,,,,,,
+step-002000,2000,16000,vision,docvqa,anls,2.6,100,0.026000000000000002,,,,,,,
+step-002000,2000,16000,vision,mmmu_pro,exact_match,1.0,150,0.006666666666666667,,,,,,,
+step-002000,2000,16000,vision,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-002000,2000,16000,vision,screenspot,accuracy,1.0,100,0.01,19,100,0.19,"[108.0, 235.0]",7,100,0.07
+step-002000,2000,16000,vision,textvqa,soft_vqa,2.0,250,0.008,,,,,,,
+step-002000,2000,16000,blind,docvqa,anls,0.0,100,0.0,,,,,,,
+step-002000,2000,16000,blind,mmmu_pro,exact_match,0.0,150,0.0,,,,,,,
+step-002000,2000,16000,blind,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-002000,2000,16000,blind,screenspot,accuracy,0.0,100,0.0,0,100,0.0,,0,100,0.0
+step-002000,2000,16000,blind,textvqa,soft_vqa,0.0,250,0.0,,,,,,,
+step-002000,2000,16000,blank,docvqa,anls,0.5,100,0.005,,,,,,,
+step-002000,2000,16000,blank,mmmu_pro,exact_match,1.0,150,0.006666666666666667,,,,,,,
+step-002000,2000,16000,blank,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-002000,2000,16000,blank,screenspot,accuracy,0.0,100,0.0,0,100,0.0,,0,100,0.0
+step-002000,2000,16000,blank,textvqa,soft_vqa,2.3333333333333335,250,0.009333333333333334,,,,,,,
+step-002000,2000,16000,shuffled_image,docvqa,anls,1.0,100,0.01,,,,,,,
+step-002000,2000,16000,shuffled_image,mmmu_pro,exact_match,1.0,150,0.006666666666666667,,,,,,,
+step-002000,2000,16000,shuffled_image,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-002000,2000,16000,shuffled_image,screenspot,accuracy,0.0,100,0.0,3,100,0.03,"[108.0, 235.0]",2,100,0.02
+step-002000,2000,16000,shuffled_image,textvqa,soft_vqa,0.3333333333333333,250,0.0013333333333333333,,,,,,,
+step-002000,2000,16000,patch_permutation,docvqa,anls,2.0,100,0.02,,,,,,,
+step-002000,2000,16000,patch_permutation,mmmu_pro,exact_match,0.0,150,0.0,,,,,,,
+step-002000,2000,16000,patch_permutation,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+step-002000,2000,16000,patch_permutation,screenspot,accuracy,1.0,100,0.01,17,100,0.17,"[108.0, 235.0]",4,100,0.04
+step-002000,2000,16000,patch_permutation,textvqa,soft_vqa,1.0,250,0.004,,,,,,,
+current-final,2000,16000,vision,docvqa,anls,2.6,100,0.026000000000000002,,,,,,,
+current-final,2000,16000,vision,mmmu_pro,exact_match,1.0,150,0.006666666666666667,,,,,,,
+current-final,2000,16000,vision,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+current-final,2000,16000,vision,screenspot,accuracy,1.0,100,0.01,19,100,0.19,"[108.0, 235.0]",7,100,0.07
+current-final,2000,16000,vision,textvqa,soft_vqa,2.0,250,0.008,,,,,,,
+current-final,2000,16000,blind,docvqa,anls,0.0,100,0.0,,,,,,,
+current-final,2000,16000,blind,mmmu_pro,exact_match,0.0,150,0.0,,,,,,,
+current-final,2000,16000,blind,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+current-final,2000,16000,blind,screenspot,accuracy,0.0,100,0.0,0,100,0.0,,0,100,0.0
+current-final,2000,16000,blind,textvqa,soft_vqa,0.0,250,0.0,,,,,,,
+current-final,2000,16000,blank,docvqa,anls,0.5,100,0.005,,,,,,,
+current-final,2000,16000,blank,mmmu_pro,exact_match,1.0,150,0.006666666666666667,,,,,,,
+current-final,2000,16000,blank,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+current-final,2000,16000,blank,screenspot,accuracy,0.0,100,0.0,0,100,0.0,,0,100,0.0
+current-final,2000,16000,blank,textvqa,soft_vqa,2.3333333333333335,250,0.009333333333333334,,,,,,,
+current-final,2000,16000,shuffled_image,docvqa,anls,1.0,100,0.01,,,,,,,
+current-final,2000,16000,shuffled_image,mmmu_pro,exact_match,1.0,150,0.006666666666666667,,,,,,,
+current-final,2000,16000,shuffled_image,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+current-final,2000,16000,shuffled_image,screenspot,accuracy,0.0,100,0.0,3,100,0.03,"[108.0, 235.0]",2,100,0.02
+current-final,2000,16000,shuffled_image,textvqa,soft_vqa,0.3333333333333333,250,0.0013333333333333333,,,,,,,
+current-final,2000,16000,patch_permutation,docvqa,anls,2.0,100,0.02,,,,,,,
+current-final,2000,16000,patch_permutation,mmmu_pro,exact_match,0.0,150,0.0,,,,,,,
+current-final,2000,16000,patch_permutation,ocrbench,exact_match,0.0,100,0.0,,,,,,,
+current-final,2000,16000,patch_permutation,screenspot,accuracy,1.0,100,0.01,17,100,0.17,"[108.0, 235.0]",4,100,0.04
+current-final,2000,16000,patch_permutation,textvqa,soft_vqa,1.0,250,0.004,,,,,,,

@@ -1,0 +1,30 @@
+{
+  "format_version": "synthetic-background-matched-aux-v1",
+  "created_at_utc": "2026-08-04T18:27:04.348374+00:00",
+  "diagnostic_only": true,
+  "training_allowed": false,
+  "final_evaluation_half_used": false,
+  "authoritative_selection": {
+    "path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/selection.jsonl",
+    "sha256": "51ce274183bd4b7adc6e7201d9aeed259071d380551bf55f656119d201a936d6"
+  },
+  "background_from": "#fff5e6",
+  "background_to": "#edf3f8",
+  "scene_source": "authoritative rows generation.render; no scene resampling",
+  "records": 2400,
+  "tasks": {
+    "color": 400,
+    "coordinate": 400,
+    "count": 400,
+    "ocr": 400,
+    "shape": 400,
+    "spatial": 400
+  },
+  "image_hashes_sha256": "9bbefc12382537544c1611a205912b355ebf590525383d0fb97fd178962c12f0",
+  "files": {
+    "selection_background_matched_aux.jsonl": {
+      "bytes": 2212670,
+      "sha256": "8079f959a7468700fe8ab43f62b1da857b8852e21796f950e152ac45bddbe5f2"
+    }
+  }
+}

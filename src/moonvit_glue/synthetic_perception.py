@@ -372,6 +372,101 @@ def _render(spec: dict, task: str, split: str, config: SuiteConfig) -> Image.Ima
     return image
 
 
+def generate_background_matched_aux(
+    authoritative_selection: Path | str,
+    output_dir: Path | str,
+    config: SuiteConfig = SuiteConfig(),
+) -> dict:
+    """Re-render fixed selection scenes with the train background for diagnosis only."""
+
+    config.validate()
+    source_path = Path(authoritative_selection).resolve()
+    output = Path(output_dir)
+    if output.exists():
+        raise FileExistsError(f"refusing to overwrite background auxiliary: {output}")
+    output.mkdir(parents=True)
+    rows = [
+        json.loads(line)
+        for line in source_path.read_text(encoding="utf-8").splitlines()
+        if line
+    ]
+    if not rows:
+        raise ValueError("authoritative selection is empty")
+
+    matched_config = SuiteConfig(
+        samples_per_task=config.samples_per_task,
+        image_size=config.image_size,
+        seed=config.seed,
+        background_train=config.background_train,
+        background_selection=config.background_train,
+    )
+    auxiliary_rows: list[dict] = []
+    image_hashes: dict[str, str] = {}
+    for source in rows:
+        if source.get("split") != "selection":
+            raise ValueError(f"background auxiliary accepts selection rows only: {source['id']}")
+        source_image = source_path.parent / str(source["image"])
+        if _sha256(source_image) != str(source["image_sha256"]):
+            raise ValueError(f"authoritative image hash mismatch: {source['id']}")
+        relative_image = Path(str(source["image"]))
+        destination = output / relative_image
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        rendered = _render(
+            source["generation"]["render"],
+            str(source["task"]),
+            "selection",
+            matched_config,
+        )
+        rendered.save(destination, format="PNG", optimize=False, compress_level=9)
+        digest = _sha256(destination)
+        image_hashes[str(source["id"])] = digest
+        auxiliary = dict(source)
+        auxiliary["authoritative_image_sha256"] = str(source["image_sha256"])
+        auxiliary["image_sha256"] = digest
+        auxiliary["auxiliary"] = {
+            "name": "selection_background_matched_aux",
+            "diagnostic_only": True,
+            "background_from": config.background_selection,
+            "background_to": config.background_train,
+        }
+        auxiliary_rows.append(auxiliary)
+
+    records_path = output / "selection_background_matched_aux.jsonl"
+    _write_jsonl(records_path, auxiliary_rows)
+    manifest = {
+        "format_version": "synthetic-background-matched-aux-v1",
+        "created_at_utc": datetime.now(timezone.utc).isoformat(),
+        "diagnostic_only": True,
+        "training_allowed": False,
+        "final_evaluation_half_used": False,
+        "authoritative_selection": {
+            "path": str(source_path),
+            "sha256": _sha256(source_path),
+        },
+        "background_from": config.background_selection,
+        "background_to": config.background_train,
+        "scene_source": "authoritative rows generation.render; no scene resampling",
+        "records": len(auxiliary_rows),
+        "tasks": dict(
+            sorted(
+                {
+                    task: sum(str(row["task"]) == task for row in auxiliary_rows)
+                    for task in {str(row["task"]) for row in auxiliary_rows}
+                }.items()
+            )
+        ),
+        "image_hashes_sha256": _json_hash(image_hashes),
+        "files": {
+            records_path.name: {
+                "bytes": records_path.stat().st_size,
+                "sha256": _sha256(records_path),
+            }
+        },
+    }
+    _write_json(output / "MANIFEST.json", manifest)
+    return manifest
+
+
 def _ocr_pairs(config: SuiteConfig) -> dict[str, list[tuple[str, str]]]:
     alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
     used: set[str] = set()

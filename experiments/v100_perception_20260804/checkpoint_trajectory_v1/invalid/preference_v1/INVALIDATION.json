@@ -1,0 +1,26 @@
+{
+  "status": "invalid",
+  "invalidated_at_utc": "2026-08-04T19:42:22.955218+00:00",
+  "reason": "visual_source_id recorded the current sample for shuffled_image instead of the consumed deranged feature ID",
+  "impact": "teacher-forced scores are numerically unaffected, but the raw causal provenance field fails independent verification; no v1 result may support a conclusion",
+  "replacement_run": "preference_v2",
+  "old_results_must_not_be_used": true,
+  "files": {
+    "CONFIG.json": {
+      "bytes": 3383,
+      "sha256": "0b77d82c86cd283419d924ce5e8e54f43a5f70a23de98c3a8a9ace71faade6b1"
+    },
+    "SUMMARY.json": {
+      "bytes": 270023,
+      "sha256": "2818323846bf03a0b3c5b8eedc7a90d12ba99647b7c681b4a5dc4acb180c7c89"
+    },
+    "preference_records.jsonl": {
+      "bytes": 81888199,
+      "sha256": "d0094c569b7da158e2dc04dcce2c8a7e823ee51e7e14198ef78925737e00de94"
+    },
+    "failures.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

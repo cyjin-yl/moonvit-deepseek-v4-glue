@@ -1,0 +1,9 @@
+{
+  "status": "valid",
+  "rows_compared": 96000,
+  "numeric_fields_bit_identical": true,
+  "visual_source_rows_corrected": 36000,
+  "invalid_run_sha256": "d0094c569b7da158e2dc04dcce2c8a7e823ee51e7e14198ef78925737e00de94",
+  "replacement_run_sha256": "f7bf09aa3bc7f383ecca7abf9febf16e37ef0fdec8a04f5b19af8aab2d3b54c8",
+  "invalid_run_invalidation_sha256": "da78c938ba28b612f95b523961c1154d7aa297a9155549fe7d3c52b7d51f3acb"
+}

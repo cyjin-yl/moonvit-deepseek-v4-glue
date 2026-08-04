@@ -1,0 +1,30 @@
+{
+  "status": "invalid",
+  "invalidated_at_utc": "2026-08-04T20:58:14.559555+00:00",
+  "reason": "the preregistered batch-2 1024px benchmark screen measured about 0.8 samples/s, making the expanded all-checkpoint control matrix impractical",
+  "impact": "run stopped before completing step-0 benchmarks; SUMMARY.json was never produced and no v3 score may be used",
+  "replacement_run": "trajectory_v4",
+  "old_results_must_not_be_used": true,
+  "files": {
+    "CONFIG.json": {
+      "bytes": 5288,
+      "sha256": "9b4842c3ed108e31d08bdef999432a0869dcf6a51801ee9eae925eb871ffab96"
+    },
+    "SUMMARY.partial.json": {
+      "bytes": 59205,
+      "sha256": "09ba1375e6596c54a2da5b01f8c91180d2506b1efaf23f0a07089325d3de652c"
+    },
+    "records.jsonl": {
+      "bytes": 15601262,
+      "sha256": "1141d1e90b820f87453986f3dffaaa7d5758f202ee4b119dfecd088dd4f5fb5a"
+    },
+    "shuffle_loss_records.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "failures.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

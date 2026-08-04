@@ -1,0 +1,62 @@
+{
+  "status": "valid",
+  "sources": {
+    "synthetic_curve.csv": "21b071a555cce02e8a9e7ccb673ee0c1d6497c00725ade3e3db644f16b1ae754",
+    "benchmark_curve.csv": "c6f7485977ee9398b822668dd9c94525d09c0b493085342e8acdea5c665f19e7",
+    "shuffle_loss_curve.csv": "6d73b639c563c96fcb33a2c42e60b2ced2410bd67e5716817b6a9652990ff84b",
+    "preference_curve.csv": "9482199cca999dcd68876b2a15c42bca3e5d8609b2b8b1ed0b92bd9205550c97",
+    "preference_gaps.csv": "cc6d3c5e6bf99c030562e6a0dabd694f13ce57a0f4340809b81bb432c47c03a9",
+    "10-evidence-vs-generation.csv": "ebc3cdeb70f4cbd9d65e81b695bdfab0706b56da1d8142c6541d669ce1a7efa4",
+    "10b-paired-evidence-vs-paired-generation.csv": "7dcb99c68fffcc1c4a55feae2033d8bd23866600b6cc866c4458141927ae4c37"
+  },
+  "charts": {
+    "01-generation-accuracy.svg": {
+      "bytes": 3219,
+      "sha256": "76339187a9d20d5f0f80b6f5c6f5c67a733fa5e1b5cd2ea0e6a2936fca1076c4"
+    },
+    "02-paired-preference.svg": {
+      "bytes": 3742,
+      "sha256": "ade3acc2247bcee9681e065d2bf22833a003eac1410df47336ffc547bdaedb81"
+    },
+    "03-answer-flip.svg": {
+      "bytes": 3235,
+      "sha256": "86db81cc7cc1d889b66475c812c2e26bb275e7509b612164272d421a162dfabd"
+    },
+    "04-correct-margin.svg": {
+      "bytes": 3763,
+      "sha256": "69a72ebf91a2da53e9fabaa6a483e5d0fbe227d7bff35cb4de9ea1a6ea7a1cc7"
+    },
+    "05-true-shuffled-loss.svg": {
+      "bytes": 3209,
+      "sha256": "9a3f726b2afb614fe1e72fda2731db2c7d0c6cced1c4af52df360ac20e13f9d6"
+    },
+    "05b-shuffle-delta-by-source.svg": {
+      "bytes": 4286,
+      "sha256": "f9075f986b45d06e4715161834f8a00feae3e0c06fe15ebdcba79e78d379a8fb"
+    },
+    "06-benchmark-vision-minus-blind.svg": {
+      "bytes": 4773,
+      "sha256": "8dcf299813ee0297d0d510173d53fa594bbbe014b00bec403ccf3ce523a854c1"
+    },
+    "07-task-checkpoint-heatmap.svg": {
+      "bytes": 6564,
+      "sha256": "73ad955bebd95862fda5e45e49bbb520d24ede1349717ad185eab0e6bb1ace52"
+    },
+    "08-control-checkpoint-heatmap.svg": {
+      "bytes": 7580,
+      "sha256": "2a15e19a8c468d27c00c08bb8e33eaf252ec73038cacf3f303a1d1d575e06cf0"
+    },
+    "09-background-comparison.svg": {
+      "bytes": 4326,
+      "sha256": "c173f136a9c8bb5fc7a467ef8216a72353b80e0644e094f4a187d1aec360f283"
+    },
+    "10-evidence-vs-generation.svg": {
+      "bytes": 3058,
+      "sha256": "df403919cc6905a4aef667242b9f30aa16d4d323713bdd129dd89d8a668fd01c"
+    },
+    "10b-paired-evidence-vs-paired-generation.svg": {
+      "bytes": 3330,
+      "sha256": "d875066cdcbfa5b051378793560f952d1a82989820cecf22425d1c6272d60802"
+    }
+  }
+}

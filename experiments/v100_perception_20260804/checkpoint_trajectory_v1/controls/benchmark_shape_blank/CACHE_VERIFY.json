@@ -1,0 +1,17 @@
+{
+  "status": "valid",
+  "controls": 700,
+  "unique_feature_shapes": 161,
+  "cached": 161,
+  "failures": 0,
+  "assignment_min": 1,
+  "assignment_max": 110,
+  "final_half_scored": false,
+  "hashes": {
+    "controls_manifest": "d29352600dec8df91606a84d7ea82010c5df555ca0d4c4a2afad94d7127ecb3f",
+    "controls": "263499bbd53a0719375e26ecb382a52fa0baa51c20adb5a1207f464a7e472ad1",
+    "blank_records": "3573f4ee9d60bb89cdd8e6ac7ccce86d3ac1908f915e78e9a02340e570afc474",
+    "cache_manifest": "94849e4ea84aa2c0a300f427fbbdde188d9789c58d488ca6580ccc85555b0f5c",
+    "cache_records": "bbe333963cf8a6809c95b5f972acf728612dbe928a454c6c512cdffae584de4d"
+  }
+}

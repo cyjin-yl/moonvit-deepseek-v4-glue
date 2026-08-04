@@ -1,0 +1,30 @@
+{
+  "status": "invalid",
+  "invalidated_at_utc": "2026-08-04T21:07:06.536745+00:00",
+  "reason": "batch-16 synthetic screening sustained only about 8.3 records/s while peak memory in the preceding batch-8 smoke was 2.83 GB; stopped below one percent to screen a larger real batch",
+  "impact": "incomplete run with no SUMMARY.json; no v4 score may be used",
+  "replacement_run": "trajectory_v5",
+  "old_results_must_not_be_used": true,
+  "files": {
+    "CONFIG.json": {
+      "bytes": 5744,
+      "sha256": "8d6cccc74c626125ee2a8ef213ded149eb74a3df84c6f614b91bd749d7c201a1"
+    },
+    "SUMMARY.partial.json": {
+      "bytes": 14405,
+      "sha256": "ffdc01a3aff555797d5c2a02741d86bc8b52bf337a4ec34d86b1f7e0ae3104f2"
+    },
+    "records.jsonl": {
+      "bytes": 1931085,
+      "sha256": "055e92c601e0ae2bd2b8c32e46c22a03b10588ab5187b99138ec2520448a8aa9"
+    },
+    "shuffle_loss_records.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "failures.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

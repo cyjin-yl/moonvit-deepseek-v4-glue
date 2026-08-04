@@ -1,0 +1,71 @@
+{
+  "format_version": "checkpoint-trajectory-data-v1",
+  "created_at_utc": "2026-08-04T15:39:26.409568+00:00",
+  "discipline": {
+    "selection_rule": "zero-based even original row indices only",
+    "final_half_rule": "zero-based odd original row indices",
+    "final_half_materialized": false,
+    "final_half_scored": false,
+    "heldout_rule": "historical training split tail, last 32 rows"
+  },
+  "counts": {
+    "benchmark_selection": 700,
+    "benchmark_selection_by_name": {
+      "docvqa": 100,
+      "mmmu_pro": 150,
+      "ocrbench": 100,
+      "screenspot": 100,
+      "textvqa": 250
+    },
+    "historical_heldout": 32,
+    "historical_heldout_by_source": {
+      "docvqa_train": 9,
+      "showui_desktop": 3,
+      "textvqa_train": 17,
+      "train": 3
+    }
+  },
+  "sources": {
+    "benchmarks": [
+      {
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/eval/docvqa.jsonl",
+        "sha256": "6a5e5d4c2a2a104681ee6c58e9c8d110a4f928e696793474a8da567dd0fac034",
+        "selection_records": 100
+      },
+      {
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/eval/mmmu_pro.jsonl",
+        "sha256": "973f8cd17f3593be5bb6b14ada3f80efc17c4fdfbfa4ac30fec71e70affa1c81",
+        "selection_records": 150
+      },
+      {
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/eval/ocrbench.jsonl",
+        "sha256": "6d8f1ea3186b5bd56c4595904f13d5f48c291047ea556c15cc6676db28504c3b",
+        "selection_records": 100
+      },
+      {
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/eval/screenspot.jsonl",
+        "sha256": "382a30d4a708289216b2cedaf210bfc209deb08cec4a8cd83d865687ca91f936",
+        "selection_records": 100
+      },
+      {
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/eval/textvqa.jsonl",
+        "sha256": "4b04aafbb5c7b62141e06f093b1adba34245af5fcdf6ff17ceb142cba7238f6b",
+        "selection_records": 250
+      }
+    ],
+    "training": {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/train_v1/train_mix.jsonl",
+      "sha256": "5727a504824592907e8d5dfd681640de4e3caea7d32832f70292f8773b72f10a"
+    }
+  },
+  "files": {
+    "benchmark_selection.jsonl": {
+      "bytes": 304309,
+      "sha256": "669c9ad14c38351e3c35f59940605fd5da99d0d8215f975d63e340f79d0d7fd6"
+    },
+    "historical_heldout.jsonl": {
+      "bytes": 11407,
+      "sha256": "2ea841f21a2bbe93c0d7d7092aa32e7faddb6d57b607fb3e566e6cb98416884d"
+    }
+  }
+}

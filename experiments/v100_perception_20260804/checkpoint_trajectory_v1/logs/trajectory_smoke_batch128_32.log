@@ -1,0 +1,72 @@
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading weights:   0%|          | 0/290 [00:00<?, ?it/s]Loading weights:  16%|█▌        | 45/290 [00:00<00:00, 391.96it/s]Loading weights:  29%|██▉       | 85/290 [00:00<00:00, 357.42it/s]Loading weights:  42%|████▏     | 121/290 [00:00<00:00, 298.65it/s]Loading weights:  52%|█████▏    | 152/290 [00:00<00:00, 288.80it/s]Loading weights:  72%|███████▏  | 209/290 [00:00<00:00, 369.47it/s]Loading weights:  86%|████████▌ | 248/290 [00:00<00:00, 343.43it/s]Loading weights:  98%|█████████▊| 284/290 [00:00<00:00, 346.84it/s]Loading weights: 100%|██████████| 290/290 [00:00<00:00, 347.12it/s]
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+[step-000000] synthetic/vision 128/128
+[step-000000] synthetic/blind 128/128
+[step-000000] synthetic/blank 128/128
+[step-000000] synthetic/same_image 128/128
+[step-000000] synthetic/shuffled_image 128/128
+[step-000000] synthetic/patch_permutation 128/128
+[step-000000] synthetic/paired_counterfactual_image 128/128
+[step-000000] synthetic/background_matched_aux 128/128
+[step-000000] benchmarks/vision 32/128
+[step-000000] benchmarks/vision 64/128
+[step-000000] benchmarks/vision 96/128
+[step-000000] benchmarks/vision 128/128
+[step-000000] benchmarks/blind 32/128
+[step-000000] benchmarks/blind 64/128
+[step-000000] benchmarks/blind 96/128
+[step-000000] benchmarks/blind 128/128
+[step-000000] benchmarks/blank 32/128
+[step-000000] benchmarks/blank 64/128
+[step-000000] benchmarks/blank 96/128
+[step-000000] benchmarks/blank 128/128
+[step-000000] benchmarks/shuffled_image 32/128
+[step-000000] benchmarks/shuffled_image 64/128
+[step-000000] benchmarks/shuffled_image 96/128
+[step-000000] benchmarks/shuffled_image 128/128
+[step-000000] benchmarks/patch_permutation 32/128
+[step-000000] benchmarks/patch_permutation 64/128
+[step-000000] benchmarks/patch_permutation 96/128
+[step-000000] benchmarks/patch_permutation 128/128
+[step-000000] shuffle-loss 1/32
+[step-000000] shuffle-loss 2/32
+[step-000000] shuffle-loss 3/32
+[step-000000] shuffle-loss 4/32
+[step-000000] shuffle-loss 5/32
+[step-000000] shuffle-loss 6/32
+[step-000000] shuffle-loss 7/32
+[step-000000] shuffle-loss 8/32
+[step-000000] shuffle-loss 9/32
+[step-000000] shuffle-loss 10/32
+[step-000000] shuffle-loss 11/32
+[step-000000] shuffle-loss 12/32
+[step-000000] shuffle-loss 13/32
+[step-000000] shuffle-loss 14/32
+[step-000000] shuffle-loss 15/32
+[step-000000] shuffle-loss 16/32
+[step-000000] shuffle-loss 17/32
+[step-000000] shuffle-loss 18/32
+[step-000000] shuffle-loss 19/32
+[step-000000] shuffle-loss 20/32
+[step-000000] shuffle-loss 21/32
+[step-000000] shuffle-loss 22/32
+[step-000000] shuffle-loss 23/32
+[step-000000] shuffle-loss 24/32
+[step-000000] shuffle-loss 25/32
+[step-000000] shuffle-loss 26/32
+[step-000000] shuffle-loss 27/32
+[step-000000] shuffle-loss 28/32
+[step-000000] shuffle-loss 29/32
+[step-000000] shuffle-loss 30/32
+[step-000000] shuffle-loss 31/32
+[step-000000] shuffle-loss 32/32
+{
+  "status": "valid",
+  "wall_seconds": 215.42485690116882,
+  "peak_gpu_memory_bytes": 18568209408,
+  "failures": 0,
+  "summary": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/trajectory/trajectory_smoke_v5_batch128/SUMMARY.json"
+}

@@ -1,0 +1,19 @@
+{
+  "format_version": "perception-failure-audit-v1",
+  "created_at_utc": "2026-08-04T22:12:49.780615+00:00",
+  "selection_rule": "lexicographically first sample IDs satisfying each fixed predicate",
+  "checkpoint": "step1500",
+  "per_task_requested": 20,
+  "candidate_counts": {},
+  "selected_records": 0,
+  "shortfalls": [],
+  "final_half_scored": false,
+  "sources": {
+    "generation_records_sha256": "8d67f5548df3cb71ec9aacb92e542a09c14d9e3095664a843ec24d54a822fb0b",
+    "preference_records_sha256": "f7bf09aa3bc7f383ecca7abf9febf16e37ef0fdec8a04f5b19af8aab2d3b54c8"
+  },
+  "output": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "format_version": "benchmark-shape-matched-blank-controls-v1",
+  "created_at_utc": "2026-08-04T18:55:30.303425+00:00",
+  "blank_rgb": [
+    255,
+    255,
+    255
+  ],
+  "records": 700,
+  "unique_feature_shapes": 161,
+  "final_half_materialized": false,
+  "final_half_scored": false,
+  "sources": {
+    "data": {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/trajectory/data_v1/benchmark_selection.jsonl",
+      "sha256": "669c9ad14c38351e3c35f59940605fd5da99d0d8215f975d63e340f79d0d7fd6"
+    },
+    "controls": {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/trajectory/benchmark-controls-v1/controls.jsonl",
+      "sha256": "6b9d7a2a92e448ffc68f7d2a2bdd8b9c5afaca708861fab59ffa5a15f86cf910"
+    },
+    "feature_cache_records": {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/benchmark-selection-1024-v1/cache_records.jsonl",
+      "sha256": "d360e164c0af40fe02361d8f45e77bc6f32d60a9d90755c5430fe8691dd15341"
+    }
+  },
+  "files": {
+    "controls.jsonl": {
+      "bytes": 206510,
+      "sha256": "263499bbd53a0719375e26ecb382a52fa0baa51c20adb5a1207f464a7e472ad1"
+    },
+    "blank_records.jsonl": {
+      "bytes": 74266,
+      "sha256": "3573f4ee9d60bb89cdd8e6ac7ccce86d3ac1908f915e78e9a02340e570afc474"
+    }
+  }
+}

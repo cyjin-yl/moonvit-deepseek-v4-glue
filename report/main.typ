@@ -9,7 +9,7 @@
   #v(5pt)
   #text(size: 14pt)[训练前架构审计、胶水原型与硬件计划]
   #v(8pt)
-  版本 0.3 · 2026-08-04
+  版本 0.4 · 2026-08-05
 ]
 
 #outline()
@@ -17,7 +17,7 @@
 
 = 执行摘要
 
-本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段不训练视觉塔和语言模型，只训练一个 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。当前结论是：V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证，projector-only 全量数据训练已得到明确视觉对齐信号；正式 0731 大权重的 FP4/FP8 可微 kernel 是尚未消除的主要风险。
+本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段不训练视觉塔和语言模型，只训练一个 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。当前结论是：V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证，projector-only 全量数据训练已得到明确视觉对齐信号。包 3 进一步定位到 step 1500 的 shape 内容信号，但该信号没有转化成 paired 自由生成并在 step 2000 坍缩，下一步优先做逐层定位与因果干预。正式 0731 大权重的 FP4/FP8 可微 kernel 仍是尚未消除的主要风险。
 
 MoonViT-V2 有 401.2M 参数，抽取后的 BF16 权重约 802 MB，相对于约 160 GB 级的 DeepSeek 混合精度权重很小。更大的资源变量是图像分辨率带来的视觉 token 数和冻结 LLM 反向所保留的激活，而不是视觉塔权重。
 
@@ -69,7 +69,7 @@ DeepSeek-V4 的早期 Hash-MoE 通过 `tid2eid[input_ids]` 选 expert。只给 `
   [eval\_vlm 生成/blind/shuffle-loss 干跑], [通过], [评测管线端到端],
   [generate()：generic 与 deepseek_v4 两种路径], [通过], [评测/推理前置],
   [指标库（VQA/ANLS/token-F1/grounding）], [通过], [纯 Python，无 torch],
-  [完整测试集], [96/96], [Linux + torch 2.10.0+cu128],
+  [完整测试集], [150/150], [Linux + torch 2.10.0+cu128；含包 3 回归],
 )
 
 V100 实测：真实 K3 MoonViT-V2 在 1024×1024 输入下输出 `[1369,4,1024]`，特征全部 finite、逐位确定，eager 与 sdpa 最大绝对差 3.1e-05；真实权重 strict-load、预处理与 loss/backward 合同均正常。旧 V1 路径也保留了 448px 和原生分辨率回归，但不再代表当前训练主线。评测管线的生成、blind 基线与 shuffle-loss 全部端到端通过；训练后 shuffle-loss 差值应当变正，这是对齐信号最便宜的读数。
@@ -299,7 +299,84 @@ Qwen2.5-0.5B-Instruct 是纯文本 `Qwen2ForCausalLM`，没有继承原生视觉
   [坐标], [200 / 400], [200 / 400], [3×3 网格中的目标位置],
 )
 
-每条记录另有完整控制分配：blind 不提供图；blank 使用同 split 的纯背景；same-image 对该 split 所有样本使用同一张中性条纹图；shuffled-image 在任务内作无固定点的确定性 derangement；patch-permutation 给出逐样本 seed，在 MoonViT merged spatial-token 轴执行 `torch.randperm`，保留值与 token 数量。独立 verifier 检查了 4,800/4,800 图像 SHA、2,400/2,400 pair、4,800/4,800 控制行和全部派生文件 hash；失败数为 0，logical dataset SHA 为 `122ae820…cbaa71`。完整 PNG 在 V100 数据盘，Git 提交完整 train/selection/control JSONL、manifest/hash、计数 CSV、日志、零失败文件、验证结果与每类一组 a/b 预览。这里尚未报告任何模型准确率；普通/paired/answer-flip 与五种控制的分母将在包 3 固定后统一计算，避免数据生成阶段改 scorer。
+每条记录另有完整控制分配：blind 不提供图；blank 使用同 split 的纯背景；same-image 对该 split 所有样本使用同一张中性条纹图；shuffled-image 在任务内作无固定点的确定性 derangement；patch-permutation 给出逐样本 seed，在 MoonViT merged spatial-token 轴执行 `torch.randperm`，保留值与 token 数量。独立 verifier 检查了 4,800/4,800 图像 SHA、2,400/2,400 pair、4,800/4,800 控制行和全部派生文件 hash；失败数为 0，logical dataset SHA 为 `122ae820…cbaa71`。完整 PNG 在 V100 数据盘，Git 提交完整 train/selection/control JSONL、manifest/hash、计数 CSV、日志、零失败文件、验证结果与每类一组 a/b 预览。数据生成阶段没有据输出改 scorer；普通/paired/answer-flip 与控制分母由包 3 统一计算，见下一节。
+
+== Checkpoint-wise Emergence of Visual Dependence（包 3，2026-08-05）
+
+=== 固定口径、checkpoint 与有效性
+
+包 3 从 commit `1cc6f631…` 的四个历史 projector checkpoint 读取 step 500/1000/1500/2000；examples seen 分别为 4,000/8,000/12,000/16,000，对应 0.0676/0.1352/0.2028/0.2704 effective epoch。`current-final` 与 step 2000 是同一权重，只作为别名，不重复推理。训练起点张量未被历史 run 保存，step 0 使用同构 projector 与 seed 0 重建，明确标为 matched random initialization control。所有 checkpoint 的配置、safetensors SHA、来源路径与别名关系由独立 manifest 交叉校验。
+
+Teacher-forced 评测覆盖完整 authoritative synthetic selection：2,400 图、1,200 对、六任务、五个独立 checkpoint、八种条件，共 96,000 条 answer log-prob 原始记录。自由生成在运行前以 seed `20260804` 对 pair ID 做逐任务 SHA-256 排名，固定为每类 50 对/100 图，共 300 对/600 图；manifest 保存全部 ID、源 selection SHA `51ce2741…d6` 和 logical SHA `122ae820…a71`。这一子集只缩减自由生成计算；teacher-forced 分母保持完整。背景辅助集复用每个 authoritative 场景和答案，只把 selection 背景替换为 train 背景；2,400/2,400 特征缓存完成，明确 `diagnostic_only=true`、`training=false`。
+
+有效性审计保留了三类无效产物。`preference_v1` 的数值本身与修复后 v2 在 96,000 条上逐位一致，但 36,000 条 control `visual_source_id` 写错，故整 run 标 invalid 后从头重跑；v2 独立 verifier 通过。generation v3 在 batch 2 的 1024px benchmark 筛选中仅约 0.8 sample/s，未完成 step 0；v4 在不足 1% 时确认 batch 16 仍只有约 8.3 synthetic sample/s，均保存 partial raw、逐文件 hash 与 invalidation。最终批量筛选中，synthetic/benchmark batch 64/16 为 221.3s、峰值 9.82 GB；128/32 为 215.4s、峰值 18.57 GB，仅快 2.6%，最终采用 64/16。筛选器另发现 `limit > heldout count` 的分母边界 bug；该 attempt 在生成前退出，修复加入测试后重跑。
+
+=== Teacher-forced paired preference：shape 在 step 1500 短暂出现
+
+最强证据集中在 shape。step 1500 的 authoritative vision strict paired-preference 为 *0.130*，mean correct margin 为 *+0.133*；matched-random 分别为 0.055/−0.021。成对 bootstrap 的 trained−random strict gap 为 *+0.075，95% CI [0.025, 0.135]*。同一 checkpoint 的 shuffled image strict preference 只有 0.015，vision−shuffle 为 *+0.115 [0.070, 0.160]*；paired-counterfactual image 把 mean margin 精确翻成 −0.133，vision−counterfactual margin 为 *+0.266 [0.219, 0.313]*。blind、blank、same-image 均为 strict 0；patch permutation 为 0.005。该组结果同时满足训练对照、样本级错图控制与单属性反事实三条因果约束。
+
+#table(
+  columns: (1.15fr, 1fr, 1fr, 1fr, 1fr, 1fr),
+  [*任务 / strict paired preference*], [*step 0*], [*step 500*], [*step 1000*], [*step 1500*], [*step 2000*],
+  [color], [0.015], [0.015], [0], [0], [0],
+  [shape], [0.055], [0], [0], [*0.130*], [0],
+  [count], [0], [0], [0], [0], [0],
+  [spatial], [0], [0], [0], [0], [0],
+  [OCR], [0.030], [0], [0], [0], [0],
+  [coordinate], [0.070], [0], [0.035], [0], [0],
+)
+
+表中的随机 projector 非零值说明单看“峰值”会误判；只有 shape/step 1500 同时显著超过 matched random，并在 shuffled 与 paired-image 因果控制下保留。color、count、spatial、OCR、coordinate 在 16,000 examples 内均没有 causally validated onset，现阶段的能力顺序只能写为“shape 首先出现，其余未出现”，不能给其余五类强排顺序。
+
+该 shape 信号随后坍缩：step 2000 strict preference 回到 0，step1500−step2000 为 *+0.130 [0.085, 0.180]*；latest overall 虽保留很小的 vision mean margin +0.0081，strict preference 已为 0，vision−paired-image margin 仍有 +0.0162 [0.0121, 0.0203]。曲线因此反驳当前训练区间内的单调“多训即可”解释，支持表征/解码稳定性问题进入优先诊断。
+
+背景匹配没有把结论翻转。shape/step 1500 的 auxiliary strict preference 为 0.105，authoritative−auxiliary 为 +0.025 [0.005, 0.050]；auxiliary mean margin反而更高（0.171 vs 0.133）。shape 信号在两种背景都存在，且 train 背景没有稳定提高两个 paired 指标，当前没有证据把主要失败归因于背景域偏移。
+
+=== 自由生成：视觉触发存在，正确图像内容没有进入成对答案
+
+自由生成主跑包含 37,300 条 generation 原始记录和 160 条 heldout shuffle-loss 记录，失败数为 0；总时长 2,745.9s，峰值显存 9.82 GB。独立 verifier 重算六个原始文件的 hash、精确分母、alias、固定子集 manifest 与每个控制的 `visual_source_id` 关系，确认五个独立 checkpoint、`final_half_scored=false`。step 500/1000/1500/2000 的 synthetic vision sample accuracy 分别为 0.1367/0.1550/0.1350/0.1417；严格 paired generation 与 answer-flip 在所有 checkpoint、所有任务都精确为 0。
+
+step 2000 的 vision−blind sample-accuracy gap 为 *+0.1417 [0.1167, 0.1683]*，vision−blank 为 +0.0383 [0.0150, 0.0617]；vision−same-image 为 −0.0033 [−0.0183, 0.0100]，vision−shuffled-image 同为 −0.0033 [−0.0150, 0.0083]。视觉 token 能触发一个盲态没有的答案分布，但正确图、固定中性图与错配图之间没有可检出的内容优势。step 1500 的 shape 单样本准确率为 0.26，paired generation 仍为 0；同一数据上的 teacher-forced strict paired preference 为 0.13。这组差异直接支持“已形成可评分的内部证据、现有解码没有稳定使用它”。
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 10pt,
+    image("../experiments/v100_perception_20260804/checkpoint_trajectory_v1/charts/02-paired-preference.svg", width: 100%),
+    image("../experiments/v100_perception_20260804/checkpoint_trajectory_v1/charts/10b-paired-evidence-vs-paired-generation.svg", width: 100%),
+  ),
+  caption: [左：teacher-forced strict paired preference；右：逐任务内部 paired 证据与 paired 自由生成。shape/step 1500 是唯一经过因果控制的非零训练信号，自由生成轴仍为 0。],
+)
+
+=== 真实 heldout 与 benchmark 轨迹
+
+32 条历史 heldout、每条十次 derangement 的 mean shuffled-minus-true loss 从 matched random 的 −0.0095 变为 step 500/1000/1500/2000 的 +1.0263/+0.6703/+0.9533/+1.1886；step 2000 repeat std 为 0.2477。projector 很早就学会让真实图像降低训练分布上的 teacher-forced loss，此后各 checkpoint 始终为正且 step 2000 最强。它测到全局图文匹配依赖，无法单独证明细粒度答案内容已进入生成。
+
+step 2000 的 selection-half benchmark vision/blind 为：DocVQA ANLS 0.026/0，TextVQA 0.008/0，OCRBench 0/0，ScreenSpot accuracy 0.010/0（parse 0.19/0），MMMU-Pro exact 0.0067/0。blank 与 shuffled 控制也能保留部分低分，例如 TextVQA blank 0.0093、MMMU-Pro blank/shuffled 均为 0.0067；绝对 benchmark 分数因此继续只作 0.5B、0.27 epoch 条件下的诊断。ScreenSpot 的最常见坐标和 collapse rate 已逐 checkpoint 保存，未见可用 grounding 能力。
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 10pt,
+    image("../experiments/v100_perception_20260804/checkpoint_trajectory_v1/charts/05-true-shuffled-loss.svg", width: 100%),
+    image("../experiments/v100_perception_20260804/checkpoint_trajectory_v1/charts/08-control-checkpoint-heatmap.svg", width: 100%),
+  ),
+  caption: [左：heldout 真图与错配图 loss 轨迹；右：synthetic 控制条件相对 vision 的 correct-margin gap。],
+)
+
+=== 假设更新与下一项本地实验
+
+#table(
+  columns: (1.55fr, 1fr, 2.7fr),
+  [*假设*], [*包 3 更新*], [*证据与动作*],
+  [内部表征存在、解码使用失败], [强支持], [shape/step 1500：teacher paired 0.13，generation paired 0；先做 layerwise probe 与 upper-layer activation patching。],
+  [现有训练量只需直接延长], [削弱], [shape 在 step 1500 出现、step 2000 归零，反对当前区间的单调外推；延长训练需等定位结果并加入稳定化监控。],
+  [信息在 projector/冻结主干间丢失], [待定位], [shape 首先出现，OCR/coordinate 无因果 onset；需直接测 projector token 与逐层 hidden state 的属性可分性、位置池化与 patch 消融。],
+  [背景域偏移是主因], [弱支持], [shape 在 authoritative 与 background-matched auxiliary 都存在，辅助背景没有一致改善。],
+  [0.5B 语言容量是主瓶颈], [尚未判定], [当前结果与容量瓶颈相容，也与冻结上层不会使用视觉证据相容；机制定位后再决定 Qwen2.5-1.5B 对照或顶部 LoRA。],
+)
+
+下一包固定比较 step 1500 与 step 2000：在 projector 输出和 Qwen2.5-0.5B 全 24 层训练逐层 linear probe；用正确图激活 patch paired-counterfactual run 的图像 span，并对 upper layers 做最小筛选；加入 random-label、blind、shuffled-image 和 layer-0 控制。判别目标是定位 shape 信息何时可线性恢复、何处在 step 2000 丢失，以及少量因果替换能否恢复 correct margin。结果再决定 projector 辅助目标、顶部 LoRA、延长训练或 1.5B 容量对照的优先级。
 
 == Gate C：Vast 只读调研
 

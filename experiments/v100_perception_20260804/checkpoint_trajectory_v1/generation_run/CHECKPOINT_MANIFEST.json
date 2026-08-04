@@ -1,0 +1,163 @@
+{
+  "format_version": "checkpoint-perception-manifest-v1",
+  "created_at_utc": "2026-08-04T22:13:00.951897+00:00",
+  "checkpoints": [
+    {
+      "id": "step-000000",
+      "kind": "random",
+      "optimizer_steps": 0,
+      "examples_seen": 0,
+      "effective_epochs": 0.0,
+      "source_path": null,
+      "state_sha256": "ad97177911e2a86d0c70811c788968c638f878d623fa780f3e780004437ed76b",
+      "initialization_claim": "matched random initialization control; the exact historical step-0 tensor state was not saved",
+      "random_seed": 0,
+      "files": {}
+    },
+    {
+      "id": "step-000500",
+      "kind": "trained",
+      "optimizer_steps": 500,
+      "examples_seen": 4000,
+      "effective_epochs": 0.06760639556502045,
+      "source_path": "/run/media/ezra/13D010B6FDBC1A06/data/gate_b/ckpt/checkpoints/step-000500",
+      "state_sha256": "ab49708624cae13ce17679774fff36bc18bb1225da359c1eb09ad1a0068d6747",
+      "initialization_claim": null,
+      "random_seed": null,
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "ab49708624cae13ce17679774fff36bc18bb1225da359c1eb09ad1a0068d6747"
+        },
+        "projector_bf16.safetensors": {
+          "bytes": 40909056,
+          "sha256": "811463d3acf780ca17b8a62c709a13c7eda146aa4b47fa989138ccd039c657d0"
+        },
+        "projector_config.json": {
+          "bytes": 127,
+          "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+        },
+        "history.json": {
+          "bytes": 32156,
+          "sha256": "ce5a9c5c75751e7693b4d918c3c554ece1a3d5816b52129712a2acbf56efa4dd"
+        },
+        "training_state.pt": {
+          "bytes": 163661533,
+          "sha256": "81f7491896bcbff06c1abebe008505a1ffc57fc99b9e2753cc49bfb5a54f7f75"
+        }
+      }
+    },
+    {
+      "id": "step-001000",
+      "kind": "trained",
+      "optimizer_steps": 1000,
+      "examples_seen": 8000,
+      "effective_epochs": 0.1352127911300409,
+      "source_path": "/run/media/ezra/13D010B6FDBC1A06/data/gate_b/ckpt/checkpoints/step-001000",
+      "state_sha256": "7c220e071843029b58cb08f2f2a0984cc7f0350d7fa25c16c1edb11197420c16",
+      "initialization_claim": null,
+      "random_seed": null,
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "7c220e071843029b58cb08f2f2a0984cc7f0350d7fa25c16c1edb11197420c16"
+        },
+        "projector_bf16.safetensors": {
+          "bytes": 40909056,
+          "sha256": "b9c30bb6db2c9bec614f030736a1c842c88f9a095324112e77c584fab4f4530f"
+        },
+        "projector_config.json": {
+          "bytes": 127,
+          "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+        },
+        "history.json": {
+          "bytes": 64394,
+          "sha256": "10152529783772d9378812ab0eb1c4b45326254dfbbe7bf83234e6b2dc7e4adf"
+        },
+        "training_state.pt": {
+          "bytes": 163673565,
+          "sha256": "8a052b67ca97c86a1f62f0cd22e447117c6a7ade62cbed6cb0930659bdfbea86"
+        }
+      }
+    },
+    {
+      "id": "step-001500",
+      "kind": "trained",
+      "optimizer_steps": 1500,
+      "examples_seen": 12000,
+      "effective_epochs": 0.20281918669506135,
+      "source_path": "/run/media/ezra/13D010B6FDBC1A06/data/gate_b/ckpt/checkpoints/step-001500",
+      "state_sha256": "f9524215b3ccacb341caf2d1e118d2bc0e2c9855f5f4569157bf75ba5e63ddbf",
+      "initialization_claim": null,
+      "random_seed": null,
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "f9524215b3ccacb341caf2d1e118d2bc0e2c9855f5f4569157bf75ba5e63ddbf"
+        },
+        "projector_bf16.safetensors": {
+          "bytes": 40909056,
+          "sha256": "58f1fa95bea153684ba4c2cb8dc450a3e3d08ee396bf4935b70b8fd4cd84847c"
+        },
+        "projector_config.json": {
+          "bytes": 127,
+          "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+        },
+        "history.json": {
+          "bytes": 97137,
+          "sha256": "a45a4dab548972fbf9722fa11dfaa553df87c9f66e20bb62ac9e6f4e547dda42"
+        },
+        "training_state.pt": {
+          "bytes": 163685533,
+          "sha256": "c9099d9dd903756016573c4a4a0682fa4df0ab1c5cb9ae5d1fa0dba00bb05a79"
+        }
+      }
+    },
+    {
+      "id": "step-002000",
+      "kind": "trained",
+      "optimizer_steps": 2000,
+      "examples_seen": 16000,
+      "effective_epochs": 0.2704255822600818,
+      "source_path": "/run/media/ezra/13D010B6FDBC1A06/data/gate_b/ckpt/checkpoints/step-002000",
+      "state_sha256": "12ab8d31deb8cd7df25866050f20759bb9a5d4360adc84b1b4944e19e85e186b",
+      "initialization_claim": null,
+      "random_seed": null,
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "12ab8d31deb8cd7df25866050f20759bb9a5d4360adc84b1b4944e19e85e186b"
+        },
+        "projector_bf16.safetensors": {
+          "bytes": 40909056,
+          "sha256": "4064057c42bcbe7d0b25be4e8792e22dfd5c9a2f5d857f1de54bb2d868fbb40c"
+        },
+        "projector_config.json": {
+          "bytes": 127,
+          "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+        },
+        "history.json": {
+          "bytes": 129875,
+          "sha256": "17d11dfa7e96a9a0acef7b7f90cbb8e8aeb42711003987b8abfe3e894a8946a4"
+        },
+        "training_state.pt": {
+          "bytes": 163697565,
+          "sha256": "eb8a53f73e029f3ec4364f5f854dcdb3deda0ebd3a302801e536e5b66b14c3d7"
+        }
+      }
+    }
+  ],
+  "aliases": [
+    {
+      "id": "current-final",
+      "source": "step-002000",
+      "state_sha256": "12ab8d31deb8cd7df25866050f20759bb9a5d4360adc84b1b4944e19e85e186b",
+      "reason": "No projector checkpoint newer than step 2000 exists; reuse bit-identical raw results rather than rerun.",
+      "rerun": false
+    }
+  ],
+  "cross_path_state_hashes_equal": true,
+  "preference_summary_sha256": "81f54a83912f0279e50318d3b4c0ddfdd1dbeb857cbc67c49535f75fb5b9080f",
+  "generation_summary_sha256": "e7f75366df1ccab00bfc796f268dd94ea74d5e1f86ca35ca660c44fb4448bcc9",
+  "final_half_scored": false
+}
