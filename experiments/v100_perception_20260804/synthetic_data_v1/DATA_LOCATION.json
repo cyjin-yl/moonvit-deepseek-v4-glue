@@ -1,0 +1,14 @@
+{
+  "authoritative_image_root": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804",
+  "repository_copy_contains": [
+    "complete train/selection record JSONL",
+    "complete control assignment JSONL",
+    "manifest and every derived-file hash",
+    "summary, verification, counts, failures, generation log",
+    "one complete a/b preview pair per task"
+  ],
+  "repository_copy_omits": "4,800 deterministic PNGs; regenerate from code/config or use the authoritative workstation root",
+  "reproduce_command": "PYTHONPATH=src python tools/generate_synthetic_perception.py --out <unique-output> --config configs/perception-synthetic-v1.json",
+  "verify_command": "PYTHONPATH=src python tools/verify_synthetic_perception.py --data <output> --out <unique-verification.json>",
+  "logical_dataset_sha256": "122ae820381e11e12c7dd9db03a525b801a5ebee5adbef037919185e65cbaa71"
+}

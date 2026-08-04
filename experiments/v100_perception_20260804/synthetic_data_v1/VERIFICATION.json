@@ -1,0 +1,15 @@
+{
+  "status": "valid",
+  "format_version": "synthetic-perception-v1",
+  "image_hashes_verified": 4800,
+  "pairs_verified": 2400,
+  "controls_verified": 4800,
+  "file_hashes_verified": 4,
+  "leakage_checks": {
+    "image_hash_overlap": 0,
+    "ocr_string_overlap": 0,
+    "pair_id_overlap": 0,
+    "template_id_overlap": 0
+  },
+  "logical_dataset_sha256": "122ae820381e11e12c7dd9db03a525b801a5ebee5adbef037919185e65cbaa71"
+}

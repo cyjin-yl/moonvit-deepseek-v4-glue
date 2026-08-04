@@ -282,7 +282,24 @@ Qwen2.5-0.5B-Instruct 是纯文本 `Qwen2ForCausalLM`，没有继承原生视觉
   [1], [8], [0.5390], [14.84], [3.65 GB],
 )
 
-因此旧 `batch 8` 的真实成本约为 0.54s/optimizer step（在 0.5B + 已缓存视觉特征上），不是一次 8 样本 forward。线性外推到 accumulation 64 约为 4.3s/step，但该数字仍不能外推 DeepSeek；它只用于证明计量语义与 V100 小模型预算。retry2 的单步计时有效，但审查发现它仍在启动时实例化了不参与 forward 的 401M MoonViT，故其 4.92–5.25 GB peak 不作为缓存结论；修复后 retry3 完全不构造视觉塔，peak 降到 3.31–3.65 GB，且三份 report 均记录 `vision_tower_instantiated=false`。两次 step-0 无效启动也完整保留：第一次在线 HEAD 超时；第二次启用 offline 后未设置 HDD cache 路径，三臂均失败并暴露零成功行 CSV 的 driver bug。下一包将生成六类 synthetic minimal-pair 数据；checkpoint 轨迹、probe、干预和方向判定尚未运行，当前不满足租卡前 go 条件。
+因此旧 `batch 8` 的真实成本约为 0.54s/optimizer step（在 0.5B + 已缓存视觉特征上），不是一次 8 样本 forward。线性外推到 accumulation 64 约为 4.3s/step，但该数字仍不能外推 DeepSeek；它只用于证明计量语义与 V100 小模型预算。retry2 的单步计时有效，但审查发现它仍在启动时实例化了不参与 forward 的 401M MoonViT，故其 4.92–5.25 GB peak 不作为缓存结论；修复后 retry3 完全不构造视觉塔，peak 降到 3.31–3.65 GB，且三份 report 均记录 `vision_tower_instantiated=false`。两次 step-0 无效启动也完整保留：第一次在线 HEAD 超时；第二次启用 offline 后未设置 HDD cache 路径，三臂均失败并暴露零成功行 CSV 的 driver bug。checkpoint 轨迹、probe、干预和方向判定尚未运行，当前不满足租卡前 go 条件。
+
+== Synthetic Perception Diagnostic（包 2，2026-08-04）
+
+生成器 `synthetic-perception-v1` 固定 seed `20260804`，以 Pillow 12.2.0 在 256×256 画布上生成 color、shape、count (1–9)、spatial（left/right、above/below、inside/outside、nearest）、OCR（2–6 位无歧义大写字母/数字）和 3×3 coordinate 六类任务。每个任务在 train 与 selection 各有 200 个基础问题；每个基础问题有 a/b 两张图，问题文本逐字节相同、答案不同，生成参数明确记录唯一变化的视觉属性。因此总计 2,400 个基础 minimal pairs、4,800 张图。train/selection 使用不同背景、边框和问题模板；图像 SHA、OCR 字符串、pair ID、template ID 的跨 split 交集均为 0。OCR 字符本身是必须读取的刺激，不另绘任何答案标签或提示文本。
+
+#table(
+  columns: (1.4fr, 1.5fr, 1.5fr, 2.5fr),
+  [*任务*], [*train base/rendered*], [*selection base/rendered*], [*pair 中唯一目标变化*],
+  [颜色], [200 / 400], [200 / 400], [单一图形的填充色],
+  [形状], [200 / 400], [200 / 400], [图形几何形状],
+  [计数], [200 / 400], [200 / 400], [可见物体数 1–9],
+  [空间], [200 / 400], [200 / 400], [目标物位置/关系],
+  [OCR], [200 / 400], [200 / 400], [2–6 位 glyph sequence],
+  [坐标], [200 / 400], [200 / 400], [3×3 网格中的目标位置],
+)
+
+每条记录另有完整控制分配：blind 不提供图；blank 使用同 split 的纯背景；same-image 对该 split 所有样本使用同一张中性条纹图；shuffled-image 在任务内作无固定点的确定性 derangement；patch-permutation 给出逐样本 seed，在 MoonViT merged spatial-token 轴执行 `torch.randperm`，保留值与 token 数量。独立 verifier 检查了 4,800/4,800 图像 SHA、2,400/2,400 pair、4,800/4,800 控制行和全部派生文件 hash；失败数为 0，logical dataset SHA 为 `122ae820…cbaa71`。完整 PNG 在 V100 数据盘，Git 提交完整 train/selection/control JSONL、manifest/hash、计数 CSV、日志、零失败文件、验证结果与每类一组 a/b 预览。这里尚未报告任何模型准确率；普通/paired/answer-flip 与五种控制的分母将在包 3 固定后统一计算，避免数据生成阶段改 scorer。
 
 == Gate C：Vast 只读调研
 

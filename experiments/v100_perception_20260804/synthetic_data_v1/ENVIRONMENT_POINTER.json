@@ -1,0 +1,10 @@
+{
+  "environment_snapshot": "../infra/environment/environment.json",
+  "pip_freeze": "../infra/environment/pip_freeze.txt",
+  "gpu": "Tesla V100-PCIE-32GB",
+  "python": "3.12.11",
+  "pillow": "12.2.0",
+  "git_sha_at_generation": "8d98b818659c3de002217c7fe1b6851eea122bb6",
+  "comfyui_active": false,
+  "final_evaluation_half_used": false
+}

@@ -1,0 +1,81 @@
+{
+  "format_version": "synthetic-perception-v1",
+  "generated_at_utc": "2026-08-04T15:16:00.930454+00:00",
+  "generator": "moonvit_glue.synthetic_perception.generate_suite",
+  "pillow_version": "12.2.0",
+  "config": {
+    "samples_per_task": 200,
+    "image_size": 256,
+    "seed": 20260804,
+    "background_train": "#edf3f8",
+    "background_selection": "#fff5e6"
+  },
+  "tasks": [
+    "color",
+    "shape",
+    "count",
+    "spatial",
+    "ocr",
+    "coordinate"
+  ],
+  "splits": [
+    "train",
+    "selection"
+  ],
+  "counts": {
+    "base_samples_by_split_task": {
+      "selection": {
+        "color": 200,
+        "coordinate": 200,
+        "count": 200,
+        "ocr": 200,
+        "shape": 200,
+        "spatial": 200
+      },
+      "train": {
+        "color": 200,
+        "coordinate": 200,
+        "count": 200,
+        "ocr": 200,
+        "shape": 200,
+        "spatial": 200
+      }
+    },
+    "rendered_samples_by_split": {
+      "selection": 2400,
+      "train": 2400
+    },
+    "control_assignments": 4800
+  },
+  "leakage_checks": {
+    "image_hash_overlap": 0,
+    "ocr_string_overlap": 0,
+    "pair_id_overlap": 0,
+    "template_id_overlap": 0
+  },
+  "logical_dataset_sha256": "122ae820381e11e12c7dd9db03a525b801a5ebee5adbef037919185e65cbaa71",
+  "files": {
+    "train.jsonl": {
+      "bytes": 1573422,
+      "sha256": "517200461468e8eb7cddbb11673867e57458c59e9ec3c070b35e159c5d2f5a1d"
+    },
+    "selection.jsonl": {
+      "bytes": 1636670,
+      "sha256": "51ce274183bd4b7adc6e7201d9aeed259071d380551bf55f656119d201a936d6"
+    },
+    "controls.jsonl": {
+      "bytes": 3303478,
+      "sha256": "25452a3b0abdfd25ac206650050d2df2a9214204092ec5f79b46a5f014637689"
+    },
+    "counts.csv": {
+      "bytes": 326,
+      "sha256": "b287a75508893e3834e1fdc2831ab7a5c361f22dfe390b1dcca3ea9c4cffce47"
+    }
+  },
+  "notes": {
+    "minimal_pair_rule": "question is byte-identical within each pair; one named visual attribute changes",
+    "ocr_text": "OCR glyphs are the task stimulus itself; no extra answer label or textual hint is rendered",
+    "final_evaluation_half_used": false,
+    "images_committed_to_git": false
+  }
+}

@@ -1,0 +1,13 @@
+split,task,base_pairs,rendered_samples
+selection,color,200,400
+selection,coordinate,200,400
+selection,count,200,400
+selection,ocr,200,400
+selection,shape,200,400
+selection,spatial,200,400
+train,color,200,400
+train,coordinate,200,400
+train,count,200,400
+train,ocr,200,400
+train,shape,200,400
+train,spatial,200,400

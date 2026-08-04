@@ -1,0 +1,37 @@
+{
+  "status": "valid",
+  "output": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804",
+  "git_sha_at_generation": "8d98b818659c3de002217c7fe1b6851eea122bb6",
+  "logical_dataset_sha256": "122ae820381e11e12c7dd9db03a525b801a5ebee5adbef037919185e65cbaa71",
+  "counts": {
+    "base_samples_by_split_task": {
+      "selection": {
+        "color": 200,
+        "coordinate": 200,
+        "count": 200,
+        "ocr": 200,
+        "shape": 200,
+        "spatial": 200
+      },
+      "train": {
+        "color": 200,
+        "coordinate": 200,
+        "count": 200,
+        "ocr": 200,
+        "shape": 200,
+        "spatial": 200
+      }
+    },
+    "rendered_samples_by_split": {
+      "selection": 2400,
+      "train": 2400
+    },
+    "control_assignments": 4800
+  },
+  "leakage_checks": {
+    "image_hash_overlap": 0,
+    "ocr_string_overlap": 0,
+    "pair_id_overlap": 0,
+    "template_id_overlap": 0
+  }
+}

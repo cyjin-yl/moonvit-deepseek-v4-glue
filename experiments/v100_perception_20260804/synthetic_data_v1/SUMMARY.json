@@ -1,0 +1,14 @@
+{
+  "status": "valid",
+  "base_samples": 2400,
+  "rendered_samples": 4800,
+  "control_assignments": 4800,
+  "failures": 0,
+  "leakage_checks": {
+    "image_hash_overlap": 0,
+    "ocr_string_overlap": 0,
+    "pair_id_overlap": 0,
+    "template_id_overlap": 0
+  },
+  "logical_dataset_sha256": "122ae820381e11e12c7dd9db03a525b801a5ebee5adbef037919185e65cbaa71"
+}
