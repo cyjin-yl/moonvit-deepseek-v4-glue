@@ -62,12 +62,14 @@ def format_click_answer(point, scale: float = SCALE) -> str:
 
 
 def format_mmmu_options(raw_options) -> str:
-    """Render MMMU-Pro options one per line.
+    """Render MMMU-Pro options as lettered lines ("A. ...", "B. ...").
 
     The `standard (10 options)` parquet stores `options` as a STRING holding a
     Python-list literal, not as a list column. Iterating that string produced
     one character per line — an unreadable prompt (Gate B audit, 2026-08-04).
-    Parse the literal; keep a plain string as a single option block.
+    Parse the literal; keep a plain string as a single option block. Letters
+    are required because the reference answer is a letter ("B"): without
+    labels the model cannot map options to answers.
     """
 
     if isinstance(raw_options, str):
@@ -79,7 +81,9 @@ def format_mmmu_options(raw_options) -> str:
             except (ValueError, SyntaxError):
                 parsed = None
         raw_options = list(parsed) if isinstance(parsed, (list, tuple)) else [text]
-    return "\n".join(str(option) for option in raw_options)
+    return "\n".join(
+        f"{chr(ord('A') + index)}. {option}" for index, option in enumerate(raw_options)
+    )
 
 
 def keep_record(answers: list, max_words: int | None) -> bool:

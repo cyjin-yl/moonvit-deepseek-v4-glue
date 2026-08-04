@@ -12,13 +12,13 @@ def test_options_as_python_literal_string_are_parsed_per_option():
     rendered = format_mmmu_options(raw)
 
     assert rendered == (
-        "Political instability leading to population decline\nClimate change\nB"
+        "A. Political instability leading to population decline\nB. Climate change\nC. B"
     )
 
 
 def test_options_as_list_still_work():
-    assert format_mmmu_options(["opt A", "opt B"]) == "opt A\nopt B"
+    assert format_mmmu_options(["opt A", "opt B"]) == "A. opt A\nB. opt B"
 
 
 def test_options_as_plain_string_becomes_one_block():
-    assert format_mmmu_options("just one option") == "just one option"
+    assert format_mmmu_options("just one option") == "A. just one option"
