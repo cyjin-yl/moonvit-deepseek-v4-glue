@@ -1,0 +1,30 @@
+{
+  "status": "invalid",
+  "invalidated_at_utc": "2026-08-04T23:06:52.308327+00:00",
+  "reason": "The clean donor for decoder layer 23 was taken from Transformers hidden_states[-1], which is after final RMSNorm, while the layer-23 hook consumes the pre-final-norm layer output.",
+  "impact": "Layer-23 clean/wrong donor interventions are in the wrong representation space. Layer 0-22 numbers remain diagnostic, but the run is superseded as a whole.",
+  "replacement_run": "shape_patching_v2",
+  "old_results_must_not_be_used": true,
+  "files": {
+    "CONFIG.json": {
+      "bytes": 3866,
+      "sha256": "1d7657fabcfea5ea9685a3e741a4e676b3a9e84217fc17970234079d443b92d5"
+    },
+    "SUMMARY.json": {
+      "bytes": 2403,
+      "sha256": "31721fba27bc78a1c9a15f998d35c951341a3ede5a8d3a389c04bfc4ec9a8192"
+    },
+    "patching_records.jsonl": {
+      "bytes": 10633831,
+      "sha256": "ace58eea6a5ad43cf122572e0703d651d0abb7c865f4de026a46fbb3ff7c164e"
+    },
+    "patching_curve.csv": {
+      "bytes": 22001,
+      "sha256": "2a5274459863f646fdb6f4c858f28effdc6a0a237b17a1a5cb37b1152111ed3d"
+    },
+    "DECISIONS.json": {
+      "bytes": 10026,
+      "sha256": "b206edfcc885b767b5f5507c0f7053a64c8386a4f359a39952f5b67efaea0b47"
+    }
+  }
+}

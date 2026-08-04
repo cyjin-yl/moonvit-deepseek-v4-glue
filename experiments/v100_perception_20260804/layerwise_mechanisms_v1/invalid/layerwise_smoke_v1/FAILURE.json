@@ -1,0 +1,10 @@
+{
+  "status": "invalid",
+  "attempt": "shape_layerwise_smoke_v1",
+  "reason": "extractor imported training_protocol instead of tools_common",
+  "impact": "the process exited before creating an output run or any scored row",
+  "replacement_run": "shape_layerwise_smoke_v2",
+  "log_bytes": 0,
+  "old_results_must_not_be_used": true
+}
+

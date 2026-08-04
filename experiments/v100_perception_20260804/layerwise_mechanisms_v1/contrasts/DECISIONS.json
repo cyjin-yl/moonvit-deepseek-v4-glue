@@ -1,0 +1,210 @@
+{
+  "status": "valid",
+  "checkpoints": {
+    "step-000000": {
+      "best_content_specific_image_layer": {
+        "family": "correct_image_minus_wrong_label_donor",
+        "checkpoint_a": "step-000000",
+        "intervention_a": "correct_image_span",
+        "checkpoint_b": "step-000000",
+        "intervention_b": "wrong_label_donor_image_span",
+        "layer_index": 23,
+        "records": 100,
+        "pairs": 50,
+        "mean_delta": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0,
+        "bootstrap_samples": 2000,
+        "bootstrap_seed": 20260818
+      },
+      "input_region_contrasts": [
+        {
+          "family": "outer_input_minus_center_input",
+          "checkpoint_a": "step-000000",
+          "intervention_a": "input_clean_outer",
+          "checkpoint_b": "step-000000",
+          "intervention_b": "input_clean_center",
+          "layer_index": -1,
+          "records": 100,
+          "pairs": 50,
+          "mean_delta": -0.335,
+          "ci95_low": -0.485015625,
+          "ci95_high": -0.1855937500000002,
+          "bootstrap_samples": 2000,
+          "bootstrap_seed": 20260820
+        },
+        {
+          "family": "full_input_minus_outer_input",
+          "checkpoint_a": "step-000000",
+          "intervention_a": "input_clean_full",
+          "checkpoint_b": "step-000000",
+          "intervention_b": "input_clean_outer",
+          "layer_index": -1,
+          "records": 100,
+          "pairs": 50,
+          "mean_delta": 0.1646875,
+          "ci95_low": 0.12561718749999998,
+          "ci95_high": 0.20594531249999995,
+          "bootstrap_samples": 2000,
+          "bootstrap_seed": 20260821
+        }
+      ]
+    },
+    "step-001500": {
+      "best_content_specific_image_layer": {
+        "family": "correct_image_minus_wrong_label_donor",
+        "checkpoint_a": "step-001500",
+        "intervention_a": "correct_image_span",
+        "checkpoint_b": "step-001500",
+        "intervention_b": "wrong_label_donor_image_span",
+        "layer_index": 11,
+        "records": 100,
+        "pairs": 50,
+        "mean_delta": 0.219375,
+        "ci95_low": 0.14625,
+        "ci95_high": 0.299375,
+        "bootstrap_samples": 2000,
+        "bootstrap_seed": 20260850
+      },
+      "input_region_contrasts": [
+        {
+          "family": "outer_input_minus_center_input",
+          "checkpoint_a": "step-001500",
+          "intervention_a": "input_clean_outer",
+          "checkpoint_b": "step-001500",
+          "intervention_b": "input_clean_center",
+          "layer_index": -1,
+          "records": 100,
+          "pairs": 50,
+          "mean_delta": 0.30125,
+          "ci95_low": 0.19875,
+          "ci95_high": 0.4187812499999998,
+          "bootstrap_samples": 2000,
+          "bootstrap_seed": 20260856
+        },
+        {
+          "family": "full_input_minus_outer_input",
+          "checkpoint_a": "step-001500",
+          "intervention_a": "input_clean_full",
+          "checkpoint_b": "step-001500",
+          "intervention_b": "input_clean_outer",
+          "layer_index": -1,
+          "records": 100,
+          "pairs": 50,
+          "mean_delta": -0.004375,
+          "ci95_low": -0.011890624999999998,
+          "ci95_high": 0.0025,
+          "bootstrap_samples": 2000,
+          "bootstrap_seed": 20260857
+        }
+      ]
+    },
+    "step-002000": {
+      "best_content_specific_image_layer": {
+        "family": "correct_image_minus_wrong_label_donor",
+        "checkpoint_a": "step-002000",
+        "intervention_a": "correct_image_span",
+        "checkpoint_b": "step-002000",
+        "intervention_b": "wrong_label_donor_image_span",
+        "layer_index": 5,
+        "records": 100,
+        "pairs": 50,
+        "mean_delta": 0.085625,
+        "ci95_low": 0.051875,
+        "ci95_high": 0.118125,
+        "bootstrap_samples": 2000,
+        "bootstrap_seed": 20260884
+      },
+      "input_region_contrasts": [
+        {
+          "family": "outer_input_minus_center_input",
+          "checkpoint_a": "step-002000",
+          "intervention_a": "input_clean_outer",
+          "checkpoint_b": "step-002000",
+          "intervention_b": "input_clean_center",
+          "layer_index": -1,
+          "records": 100,
+          "pairs": 50,
+          "mean_delta": 0.07625,
+          "ci95_low": 0.04,
+          "ci95_high": 0.11,
+          "bootstrap_samples": 2000,
+          "bootstrap_seed": 20260892
+        },
+        {
+          "family": "full_input_minus_outer_input",
+          "checkpoint_a": "step-002000",
+          "intervention_a": "input_clean_full",
+          "checkpoint_b": "step-002000",
+          "intervention_b": "input_clean_outer",
+          "layer_index": -1,
+          "records": 100,
+          "pairs": 50,
+          "mean_delta": 0.009375,
+          "ci95_low": 0.000625,
+          "ci95_high": 0.01875,
+          "bootstrap_samples": 2000,
+          "bootstrap_seed": 20260893
+        }
+      ]
+    }
+  },
+  "checkpoint_comparisons": {
+    "step-001500_minus_step-002000": {
+      "largest_absolute_delta": {
+        "family": "checkpoint_effect_delta",
+        "checkpoint_a": "step-001500",
+        "intervention_a": "correct_image_span",
+        "checkpoint_b": "step-002000",
+        "intervention_b": "correct_image_span",
+        "layer_index": 11,
+        "records": 100,
+        "pairs": 50,
+        "mean_delta": 0.221875,
+        "ci95_low": 0.13375,
+        "ci95_high": 0.3093906249999999,
+        "bootstrap_samples": 2000,
+        "bootstrap_seed": 20260929
+      }
+    },
+    "step-001500_minus_step-000000": {
+      "largest_absolute_delta": {
+        "family": "checkpoint_effect_delta",
+        "checkpoint_a": "step-001500",
+        "intervention_a": "correct_image_span",
+        "checkpoint_b": "step-000000",
+        "intervention_b": "correct_image_span",
+        "layer_index": 11,
+        "records": 100,
+        "pairs": 50,
+        "mean_delta": 0.5715625,
+        "ci95_low": 0.4046875,
+        "ci95_high": 0.7578203124999999,
+        "bootstrap_samples": 2000,
+        "bootstrap_seed": 20260977
+      }
+    },
+    "step-002000_minus_step-000000": {
+      "largest_absolute_delta": {
+        "family": "checkpoint_effect_delta",
+        "checkpoint_a": "step-002000",
+        "intervention_a": "correct_image_span",
+        "checkpoint_b": "step-000000",
+        "intervention_b": "correct_image_span",
+        "layer_index": 6,
+        "records": 100,
+        "pairs": 50,
+        "mean_delta": 0.381875,
+        "ci95_low": 0.2325,
+        "ci95_high": 0.53875,
+        "bootstrap_samples": 2000,
+        "bootstrap_seed": 20261020
+      }
+    }
+  },
+  "interpretation_limits": [
+    "all contrasts align the same sample IDs and resample complete a/b pairs",
+    "correct-minus-wrong isolates donor content specificity from generic activation replacement",
+    "projector token positions are globally contextualized and do not localize source pixels"
+  ]
+}

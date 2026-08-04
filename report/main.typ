@@ -17,7 +17,7 @@
 
 = 执行摘要
 
-本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段不训练视觉塔和语言模型，只训练一个 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。当前结论是：V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证，projector-only 全量数据训练已得到明确视觉对齐信号。包 3 进一步定位到 step 1500 的 shape 内容信号，但该信号没有转化成 paired 自由生成并在 step 2000 坍缩，下一步优先做逐层定位与因果干预。正式 0731 大权重的 FP4/FP8 可微 kernel 仍是尚未消除的主要风险。
+本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段不训练视觉塔和语言模型，只训练一个 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。当前结论是：V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证，projector-only 全量数据训练已得到明确视觉对齐信号。包 3 定位到 step 1500 的 shape 内容信号；包 4 进一步证明 tower/projector 完整保留 shape，语言主干中层可读且可因果干预，上层在已训练 checkpoint 把信号压回 chance。下一项 V100 实验因此优先做小规模顶部 LoRA 诊断，并保留 projector-only continuation 对照。正式 0731 大权重的 FP4/FP8 可微 kernel 仍是尚未消除的主要风险。
 
 MoonViT-V2 有 401.2M 参数，抽取后的 BF16 权重约 802 MB，相对于约 160 GB 级的 DeepSeek 混合精度权重很小。更大的资源变量是图像分辨率带来的视觉 token 数和冻结 LLM 反向所保留的激活，而不是视觉塔权重。
 
@@ -69,7 +69,7 @@ DeepSeek-V4 的早期 Hash-MoE 通过 `tid2eid[input_ids]` 选 expert。只给 `
   [eval\_vlm 生成/blind/shuffle-loss 干跑], [通过], [评测管线端到端],
   [generate()：generic 与 deepseek_v4 两种路径], [通过], [评测/推理前置],
   [指标库（VQA/ANLS/token-F1/grounding）], [通过], [纯 Python，无 torch],
-  [完整测试集], [150/150], [Linux + torch 2.10.0+cu128；含包 3 回归],
+  [完整测试集], [167/167], [Linux + torch 2.10.0+cu128；含包 4 机制回归],
 )
 
 V100 实测：真实 K3 MoonViT-V2 在 1024×1024 输入下输出 `[1369,4,1024]`，特征全部 finite、逐位确定，eager 与 sdpa 最大绝对差 3.1e-05；真实权重 strict-load、预处理与 loss/backward 合同均正常。旧 V1 路径也保留了 448px 和原生分辨率回归，但不再代表当前训练主线。评测管线的生成、blind 基线与 shuffle-loss 全部端到端通过；训练后 shuffle-loss 差值应当变正，这是对齐信号最便宜的读数。
@@ -377,6 +377,68 @@ step 2000 的 selection-half benchmark vision/blind 为：DocVQA ANLS 0.026/0，
 )
 
 下一包固定比较 step 1500 与 step 2000：在 projector 输出和 Qwen2.5-0.5B 全 24 层训练逐层 linear probe；用正确图激活 patch paired-counterfactual run 的图像 span，并对 upper layers 做最小筛选；加入 random-label、blind、shuffled-image 和 layer-0 控制。判别目标是定位 shape 信息何时可线性恢复、何处在 step 2000 丢失，以及少量因果替换能否恢复 correct margin。结果再决定 projector 辅助目标、顶部 LoRA、延长训练或 1.5B 容量对照的优先级。
+
+== Shape 的逐层机制定位（包 4，2026-08-05）
+
+=== 冻结口径与校准 null
+
+包 4 使用 package-3 唯一通过因果控制的 shape 任务。synthetic train 与 selection 各固定 200 个完整 a/b pair、400 条记录，两者 ID 与 pair overlap 均为 0；activation patching 在运行前以 seed `20260808` 对 pair ID 做 SHA-256 排名，固定 50 pair/100 个方向。checkpoint 为 matched random、step 1500 与 step 2000。表示抽取覆盖 train vision，以及 selection 的 vision、paired-counterfactual、shuffled-image、patch-permutation；每个 cell 保存 tower/projector 三种池化、25 个 hidden-state index 的 assistant 与 image-span mean、类别 logit 和 target/source label，共 59 个 tensor key。
+
+完整表示 run 耗时 122.3s、峰值显存 3.61 GB；30 个 safetensors/metadata 文件约 899 MB，保留在 V100 数据盘并逐文件绑定 bytes/SHA。probe 只在完全隔离的 train split 拟合 class-balanced dual ridge，固定 `alpha=1`，在 selection 上报告 raw/balanced accuracy。早期 v1 分析曾把单个 random-training-label probe 当显著性 null；该诊断方差过高，某 cell 达到 0.49。v1 已标 invalid，v2 对每个 vision cell 使用 2,000 次完整 pair 标签元组置换，最小可报告 p 值为 `1/2001=0.00050`。random-label probe 只保留作过拟合诊断。
+
+=== projector 没丢 shape；训练后的上层把它压回 chance
+
+tower 与 projector 在三个 checkpoint 都至少有一种预注册池化达到 *1.000 balanced accuracy*。matched-random projector 同样达到 1.000，说明高维随机映射本身能保存线性可读的 shape；这个数字不能解释成训练收益。训练 checkpoint 的差异出现在语言主干内部：step 1500 的 assistant probe 在 layer 12 达到 raw *0.790*、balanced *0.816*，pair-permutation p=0.00050、null 95% upper=0.285；step 2000 的峰值后移到 layer 14 并降为 raw *0.605*、balanced *0.632*，p=0.00050、null upper=0.278。
+
+这两个 probe 追随实际图像来源。step1500/layer12 在 paired-counterfactual 条件下 target accuracy 降到 0.075，source accuracy 保持 0.790；shuffled-image 为 target 0.230、source 0.790。step2000/layer14 对应为 0.1125/0.605 与 0.2025/0.605。patch permutation 则把 step1500/step2000 的 target/source 同时降至 0.4475/0.445，说明空间 token 排列也参与了读出。
+
+到 final hidden state，step 1500 与 2000 的 balanced accuracy 都精确回到 *0.250*，pair-permutation p=1；native LM-head 对 vision、paired-counterfactual 与 shuffled-image 也全部为 balanced 0.250。随机主干 final probe 仍有 balanced 0.429，进一步表明训练后的收缩是 checkpoint 特定的上层变换。证据链因此把 shape 瓶颈定位在冻结语言主干的上部使用/保留路径，projector 信息丢失解释在这个任务上被反驳。
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 10pt,
+    image("../experiments/v100_perception_20260804/layerwise_mechanisms_v1/charts/01-assistant-probe.svg", width: 100%),
+    image("../experiments/v100_perception_20260804/layerwise_mechanisms_v1/charts/03-tower-projector-probes.svg", width: 100%),
+  ),
+  caption: [左：assistant 位置的逐层 shape balanced accuracy；右：冻结 tower/projector 的池化读出。训练 checkpoint 的中层峰值在顶部消失，而 projector 始终保留完整可读信息。],
+)
+
+=== activation patching：中层存在内容特异因果通路
+
+activation patching 对每个 checkpoint 扫描全部 24 个 decoder layer。目标 run 使用 paired-counterfactual 图，donor 来自同一样本的正确图；分别替换 image span 和最后一个 assistant token。layer 0/5/11/17/23 加入不同 pair、不同标签 donor 与 zero donor。每种干预覆盖 50 个 pair 的两个方向，以 pair 为 bootstrap 单位。最终 run 共 18,300 条原始记录、183 个 cell，耗时 306.1s、峰值显存 3.50 GB。
+
+实现审计发现第一版把 post-final-RMSNorm 的 `hidden_states[-1]` 注入 pre-final-RMSNorm 的 layer-23 hook；旧 smoke 与 18,300 行完整 v1 均保留并标 invalid。v2 从 decoder layer forward hook 捕获精确 pre-final-norm 输出，从头重跑。最终 assistant patch 对每条样本以 `1e-6` 精度复现 clean margin；clean/counter pair margin 反对称误差为 0。
+
+step 1500 的 correct-image-span replacement 在 layer 11 达到 *+0.3538 [0.2506, 0.4569]*；减去 wrong-label donor 的通用替换效应后仍有 *+0.2194 [0.1463, 0.2994]*。step 2000 的 raw 峰值缩为 layer 6 的 *+0.1531 [0.1125, 0.1931]*，预注册 layer 5 的 correct-minus-wrong 为 *+0.0856 [0.0519, 0.1181]*；step1500−step2000 在 layer 11 为 *+0.2219 [0.1338, 0.3094]*。这与 probe 的“后期更弱”一致，同时表明 step 2000 仍残留较早、较小的内容因果路径。
+
+final-layer image-span effect 为 0，因为该层之后没有注意力运算把被替换的图像位置传给 assistant。final assistant patch 是正控制：step 1500 恢复 *+0.2925 [0.1875, 0.3950]*，step 2000 恢复 *+0.0950 [0.0712, 0.1200]*，数值等于各 checkpoint 的 clean−counter mean margin。
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 10pt,
+    image("../experiments/v100_perception_20260804/layerwise_mechanisms_v1/charts/04-image-span-patching.svg", width: 100%),
+    image("../experiments/v100_perception_20260804/layerwise_mechanisms_v1/charts/06-content-specific-patching.svg", width: 100%),
+  ),
+  caption: [左：正确图 image-span 的逐层 margin 恢复；右：正确 donor 减 wrong-label donor 的内容特异效应。step 1500 的 layer-11 路径最强，step 2000 明显减弱并前移。],
+)
+
+=== token-position 干预边界与假设更新
+
+在 projector 输入 token 位置上，step 1500 的 center replacement 为 −0.0044 [−0.0119, 0.0025]，outer 为 +0.2969 [0.1963, 0.4088]，full 为 +0.2925 [0.1913, 0.4013]；outer−center 为 *+0.3013 [0.1988, 0.4188]*，full−outer 为 −0.0044 [−0.0119, 0.0025]。step 2000 的 center/outer/full 分别为 +0.0094/+0.0856/+0.0950。MoonViT 的 projector token 已经过全局 contextualization，这组结果只定位 receiver 中的 token position，不能映射成原图背景/前景像素位置。后续若要回答 region 因果问题，必须在视觉塔输入或早期 patch 网格上做遮蔽/替换。
+
+#table(
+  columns: (1.55fr, 1fr, 2.7fr),
+  [*假设*], [*包 4 更新*], [*证据与动作*],
+  [projector 丢失 shape], [反驳], [三个 checkpoint 的 tower/projector 最佳 balanced accuracy 均为 1.000；不再优先靠扩大 projector 容量解决 shape。],
+  [冻结主干上层不会稳定使用视觉证据], [强支持], [中层 probe 与 patching 均为正，训练 checkpoint 的 final probe/native head 回到 chance；下一项直接做顶部 LoRA 诊断。],
+  [继续 projector-only 训练会单调改善], [进一步削弱], [step 2000 的 mid-layer probe 与内容特异 patch effect 都弱于 step 1500；延长训练必须带 checkpoint paired 监控与 matched continuation 对照。],
+  [0.5B 容量是首要瓶颈], [仍未判定], [top-LoRA 若恢复读出，先确认适配瓶颈；若失败，再以相同 examples seen 跑 Qwen2.5-1.5B 容量对照。],
+  [背景像素驱动 shape 信号], [未由本实验检验], [outer projector-token 位置足够，但这些 token 已全局 contextualized；需要视觉输入/早期网格干预。],
+)
+
+下一包冻结 step-1500 projector，以小规模顶部 LoRA 只适配 Qwen2.5-0.5B 上层，并运行 projector-only continuation 与 frozen baseline。训练 checkpoint 同时计算 teacher-forced strict paired preference、paired margin、自由生成 paired/answer-flip，以及逐层 probe 是否能把中层信号传到 final。若 LoRA 有效，继续做层数/rank/辅助目标最小消融；若无效，再转 Qwen2.5-1.5B 容量对照与视觉输入 region 干预。付费 Gate D 继续暂缓。
 
 == Gate C：Vast 只读调研
 

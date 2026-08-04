@@ -32,6 +32,13 @@ def main() -> None:
         "preference_records.jsonl",
         "records.jsonl",
         "shuffle_loss_records.jsonl",
+        "patching_records.jsonl",
+        "patching_curve.csv",
+        "probe_metrics.csv",
+        "probe_intervals.csv",
+        "probe_predictions.jsonl",
+        "PROBES.safetensors",
+        "DECISIONS.json",
         "failures.jsonl",
     ):
         path = args.run / name

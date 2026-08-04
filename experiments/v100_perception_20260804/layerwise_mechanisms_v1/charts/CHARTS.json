@@ -1,0 +1,42 @@
+{
+  "status": "valid",
+  "source_csv": {
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/mechanisms/shape_layerwise_v2_analysis/probe_metrics.csv": "5715a37e591ff0aa295ba1d6e4264535b4896bef246d6d26074e679aba8008d0",
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/mechanisms/shape_patching_v2/patching_curve.csv": "4d2425190493c04391c7e932da1158dcc8c0bf19b7edb73ef23f2b5005ffd293",
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/mechanisms/shape_patching_v2_contrasts/patching_contrasts.csv": "dfd275699791e623549084ed009fbd0a7c08ac703059583ab646b3805d1d8117"
+  },
+  "charts": {
+    "01-assistant-probe.svg": {
+      "bytes": 7927,
+      "sha256": "e6d6141e24dba837127c9f3cd5c69719f243d037a26b18f9b20c4b2b3f295236"
+    },
+    "02-image-span-probe.svg": {
+      "bytes": 7864,
+      "sha256": "43fde5a9e834c427b3d7d8f6d8aa7ebda3db6717e538cc54aa81fe73b017b176"
+    },
+    "03-tower-projector-probes.svg": {
+      "bytes": 4450,
+      "sha256": "7bab848e5455c0c1f49841c6d2710f8e7b18aafcb3cecc7f5e09086618173a33"
+    },
+    "04-image-span-patching.svg": {
+      "bytes": 7753,
+      "sha256": "ea80dd5002564f8b51097e9403783b4c84eaf5f95c1fdeaf4847a0b3ee23e164"
+    },
+    "05-assistant-patching.svg": {
+      "bytes": 7753,
+      "sha256": "0c67a03fd4fe711ee87b4f57d1421371516fef19885b8c54636c563f885ad35c"
+    },
+    "06-content-specific-patching.svg": {
+      "bytes": 3751,
+      "sha256": "ee0f40276102c3bddb3ed20d048c2575bbc44c59e8d11ec595f965c137a3b549"
+    },
+    "07-input-token-regions.svg": {
+      "bytes": 2705,
+      "sha256": "e7059c250b0b3e9306f43cd345de30cdde6a569f8139165cf3f00132f40314a8"
+    },
+    "08-probe-source-controls.svg": {
+      "bytes": 4247,
+      "sha256": "068104847bdd3ec3582fa9084b58a9ad3f87e2e339e6466b8b104fc693039e07"
+    }
+  }
+}

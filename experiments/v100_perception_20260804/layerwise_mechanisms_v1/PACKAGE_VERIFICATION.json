@@ -1,0 +1,27 @@
+{
+  "status": "valid",
+  "representations": {
+    "status": "valid",
+    "representation_files_verified": 30,
+    "representation_rows_verified": 6000,
+    "checkpoints_verified": 3,
+    "tensor_keys_per_cell": 59,
+    "final_half_scored": false
+  },
+  "analysis": {
+    "status": "valid",
+    "probe_files_verified": 6,
+    "probe_metric_rows_verified": 672,
+    "probe_prediction_rows_verified": 268800,
+    "vision_pair_permutation_null_verified": true,
+    "final_half_scored": false
+  },
+  "patching": {
+    "status": "valid",
+    "patching_files_verified": 3,
+    "patching_rows_verified": 18300,
+    "patching_cells_verified": 183,
+    "final_half_scored": false
+  },
+  "final_half_scored": false
+}

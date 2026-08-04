@@ -1,0 +1,41 @@
+{
+  "status": "valid",
+  "host": "doesworkstation",
+  "data_root": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1",
+  "canonical_runs": {
+    "selection": "mechanisms/shape_layerwise_v1_selection",
+    "train_feature_cache": "cache/synthetic-train-shape-256-v1",
+    "representations": "mechanisms/shape_layerwise_v1",
+    "probe_analysis": "mechanisms/shape_layerwise_v2_analysis",
+    "activation_patching": "mechanisms/shape_patching_v2",
+    "patching_contrasts": "mechanisms/shape_patching_v2_contrasts",
+    "charts": "mechanisms/shape_layerwise_package_v2_charts",
+    "verification": "mechanisms/shape_layerwise_package_v2_VERIFICATION.json"
+  },
+  "large_raw_files": {
+    "representations": {
+      "files": 30,
+      "tensor_and_metadata_bytes": 898578384,
+      "hash_manifest": "representations/SUMMARY.json"
+    },
+    "probe_predictions": {
+      "bytes": 108164550,
+      "sha256": "8dbaa77b16e3f253965c724b98afa6217ea506796e78dc8fd702122b6c00ed7c",
+      "git_gzip_copy": "analysis/probe_predictions.jsonl.gz",
+      "git_gzip_sha256": "9db37563db59be19234c5827a717747d63fec9bc973491b96400205c414896de"
+    },
+    "patching_records": {
+      "bytes": 10632213,
+      "sha256": "4b645bcbc335034c0502273562ed54a0def45ddcfe71bc489232dbdaf27b87ff",
+      "git_copy": "patching/patching_records.jsonl"
+    }
+  },
+  "invalid_runs_retained_on_data_disk": [
+    "mechanisms/shape_patching_smoke_v1",
+    "mechanisms/shape_patching_v1",
+    "mechanisms/shape_layerwise_v1_analysis"
+  ],
+  "final_half_scored": false,
+  "paid_resources_used": false
+}
+

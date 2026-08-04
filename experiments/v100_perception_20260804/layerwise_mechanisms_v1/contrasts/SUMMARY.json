@@ -1,0 +1,20 @@
+{
+  "status": "valid",
+  "format_version": "activation-patching-contrasts-v1",
+  "source_summary_sha256": "084bd4a65fb485ba0dbfa7430593b80a3d6eb930b32e4da74c375b85dcea33d9",
+  "source_raw_sha256": "4b645bcbc335034c0502273562ed54a0def45ddcfe71bc489232dbdaf27b87ff",
+  "source_rows": 18300,
+  "contrast_rows": 252,
+  "bootstrap_samples": 2000,
+  "seed": 20260810,
+  "files": {
+    "patching_contrasts.csv": {
+      "bytes": 37474,
+      "sha256": "dfd275699791e623549084ed009fbd0a7c08ac703059583ab646b3805d1d8117"
+    },
+    "DECISIONS.json": {
+      "bytes": 6891,
+      "sha256": "ae7111f6ea8b8910a269b79a5b3fddcbcb8ddc0e563e9987c9a269b823e66b26"
+    }
+  }
+}

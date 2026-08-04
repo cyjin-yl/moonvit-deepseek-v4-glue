@@ -1,0 +1,1208 @@
+{
+  "format_version": "mechanism-record-ids-v1",
+  "source": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/train.jsonl",
+  "source_sha256": "517200461468e8eb7cddbb11673867e57458c59e9ec3c070b35e159c5d2f5a1d",
+  "task": "shape",
+  "records": [
+    {
+      "id": "train-shape-00000-a"
+    },
+    {
+      "id": "train-shape-00000-b"
+    },
+    {
+      "id": "train-shape-00001-a"
+    },
+    {
+      "id": "train-shape-00001-b"
+    },
+    {
+      "id": "train-shape-00002-a"
+    },
+    {
+      "id": "train-shape-00002-b"
+    },
+    {
+      "id": "train-shape-00003-a"
+    },
+    {
+      "id": "train-shape-00003-b"
+    },
+    {
+      "id": "train-shape-00004-a"
+    },
+    {
+      "id": "train-shape-00004-b"
+    },
+    {
+      "id": "train-shape-00005-a"
+    },
+    {
+      "id": "train-shape-00005-b"
+    },
+    {
+      "id": "train-shape-00006-a"
+    },
+    {
+      "id": "train-shape-00006-b"
+    },
+    {
+      "id": "train-shape-00007-a"
+    },
+    {
+      "id": "train-shape-00007-b"
+    },
+    {
+      "id": "train-shape-00008-a"
+    },
+    {
+      "id": "train-shape-00008-b"
+    },
+    {
+      "id": "train-shape-00009-a"
+    },
+    {
+      "id": "train-shape-00009-b"
+    },
+    {
+      "id": "train-shape-00010-a"
+    },
+    {
+      "id": "train-shape-00010-b"
+    },
+    {
+      "id": "train-shape-00011-a"
+    },
+    {
+      "id": "train-shape-00011-b"
+    },
+    {
+      "id": "train-shape-00012-a"
+    },
+    {
+      "id": "train-shape-00012-b"
+    },
+    {
+      "id": "train-shape-00013-a"
+    },
+    {
+      "id": "train-shape-00013-b"
+    },
+    {
+      "id": "train-shape-00014-a"
+    },
+    {
+      "id": "train-shape-00014-b"
+    },
+    {
+      "id": "train-shape-00015-a"
+    },
+    {
+      "id": "train-shape-00015-b"
+    },
+    {
+      "id": "train-shape-00016-a"
+    },
+    {
+      "id": "train-shape-00016-b"
+    },
+    {
+      "id": "train-shape-00017-a"
+    },
+    {
+      "id": "train-shape-00017-b"
+    },
+    {
+      "id": "train-shape-00018-a"
+    },
+    {
+      "id": "train-shape-00018-b"
+    },
+    {
+      "id": "train-shape-00019-a"
+    },
+    {
+      "id": "train-shape-00019-b"
+    },
+    {
+      "id": "train-shape-00020-a"
+    },
+    {
+      "id": "train-shape-00020-b"
+    },
+    {
+      "id": "train-shape-00021-a"
+    },
+    {
+      "id": "train-shape-00021-b"
+    },
+    {
+      "id": "train-shape-00022-a"
+    },
+    {
+      "id": "train-shape-00022-b"
+    },
+    {
+      "id": "train-shape-00023-a"
+    },
+    {
+      "id": "train-shape-00023-b"
+    },
+    {
+      "id": "train-shape-00024-a"
+    },
+    {
+      "id": "train-shape-00024-b"
+    },
+    {
+      "id": "train-shape-00025-a"
+    },
+    {
+      "id": "train-shape-00025-b"
+    },
+    {
+      "id": "train-shape-00026-a"
+    },
+    {
+      "id": "train-shape-00026-b"
+    },
+    {
+      "id": "train-shape-00027-a"
+    },
+    {
+      "id": "train-shape-00027-b"
+    },
+    {
+      "id": "train-shape-00028-a"
+    },
+    {
+      "id": "train-shape-00028-b"
+    },
+    {
+      "id": "train-shape-00029-a"
+    },
+    {
+      "id": "train-shape-00029-b"
+    },
+    {
+      "id": "train-shape-00030-a"
+    },
+    {
+      "id": "train-shape-00030-b"
+    },
+    {
+      "id": "train-shape-00031-a"
+    },
+    {
+      "id": "train-shape-00031-b"
+    },
+    {
+      "id": "train-shape-00032-a"
+    },
+    {
+      "id": "train-shape-00032-b"
+    },
+    {
+      "id": "train-shape-00033-a"
+    },
+    {
+      "id": "train-shape-00033-b"
+    },
+    {
+      "id": "train-shape-00034-a"
+    },
+    {
+      "id": "train-shape-00034-b"
+    },
+    {
+      "id": "train-shape-00035-a"
+    },
+    {
+      "id": "train-shape-00035-b"
+    },
+    {
+      "id": "train-shape-00036-a"
+    },
+    {
+      "id": "train-shape-00036-b"
+    },
+    {
+      "id": "train-shape-00037-a"
+    },
+    {
+      "id": "train-shape-00037-b"
+    },
+    {
+      "id": "train-shape-00038-a"
+    },
+    {
+      "id": "train-shape-00038-b"
+    },
+    {
+      "id": "train-shape-00039-a"
+    },
+    {
+      "id": "train-shape-00039-b"
+    },
+    {
+      "id": "train-shape-00040-a"
+    },
+    {
+      "id": "train-shape-00040-b"
+    },
+    {
+      "id": "train-shape-00041-a"
+    },
+    {
+      "id": "train-shape-00041-b"
+    },
+    {
+      "id": "train-shape-00042-a"
+    },
+    {
+      "id": "train-shape-00042-b"
+    },
+    {
+      "id": "train-shape-00043-a"
+    },
+    {
+      "id": "train-shape-00043-b"
+    },
+    {
+      "id": "train-shape-00044-a"
+    },
+    {
+      "id": "train-shape-00044-b"
+    },
+    {
+      "id": "train-shape-00045-a"
+    },
+    {
+      "id": "train-shape-00045-b"
+    },
+    {
+      "id": "train-shape-00046-a"
+    },
+    {
+      "id": "train-shape-00046-b"
+    },
+    {
+      "id": "train-shape-00047-a"
+    },
+    {
+      "id": "train-shape-00047-b"
+    },
+    {
+      "id": "train-shape-00048-a"
+    },
+    {
+      "id": "train-shape-00048-b"
+    },
+    {
+      "id": "train-shape-00049-a"
+    },
+    {
+      "id": "train-shape-00049-b"
+    },
+    {
+      "id": "train-shape-00050-a"
+    },
+    {
+      "id": "train-shape-00050-b"
+    },
+    {
+      "id": "train-shape-00051-a"
+    },
+    {
+      "id": "train-shape-00051-b"
+    },
+    {
+      "id": "train-shape-00052-a"
+    },
+    {
+      "id": "train-shape-00052-b"
+    },
+    {
+      "id": "train-shape-00053-a"
+    },
+    {
+      "id": "train-shape-00053-b"
+    },
+    {
+      "id": "train-shape-00054-a"
+    },
+    {
+      "id": "train-shape-00054-b"
+    },
+    {
+      "id": "train-shape-00055-a"
+    },
+    {
+      "id": "train-shape-00055-b"
+    },
+    {
+      "id": "train-shape-00056-a"
+    },
+    {
+      "id": "train-shape-00056-b"
+    },
+    {
+      "id": "train-shape-00057-a"
+    },
+    {
+      "id": "train-shape-00057-b"
+    },
+    {
+      "id": "train-shape-00058-a"
+    },
+    {
+      "id": "train-shape-00058-b"
+    },
+    {
+      "id": "train-shape-00059-a"
+    },
+    {
+      "id": "train-shape-00059-b"
+    },
+    {
+      "id": "train-shape-00060-a"
+    },
+    {
+      "id": "train-shape-00060-b"
+    },
+    {
+      "id": "train-shape-00061-a"
+    },
+    {
+      "id": "train-shape-00061-b"
+    },
+    {
+      "id": "train-shape-00062-a"
+    },
+    {
+      "id": "train-shape-00062-b"
+    },
+    {
+      "id": "train-shape-00063-a"
+    },
+    {
+      "id": "train-shape-00063-b"
+    },
+    {
+      "id": "train-shape-00064-a"
+    },
+    {
+      "id": "train-shape-00064-b"
+    },
+    {
+      "id": "train-shape-00065-a"
+    },
+    {
+      "id": "train-shape-00065-b"
+    },
+    {
+      "id": "train-shape-00066-a"
+    },
+    {
+      "id": "train-shape-00066-b"
+    },
+    {
+      "id": "train-shape-00067-a"
+    },
+    {
+      "id": "train-shape-00067-b"
+    },
+    {
+      "id": "train-shape-00068-a"
+    },
+    {
+      "id": "train-shape-00068-b"
+    },
+    {
+      "id": "train-shape-00069-a"
+    },
+    {
+      "id": "train-shape-00069-b"
+    },
+    {
+      "id": "train-shape-00070-a"
+    },
+    {
+      "id": "train-shape-00070-b"
+    },
+    {
+      "id": "train-shape-00071-a"
+    },
+    {
+      "id": "train-shape-00071-b"
+    },
+    {
+      "id": "train-shape-00072-a"
+    },
+    {
+      "id": "train-shape-00072-b"
+    },
+    {
+      "id": "train-shape-00073-a"
+    },
+    {
+      "id": "train-shape-00073-b"
+    },
+    {
+      "id": "train-shape-00074-a"
+    },
+    {
+      "id": "train-shape-00074-b"
+    },
+    {
+      "id": "train-shape-00075-a"
+    },
+    {
+      "id": "train-shape-00075-b"
+    },
+    {
+      "id": "train-shape-00076-a"
+    },
+    {
+      "id": "train-shape-00076-b"
+    },
+    {
+      "id": "train-shape-00077-a"
+    },
+    {
+      "id": "train-shape-00077-b"
+    },
+    {
+      "id": "train-shape-00078-a"
+    },
+    {
+      "id": "train-shape-00078-b"
+    },
+    {
+      "id": "train-shape-00079-a"
+    },
+    {
+      "id": "train-shape-00079-b"
+    },
+    {
+      "id": "train-shape-00080-a"
+    },
+    {
+      "id": "train-shape-00080-b"
+    },
+    {
+      "id": "train-shape-00081-a"
+    },
+    {
+      "id": "train-shape-00081-b"
+    },
+    {
+      "id": "train-shape-00082-a"
+    },
+    {
+      "id": "train-shape-00082-b"
+    },
+    {
+      "id": "train-shape-00083-a"
+    },
+    {
+      "id": "train-shape-00083-b"
+    },
+    {
+      "id": "train-shape-00084-a"
+    },
+    {
+      "id": "train-shape-00084-b"
+    },
+    {
+      "id": "train-shape-00085-a"
+    },
+    {
+      "id": "train-shape-00085-b"
+    },
+    {
+      "id": "train-shape-00086-a"
+    },
+    {
+      "id": "train-shape-00086-b"
+    },
+    {
+      "id": "train-shape-00087-a"
+    },
+    {
+      "id": "train-shape-00087-b"
+    },
+    {
+      "id": "train-shape-00088-a"
+    },
+    {
+      "id": "train-shape-00088-b"
+    },
+    {
+      "id": "train-shape-00089-a"
+    },
+    {
+      "id": "train-shape-00089-b"
+    },
+    {
+      "id": "train-shape-00090-a"
+    },
+    {
+      "id": "train-shape-00090-b"
+    },
+    {
+      "id": "train-shape-00091-a"
+    },
+    {
+      "id": "train-shape-00091-b"
+    },
+    {
+      "id": "train-shape-00092-a"
+    },
+    {
+      "id": "train-shape-00092-b"
+    },
+    {
+      "id": "train-shape-00093-a"
+    },
+    {
+      "id": "train-shape-00093-b"
+    },
+    {
+      "id": "train-shape-00094-a"
+    },
+    {
+      "id": "train-shape-00094-b"
+    },
+    {
+      "id": "train-shape-00095-a"
+    },
+    {
+      "id": "train-shape-00095-b"
+    },
+    {
+      "id": "train-shape-00096-a"
+    },
+    {
+      "id": "train-shape-00096-b"
+    },
+    {
+      "id": "train-shape-00097-a"
+    },
+    {
+      "id": "train-shape-00097-b"
+    },
+    {
+      "id": "train-shape-00098-a"
+    },
+    {
+      "id": "train-shape-00098-b"
+    },
+    {
+      "id": "train-shape-00099-a"
+    },
+    {
+      "id": "train-shape-00099-b"
+    },
+    {
+      "id": "train-shape-00100-a"
+    },
+    {
+      "id": "train-shape-00100-b"
+    },
+    {
+      "id": "train-shape-00101-a"
+    },
+    {
+      "id": "train-shape-00101-b"
+    },
+    {
+      "id": "train-shape-00102-a"
+    },
+    {
+      "id": "train-shape-00102-b"
+    },
+    {
+      "id": "train-shape-00103-a"
+    },
+    {
+      "id": "train-shape-00103-b"
+    },
+    {
+      "id": "train-shape-00104-a"
+    },
+    {
+      "id": "train-shape-00104-b"
+    },
+    {
+      "id": "train-shape-00105-a"
+    },
+    {
+      "id": "train-shape-00105-b"
+    },
+    {
+      "id": "train-shape-00106-a"
+    },
+    {
+      "id": "train-shape-00106-b"
+    },
+    {
+      "id": "train-shape-00107-a"
+    },
+    {
+      "id": "train-shape-00107-b"
+    },
+    {
+      "id": "train-shape-00108-a"
+    },
+    {
+      "id": "train-shape-00108-b"
+    },
+    {
+      "id": "train-shape-00109-a"
+    },
+    {
+      "id": "train-shape-00109-b"
+    },
+    {
+      "id": "train-shape-00110-a"
+    },
+    {
+      "id": "train-shape-00110-b"
+    },
+    {
+      "id": "train-shape-00111-a"
+    },
+    {
+      "id": "train-shape-00111-b"
+    },
+    {
+      "id": "train-shape-00112-a"
+    },
+    {
+      "id": "train-shape-00112-b"
+    },
+    {
+      "id": "train-shape-00113-a"
+    },
+    {
+      "id": "train-shape-00113-b"
+    },
+    {
+      "id": "train-shape-00114-a"
+    },
+    {
+      "id": "train-shape-00114-b"
+    },
+    {
+      "id": "train-shape-00115-a"
+    },
+    {
+      "id": "train-shape-00115-b"
+    },
+    {
+      "id": "train-shape-00116-a"
+    },
+    {
+      "id": "train-shape-00116-b"
+    },
+    {
+      "id": "train-shape-00117-a"
+    },
+    {
+      "id": "train-shape-00117-b"
+    },
+    {
+      "id": "train-shape-00118-a"
+    },
+    {
+      "id": "train-shape-00118-b"
+    },
+    {
+      "id": "train-shape-00119-a"
+    },
+    {
+      "id": "train-shape-00119-b"
+    },
+    {
+      "id": "train-shape-00120-a"
+    },
+    {
+      "id": "train-shape-00120-b"
+    },
+    {
+      "id": "train-shape-00121-a"
+    },
+    {
+      "id": "train-shape-00121-b"
+    },
+    {
+      "id": "train-shape-00122-a"
+    },
+    {
+      "id": "train-shape-00122-b"
+    },
+    {
+      "id": "train-shape-00123-a"
+    },
+    {
+      "id": "train-shape-00123-b"
+    },
+    {
+      "id": "train-shape-00124-a"
+    },
+    {
+      "id": "train-shape-00124-b"
+    },
+    {
+      "id": "train-shape-00125-a"
+    },
+    {
+      "id": "train-shape-00125-b"
+    },
+    {
+      "id": "train-shape-00126-a"
+    },
+    {
+      "id": "train-shape-00126-b"
+    },
+    {
+      "id": "train-shape-00127-a"
+    },
+    {
+      "id": "train-shape-00127-b"
+    },
+    {
+      "id": "train-shape-00128-a"
+    },
+    {
+      "id": "train-shape-00128-b"
+    },
+    {
+      "id": "train-shape-00129-a"
+    },
+    {
+      "id": "train-shape-00129-b"
+    },
+    {
+      "id": "train-shape-00130-a"
+    },
+    {
+      "id": "train-shape-00130-b"
+    },
+    {
+      "id": "train-shape-00131-a"
+    },
+    {
+      "id": "train-shape-00131-b"
+    },
+    {
+      "id": "train-shape-00132-a"
+    },
+    {
+      "id": "train-shape-00132-b"
+    },
+    {
+      "id": "train-shape-00133-a"
+    },
+    {
+      "id": "train-shape-00133-b"
+    },
+    {
+      "id": "train-shape-00134-a"
+    },
+    {
+      "id": "train-shape-00134-b"
+    },
+    {
+      "id": "train-shape-00135-a"
+    },
+    {
+      "id": "train-shape-00135-b"
+    },
+    {
+      "id": "train-shape-00136-a"
+    },
+    {
+      "id": "train-shape-00136-b"
+    },
+    {
+      "id": "train-shape-00137-a"
+    },
+    {
+      "id": "train-shape-00137-b"
+    },
+    {
+      "id": "train-shape-00138-a"
+    },
+    {
+      "id": "train-shape-00138-b"
+    },
+    {
+      "id": "train-shape-00139-a"
+    },
+    {
+      "id": "train-shape-00139-b"
+    },
+    {
+      "id": "train-shape-00140-a"
+    },
+    {
+      "id": "train-shape-00140-b"
+    },
+    {
+      "id": "train-shape-00141-a"
+    },
+    {
+      "id": "train-shape-00141-b"
+    },
+    {
+      "id": "train-shape-00142-a"
+    },
+    {
+      "id": "train-shape-00142-b"
+    },
+    {
+      "id": "train-shape-00143-a"
+    },
+    {
+      "id": "train-shape-00143-b"
+    },
+    {
+      "id": "train-shape-00144-a"
+    },
+    {
+      "id": "train-shape-00144-b"
+    },
+    {
+      "id": "train-shape-00145-a"
+    },
+    {
+      "id": "train-shape-00145-b"
+    },
+    {
+      "id": "train-shape-00146-a"
+    },
+    {
+      "id": "train-shape-00146-b"
+    },
+    {
+      "id": "train-shape-00147-a"
+    },
+    {
+      "id": "train-shape-00147-b"
+    },
+    {
+      "id": "train-shape-00148-a"
+    },
+    {
+      "id": "train-shape-00148-b"
+    },
+    {
+      "id": "train-shape-00149-a"
+    },
+    {
+      "id": "train-shape-00149-b"
+    },
+    {
+      "id": "train-shape-00150-a"
+    },
+    {
+      "id": "train-shape-00150-b"
+    },
+    {
+      "id": "train-shape-00151-a"
+    },
+    {
+      "id": "train-shape-00151-b"
+    },
+    {
+      "id": "train-shape-00152-a"
+    },
+    {
+      "id": "train-shape-00152-b"
+    },
+    {
+      "id": "train-shape-00153-a"
+    },
+    {
+      "id": "train-shape-00153-b"
+    },
+    {
+      "id": "train-shape-00154-a"
+    },
+    {
+      "id": "train-shape-00154-b"
+    },
+    {
+      "id": "train-shape-00155-a"
+    },
+    {
+      "id": "train-shape-00155-b"
+    },
+    {
+      "id": "train-shape-00156-a"
+    },
+    {
+      "id": "train-shape-00156-b"
+    },
+    {
+      "id": "train-shape-00157-a"
+    },
+    {
+      "id": "train-shape-00157-b"
+    },
+    {
+      "id": "train-shape-00158-a"
+    },
+    {
+      "id": "train-shape-00158-b"
+    },
+    {
+      "id": "train-shape-00159-a"
+    },
+    {
+      "id": "train-shape-00159-b"
+    },
+    {
+      "id": "train-shape-00160-a"
+    },
+    {
+      "id": "train-shape-00160-b"
+    },
+    {
+      "id": "train-shape-00161-a"
+    },
+    {
+      "id": "train-shape-00161-b"
+    },
+    {
+      "id": "train-shape-00162-a"
+    },
+    {
+      "id": "train-shape-00162-b"
+    },
+    {
+      "id": "train-shape-00163-a"
+    },
+    {
+      "id": "train-shape-00163-b"
+    },
+    {
+      "id": "train-shape-00164-a"
+    },
+    {
+      "id": "train-shape-00164-b"
+    },
+    {
+      "id": "train-shape-00165-a"
+    },
+    {
+      "id": "train-shape-00165-b"
+    },
+    {
+      "id": "train-shape-00166-a"
+    },
+    {
+      "id": "train-shape-00166-b"
+    },
+    {
+      "id": "train-shape-00167-a"
+    },
+    {
+      "id": "train-shape-00167-b"
+    },
+    {
+      "id": "train-shape-00168-a"
+    },
+    {
+      "id": "train-shape-00168-b"
+    },
+    {
+      "id": "train-shape-00169-a"
+    },
+    {
+      "id": "train-shape-00169-b"
+    },
+    {
+      "id": "train-shape-00170-a"
+    },
+    {
+      "id": "train-shape-00170-b"
+    },
+    {
+      "id": "train-shape-00171-a"
+    },
+    {
+      "id": "train-shape-00171-b"
+    },
+    {
+      "id": "train-shape-00172-a"
+    },
+    {
+      "id": "train-shape-00172-b"
+    },
+    {
+      "id": "train-shape-00173-a"
+    },
+    {
+      "id": "train-shape-00173-b"
+    },
+    {
+      "id": "train-shape-00174-a"
+    },
+    {
+      "id": "train-shape-00174-b"
+    },
+    {
+      "id": "train-shape-00175-a"
+    },
+    {
+      "id": "train-shape-00175-b"
+    },
+    {
+      "id": "train-shape-00176-a"
+    },
+    {
+      "id": "train-shape-00176-b"
+    },
+    {
+      "id": "train-shape-00177-a"
+    },
+    {
+      "id": "train-shape-00177-b"
+    },
+    {
+      "id": "train-shape-00178-a"
+    },
+    {
+      "id": "train-shape-00178-b"
+    },
+    {
+      "id": "train-shape-00179-a"
+    },
+    {
+      "id": "train-shape-00179-b"
+    },
+    {
+      "id": "train-shape-00180-a"
+    },
+    {
+      "id": "train-shape-00180-b"
+    },
+    {
+      "id": "train-shape-00181-a"
+    },
+    {
+      "id": "train-shape-00181-b"
+    },
+    {
+      "id": "train-shape-00182-a"
+    },
+    {
+      "id": "train-shape-00182-b"
+    },
+    {
+      "id": "train-shape-00183-a"
+    },
+    {
+      "id": "train-shape-00183-b"
+    },
+    {
+      "id": "train-shape-00184-a"
+    },
+    {
+      "id": "train-shape-00184-b"
+    },
+    {
+      "id": "train-shape-00185-a"
+    },
+    {
+      "id": "train-shape-00185-b"
+    },
+    {
+      "id": "train-shape-00186-a"
+    },
+    {
+      "id": "train-shape-00186-b"
+    },
+    {
+      "id": "train-shape-00187-a"
+    },
+    {
+      "id": "train-shape-00187-b"
+    },
+    {
+      "id": "train-shape-00188-a"
+    },
+    {
+      "id": "train-shape-00188-b"
+    },
+    {
+      "id": "train-shape-00189-a"
+    },
+    {
+      "id": "train-shape-00189-b"
+    },
+    {
+      "id": "train-shape-00190-a"
+    },
+    {
+      "id": "train-shape-00190-b"
+    },
+    {
+      "id": "train-shape-00191-a"
+    },
+    {
+      "id": "train-shape-00191-b"
+    },
+    {
+      "id": "train-shape-00192-a"
+    },
+    {
+      "id": "train-shape-00192-b"
+    },
+    {
+      "id": "train-shape-00193-a"
+    },
+    {
+      "id": "train-shape-00193-b"
+    },
+    {
+      "id": "train-shape-00194-a"
+    },
+    {
+      "id": "train-shape-00194-b"
+    },
+    {
+      "id": "train-shape-00195-a"
+    },
+    {
+      "id": "train-shape-00195-b"
+    },
+    {
+      "id": "train-shape-00196-a"
+    },
+    {
+      "id": "train-shape-00196-b"
+    },
+    {
+      "id": "train-shape-00197-a"
+    },
+    {
+      "id": "train-shape-00197-b"
+    },
+    {
+      "id": "train-shape-00198-a"
+    },
+    {
+      "id": "train-shape-00198-b"
+    },
+    {
+      "id": "train-shape-00199-a"
+    },
+    {
+      "id": "train-shape-00199-b"
+    }
+  ]
+}

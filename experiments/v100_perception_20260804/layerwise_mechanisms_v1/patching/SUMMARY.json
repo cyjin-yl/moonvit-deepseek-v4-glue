@@ -1,0 +1,101 @@
+{
+  "status": "valid",
+  "format_version": "activation-patching-v1",
+  "metadata": {
+    "started_at_utc": "2026-08-04T23:09:08.861204+00:00",
+    "completed_at_utc": "2026-08-04T23:14:14.983301+00:00",
+    "git_sha": "1f161789b06b60ee10e47fbfa0fbeff72303966e",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "dtype": "bfloat16",
+    "wall_seconds": 306.12649369239807,
+    "peak_gpu_memory_bytes": 3497107968,
+    "final_half_scored": false
+  },
+  "selection_manifest_sha256": "1162ad7be105d65f6eb9e742828cdd715a10efe20ff8d9020713d960eff59c46",
+  "records": 100,
+  "pairs": 50,
+  "scan_layers": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+  ],
+  "language_layers": 24,
+  "negative_control_layers": [
+    0,
+    5,
+    11,
+    17,
+    23
+  ],
+  "checkpoints": {
+    "step-000000": {
+      "state_sha256": "ad97177911e2a86d0c70811c788968c638f878d623fa780f3e780004437ed76b",
+      "records": 100,
+      "pairs": 50,
+      "mean_clean_margin": -0.0028125,
+      "mean_counterfactual_margin": 0.0028125,
+      "strict_paired_preference": 0.08,
+      "paired_margin_antisymmetry_max_abs": 0.0,
+      "layer_output_capture": "decoder layer forward-hook output before final RMSNorm"
+    },
+    "step-001500": {
+      "state_sha256": "6f98f4e8d13c1d2be5b921a5ec5b4ae23a16085c346c69d8c42a1a7cba7accd3",
+      "records": 100,
+      "pairs": 50,
+      "mean_clean_margin": 0.14625,
+      "mean_counterfactual_margin": -0.14625,
+      "strict_paired_preference": 0.14,
+      "paired_margin_antisymmetry_max_abs": 0.0,
+      "layer_output_capture": "decoder layer forward-hook output before final RMSNorm"
+    },
+    "step-002000": {
+      "state_sha256": "d6f206204b6e7ce6191636eb1202cf4158418522bbd1919e67ccf1fd42ad2c80",
+      "records": 100,
+      "pairs": 50,
+      "mean_clean_margin": 0.0475,
+      "mean_counterfactual_margin": -0.0475,
+      "strict_paired_preference": 0.0,
+      "paired_margin_antisymmetry_max_abs": 0.0,
+      "layer_output_capture": "decoder layer forward-hook output before final RMSNorm"
+    }
+  },
+  "raw_rows": 18300,
+  "curve_rows": 183,
+  "files": {
+    "patching_records.jsonl": {
+      "bytes": 10632213,
+      "sha256": "4b645bcbc335034c0502273562ed54a0def45ddcfe71bc489232dbdaf27b87ff"
+    },
+    "patching_curve.csv": {
+      "bytes": 21999,
+      "sha256": "4d2425190493c04391c7e932da1158dcc8c0bf19b7edb73ef23f2b5005ffd293"
+    },
+    "DECISIONS.json": {
+      "bytes": 10291,
+      "sha256": "ba547215c92bda5d89185a4e18247fb9981b4467c12633b03b4e16d8a9fe0755"
+    }
+  }
+}

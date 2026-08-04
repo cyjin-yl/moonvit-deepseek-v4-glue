@@ -1,0 +1,30 @@
+{
+  "status": "invalid",
+  "invalidated_at_utc": "2026-08-04T23:13:13.795763+00:00",
+  "reason": "decoder final-layer donor came from post-final-RMSNorm hidden_states[-1] while the hook patched the pre-final-RMSNorm decoder output",
+  "impact": "screening run cannot validate the final-layer reproduction invariant; no result is authoritative",
+  "replacement_run": "shape_patching_smoke_v2",
+  "old_results_must_not_be_used": true,
+  "files": {
+    "CONFIG.json": {
+      "bytes": 3423,
+      "sha256": "8c4b9d70d30b56f90d3205bdd6841f102b2c3e992250f443e51d2c5d51506071"
+    },
+    "SUMMARY.json": {
+      "bytes": 1539,
+      "sha256": "632d9345f74449d4a467ffcb32464ed17c80ee2e9089eed81a62fe8cd41c8437"
+    },
+    "patching_records.jsonl": {
+      "bytes": 25412,
+      "sha256": "440bb327673982b4c6227d3a432928f65bb094001ed87586c1e6e826500bdad3"
+    },
+    "patching_curve.csv": {
+      "bytes": 1365,
+      "sha256": "995ce43e44cb8ea501a4f56930342f6e7866fb2d9f4ffca9b1af8b0baa337e47"
+    },
+    "DECISIONS.json": {
+      "bytes": 3596,
+      "sha256": "105b36d09eb72f049abc5f24b864728b40173fe056fd1ee4acfcd2af6838efd3"
+    }
+  }
+}

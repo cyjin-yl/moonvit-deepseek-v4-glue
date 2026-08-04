@@ -1,0 +1,49 @@
+{
+  "status": "valid",
+  "format_version": "layerwise-probe-analysis-v1",
+  "created_at_utc": "2026-08-04T23:15:17.548302+00:00",
+  "source_summary_sha256": "14b0240784b39812c5b551fdbdf565958813964ea252e87c8fd163b57480ed02",
+  "checkpoints": [
+    "step-000000",
+    "step-001500",
+    "step-002000"
+  ],
+  "classes": [
+    "circle",
+    "square",
+    "star",
+    "triangle"
+  ],
+  "metric_rows": 672,
+  "native_rows": 12,
+  "interval_rows": 728,
+  "prediction_rows": 268800,
+  "probe_tensor_count": 1344,
+  "files": {
+    "probe_metrics.csv": {
+      "bytes": 101764,
+      "sha256": "5715a37e591ff0aa295ba1d6e4264535b4896bef246d6d26074e679aba8008d0"
+    },
+    "native_logit_lens.csv": {
+      "bytes": 1083,
+      "sha256": "f495c9b0569e7cb69ec99393b6cdfe8b03bb9bd986dadceee1935b532071fb00"
+    },
+    "probe_intervals.csv": {
+      "bytes": 75922,
+      "sha256": "dbfeeb5ce3bfe77ad2b577185c445d017c4e8cd6bddca82cb274b71e3686bf7f"
+    },
+    "probe_predictions.jsonl": {
+      "bytes": 108164550,
+      "sha256": "8dbaa77b16e3f253965c724b98afa6217ea506796e78dc8fd702122b6c00ed7c"
+    },
+    "PROBES.safetensors": {
+      "bytes": 10926376,
+      "sha256": "b61d03103d94011ed15825911225bcdba0de7423224dfa26c52ddde8730a7645"
+    },
+    "DECISIONS.json": {
+      "bytes": 7903,
+      "sha256": "5e392f3491c9dd66eb7b31ea50343f8c63da03ad6c6fa928d7273db726b0c7ae"
+    }
+  },
+  "final_half_scored": false
+}

@@ -1,0 +1,95 @@
+{
+  "status": "valid",
+  "format_version": "layerwise-representations-v1",
+  "metadata": {
+    "started_at_utc": "2026-08-04T22:49:36.947550+00:00",
+    "git_sha": "1f161789b06b60ee10e47fbfa0fbeff72303966e",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "dtype": "bfloat16",
+    "save_dtype": "bfloat16",
+    "final_half_scored": false,
+    "completed_at_utc": "2026-08-04T22:49:38.986316+00:00",
+    "wall_seconds": 45.12370491027832,
+    "peak_gpu_memory_bytes": 1212756992
+  },
+  "selection_manifest_sha256": "1162ad7be105d65f6eb9e742828cdd715a10efe20ff8d9020713d960eff59c46",
+  "train_records": 4,
+  "selection_records": 4,
+  "classes": [
+    "circle",
+    "square",
+    "star",
+    "triangle"
+  ],
+  "checkpoints": {
+    "step-001500": {
+      "state_sha256": "6f98f4e8d13c1d2be5b921a5ec5b4ae23a16085c346c69d8c42a1a7cba7accd3",
+      "cells": {
+        "train/vision": {
+          "records": 4,
+          "tensor_keys": 59,
+          "tensor_file": "step-001500__train__vision.safetensors",
+          "tensor_bytes": 603176,
+          "tensor_sha256": "a19ca7aacdef6bbcec14c64715ebb2320bd1632b7f7ced34deed4dbf84a35047",
+          "metadata_file": "step-001500__train__vision.jsonl",
+          "metadata_bytes": 784,
+          "metadata_sha256": "27c86c094c72120a0dcfdfb5eebcfa259fc89e8870bf950ec1ae5cc24980180a"
+        },
+        "selection/vision": {
+          "records": 4,
+          "tensor_keys": 59,
+          "tensor_file": "step-001500__selection__vision.safetensors",
+          "tensor_bytes": 603176,
+          "tensor_sha256": "e6426d0cef2fd890ce7e9a962f0520f3660148b89c7b8b20c78f55a9e79e4a21",
+          "metadata_file": "step-001500__selection__vision.jsonl",
+          "metadata_bytes": 832,
+          "metadata_sha256": "c82e0503d35db008443d335311fe277cebdc321ad6790789f9b5436e38dfe198"
+        },
+        "selection/paired_counterfactual_image": {
+          "records": 4,
+          "tensor_keys": 59,
+          "tensor_file": "step-001500__selection__paired_counterfactual_image.safetensors",
+          "tensor_bytes": 603176,
+          "tensor_sha256": "b233a5f2eb5487577ad9a8a6cafdf03c9267b2a5e32fe501f5e22dfe066df862",
+          "metadata_file": "step-001500__selection__paired_counterfactual_image.jsonl",
+          "metadata_bytes": 916,
+          "metadata_sha256": "c4bbc6c9437a0b9cc916cecb89e7fe97e6d37a8d2f3a0eae3a14f54969d06ea6"
+        },
+        "selection/shuffled_image": {
+          "records": 4,
+          "tensor_keys": 59,
+          "tensor_file": "step-001500__selection__shuffled_image.safetensors",
+          "tensor_bytes": 603176,
+          "tensor_sha256": "d396075d5b9b740c21ae3870e35975bb13fb68c4badc64c2d7c7a97ffa176c58",
+          "metadata_file": "step-001500__selection__shuffled_image.jsonl",
+          "metadata_bytes": 864,
+          "metadata_sha256": "412a4c7be0f506250859ec20999aa7a4761b2750f2420bb443638824a99acb13"
+        },
+        "selection/patch_permutation": {
+          "records": 4,
+          "tensor_keys": 59,
+          "tensor_file": "step-001500__selection__patch_permutation.safetensors",
+          "tensor_bytes": 603176,
+          "tensor_sha256": "e339ae372fad65e1d5f2ea8d7c48e48636a805f8e10b146e899a63ef5f0992d0",
+          "metadata_file": "step-001500__selection__patch_permutation.jsonl",
+          "metadata_bytes": 876,
+          "metadata_sha256": "28a0c0687fcdcb0c1cab62fa8ddfff3f5e64a3d8cb131cea0b482929770e298c"
+        }
+      }
+    }
+  },
+  "files": {
+    "step-001500__train__vision.safetensors": "a19ca7aacdef6bbcec14c64715ebb2320bd1632b7f7ced34deed4dbf84a35047",
+    "step-001500__train__vision.jsonl": "27c86c094c72120a0dcfdfb5eebcfa259fc89e8870bf950ec1ae5cc24980180a",
+    "step-001500__selection__vision.safetensors": "e6426d0cef2fd890ce7e9a962f0520f3660148b89c7b8b20c78f55a9e79e4a21",
+    "step-001500__selection__vision.jsonl": "c82e0503d35db008443d335311fe277cebdc321ad6790789f9b5436e38dfe198",
+    "step-001500__selection__paired_counterfactual_image.safetensors": "b233a5f2eb5487577ad9a8a6cafdf03c9267b2a5e32fe501f5e22dfe066df862",
+    "step-001500__selection__paired_counterfactual_image.jsonl": "c4bbc6c9437a0b9cc916cecb89e7fe97e6d37a8d2f3a0eae3a14f54969d06ea6",
+    "step-001500__selection__shuffled_image.safetensors": "d396075d5b9b740c21ae3870e35975bb13fb68c4badc64c2d7c7a97ffa176c58",
+    "step-001500__selection__shuffled_image.jsonl": "412a4c7be0f506250859ec20999aa7a4761b2750f2420bb443638824a99acb13",
+    "step-001500__selection__patch_permutation.safetensors": "e339ae372fad65e1d5f2ea8d7c48e48636a805f8e10b146e899a63ef5f0992d0",
+    "step-001500__selection__patch_permutation.jsonl": "28a0c0687fcdcb0c1cab62fa8ddfff3f5e64a3d8cb131cea0b482929770e298c"
+  }
+}

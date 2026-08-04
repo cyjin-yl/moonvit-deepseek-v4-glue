@@ -1,0 +1,109 @@
+{
+  "format_version": "mechanism-selection-v1",
+  "created_at_utc": "2026-08-04T22:45:42.278659+00:00",
+  "task": "shape",
+  "classes": [
+    "circle",
+    "square",
+    "star",
+    "triangle"
+  ],
+  "train_records": 400,
+  "train_pairs": 200,
+  "selection_records": 400,
+  "selection_pairs": 200,
+  "patching_records": 100,
+  "patching_pairs": 50,
+  "patching_pair_ids": [
+    "selection-shape-00086",
+    "selection-shape-00066",
+    "selection-shape-00149",
+    "selection-shape-00135",
+    "selection-shape-00034",
+    "selection-shape-00193",
+    "selection-shape-00129",
+    "selection-shape-00105",
+    "selection-shape-00073",
+    "selection-shape-00194",
+    "selection-shape-00170",
+    "selection-shape-00196",
+    "selection-shape-00102",
+    "selection-shape-00147",
+    "selection-shape-00030",
+    "selection-shape-00071",
+    "selection-shape-00084",
+    "selection-shape-00127",
+    "selection-shape-00154",
+    "selection-shape-00128",
+    "selection-shape-00110",
+    "selection-shape-00187",
+    "selection-shape-00036",
+    "selection-shape-00029",
+    "selection-shape-00190",
+    "selection-shape-00126",
+    "selection-shape-00082",
+    "selection-shape-00081",
+    "selection-shape-00013",
+    "selection-shape-00163",
+    "selection-shape-00031",
+    "selection-shape-00008",
+    "selection-shape-00145",
+    "selection-shape-00015",
+    "selection-shape-00197",
+    "selection-shape-00148",
+    "selection-shape-00044",
+    "selection-shape-00042",
+    "selection-shape-00077",
+    "selection-shape-00010",
+    "selection-shape-00046",
+    "selection-shape-00140",
+    "selection-shape-00118",
+    "selection-shape-00067",
+    "selection-shape-00109",
+    "selection-shape-00069",
+    "selection-shape-00053",
+    "selection-shape-00026",
+    "selection-shape-00099",
+    "selection-shape-00171"
+  ],
+  "answer_counts": {
+    "train": {
+      "square": 82,
+      "star": 101,
+      "triangle": 111,
+      "circle": 106
+    },
+    "selection": {
+      "star": 95,
+      "circle": 114,
+      "square": 98,
+      "triangle": 93
+    },
+    "patching": {
+      "star": 20,
+      "triangle": 25,
+      "square": 28,
+      "circle": 27
+    }
+  },
+  "train_selection_id_overlap": 0,
+  "train_selection_pair_overlap": 0,
+  "selection_rule": "sha256(seed:pair_id), retain both variants",
+  "selection_seed": 20260808,
+  "logical_dataset_sha256": "122ae820381e11e12c7dd9db03a525b801a5ebee5adbef037919185e65cbaa71",
+  "files": {
+    "train_ids.json": {
+      "bytes": 19090,
+      "sha256": "5021cb29e82105ee8c627e8800570ae59f5789c6c20ba7c3627e33c49af50a76"
+    },
+    "selection_ids.json": {
+      "bytes": 20694,
+      "sha256": "f58010f627e6799b5f6eee058053f332f115d212f6156c89348d6c18e4bea88c"
+    },
+    "patching_selection_ids.json": {
+      "bytes": 5394,
+      "sha256": "394a54445aea9ce98d494aa240c66a4b1d113d571284921a0c48dffceed3c844"
+    }
+  },
+  "final_half_scored": false
+}

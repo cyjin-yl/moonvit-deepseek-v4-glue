@@ -1,0 +1,34 @@
+{
+  "status": "invalid",
+  "invalidated_at_utc": "2026-08-04T23:13:13.975590+00:00",
+  "reason": "the single random-training-label probe is a high-variance overfit diagnostic and reached 0.49 in one null cell; pair-label permutation was added for calibrated significance",
+  "impact": "all v1 significance decisions are superseded; identical representation rows are reanalyzed in v2 with pair-unit label permutation",
+  "replacement_run": "shape_layerwise_v2_analysis",
+  "old_results_must_not_be_used": true,
+  "files": {
+    "SUMMARY.json": {
+      "bytes": 1403,
+      "sha256": "28f2046a8f67813427e43c5b843500b377eaad33725d072215b1752ed3760320"
+    },
+    "probe_metrics.csv": {
+      "bytes": 84827,
+      "sha256": "2b070593a4cd88e0ec4f615b59c489529f21f2e7a7d0b97e77dbc7c3bbd3ef24"
+    },
+    "probe_intervals.csv": {
+      "bytes": 75922,
+      "sha256": "dbfeeb5ce3bfe77ad2b577185c445d017c4e8cd6bddca82cb274b71e3686bf7f"
+    },
+    "probe_predictions.jsonl": {
+      "bytes": 108164550,
+      "sha256": "8dbaa77b16e3f253965c724b98afa6217ea506796e78dc8fd702122b6c00ed7c"
+    },
+    "PROBES.safetensors": {
+      "bytes": 10926376,
+      "sha256": "b61d03103d94011ed15825911225bcdba0de7423224dfa26c52ddde8730a7645"
+    },
+    "DECISIONS.json": {
+      "bytes": 4880,
+      "sha256": "c9c677990c39193ef063bd8fd72f2ec28bdc7d795df397f4bd89ac2ea343ec2b"
+    }
+  }
+}
