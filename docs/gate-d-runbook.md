@@ -156,8 +156,11 @@ EOF
   batch 64、约 66k 条**短 QA**、2 epoch ≈ 2100 步。**数据红线：只用短答案 QA；
   长描述性答案会阻止 grokking**（Baseten 原文结论）。
 - **配方谦逊条款（评审修正）**：该配方是 GLM-5.2V 上的经验先验，不是 DeepSeek-V4 的
-  排程承诺；且我们的 MoonViT-V2 projector 是 1024 维输入（GLM 侧为 1152），无法
-  warm-start，全程从零训练。若 step ~1400 仍无 grokking：(a) 先查数据是否混入长答案；
+  排程承诺。社区 GLM projector 的视觉输入为 1152 维，不能复用到我们的 1024 维 V2；
+  scratch 仍是主实验。合法的可选对照是从我们自己的 V2 + 纯文本小主干 checkpoint 仅
+  warm-start `pre_norm + linear_1`，映射到 DeepSeek 4096 维的 `linear_2` 必须随机初始化并
+  重训，完整小模型 projector 绝不能直插 0731。若 scratch 在 step ~1400 仍无 grokking：
+  (a) 先查数据是否混入长答案；
   (b) 数据无误则用剩余预算做 200 步 LR 探针 {1e-3, 2e-4} 各一，取优续训；
   (c) 仍无 → 照常完成 benchmark 并如实报告负结果，不追加预算。
 - **视觉 token 预算（写死）**：训练 `--max-image-side 640`——VQA/照片典型 640×480 →
@@ -166,9 +169,12 @@ EOF
   Gate D 第 6 步必须用真实 mix 的 token 分布重测单步耗时，此前一切 3–6s/步的
   估算都只是假设。视觉塔已冻结，特征不预缓存（每 epoch 重算的塔前向约占总步时
   <10%，换来实现简单——若实测塔前向占比 >20% 再考虑缓存）。
-- 命令：`tools/train_overfit.py --vision-tower v2 --moonvit-v2-weights <path> \
+- 命令：`tools/train_overfit.py --text-model <DeepSeek-V4-Flash-0731-path> \
+  --vision-tower v2 --moonvit-v2-weights <path> \
   --lr 5e-4 --batch-size 64 --steps 2100 --checkpoint-every 500 \
   --upload-repo cyjin-yl/DeepSeek-V4-Flash-0731-Vision`
+  训练器会拒绝带 `vision_config` 的原生 VLM 文本主干；Qwen3.5-4B 等 stock VLM 只能用于
+  独立的评测阳性对照，不能替代本命令中的纯文本 DeepSeek，也不进入 Gate D 通过判据。
   checkpoint（projector fp32+bf16、AdamW、RNG、history、train.log）每 500 步流式上传。
 - grokking 观察：loss 平台数百步后应在 step ~900–1100（第一 epoch 末）骤降；
   骤降前后的 checkpoint 都要留，benchmark 时择优。

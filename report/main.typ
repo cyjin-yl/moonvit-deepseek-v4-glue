@@ -5,11 +5,11 @@
 #set table(stroke: 0.5pt + rgb("c8c8c8"), inset: 6pt)
 
 #align(center)[
-  #text(size: 21pt, weight: "bold")[MoonViT 接入 DeepSeek-V4-Flash-0731]
+  #text(size: 21pt, weight: "bold")[MoonViT-V2 接入 DeepSeek-V4-Flash-0731]
   #v(5pt)
   #text(size: 14pt)[训练前架构审计、胶水原型与硬件计划]
   #v(8pt)
-  版本 0.2 · 2026-08-03
+  版本 0.3 · 2026-08-04
 ]
 
 #outline()
@@ -17,20 +17,21 @@
 
 = 执行摘要
 
-本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入 MoonViT 视觉编码器。第一阶段不训练视觉塔和语言模型，只训练一个 Kimi 风格 PatchMerger projector。当前结论是：架构合同成立，普通 causal LM 和 Transformers 的真实 DeepSeek-V4 Hash-MoE 缩小模型都已完成 loss/backward；正式 0731 大权重的 FP4/FP8 可微 kernel 是尚未消除的主要风险。
+本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段不训练视觉塔和语言模型，只训练一个 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。当前结论是：V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证，projector-only 全量数据训练已得到明确视觉对齐信号；正式 0731 大权重的 FP4/FP8 可微 kernel 是尚未消除的主要风险。
 
-MoonViT 约 400M 参数，BF16 权重文件约 834 MB，相对于约 160 GB 级的 DeepSeek 混合精度权重很小。更大的资源变量是图像分辨率带来的视觉 token 数和冻结 LLM 反向所保留的激活，而不是视觉塔权重。
+MoonViT-V2 有 401.2M 参数，抽取后的 BF16 权重约 802 MB，相对于约 160 GB 级的 DeepSeek 混合精度权重很小。更大的资源变量是图像分辨率带来的视觉 token 数和冻结 LLM 反向所保留的激活，而不是视觉塔权重。
 
 = 来源与可复现边界
 
 - 社区 projector checkpoint：#link("https://huggingface.co/0xSero/glm-local-vision-checkpoint")[0xSero/glm-local-vision-checkpoint]。它证明了 projector-only 路线能把视觉信号接到 GLM-5.2，但公开 grounding 指标仍弱，不能等同于成熟 VLM。
 - 社区复现记录：#link("https://huggingface.co/blog/0xSero/glm52-vision-on-4-gpus")[Giving a 753B Model Eyes]。
 - DeepSeek 权重：#link("https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731")[deepseek-ai/DeepSeek-V4-Flash-0731]，MIT。
-- 独立视觉塔：#link("https://huggingface.co/moonshotai/MoonViT-SO-400M")[moonshotai/MoonViT-SO-400M]，MIT。
+- 当前视觉塔：从 Kimi K3 的 MoonViT3d 权重分片抽取的 MoonViT-V2；抽取权重、配置、代码快照与哈希清单发布在项目模型仓 `vision_tower_k3/`。
+- 历史对照视觉塔：#link("https://huggingface.co/moonshotai/MoonViT-SO-400M")[moonshotai/MoonViT-SO-400M]，MIT。
 - Kimi-K2.5 技术报告：#link("https://arxiv.org/abs/2602.02276")[Kimi K2.5: Visual Agentic Intelligence]。
 - Vast offer 搜索接口：#link("https://docs.vast.ai/api-reference/search/search-offers")[Vast.ai Search Offers API]。本文只调用搜索接口，不调用创建实例接口。
 
-独立 MoonViT-SO-400M 来自 Kimi-VL；Kimi-K2.5/K2.6 使用演进后的 MoonViT-3D。两者输出形状兼容不代表特征分布相同。视觉塔 revision 是训练 provenance 的组成部分；更换视觉塔必须重训 projector。
+独立 MoonViT-SO-400M 来自 Kimi-VL；当前主线使用 Kimi K3 的 MoonViT3d/MoonViT-V2。两者输出合同同构不代表特征分布或通道宽度相同。视觉塔 revision 与权重哈希是训练 provenance 的组成部分；更换视觉塔必须重训 projector。
 
 = 权重与张量合同
 
@@ -63,23 +64,23 @@ DeepSeek-V4 的早期 Hash-MoE 通过 `tid2eid[input_ids]` 选 expert。只给 `
   [Projector Safetensors round-trip], [通过], [权重可恢复],
   [冻结普通 GPT-2 的 backward], [通过], [通用文本主干],
   [真实 `DeepseekV4ForCausalLM` 1 层 Hash-MoE], [通过], [DeepSeek 路由合同],
-  [MoonViT 输出 shape/freeze 合同], [通过], [视觉边界],
-  [真实 MoonViT-SO-400M + 小 LM 前向/反向], [通过], [V100 CUDA fp32],
+  [MoonViT-V2 输出 shape/freeze 合同], [通过], [真实 K3 视觉权重],
+  [真实 MoonViT-V2 + 小 LM 前向/反向], [通过], [V100 CUDA eager/sdpa],
   [eval\_vlm 生成/blind/shuffle-loss 干跑], [通过], [评测管线端到端],
   [generate()：generic 与 deepseek_v4 两种路径], [通过], [评测/推理前置],
   [指标库（VQA/ANLS/token-F1/grounding）], [通过], [纯 Python，无 torch],
-  [完整测试集], [34/34], [Linux + torch 2.10.0+cu128],
+  [完整测试集], [96/96], [Linux + torch 2.10.0+cu128],
 )
 
-V100 实测：MoonViT-SO-400M 在 448px 输入下输出 `[192,4,1152]`，原生 640×480 下 `[1064,4,1152]`，符合合同；loss/backward 正常。评测管线用随机 projector + tiny-gpt2 干跑：生成、评分、blind 基线与 shuffle-loss 全部端到端通过；shuffle-loss 在未训练 projector 上给出 `mean_delta = 0.0` 的正确零结果——训练后该值应当变正，这是对齐信号最便宜的读数。
+V100 实测：真实 K3 MoonViT-V2 在 1024×1024 输入下输出 `[1369,4,1024]`，特征全部 finite、逐位确定，eager 与 sdpa 最大绝对差 3.1e-05；真实权重 strict-load、预处理与 loss/backward 合同均正常。旧 V1 路径也保留了 448px 和原生分辨率回归，但不再代表当前训练主线。评测管线的生成、blind 基线与 shuffle-loss 全部端到端通过；训练后 shuffle-loss 差值应当变正，这是对齐信号最便宜的读数。
 
 离线 smoke 结果：输入 6 token 扩展为 8 token；projector 六组参数均获得梯度；语言模型参数梯度数为 0。同一结果在 doesworkstation（V100）上复现。
 
 版本审计发现，公开 PyPI Transformers 4.57.6 不含 `deepseek_v4` 模块；真实 DeepSeek 类测试使用 Transformers 5.14.1。因此统一环境暂定 `transformers>=5.12,<6`，不能盲从 checkpoint config 中的历史版本字符串。
 
-= MoonViT 尺寸与适配性
+= MoonViT-V2 尺寸与适配性
 
-MoonViT 本身适合该任务：27 层、hidden size 1152、16 heads、约 400M 参数，原生分辨率和 NaViT packing 对 GUI、文档、截图有价值。它不会显著改变完整 0731 的权重门槛。
+MoonViT-V2 适合该任务：27 层、hidden size 1024、12 heads、401.2M 参数，原生分辨率和 NaViT packing 对 GUI、文档、截图有价值。它不会显著改变完整 0731 的权重门槛；V1 的 1152 维/16 头规格只作为对照记录。
 
 风险来自 token 数。patch size 为 14，随后 2×2 合并。392×392 图像产生约 196 个合并 token；896×896 产生约 1024 个。第一阶段应把每图上限锁在 1024；更高分辨率必须以梯度激活显存实测决定。
 
@@ -101,8 +102,8 @@ K3 的 MoonViT3d（下称 MoonViT-V2）与 MoonViT-SO-400M 的合同差异：vis
   columns: (1.5fr, 1.7fr, 2.2fr),
   [*目标*], [*建议硬件*], [*判断*],
   [胶水/单元测试], [CPU 或任意 8 GB GPU], [已可完成],
-  [MoonViT + 0.5B–3B LM], [12–24 GB GPU], [适合本地开发],
-  [V100 32 GB], [SM70、32 GB], [可跑 MoonViT/小 LM；不能装完整 0731],
+  [MoonViT-V2 + 0.5B–3B LM], [12–24 GB GPU], [适合本地开发],
+  [V100 32 GB], [SM70、32 GB], [可跑 MoonViT-V2/小 LM；不能装完整 0731],
   [完整 0731 推理验证], [同机 4×48 GB 起步], [上下文和 kernel 受限],
   [projector-only 正式训练], [4×H100 80 GB 或更高], [先过单 batch backward],
   [低风险首跑], [4×H200/B200], [更大激活余量],
@@ -224,6 +225,28 @@ shuffle\_delta +0.727 是此前三条 smoke 轨（+0.343 / +0.282 / +0.148）的
 )
 
 判别力三条全部成立：vision 严格大于 blind；trained 严格大于 random（随机 projector 臂五项全零——冻结 LLM 收到噪声视觉 embedding 时输出不了任何切题内容）;shuffle\_delta +0.727。Gate B 作为租前闸门的结论：*信号真实、训练有效、评测可判别、checkpoint/上传管线可用（但易受代理抖动影响，需错峰）*。能力层面如实记录：所有绝对读数都低，与参照系一致——社区用 744B 的 GLM 跑同配方 ScreenSpot 也只有 4.3%/564px。0.5B 冻结主干 + 33.6M projector + 1.6 万样本见过的训练量，本来就只承担"对照组"角色；能力问题是 0731（激活 13B）那趟要回答的。
+
+=== 证据边界：原生 VLM 不是 DeepSeek 代理
+
+必须区分两个名字相近但因果意义完全不同的 Qwen 实验。Gate B 的冻结文本主干配置是 `Qwen2ForCausalLM`，且 `vision_config` 为空；它本身没有图像输入路径，视觉信号只能来自外接 K3 MoonViT-V2 与本项目训练的 projector。因此 shuffle\_delta 和 trained/random/blind 差异可以证明“纯文本 LM 接口可学习”。训练器现已加入硬防线：`--text-model` 若暴露 `vision_config` 会直接拒绝，原生 VLM 只能进入独立的 stock-eval 路径。
+
+另一方面，Qwen3.5-4B 对照的配置是 `Qwen3_5ForConditionalGeneration` 且自带 `vision_config`；它使用官方视觉塔、processor、chat template 和既有多模态对齐，完全不经过 MoonViT-V2 或本项目 projector。它的高分只校验评测数据、图像读取、输出约束和评分器，并给出成熟小型 VLM 的参照上界；*不得据此推断 projector 能快速映射到 DeepSeek*。证据链严格分为：(1) 原生 VLM 阳性对照＝评测有效；(2) 纯文本小主干 Gate B＝接口可学；(3) tiny DeepSeek-V4 Hash-MoE＝路由与梯度合同；(4) 完整 0731 Gate D/正式训练＝目标可行性与能力，前三项均不能替代第四项。
+
+原生 Qwen3.5-4B 的修复后阳性对照如下。它与 Gate B 使用相同的 selection 半侧、1024px 上限和 strict scorer；“vision”列是 Qwen 自带视觉塔的结果，不是本项目 projector 的结果。
+
+#table(
+  columns: (1.35fr, 1.2fr, 1.25fr, 1.05fr, 1.25fr, 1.05fr),
+  [*基准*], [*指标*], [*Gate B trained*], [*Gate B blind*], [*原生 Qwen vision*], [*Qwen blind*],
+  [TextVQA (250)], [soft-VQA], [0.081], [0.000], [*0.820*], [0.031],
+  [DocVQA (100)], [ANLS], [0.039], [0.000], [*0.926*], [0.071],
+  [OCRBench (100)], [exact], [0.000], [0.000], [*0.900*], [0.000],
+  [ScreenSpot (100)], [parse / acc\@50], [0.51 / 0.01], [0 / 0], [*0.86 / 0.76*], [0.99 / 0.01],
+  [MMMU-Pro (150)], [exact], [0.073], [0.000], [*0.300*], [0.280],
+)
+
+前三个感知/OCR 基准与 ScreenSpot 的 vision−blind 差距很大，证明图像读取与评分管线已恢复健康；MMMU-Pro 只有 +0.020，30% 中绝大部分来自题干、选项与语言知识先验，不能全部计作视觉能力。这正是强制报告 blind 的价值，也再次说明原生 VLM 总分不能成为 DeepSeek 映射证据。
+
+该对照还产生了一次必须保留的完整性事故记录：首次运行中，第二个 3.99 GB safetensors 分片虽字节数正确，SHA-256 却为 `547d2f…8627`（官方 `cb544b…e188`），而模型索引恰把全部视觉塔权重放在该分片，导致模型把真实图片一致描述成空白。高分辨率样本又触发 OOM，并被工作站的 NVML 驱动/库版本不一致掩盖成 allocator assert；开放式长回答则会被严格短答案指标计零。修复措施为：逐分片 SHA-256 manifest、`--max-image-side 1024`、按指标约束短答案/选项字母/归一化坐标。损坏运行的产物从未上传；修复套件在一次完整哈希验证后运行，原始逐条输出与 suite provenance 单独发布。
 
 === 误判审计（应用户要求：先怀疑判别器，再怀疑模型）
 
@@ -352,7 +375,7 @@ shuffle\_delta +0.727 是此前三条 smoke 轨（+0.343 / +0.282 / +0.148）的
 
 = 评测与验收计划
 
-没有 benchmark 就无法回答“接上了没有”。评测口径对标 Baseten 社区 GLM-5.2V 实验（原文 baseten.co/blog/glm-52-with-vision,0xSero/fable-glm-vision 复现）：视觉塔同为冻结 MoonViT（他们从 Kimi K2.6 抽取，我们用官方独立仓 MoonViT-SO-400M，同构 1152 维），其标志性指标是 *MMMU-Pro*（原文声称 55%，约 Claude 4.5 Haiku 水平），因此我们的评测集在 TextVQA/DocVQA/OCRBench/ScreenSpot 之外加入 *MMMU-Pro（单图子集，exact match）*。所有数字必须与 blind baseline（同一模型、无图输入）一起报告：VQA 类基准有显著语言先验，无图基线把“模型本来就会答”与“图像带来了信息”分开。
+没有 benchmark 就无法回答“接上了没有”。评测口径对标 Baseten 社区 GLM-5.2V 实验（原文 baseten.co/blog/glm-52-with-vision,0xSero/fable-glm-vision 复现）：双方视觉塔都来自 Kimi 的 MoonViT3d 家族（他们从 Kimi K2.6 抽取，我们从 Kimi K3 抽取 MoonViT-V2，当前塔宽 1024），其标志性指标是 *MMMU-Pro*（原文声称 55%，约 Claude 4.5 Haiku 水平），因此我们的评测集在 TextVQA/DocVQA/OCRBench/ScreenSpot 之外加入 *MMMU-Pro（单图子集，exact match）*。所有数字必须与 blind baseline（同一模型、无图输入）一起报告：VQA 类基准有显著语言先验，无图基线把“模型本来就会答”与“图像带来了信息”分开。
 
 社区配方还有两个直接影响数据计划的实测结论：其一，*grokking*——batch 64 / lr 5e-4 配短答案时 loss 平台数百步后骤降（原文约 step 900）完成对齐，*长描述性答案会阻止 grok*，因此对齐数据应以短 QA 为主、长 caption 为辅，而不是只用长 caption；其二，*warm start*——从已对齐 projector 初始化可跳过大半平台期，多阶段数据混训时应复用上一阶段 checkpoint 而不是重零开始。
 
@@ -374,7 +397,7 @@ shuffle\_delta +0.727 是此前三条 smoke 轨（+0.343 / +0.282 / +0.148）的
 
 预期锚点：0xSero 的 GLM-5.2 projector-only checkpoint 报告坐标格式解析率 92%、Accuracy\@50 4.3%、平均点击误差约 564/999。第一阶段的成功定义是 DeepSeek 路径达到同量级信号，而不是成熟 VLM 水平；grounding 在 projector-only 阶段大概率仍很弱。
 
-本地对照臂（与租机训练并行，不花租金钱）：(1) 小 VLM（Gate B 各 checkpoint）跑全套 1,400 例，作为“胶水通路在小模型上的能力上限”读数；(2) 原版 4B/9B 视觉模型（官方权重、官方精度）经适配脚本读同一 eval JSONL、输出同格式评分，作为“成熟小 VLM”参照；(3) 小模型 projector 不能直插 0731（hidden 896/576 vs 4096），合法对照臂是“小模型 trunk 热启动（到 GELU 的 4,608 维）+ V4 重训最后一层”，与全程从零的 scratch 臂对比收敛速度。27B 本地全精度跑不动，不作本地对照；如需该读数，挪入租机 benchmark 窗口作为可选臂。
+本地对照臂（与租机训练并行，不花租金钱）：(1) MoonViT-V2 + 小型纯文本 LM（Gate B 各 checkpoint）跑全套 1,400 例，作为“胶水通路在小模型上的接口可学习性”读数；(2) 原生 4B VLM（官方权重、官方精度）经独立适配脚本读同一 eval JSONL、输出同格式评分，只作为评测阳性对照和成熟小 VLM 参照，不作为映射/迁移证据；(3) 小模型 projector 不能直插 0731（hidden 896/576 vs 4096），合法对照臂是“小模型 trunk 热启动（到 GELU 的 4,096 维）+ V4 重训最后一层”，与全程从零的 scratch 臂对比收敛速度。除非另有具体问题，不再追加 9B/27B 原生 VLM 对照；它们不会缩小 DeepSeek 证据缺口。
 
 = 数据集挑选过程与构建管线
 
@@ -470,8 +493,9 @@ shuffle\_delta +0.727 是此前三条 smoke 轨（+0.343 / +0.282 / +0.148）的
   [2026-08-04], [数据全链路闭合：train\_v1 mix 59,198 行（去重丢 23%）+ eval\_v1 + sft\_art\_v1 全部上传 `cyjin-yl/moonvit-dsv4-data`；数据仓 README 记录来源、revision、sha256 与复现命令。],
   [2026-08-04], [Gate B 全量 mix 训练完成（V100，Qwen2.5-0.5B + MoonViT-V2，2000 步）：loss 6.41→3.01，held-out shuffle\_delta *+0.727*，全量数据上视觉对齐信号明确；修复占位 token 双默认值不一致 bug（训练 Qwen `<|image_pad|>` vs 评测 DeepSeek `<｜image｜>`）为候选自动探测，85/85 测试；4 个 checkpoint 因代理 SSL 抖动待手动补传。],
   [2026-08-04], [Gate B 五基准终表（trained/random/blind）：textvqa 0.081/0/0、docvqa 0.039/0/0、ocrbench 0/0/0（地板）、screenspot 解析 0.51 精度 0.01、MMMU-Pro 0.073/0/0——判别力三条全成立，绝对读数如实留存（含坏结果）。误判审计：判别器清白（最宽提取 +1–2% 封顶）；抓到 MMMU 输入格式化两个 bug（选项字面量被逐字符拆行、缺字母标签），修复后 2.0%→7.3%，旧读数作废。],
+  [2026-08-04], [原生 Qwen3.5-4B 阳性对照修复并跑完：发现同字节数坏 shard（视觉塔全集所在分片）→ SHA-256 manifest 校验、1024px 上限与指标化短输出约束。修复后 vision/blind：TextVQA 0.820/0.031、DocVQA 0.926/0.071、OCRBench 0.900/0、ScreenSpot acc 0.760/0.010、MMMU-Pro 0.300/0.280。用户指出并纠正证据边界：该模型自带视觉塔与多模态对齐，只验证评测器，不证明 MoonViT-V2→DeepSeek；训练器新增原生 VLM 拒绝保护，Gate D 才是目标能力证据。],
 )
 
 = 下一位执行者的最短路径
 
-先运行 `pytest` 和 `examples/smoke_tiny_text_lm.py`。然后在 V100 工作站使用机械盘作为 `HF_HOME`，验证真实 MoonViT。正式 0731 实验前不要写训练循环，先证明目标 CUDA/量化 runtime 支持 input data-gradient。若失败，优先评估 FP8 可微加载或定制 Dgrad，不要改用 GGUF 假装完成训练链路。
+先运行 `pytest` 和 `examples/smoke_tiny_text_lm.py`。然后在 V100 工作站使用机械盘作为 `HF_HOME`，按 MANIFEST 校验并验证真实 MoonViT-V2。正式 0731 实验前不要写训练循环，先证明目标 CUDA/量化 runtime 支持 input data-gradient。若失败，优先评估 FP8 可微加载或定制 Dgrad，不要改用 GGUF 假装完成训练链路。
