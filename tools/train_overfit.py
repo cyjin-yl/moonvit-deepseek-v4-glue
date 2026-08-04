@@ -13,7 +13,8 @@ dtypes internally on the V100 stack.
 Example::
 
     python tools/train_overfit.py --text-model Qwen/Qwen2.5-0.5B-Instruct \
-        --data data/eval/flickr8k.jsonl --limit 512 --steps 300 --batch-size 4 \
+        --data data/eval/flickr8k.jsonl --limit 512 --steps 300 \
+        --gradient-accumulation-steps 4 \
         --out checkpoints/overfit-qwen05
 """
 
@@ -24,6 +25,7 @@ import json
 import random
 import sys
 import time
+from dataclasses import asdict
 from pathlib import Path
 
 import torch
@@ -47,6 +49,15 @@ from tools_common import (
     load_records,
     next_batch,
     validate_text_only_backbone_config,
+)
+from training_protocol import (
+    TrainingProgress,
+    make_derangements,
+    prepare_validation_split,
+    resolve_batch_semantics,
+    restore_progress_counts,
+    select_supervision,
+    summarize_validation_losses,
 )
 
 
@@ -84,7 +95,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--data", required=True, type=Path)
     parser.add_argument("--limit", type=int, default=512)
     parser.add_argument("--steps", type=int, default=300)
-    parser.add_argument("--batch-size", type=int, default=4)
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=None,
+        help="Deprecated alias for --gradient-accumulation-steps; this trainer's "
+             "historical 'batch' was serial microbatch=1 accumulation",
+    )
+    parser.add_argument("--micro-batch-size", type=int, default=1,
+                        help="Examples in one batched forward (currently must be 1)")
+    parser.add_argument("--gradient-accumulation-steps", type=int, default=None,
+                        help="Serial microbatches accumulated before each optimizer step; default 4")
     parser.add_argument("--lr", type=float, default=5e-4,
                         help="Constant LR (no schedule). 5e-4 and short QA pairs match the "
                              "community-validated Baseten GLM-5.2V projector recipe")
@@ -100,8 +121,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--log-every", type=int, default=20)
-    parser.add_argument("--eval-samples", type=int, default=32)
-    parser.add_argument("--shuffle-repeats", type=int, default=3)
+    parser.add_argument("--eval-samples", type=int, default=32,
+                        help="Total fixed validation records, stratified evenly across sources")
+    parser.add_argument("--validation-manifest", type=Path, default=None,
+                        help="Pinned validation IDs; create deterministically when absent")
+    parser.add_argument("--shuffle-repeats", type=int, default=10,
+                        help="Seeded random derangements for validation mean/std")
+    parser.add_argument("--answer-selection", choices=["canonical", "random"],
+                        default="canonical",
+                        help="Teacher answer: normalized majority or seeded acceptable-answer sample")
     parser.add_argument("--checkpoint-every", type=int, default=500,
                         help="Save a resumable checkpoint every N steps (0 disables)")
     parser.add_argument("--upload-repo", default=None,
@@ -116,7 +144,19 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def build_sample(args, model, moonvit, tokenizer, placeholder_token_id, device, record, image_record=None):
+def build_sample(
+    args,
+    model,
+    moonvit,
+    tokenizer,
+    placeholder_token_id,
+    device,
+    record,
+    image_record=None,
+    *,
+    answer_rule="canonical",
+    answer_rng=None,
+):
     """Teacher-forced (input_ids, labels, feature_groups) for one record.
 
     ``image_record`` may supply a different record's image, which is how the
@@ -128,22 +168,25 @@ def build_sample(args, model, moonvit, tokenizer, placeholder_token_id, device, 
     prompt_ids = build_prompt_ids(
         tokenizer, args.prompt_template, record["question"], placeholder_token_id, device
     )
+    supervision = select_supervision(record["answers"], rule=answer_rule, rng=answer_rng)
     answer_ids = tokenizer.encode(
-        " " + record["answers"][0], add_special_tokens=False, return_tensors="pt"
+        " " + supervision.selected_answer, add_special_tokens=False, return_tensors="pt"
     ).to(device)
     eos = torch.tensor([[tokenizer.eos_token_id]], device=device)
     input_ids = torch.cat([prompt_ids, answer_ids, eos], dim=1)
     labels = input_ids.clone()
     labels[:, : prompt_ids.shape[1]] = -100
-    return input_ids, labels, groups
+    supervision_metadata = asdict(supervision)
+    supervision_metadata["answer_tokens"] = int(answer_ids.numel())
+    return input_ids, labels, groups, supervision_metadata
 
 
-def mean_loss_for(args, model, moonvit, tokenizer, placeholder_token_id, device, records, image_records=None):
+def losses_for(args, model, moonvit, tokenizer, placeholder_token_id, device, records, image_records=None):
     losses = []
     with torch.no_grad():
         for index, record in enumerate(records):
             image_record = None if image_records is None else image_records[index]
-            input_ids, labels, feature_groups = build_sample(
+            input_ids, labels, feature_groups, _ = build_sample(
                 args, model, moonvit, tokenizer, placeholder_token_id, device, record, image_record
             )
             outputs = model(
@@ -152,7 +195,7 @@ def mean_loss_for(args, model, moonvit, tokenizer, placeholder_token_id, device,
                 labels=labels,
             )
             losses.append(float(outputs.loss))
-    return sum(losses) / len(losses)
+    return losses
 
 
 def main() -> None:
@@ -167,6 +210,13 @@ def main() -> None:
     rng = random.Random(args.seed)
     dtype = getattr(torch, args.dtype)
     device = torch.device(args.device)
+    batch_semantics = resolve_batch_semantics(
+        micro_batch_size=args.micro_batch_size,
+        gradient_accumulation_steps=args.gradient_accumulation_steps,
+        legacy_batch_size=args.batch_size,
+    )
+    accumulation_steps = int(batch_semantics["gradient_accumulation_steps"])
+    effective_batch_size = int(batch_semantics["effective_batch_size"])
 
     text_config = AutoConfig.from_pretrained(args.text_model)
     validate_text_only_backbone_config(text_config)
@@ -175,10 +225,31 @@ def main() -> None:
     records = [record for record in records if record.get("answers")]
     rng.shuffle(records)
     records = records[: args.limit]
-    if len(records) < args.batch_size + 1:
-        raise ValueError(f"Need more records than batch size + eval, got {len(records)}")
-    eval_records = records[-args.eval_samples :]
-    train_records = records[: -args.eval_samples]
+    if len(records) < effective_batch_size + args.eval_samples:
+        raise ValueError(
+            f"Need at least effective_batch_size + validation records, got {len(records)}"
+        )
+    validation_manifest_path = args.validation_manifest or args.out / "validation_manifest.json"
+    train_records, eval_records, validation_manifest = prepare_validation_split(
+        records,
+        manifest_path=validation_manifest_path,
+        total_samples=args.eval_samples,
+        seed=args.seed,
+    )
+    if len(eval_records) < 2:
+        raise ValueError("validation needs at least two records for derangement")
+    supervision_manifest_path = args.out / "supervision_manifest.jsonl"
+    with supervision_manifest_path.open("w", encoding="utf-8") as stream:
+        for record in sorted(records, key=lambda item: str(item["id"])):
+            choice = select_supervision(record["answers"], rule="canonical")
+            stream.write(json.dumps({
+                "id": str(record["id"]),
+                "source": record.get("source"),
+                "raw_answers": choice.raw_answers,
+                "canonical_answer": choice.canonical_answer,
+                "normalization_rule": choice.normalization_rule,
+                "training_selection_rule": args.answer_selection,
+            }, ensure_ascii=False) + "\n")
 
     if args.vision_tower == "v2":
         if not args.moonvit_v2_weights:
@@ -235,29 +306,65 @@ def main() -> None:
     else:
         history = []
 
-    cursor = start_step * args.batch_size
+    last_history = history[-1] if history else {}
+    restored_counts = restore_progress_counts(
+        start_step=start_step,
+        last_history=last_history,
+        effective_batch_size=effective_batch_size,
+        batch_semantics_explicit=(
+            args.gradient_accumulation_steps is not None or args.batch_size is not None
+        ),
+    )
+    progress = TrainingProgress(
+        total_training_examples=len(train_records),
+        micro_batch_size=int(batch_semantics["micro_batch_size"]),
+        gradient_accumulation_steps=accumulation_steps,
+        optimizer_steps=start_step,
+        examples_seen=int(restored_counts["examples_seen"]),
+        answer_tokens_seen=int(restored_counts["answer_tokens_seen"]),
+    )
+    answer_token_accounting_complete = bool(
+        restored_counts["answer_token_accounting_complete"]
+    )
+    cursor = progress.examples_seen
     started = time.time()
     for step in range(start_step + 1, args.steps + 1):
-        batch, cursor = next_batch(train_records, cursor, args.batch_size)
+        batch, cursor = next_batch(train_records, cursor, effective_batch_size)
         optimizer.zero_grad(set_to_none=True)
         step_loss = 0.0
         for record in batch:
-            input_ids, labels, feature_groups = build_sample(
-                args, model, moonvit, tokenizer, placeholder_token_id, device, record
+            input_ids, labels, feature_groups, supervision = build_sample(
+                args,
+                model,
+                moonvit,
+                tokenizer,
+                placeholder_token_id,
+                device,
+                record,
+                answer_rule=args.answer_selection,
+                answer_rng=rng if args.answer_selection == "random" else None,
             )
             outputs = model(
                 input_ids=input_ids,
                 image_feature_groups=feature_groups,
                 labels=labels,
             )
-            (outputs.loss / args.batch_size).backward()
-            step_loss += float(outputs.loss) / args.batch_size
+            (outputs.loss / accumulation_steps).backward()
+            step_loss += float(outputs.loss) / accumulation_steps
+            progress.record_microbatch(examples=1, answer_tokens=supervision["answer_tokens"])
         torch.nn.utils.clip_grad_norm_(projector.parameters(), args.grad_clip)
         optimizer.step()
-        history.append({"step": step, "loss": step_loss})
+        progress.record_optimizer_step()
+        history.append({"step": step, "loss": step_loss, **progress.snapshot()})
         if step % args.log_every == 0 or step == 1:
             window = [row["loss"] for row in history[-args.log_every :]]
-            print(f"step {step}/{args.steps} loss={sum(window) / len(window):.4f}", flush=True)
+            print(
+                f"optimizer_step {step}/{args.steps} loss={sum(window) / len(window):.4f} "
+                f"examples_seen={progress.examples_seen} "
+                f"answer_tokens_seen={progress.answer_tokens_seen} "
+                f"effective_epochs={progress.effective_epochs:.4f}",
+                flush=True,
+            )
         if args.checkpoint_every and step % args.checkpoint_every == 0:
             checkpoint_dir = save_training_checkpoint(
                 directory=args.out / "checkpoints" / f"step-{step:06d}",
@@ -271,46 +378,89 @@ def main() -> None:
             if uploader:
                 uploader.upload_async(checkpoint_dir, f"checkpoints/step-{step:06d}")
 
-    # Acceptance check: true-vs-shuffled image loss gap on held-out records.
-    true_loss = mean_loss_for(
+    # Acceptance check: true-vs-seeded-deranged image loss, overall and by source.
+    true_losses = losses_for(
         args, model, moonvit, tokenizer, placeholder_token_id, device, eval_records
     )
-    shuffled_losses = []
-    for repeat in range(args.shuffle_repeats):
-        shift = repeat + 1
-        shuffled_images = eval_records[shift:] + eval_records[:shift]
-        shuffled_losses.append(
-            mean_loss_for(
-                args, model, moonvit, tokenizer, placeholder_token_id, device,
-                eval_records, image_records=shuffled_images,
-            )
+    shuffled_record_runs = make_derangements(
+        eval_records,
+        repeats=args.shuffle_repeats,
+        seed=args.seed + 1_000_003,
+    )
+    shuffled_loss_runs = [
+        losses_for(
+            args,
+            model,
+            moonvit,
+            tokenizer,
+            placeholder_token_id,
+            device,
+            eval_records,
+            image_records=shuffled_records,
         )
-    shuffled_loss = sum(shuffled_losses) / len(shuffled_losses)
+        for shuffled_records in shuffled_record_runs
+    ]
+    validation_summary = summarize_validation_losses(
+        eval_records,
+        true_losses=true_losses,
+        shuffled_loss_runs=shuffled_loss_runs,
+        shuffled_id_runs=[
+            [str(record["id"]) for record in shuffled_records]
+            for shuffled_records in shuffled_record_runs
+        ],
+    )
+    true_loss = validation_summary["overall"]["true_loss"]
+    shuffled_loss = validation_summary["overall"]["shuffled_loss_mean"]
 
     args.out.mkdir(parents=True, exist_ok=True)
     projector.save_pretrained(args.out)
 
-    first = sum(row["loss"] for row in history[: args.log_every]) / min(args.log_every, len(history))
-    last = sum(row["loss"] for row in history[-args.log_every :]) / args.log_every
+    first_window = history[: args.log_every]
+    last_window = history[-args.log_every :]
+    first = (
+        sum(row["loss"] for row in first_window) / len(first_window)
+        if first_window
+        else None
+    )
+    last = (
+        sum(row["loss"] for row in last_window) / len(last_window)
+        if last_window
+        else None
+    )
+    progress_snapshot = progress.snapshot()
     report = {
         "text_model": args.text_model,
         "text_model_architectures": getattr(text_config, "architectures", None),
         "text_backbone_native_multimodal": False,
+        "records_considered": len(records),
         "records_train": len(train_records),
         "records_eval": len(eval_records),
         "steps": args.steps,
-        "batch_size": args.batch_size,
+        **progress_snapshot,
+        "answer_token_accounting_complete": answer_token_accounting_complete,
+        "legacy_batch_size_cli": args.batch_size,
+        "legacy_batch_size_used": batch_semantics["legacy_batch_size_used"],
         "lr": args.lr,
+        "answer_selection": args.answer_selection,
+        "supervision_manifest": str(supervision_manifest_path),
+        "validation_manifest": str(validation_manifest_path),
+        "validation_counts_by_source": validation_manifest["counts_by_source"],
+        "shuffle_repeats": args.shuffle_repeats,
         "loss_first_window": first,
         "loss_last_window": last,
         "eval_true_loss": true_loss,
         "eval_shuffled_loss": shuffled_loss,
-        "shuffle_delta": shuffled_loss - true_loss,
+        "shuffle_delta": validation_summary["overall"]["shuffle_delta_mean"],
+        "shuffle_delta_std": validation_summary["overall"]["shuffle_delta_std"],
         "wall_seconds": round(time.time() - started, 1),
         "projector_dir": str(args.out),
     }
     (args.out / "overfit_report.json").write_text(
-        json.dumps({"report": report, "history": history}, ensure_ascii=False, indent=2) + "\n",
+        json.dumps(
+            {"report": report, "validation": validation_summary, "history": history},
+            ensure_ascii=False,
+            indent=2,
+        ) + "\n",
         encoding="utf-8",
     )
     final_dir = save_training_checkpoint(

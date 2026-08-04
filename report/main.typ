@@ -192,9 +192,9 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 
 同日下午的带宽攻防补充了一课：(1) ModelScope 存在与 HF 逐字节一致的镜像（`lmms-lab/textvqa`、`lmms-lab/DocVQA`、`AI-ModelScope/MMMU_Pro`、`showlab/ShowUI-desktop`），境内直连可达 8.8 MB/s，但工作站 IP 在约 1.5 小时高强度拉取后被 CDN 边缘渐进限速至 0 B/s（按 IP 不按账号，token 与 IPv6 均无效；本机家庭 IP 同文件仍有 5.3 MB/s）；(2) 随即搭建的"本机 ModelScope → scp 回传工作站"中继受 Tailscale 链路限制（3.7 s RTT，多流聚合仅约 250–400 KB/s），与代理通道同速且挤占家庭带宽，应用户要求退役；(3) 最终全部十个数据源统一由工作站经 Clash 代理直下（`moondata` 八个评测/训练集 + `moonart` 的 WikiArt/fashion），代理总带宽封顶约 250 KB/s（并行不扩展，单连接约 50 KB/s 即节点拥塞），剩余约 15 GB 预计 16 小时；mihomo 核心未开 external-controller，换节点只能由用户在 GUI 操作，这是当前唯一可能提速一个数量级的杠杆。也曾评估 \$0.056/h 的香港数据盒（2–3 小时收工、总成本 < \$0.5）作为替代，用户选择免费慢磨方案。
 
-== Gate B 全量 mix 正式训练（2026-08-04，V100，租前最后一闸）
+== Gate B 全量 mix early-alignment（2026-08-04，V100，工程/信号闸门）
 
-目的：在正式 train\_v1 mix（59,198 行 packed parquet）上验证"parquet 消费路径 + 全量数据 + 2000 步训练 + 全套评测 + 上传"的租期闭环，同时作为正式 0731 训练的本地对照组。设置：Qwen2.5-0.5B-Instruct（冻结）+ K3 MoonViT-V2（冻结，eager），只训 projector（33.6M 参数）,2000 步、batch 8、恒定 lr 5e-4、`--max-image-side 448`，占位 token 自动解析为 Qwen 词表已有的 `<|image_pad|>`（ID 151643，不扩词表）。
+目的：在正式 train\_v1 mix（59,198 行 packed parquet）上验证"parquet 消费路径 + 全量数据 + early alignment + 全套评测 + 上传"的租期闭环，同时作为正式 0731 训练的本地对照组。设置：Qwen2.5-0.5B-Instruct（冻结）+ K3 MoonViT-V2（冻结，eager），只训 projector（33.6M 参数）,2000 个 optimizer step、恒定 lr 5e-4、`--max-image-side 448`。历史参数 `batch 8` 实际不是一次 8 样本 forward，而是 `micro_batch_size=1` 下串行 8 次 forward/backward 后更新，因此本轮只见过 16,000 样本，即 59,198 条 mix 的约 *0.27 epoch*；历史 answer-token 数未记录，不能精确补齐。占位 token 自动解析为 Qwen 词表已有的 `<|image_pad|>`（ID 151643，不扩词表）。
 
 训练结果（train.log 实测）:
 
@@ -207,7 +207,7 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
   [*shuffle\_delta*], [*+0.727*],
 )
 
-shuffle\_delta +0.727 是此前三条 smoke 轨（+0.343 / +0.282 / +0.148）的两倍以上：全量 mix 上视觉信号对齐明确成立。但本轮同时炸出两个租前必须暴露的问题，均已定位：
+历史口径下 shuffle\_delta +0.727 是此前三条 smoke 轨（+0.343 / +0.282 / +0.148）的两倍以上：正确图片已经影响答案 loss，视觉接口可学习性成立。但留出集只是 shuffle 后末尾 32 条，乱配使用循环平移而非多组随机 derangement；加上训练量仅 0.27 epoch，该数字不能证明充分收敛，五项低分也不能写成架构能力上限。本轮同时炸出两个租前必须暴露的问题，均已定位：
 
 1. *checkpoint 流式上传全部失败*（step 500/1000/1500/2000 共 4 次）：训练期间代理 SSL 持续重置（`UNEXPECTED_EOF_WHILE_READING` 于 S3 multipart PUT），重试 5 次仍败。训练本身无损，4 个 checkpoint 本地完好；按"上传下载串行"纪律，等评测结束带宽空出后手动一次性补传。教训：租机上 checkpoint 上传同样要与数据集预取错开。
 2. *10 个评测进程全部启动即崩*：训练器默认占位 token 是 Qwen 的 `<|image_pad|>`，而评测器默认是 DeepSeek 的 `<｜image｜>`——两者默认值不一致，Qwen tokenizer 里没有后者，`resolve_placeholder_token_id` 按设计拒绝扩词表而报错。修复为候选自动探测（DeepSeek token 优先、Qwen token 兜底；显式指定仍严格报错），85/85 测试通过（commit `034be8b`）。此 bug 若不在本地炸出，租机首跑 DeepSeek 时训练器会以旧默认 `<|image_pad|>` 直接崩在 0731 tokenizer 上——本地彩排的价值正在于此。
@@ -224,7 +224,7 @@ shuffle\_delta +0.727 是此前三条 smoke 轨（+0.343 / +0.282 / +0.148）的
   [MMMU-Pro (150)], [exact], [*0.073*], [0.000], [0.000], [修复输入后 2.0%→7.3%；宽松提取 18%],
 )
 
-判别力三条全部成立：vision 严格大于 blind；trained 严格大于 random（随机 projector 臂五项全零——冻结 LLM 收到噪声视觉 embedding 时输出不了任何切题内容）;shuffle\_delta +0.727。Gate B 作为租前闸门的结论：*信号真实、训练有效、评测可判别、checkpoint/上传管线可用（但易受代理抖动影响，需错峰）*。能力层面如实记录：所有绝对读数都低，与参照系一致——社区用 744B 的 GLM 跑同配方 ScreenSpot 也只有 4.3%/564px。0.5B 冻结主干 + 33.6M projector + 1.6 万样本见过的训练量，本来就只承担"对照组"角色；能力问题是 0731（激活 13B）那趟要回答的。
+判别力三条全部成立：vision 严格大于 blind；trained 严格大于 random（随机 projector 臂五项全零——冻结 LLM 收到噪声视觉 embedding 时输出不了任何切题内容）;shuffle\_delta +0.727。Gate B 的最小结论是：*信号真实、接口可学习、评测可判别、checkpoint/上传管线可用（但易受代理抖动影响，需错峰）*。它不是充分训练后的能力评测。0.5B 冻结主干 + 33.6M projector + 仅 1.6 万样本见过的训练量只承担 early-alignment 对照角色；下一步先用等 examples-seen 的 0.5B/1.5B/3B 纯文本主干、projector/LoRA、分辨率与因果控制消融定位瓶颈，再估算 0731 Hash-MoE 实验。
 
 === 0.5B 主干的容量混杂
 
@@ -322,7 +322,7 @@ Qwen2.5-0.5B-Instruct 是纯文本 `Qwen2ForCausalLM`，没有继承原生视觉
   [*判定*], [*余量 41–49 GB，健康*], [*贴顶，高风险*],
 )
 
-激活估算依据：开 gradient checkpointing 后只存段边界（61 层 × seq 700 × 4096 × bf16 约 0.35 GB）加段内重算临时；micro-batch 4–16 线性放大。seq 上限来自已写死的视觉 token 预算：训练 `--max-image-side 640`（方形图最坏 529 视觉 token + 文本 ≤ 700；1024px 原生分辨率只用于评测推理，不进训练回路）。情景 A 的生命线是 FP4/FP8 原生加载成立（R1–R3）；一旦需要 bf16，任何 4×96GB 级机器都装不下（568/4 = 142 GB > 96 GB），只剩 8 卡。情景 B 在 8×A100 上余量不足 2 GB，必须 micro-batch 1 + 更激进 checkpointing，实测 OOM 即升 4×B200（142 GB/卡，余量约 50 GB，\$21.25/h，账单已含）。
+激活估算依据：开 gradient checkpointing 后只存段边界（61 层 × seq 700 × 4096 × bf16 约 0.35 GB）加段内重算临时；micro-batch 4–16 线性放大。seq 700 来自候选训练 `--max-image-side 640`（方形图最坏 529 视觉 token + 文本 ≤ 700），但 640/1024 策略须经分辨率消融后再锁定。情景 A 的生命线是 FP4/FP8 原生加载成立（R1–R3）；一旦需要 bf16，任何 4×96GB 级机器都装不下（568/4 = 142 GB > 96 GB），只剩 8 卡。情景 B 在 8×A100 上余量不足 2 GB，必须 micro-batch 1 + 更激进 checkpointing，实测 OOM 即升 4×B200（142 GB/卡，余量约 50 GB，\$21.25/h，账单已含）。
 
 == Gate D 风险清单（租卡前预演）
 
@@ -362,7 +362,9 @@ Qwen2.5-0.5B-Instruct 是纯文本 `Qwen2ForCausalLM`，没有继承原生视觉
 
 核心约束：租期一结束就没有机器能跑动 0731 做 benchmark 或回传权重，因此训练、benchmark、上传必须在同一次租期内闭环。交付物只有 projector + 评测 JSON + 报告，与 GLM 社区只发布 projector 一致，不回传 160 GB 主干。checkpoint 发两个精度：fp32 master（约 134 MB，复现/续训用）与 bf16 serving（约 67 MB,0731 激活为 bf16)，租期内由训练产物现场转换。推理侧接入（vLLM/SGLang/llama.cpp/fastllm 补丁点、Hash-MoE 注意事项、验收检查）已写成 `docs/inference-integration.md`（2026-08-03 重写为 MoonViT-V2 版），作为后续给推理引擎提 PR 的合同文档；要点：vLLM 与 SGLang 均已 Day-0 支持 Kimi-K3（含 MoonViT3d 视觉塔）且均有 DeepSeek-V4 文本栈，patch 面只剩 projector 模块、placeholder 扩展与 Hash-MoE 路由检查；placeholder 固定为现有 `<｜image｜>`(id 129279）禁止扩 vocab，合并只替换 embedding 向量、input\_ids 保留 placeholder 供 Hash-MoE 路由。
 
-训练配方直接采用 Baseten 社区实验的实测方案（baseten.co/blog/glm-52-with-vision，checkpoint baseten/GLM-5.2-Vision-NVFP4，唯一公开的同级成功案例）：*constant lr 5e-4*——原文未使用任何 LR schedule，LLaVA 式 cosine 属于未在此场景验证的外推，因此不引入调度器，checkpoint 也无需保存调度器状态（该待办关闭）；global batch 64；约 66k 条*短 QA* 配对；2 个 epoch ≈ 2070 步。grokking 预期在第一 epoch 末（约 step 900–1100）出现 loss 骤降；每 500 步存 checkpoint 并立刻后台传 HF，使我们能在 pre/post-grokking checkpoint 间择优。checkpoint 是完整可续训单元（projector fp32 + bf16、AdamW 状态、RNG、步数、loss 历史，见 `moonvit_glue.checkpointing`)：实例中断不丢成果，社区可实时看到训练曲线形成，任何 checkpoint 可用 `--resume <repo-id>` 精确续训（跨机器 GPU 数不同亦可恢复）。4×RTX PRO 6000 估 3–6 s/步（13B 激活、seq 典型约 450–700——训练 `--max-image-side 640` 已写死，1024px 仅用于评测推理、不进训练回路——开 activation checkpointing），训练段 2–4 h。若 step 约 1400 仍无 grokking 迹象，按配方谦逊条款执行：先查数据是否混入长答案，数据无误则用剩余预算做 200 步 LR 探针（{1e-3, 2e-4} 各一），仍无则照常 benchmark 并如实报告负结果；另注意我们的 MoonViT-V2 projector 为 1024 维输入（GLM 侧 1152），无法 warm-start，全程从零训练。
+Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/GLM-5.2-Vision-NVFP4）只作为配方先验：*constant lr 5e-4*、global batch 64、约 66k 条短 QA、2 epoch ≈ 2070 optimizer steps，grokking 在第一 epoch 末附近出现。它不是本项目的时长承诺。审计发现当前训练器的历史 `batch_size=N` 是 `micro_batch_size=1` 下串行 N 次 forward/backward；若照抄 64，每个 optimizer step 会执行 64 次视觉塔和 LLM 前后向，3–6 s/step 与 2–4 h 估计均无效。新版训练器已改用 micro-batch、gradient accumulation、effective batch、examples seen 与 answer tokens 的明确计量，并暂时拒绝伪造 `micro_batch_size > 1`。正式租卡前必须实现 padded multi-example forward，在小主干上实测 micro batch 1/2/4 的吞吐与显存，再由目标 examples/token 数反推 optimizer steps 和租时。
+
+分辨率也从“写死”改为待证：先跑训练 448/640 × 评测 448/640/1024 的固定子集矩阵，只有在小字 OCR 收益、分布失配、视觉 token 数和吞吐都可接受时才采用训练 640/评测 1024。容量消融按相同 examples seen 比较 Qwen2.5 0.5B/1.5B/3B 纯文本主干；随后才做 projector scratch/warm-start、顶部 LoRA、blank/fixed/shuffle/patch-permutation 与 synthetic minimal-pair 控制。完整协议在仓库 `docs/ablation-protocol.md`。
 
 停训判据不看 loss，看两条 gap：主判据是 benchmark 分数 − blind 分数的 gap 随 checkpoint 的曲线，平台即停；辅助判据是留出集 shuffle\_delta > 0.1。参考锚点：projector-only 的 TextVQA 现实预期 20–30%（blind 约 10–15%，成熟 VLM 60+）；达到 GLM 社区实验同量级（grounding parse 率 >80%、Acc\@50 个位数）即成功。
 
@@ -371,10 +373,10 @@ Qwen2.5-0.5B-Instruct 是纯文本 `Qwen2ForCausalLM`，没有继承原生视觉
   [*阶段*], [*时长*], [*说明*],
   [装机 + 下载权重], [1–1.5 h], [160 GB；好主机 1–2 GB/s],
   [Gate D 判定], [0.5–1 h], [FP4 Dgrad 失败则当场退租（损失约 \$10），转情景 B],
-  [Stage 1 对齐训练], [2–4 h], [约 2100 步（66k 短 QA × 2 epoch，batch 64，constant lr 5e-4）；checkpoint 随训随传；step 约 1400 无 grokking 则停训查数据],
+  [Stage 1 对齐训练], [待租前实测], [按 examples/token 预算与真实 micro-batch 吞吐反推；禁止用 64 次串行 forward 冒充 global batch 64],
   [benchmark 全套], [1.5–2 h], [TextVQA 500 / DocVQA 200 / OCRBench 200 / ScreenSpot 200；训练 checkpoint × blind × 随机 projector 三组对照，机上完成],
   [权重与结果回传], [0.5 h], [projector 约 134 MB + 评测 JSON 上传 HF],
-  [*合计*], [*6.5–9 h*], [4×RTX PRO 6000（\$5.18/h 含 400 GB 挂盘）约 \$34–47；\$50 余额单次闭环可行，失败重试需追加],
+  [*合计*], [*暂不锁定*], [装机、Gate D、benchmark 与回传有时间盒；训练段待 batching/分辨率/容量消融后重新报价],
 )
 
 若 FP4 Dgrad 不可用（情景 B）：权重解量化至 bf16（568 GB），需 8×A100 SXM（\$10.30/h），同排程时长大约 ×2–3，预算 \$300–500。
@@ -468,7 +470,7 @@ Qwen2.5-0.5B-Instruct 是纯文本 `Qwen2ForCausalLM`，没有继承原生视觉
 - eval\_v1：五个评测集 1,400 行 + 1,400 张图像 + MANIFEST，完成并已上传 `cyjin-yl/moonvit-dsv4-data`。
 - train\_v1：59,198 行 mix（TextVQA 29,252 / DocVQA 17,351 / ShowUI 5,167 / art 7,428；三道去重合计丢弃 23%）打包 3 片约 20 GB，完成并已上传。
 - sft\_art：71,780 train / 2,220 val，完成并已上传。
-- Gate B 全量 mix 训练：完成（2000 步，shuffle\_delta +0.727）；五基准评测完成并聚合（见 9.5 终表）；待办：仓库归置 + 4 个 checkpoint 补传 + stock 4B 对照评测（下载收尾中）。
+- Gate B full-mix early alignment：完成（2000 optimizer steps、16,000 examples、约 0.27 epoch，历史 shuffle\_delta +0.727）；五基准与 stock 4B 阳性对照均完成并发布。当前优先级转为 true batching 与容量/projector/LoRA/分辨率/因果诊断消融，租时暂不锁定。
 
 = 变更日志
 
@@ -501,6 +503,7 @@ Qwen2.5-0.5B-Instruct 是纯文本 `Qwen2ForCausalLM`，没有继承原生视觉
   [2026-08-04], [Gate B 五基准终表（trained/random/blind）：textvqa 0.081/0/0、docvqa 0.039/0/0、ocrbench 0/0/0（地板）、screenspot 解析 0.51 精度 0.01、MMMU-Pro 0.073/0/0——判别力三条全成立，绝对读数如实留存（含坏结果）。误判审计：判别器清白（最宽提取 +1–2% 封顶）；抓到 MMMU 输入格式化两个 bug（选项字面量被逐字符拆行、缺字母标签），修复后 2.0%→7.3%，旧读数作废。],
   [2026-08-04], [原生 Qwen3.5-4B 阳性对照修复并跑完：发现同字节数坏 shard（视觉塔全集所在分片）→ SHA-256 manifest 校验、1024px 上限与指标化短输出约束。修复后 vision/blind：TextVQA 0.820/0.031、DocVQA 0.926/0.071、OCRBench 0.900/0、ScreenSpot acc 0.760/0.010、MMMU-Pro 0.300/0.280。用户指出并纠正证据边界：该模型自带视觉塔与多模态对齐，只验证评测器，不证明 MoonViT-V2→DeepSeek；训练器新增原生 VLM 拒绝保护，Gate D 才是目标能力证据。],
   [2026-08-04], [用户指出 0.5B 容量混杂：Qwen2.5-0.5B 虽为纯文本主干，但会压低 OCR/推理/格式遵从上限，dense 小模型的收敛也不能预测 DeepSeek Hash-MoE。Gate B 正式降格为工程/信号闸门；尚未完成的干净桥接对照定义为无 `vision_config` 的约 3B 纯文本主干，在相同 mix、seen-record、分辨率、scratch projector 与 selection 评测下复测。],
+  [2026-08-04], [训练计量审计：历史 `batch 8` 是 micro-batch 1 下串行累积，full-mix Gate B 共见 16,000 样本、仅约 0.27 epoch，故重命名为 early alignment，低 benchmark 不作能力上限。训练器新增 examples/answer tokens/effective epochs 与显式 batch 语义、固定分层 validation manifest、10 组 derangement mean±std、多答案监督 provenance；租前实验按容量→projector/LoRA→分辨率→因果/合成诊断排序，true batching 实测前暂停锁定租时。],
 )
 
 = 下一位执行者的最短路径

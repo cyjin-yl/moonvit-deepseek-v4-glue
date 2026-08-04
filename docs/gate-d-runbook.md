@@ -30,7 +30,7 @@ kernel 在这张卡上能对输入 embedding 求梯度。Gate D 第 0 步必须�
 | 创建+装机 | 0.5h | 镜像/torch 与 sm_120 不匹配 → 换镜像一次，仍不行退租 |
 | 下载权重 160GB + 视觉塔 0.8GB | 1.0h | 实测 <150MB/s 且 30min 无改善 → 退租 |
 | Gate D（§7 全部子步） | 1.0h | Dgrad 失败（projector 无梯度）→ 当场 destroy，转情景 A′/B |
-| 对齐训练 ~2100 步（66k 短QA × 2 epoch, batch 64, constant lr 5e-4） | ≤4h | step ~1400 仍无 grokking → 先查数据再决定是否 LR 探针（§8）；单步耗时反推超预算 → 减步数保 benchmark |
+| 对齐训练（样本/token 预算待租前消融与真实 batching 基准锁定） | 暂不承诺 | 先按 §8 的 micro-batch 计时律重算；不得把 64 次串行 forward 当作 global batch 64 的社区步时 |
 | Benchmark（5 基准 × 3 对照） | 1.5h | 时间不足时砍 ScreenSpot，保留 TextVQA/DocVQA/MMMU-Pro |
 | 回传 + destroy | 0.5h | 必须完成：projector fp32+bf16、eval JSON、报告 |
 
@@ -152,9 +152,15 @@ EOF
 
 ## 8. 训练 + benchmark + 回传（train / eval 窗口）
 
-- 训练配方（Baseten 社区实测，唯一公开同级成功案例）：constant lr 5e-4（无调度器）、
-  batch 64、约 66k 条**短 QA**、2 epoch ≈ 2100 步。**数据红线：只用短答案 QA；
-  长描述性答案会阻止 grokking**（Baseten 原文结论）。
+- 训练配方先验（Baseten 社区实测，唯一公开同级成功案例）：constant lr 5e-4（无调度器）、
+  global batch 64、约 66k 条**短 QA**、2 epoch ≈ 2100 optimizer steps。**数据红线：只用短答案 QA；
+  长描述性答案会阻止 grokking**（Baseten 原文结论）。这只是外部先验，不是本项目的时间承诺。
+- **batch 语义修正（2026-08-04）**：历史训练器的 `batch_size=N` 是 `micro_batch_size=1`
+  下串行 N 次 forward/backward 再 optimizer step；full-mix Gate B 因此只见过 16,000 样本
+  （约 0.27 epoch）。新版 CLI 将其如实命名为 `--gradient-accumulation-steps`，并记录
+  examples/token/epoch。当前尚未实现真正的 padded multi-example forward，故暂时拒绝
+  `--micro-batch-size > 1`。正式租机前必须先实现并在小主干上测 micro batch 1/2/4；若仍
+  使用 accumulation 64，就意味着每 optimizer step 有 64 次完整前后向，旧 2–4h 估计无效。
 - **配方谦逊条款（评审修正）**：该配方是 GLM-5.2V 上的经验先验，不是 DeepSeek-V4 的
   排程承诺。社区 GLM projector 的视觉输入为 1152 维，不能复用到我们的 1024 维 V2；
   scratch 仍是主实验。合法的可选对照是从我们自己的 V2 + 纯文本小主干 checkpoint 仅
@@ -163,15 +169,17 @@ EOF
   (a) 先查数据是否混入长答案；
   (b) 数据无误则用剩余预算做 200 步 LR 探针 {1e-3, 2e-4} 各一，取优续训；
   (c) 仍无 → 照常完成 benchmark 并如实报告负结果，不追加预算。
-- **视觉 token 预算（写死）**：训练 `--max-image-side 640`——VQA/照片典型 640×480 →
+- **视觉 token 候选预算（消融后锁定）**：训练 `--max-image-side 640`——VQA/照片典型 640×480 →
   约 391 视觉 token，最坏方形 529；GUI 截图 640×360 → 276；加文本后序列典型 ≤700。
-  评测 `--max-image-side 1024`（推理侧显存独立核算，保 benchmark 保真）。
+  评测 `--max-image-side 1024`。正式采用前先完成训练 448/640 × 评测 448/640/1024 的
+  小规模矩阵，确认 OCR 收益、分布失配、吞吐和 token 挤压；结果不支持时不得写死 640/1024。
   Gate D 第 6 步必须用真实 mix 的 token 分布重测单步耗时，此前一切 3–6s/步的
   估算都只是假设。视觉塔已冻结，特征不预缓存（每 epoch 重算的塔前向约占总步时
   <10%，换来实现简单——若实测塔前向占比 >20% 再考虑缓存）。
-- 命令：`tools/train_overfit.py --text-model <DeepSeek-V4-Flash-0731-path> \
+- 候选命令（只有租前计时与消融通过后才填写最终步数）：`tools/train_overfit.py --text-model <DeepSeek-V4-Flash-0731-path> \
   --vision-tower v2 --moonvit-v2-weights <path> \
-  --lr 5e-4 --batch-size 64 --steps 2100 --checkpoint-every 500 \
+  --lr 5e-4 --micro-batch-size 1 --gradient-accumulation-steps <measured> \
+  --steps <derived-from-examples-budget> --checkpoint-every 500 \
   --upload-repo cyjin-yl/DeepSeek-V4-Flash-0731-Vision`
   训练器会拒绝带 `vision_config` 的原生 VLM 文本主干；Qwen3.5-4B 等 stock VLM 只能用于
   独立的评测阳性对照，不能替代本命令中的纯文本 DeepSeek，也不进入 Gate D 通过判据。
@@ -206,7 +214,8 @@ EOF
   - 结果表分三组：**域内**（ScreenSpot，受 ShowUI 训练域覆盖，单独标注）、
     **跨域**（TextVQA/DocVQA/OCRBench，训练集为同源 train split）、
     **零样本**（MMMU-Pro，无任何同源训练数据）。
-  - shuffle-loss 对照跑 3 个种子，报告 mean±std 与相对提升比例；
+  - 固定 source-stratified validation manifest；shuffle-loss 跑 10 组 seeded derangement，
+    overall 与每个 source 报告 mean±std，并保存每组 ID 配对；
     固定随机-projector 基线一并给出。单次 shuffle delta > 0.1 不构成"对齐成功"。
 - Benchmark：`tools/eval_vlm.py --blind --upload-repo cyjin-yl/DeepSeek-V4-Flash-0731-Vision
   --run-tag <tag>`，TextVQA/DocVQA/OCRBench/ScreenSpot(域内，须标注)/MMMU-Pro 小子集，
