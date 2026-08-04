@@ -191,6 +191,28 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 
 同日下午的带宽攻防补充了一课：(1) ModelScope 存在与 HF 逐字节一致的镜像（`lmms-lab/textvqa`、`lmms-lab/DocVQA`、`AI-ModelScope/MMMU_Pro`、`showlab/ShowUI-desktop`），境内直连可达 8.8 MB/s，但工作站 IP 在约 1.5 小时高强度拉取后被 CDN 边缘渐进限速至 0 B/s（按 IP 不按账号，token 与 IPv6 均无效；本机家庭 IP 同文件仍有 5.3 MB/s）；(2) 随即搭建的"本机 ModelScope → scp 回传工作站"中继受 Tailscale 链路限制（3.7 s RTT，多流聚合仅约 250–400 KB/s），与代理通道同速且挤占家庭带宽，应用户要求退役；(3) 最终全部十个数据源统一由工作站经 Clash 代理直下（`moondata` 八个评测/训练集 + `moonart` 的 WikiArt/fashion），代理总带宽封顶约 250 KB/s（并行不扩展，单连接约 50 KB/s 即节点拥塞），剩余约 15 GB 预计 16 小时；mihomo 核心未开 external-controller，换节点只能由用户在 GUI 操作，这是当前唯一可能提速一个数量级的杠杆。也曾评估 \$0.056/h 的香港数据盒（2–3 小时收工、总成本 < \$0.5）作为替代，用户选择免费慢磨方案。
 
+== Gate B 全量 mix 正式训练（2026-08-04，V100，租前最后一闸）
+
+目的：在正式 train\_v1 mix（59,198 行 packed parquet）上验证"parquet 消费路径 + 全量数据 + 2000 步训练 + 全套评测 + 上传"的租期闭环，同时作为正式 0731 训练的本地对照组。设置：Qwen2.5-0.5B-Instruct（冻结）+ K3 MoonViT-V2（冻结，eager），只训 projector（33.6M 参数）,2000 步、batch 8、恒定 lr 5e-4、`--max-image-side 448`，占位 token 自动解析为 Qwen 词表已有的 `<|image_pad|>`（ID 151643，不扩词表）。
+
+训练结果（train.log 实测）:
+
+#table(
+  columns: (2.2fr, 1.8fr),
+  [*指标*], [*数值*],
+  [loss（首窗口 → 末窗口）], [6.413 → 3.006（单步 10.19 → 3.01，最低 2.718 \@ step 1750）],
+  [held-out 真实 loss（32 条）], [3.175],
+  [held-out 打乱图像 loss], [3.902],
+  [*shuffle\_delta*], [*+0.727*],
+)
+
+shuffle\_delta +0.727 是此前三条 smoke 轨（+0.343 / +0.282 / +0.148）的两倍以上：全量 mix 上视觉信号对齐明确成立。但本轮同时炸出两个租前必须暴露的问题，均已定位：
+
+1. *checkpoint 流式上传全部失败*（step 500/1000/1500/2000 共 4 次）：训练期间代理 SSL 持续重置（`UNEXPECTED_EOF_WHILE_READING` 于 S3 multipart PUT），重试 5 次仍败。训练本身无损，4 个 checkpoint 本地完好；按"上传下载串行"纪律，等评测结束带宽空出后手动一次性补传。教训：租机上 checkpoint 上传同样要与数据集预取错开。
+2. *10 个评测进程全部启动即崩*：训练器默认占位 token 是 Qwen 的 `<|image_pad|>`，而评测器默认是 DeepSeek 的 `<｜image｜>`——两者默认值不一致，Qwen tokenizer 里没有后者，`resolve_placeholder_token_id` 按设计拒绝扩词表而报错。修复为候选自动探测（DeepSeek token 优先、Qwen token 兜底；显式指定仍严格报错），85/85 测试通过（commit `034be8b`）。此 bug 若不在本地炸出，租机首跑 DeepSeek 时训练器会以旧默认 `<|image_pad|>` 直接崩在 0731 tokenizer 上——本地彩排的价值正在于此。
+
+评测补跑（5 基准 × trained/random × vision/blind,selection 半侧，1024px）与仓库归置（Qwen 对照产物归入 `gate_b_qwen05_v100/` 并在 README 标注与 DeepSeek 目标无关）在本文截稿时进行中，结果落入变更日志与 HANDOFF。
+
 == Gate C：Vast 只读调研
 
 2026-08-02 12:23（UTC+8）用官方 Search Offers API 查询 verified、rentable、可靠度至少 0.98、至少 4 张卡、单卡至少 80 GB、总显存至少 320 GB 的 on-demand offer。市场是动态的，以下价格只用于预算，offer ID 不应写进自动租用脚本。
@@ -394,12 +416,12 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 2. `tools/pack_to_parquet.py` 打包：union-keys schema（`from_pylist` 只按首行推断的坑已修，测试 6/6）；train 按 20,000 行分片，eval 五份各打一包。图像统一为 PNG 字节内嵌 parquet——付费服务器上顺序读、免密集小文件 IO，租机下载一次即用。
 3. 串行上传 `cyjin-yl/moonvit-dsv4-data`（已传文件自动跳过）；README 记录来源、revision、sha256 与复现命令，原数据集协议随产物保留。
 
-== 当前状态（2026-08-03 晚）
+== 当前状态（2026-08-04）
 
-- eval\_v1：五个评测集 1,400 行 + 1,400 张图像 + MANIFEST，完成。
-- train\_raw：TextVQA train 34,602 行、ShowUI-desktop 7,496 行完成；DocVQA train 目标 25,000 行抽取中。
-- sft\_art：71,780 train / 2,220 val，完成。
-- 待办：DocVQA 抽取完成 → mix 组装（含去重报告）→ pack → 串行上传 → Gate B 全量 mix 微调（Qwen2.5-0.5B + MoonViT-V2，同时验证 parquet 消费路径）。
+- eval\_v1：五个评测集 1,400 行 + 1,400 张图像 + MANIFEST，完成并已上传 `cyjin-yl/moonvit-dsv4-data`。
+- train\_v1：59,198 行 mix（TextVQA 29,252 / DocVQA 17,351 / ShowUI 5,167 / art 7,428；三道去重合计丢弃 23%）打包 3 片约 20 GB，完成并已上传。
+- sft\_art：71,780 train / 2,220 val，完成并已上传。
+- Gate B 全量 mix 训练：完成（2000 步，shuffle\_delta +0.727，见上节）；五基准评测补跑中；4 个 checkpoint 待手动补传 HF。
 
 = 变更日志
 
@@ -427,6 +449,8 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
   [2026-08-03], [租前全链路彩排通过（Gate B+）：V100 上 400 步训练 + checkpoint 流式上传 + 三组评测 + 聚合全部闭环并落 HF；训练组 gap +0.117 vs 随机对照 +0.019，管线可判别；作为正式训练的对照组基线。],
   [2026-08-03], [外部评审（Max）并入 runbook：Gate D 分阶段化（含 `gate\_d\_dgrad.py` 单层 Dgrad reproducer、hook×梯度检查点数值一致性、`device\_map="auto"` 步时定律）；版本固定 + pip freeze 随产物；视觉 token 预算写死（训练 640 / 评测 1024）；配方谦逊条款（LR 探针兜底）；评测纪律（selection/final 两半、域内/跨域/零样本三组、3 种子 shuffle 统计）。],
   [2026-08-03], [数据管线定稿并写入报告新章节：评测 5 集 1,400 行（TextVQA/DocVQA/OCRBench/ScreenSpot/MMMU-Pro）与训练 4 类来源（TextVQA train 34.6k、DocVQA train 25k、ShowUI-desktop 7.5k、art 池 71.8k 取 10k）的挑选理由与排除项；93 个正式分片 sha256 校验 0 mismatch；三道去重、union-keys parquet 打包与串行上传纪律；DocVQA train 抽取收尾中。],
+  [2026-08-04], [数据全链路闭合：train\_v1 mix 59,198 行（去重丢 23%）+ eval\_v1 + sft\_art\_v1 全部上传 `cyjin-yl/moonvit-dsv4-data`；数据仓 README 记录来源、revision、sha256 与复现命令。],
+  [2026-08-04], [Gate B 全量 mix 训练完成（V100，Qwen2.5-0.5B + MoonViT-V2，2000 步）：loss 6.41→3.01，held-out shuffle\_delta *+0.727*，全量数据上视觉对齐信号明确；修复占位 token 双默认值不一致 bug（训练 Qwen `<|image_pad|>` vs 评测 DeepSeek `<｜image｜>`）为候选自动探测，85/85 测试；4 个 checkpoint 因代理 SSL 抖动待手动补传；五基准评测补跑中。],
 )
 
 = 下一位执行者的最短路径
