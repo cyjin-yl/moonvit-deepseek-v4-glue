@@ -1,0 +1,6 @@
+{
+  "timing_usable": true,
+  "peak_memory_usable_for_cached_path": false,
+  "reason": "Feature tensors came from cache, so per-step timing did not include MoonViT forward. However, the trainer still instantiated the frozen 401M MoonViT tower, inflating startup wall time and peak memory.",
+  "resolution": "Trainer/evaluator now skip MoonViT construction entirely when a compatible cache is provided. retry3 is the definitive cached-path memory run."
+}

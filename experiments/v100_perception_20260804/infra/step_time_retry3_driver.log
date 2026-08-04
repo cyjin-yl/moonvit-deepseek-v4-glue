@@ -1,0 +1,45 @@
+{
+  "warmup_steps_excluded": 1,
+  "runs": [
+    {
+      "micro_batch_size": 1,
+      "gradient_accumulation_steps": 1,
+      "effective_batch_size": 1,
+      "actual_batched_forward": false,
+      "measured_steps": 4,
+      "mean_step_wall_seconds": 0.0747298002243042,
+      "min_step_wall_seconds": 0.070343017578125,
+      "max_step_wall_seconds": 0.08761405944824219,
+      "examples_per_second_from_mean": 13.381542530536196,
+      "peak_gpu_memory_bytes": 3314022400
+    },
+    {
+      "micro_batch_size": 1,
+      "gradient_accumulation_steps": 4,
+      "effective_batch_size": 4,
+      "actual_batched_forward": false,
+      "measured_steps": 4,
+      "mean_step_wall_seconds": 0.2720388174057007,
+      "min_step_wall_seconds": 0.26071882247924805,
+      "max_step_wall_seconds": 0.2928779125213623,
+      "examples_per_second_from_mean": 14.70378396048776,
+      "peak_gpu_memory_bytes": 3646017536
+    },
+    {
+      "micro_batch_size": 1,
+      "gradient_accumulation_steps": 8,
+      "effective_batch_size": 8,
+      "actual_batched_forward": false,
+      "measured_steps": 4,
+      "mean_step_wall_seconds": 0.5390003323554993,
+      "min_step_wall_seconds": 0.5234448909759521,
+      "max_step_wall_seconds": 0.557204008102417,
+      "examples_per_second_from_mean": 14.842291404606364,
+      "peak_gpu_memory_bytes": 3646017536
+    }
+  ],
+  "run_id": "v100-perception-step-time-20260804-retry3",
+  "feature_cache_manifest": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/train-seed0-limit64-448-retry1/MANIFEST.json",
+  "feature_cache_records_sha256": "98f81a46f4c932bd67c3de116b374e32983e09410ee8d422063f82540bb55d2a",
+  "failures": []
+}

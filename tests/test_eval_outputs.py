@@ -34,6 +34,7 @@ def test_build_metadata_captures_run_context():
         text_model="deepseek", vision_tower="v2", moonvit_v2_weights="/w/v2.safetensors",
         moonvit_model="moonshotai/MoonViT-SO-400M", projector="/ckpt/step-002100",
         data=Path("textvqa.jsonl"), limit=500, max_new_tokens=32, dtype="bfloat16", seed=0,
+        max_image_side=1024, feature_cache=Path("/cache/textvqa-1024"),
     )
     meta = build_metadata(args, git_sha="abc123")
     assert meta["text_model"] == "deepseek"
@@ -41,6 +42,11 @@ def test_build_metadata_captures_run_context():
     assert meta["vision_weights"] == "/w/v2.safetensors"
     assert meta["projector"] == "/ckpt/step-002100"
     assert meta["data"] == "textvqa.jsonl"
+    assert meta["evaluation_max_image_side"] == 1024
+    assert meta["feature_cache"] == "/cache/textvqa-1024"
+    assert meta["checkpoint_source"] == "/ckpt/step-002100"
+    assert meta["vision_tower_instantiated"] is False
+    assert meta["peak_gpu_memory_bytes"] == 0
     assert meta["git"] == "abc123"
     assert meta["timestamp"]
 

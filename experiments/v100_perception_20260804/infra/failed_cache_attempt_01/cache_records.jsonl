@@ -1,0 +1,3 @@
+{"index": 0, "id": "textvqa_train_017283", "status": "ok", "feature_shape": [176, 4, 1024], "dtype": "float32", "wall_seconds": 22.385208129882812}
+{"index": 1, "id": "train_003365", "status": "ok", "feature_shape": [192, 4, 1024], "dtype": "float32", "wall_seconds": 0.10858035087585449}
+{"index": 2, "id": "docvqa_train_011873", "status": "ok", "feature_shape": [208, 4, 1024], "dtype": "float32", "wall_seconds": 0.3022162914276123}

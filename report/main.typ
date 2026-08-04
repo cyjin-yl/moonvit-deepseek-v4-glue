@@ -260,6 +260,30 @@ Qwen2.5-0.5B-Instruct 是纯文本 `Qwen2ForCausalLM`，没有继承原生视觉
 
 评测补跑（5 基准 × trained/random × vision/blind）已全部完成并聚合；仓库归置（Qwen 对照产物归入 `gate_b_qwen05_v100/`、smoke 产物归入 `gate_b_smoke_smollm135_v100/`、README 标注与 DeepSeek 目标无关）与 4 个 checkpoint 补传按串行纪律排在 4B 下载之后。
 
+= 冻结语言主干中的视觉感知涌现：V100 方向筛选实验
+
+本章对应新的租前方向筛选阶段；约束是只使用现有 V100 32 GB，不查看 final evaluation half、不租服务器、不启动完整 DeepSeek-V4。研究问题是：(1) frozen text LM 何时开始在可测指标上依赖正确图片；(2) MoonViT 可线性解码的信息经过 projector 后保留/丢失什么；(3) 视觉属性在哪些 LM 层与 token 位置可解码并影响答案；(4) 下一轮应优先归因于训练量、projector、空间/OCR、语言容量还是冻结主干。
+
+可证伪假设预注册如下：若 MoonViT probe 高而 projector 输出骤降，则支持 projector 信息瓶颈；若 projector/LM residual probe 高而生成与干预恢复低，则支持语言适应/解码瓶颈；若所有 checkpoint 曲线仍持续上升，则先支持训练量不足；若 0.5B 在等 examples-seen 下被 1.5B 清晰超过，才提高语言容量瓶颈证据；这些 probe/相似度只作相关性读数，因果结论必须来自 blank/wrong-image、mask、feature/activation patching 的答案 logit 变化。
+
+== 实验基础设施与真实计量（包 1，2026-08-04）
+
+环境快照 run `v100-perception-infra-20260804-a`：起始 commit `20c2556`；Tesla V100-PCIE-32GB（34,072,559,616 B，sm\_70）；Python 3.12.11；torch 2.10.0+cu128；CUDA build 12.8；cuDNN 91002；Transformers 5.12.1；safetensors 0.8.0。`nvidia-smi` 仍因已知 NVML 用户态/内核不匹配失败，但 PyTorch CUDA 分配与计算正常。环境 JSON、pip freeze、GPU device users 和 git dirty state 均提交于 `experiments/v100_perception_20260804/infra/environment/`。
+
+冻结 MoonViT-V2 特征缓存采用分片 safetensors + MANIFEST：逐样本记录 ID、原图 SHA-256、原图尺寸、feature shape/dtype、shard offset；全局记录 MoonViT config/weights hash、分辨率、数据 logical-row hash、cache format version；每个 shard 自带 bytes 与 SHA-256。有效 run `v100-perception-cache-20260804-retry1` 在 448px 缓存 64/64、0 失败、14.274s、峰值 1,948,235,264 B；4 个 shard 全部二次 hash 和逐 ID 读回通过，records hash `98f81a46…55d2a`，MoonViT 权重 hash `01436a95…ced24`。第一次 foreground SSH 尝试因 stdout 断开触发 BrokenPipe，只有 3 条临时行且无 manifest，明确标记 invalid 并保留，不参与任何结论。
+
+真实 step-time 使用同一 64 条、同一 scratch projector、相同 448px cache，5 step 中排除首个 CUDA warm-up，结果如下。三组的 `micro_batch_size` 都是 1，`actual_batched_forward=false`；所谓 batch 4/8 是串行 gradient accumulation。
+
+#table(
+  columns: (1.2fr, 1.2fr, 1.6fr, 1.5fr, 1.5fr),
+  [*micro batch*], [*grad accum*], [*mean s/optimizer step*], [*examples/s*], [*peak GPU memory*],
+  [1], [1], [0.0747], [13.38], [3.31 GB],
+  [1], [4], [0.2720], [14.70], [3.65 GB],
+  [1], [8], [0.5390], [14.84], [3.65 GB],
+)
+
+因此旧 `batch 8` 的真实成本约为 0.54s/optimizer step（在 0.5B + 已缓存视觉特征上），不是一次 8 样本 forward。线性外推到 accumulation 64 约为 4.3s/step，但该数字仍不能外推 DeepSeek；它只用于证明计量语义与 V100 小模型预算。retry2 的单步计时有效，但审查发现它仍在启动时实例化了不参与 forward 的 401M MoonViT，故其 4.92–5.25 GB peak 不作为缓存结论；修复后 retry3 完全不构造视觉塔，peak 降到 3.31–3.65 GB，且三份 report 均记录 `vision_tower_instantiated=false`。两次 step-0 无效启动也完整保留：第一次在线 HEAD 超时；第二次启用 offline 后未设置 HDD cache 路径，三臂均失败并暴露零成功行 CSV 的 driver bug。下一包将生成六类 synthetic minimal-pair 数据；checkpoint 轨迹、probe、干预和方向判定尚未运行，当前不满足租卡前 go 条件。
+
 == Gate C：Vast 只读调研
 
 2026-08-02 12:23（UTC+8）用官方 Search Offers API 查询 verified、rentable、可靠度至少 0.98、至少 4 张卡、单卡至少 80 GB、总显存至少 320 GB 的 on-demand offer。市场是动态的，以下价格只用于预算，offer ID 不应写进自动租用脚本。

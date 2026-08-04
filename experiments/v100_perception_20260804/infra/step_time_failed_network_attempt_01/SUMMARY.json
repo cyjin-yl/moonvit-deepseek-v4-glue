@@ -1,0 +1,10 @@
+{
+  "run_id": "v100-perception-step-time-20260804-attempt01",
+  "status": "invalid",
+  "usable": false,
+  "optimizer_steps_completed": 0,
+  "failure_type": "HuggingFaceHubHeadTimeout",
+  "failure_cause": "Transformers attempted a remote HEAD request even though Qwen2.5-0.5B was already cached locally.",
+  "resolution": "Preserved log and commands; runner now sets HF_HUB_OFFLINE=1 and TRANSFORMERS_OFFLINE=1 for every child process; rerun uses new results/work directories.",
+  "superseded_by": "../step_time_retry1"
+}

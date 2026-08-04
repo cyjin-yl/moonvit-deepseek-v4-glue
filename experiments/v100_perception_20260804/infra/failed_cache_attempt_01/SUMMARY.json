@@ -1,0 +1,12 @@
+{
+  "run_id": "v100-perception-cache-20260804-attempt01",
+  "status": "invalid",
+  "usable": false,
+  "requested": 64,
+  "rows_computed_before_abort": 3,
+  "cache_manifest_written": false,
+  "failure_type": "BrokenPipeError",
+  "failure_cause": "The foreground SSH client timed out and closed stdout; progress printing was incorrectly inside the sample failure boundary.",
+  "resolution": "Preserved raw rows and failure; changed progress output to ignore transport-only BrokenPipeError; reran in a new retry1 directory under tmux.",
+  "superseded_by": "../feature_cache_retry1"
+}

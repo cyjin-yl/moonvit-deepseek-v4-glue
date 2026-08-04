@@ -1,0 +1,5 @@
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+[1/64] textvqa_train_017283 [176, 4, 1024]

@@ -1,0 +1,11 @@
+{
+  "run_id": "v100-perception-cache-20260804-retry1",
+  "external_cache_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/train-seed0-limit64-448-retry1",
+  "count": 64,
+  "shards": 4,
+  "shard_hashes_ok": true,
+  "all_ids_read_back": true,
+  "distinct_feature_shapes": 10,
+  "records_sha256": "98f81a46f4c932bd67c3de116b374e32983e09410ee8d422063f82540bb55d2a",
+  "moonvit_weights_sha256": "01436a95939965185bb853ddf984e09c00f597b9c2f6708ba302ffbaf75ced24"
+}

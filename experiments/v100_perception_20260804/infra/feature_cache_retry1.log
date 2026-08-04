@@ -1,0 +1,78 @@
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+[1/64] textvqa_train_017283 [176, 4, 1024]
+[2/64] train_003365 [192, 4, 1024]
+[3/64] docvqa_train_011873 [208, 4, 1024]
+[4/64] textvqa_train_019587 [176, 4, 1024]
+[5/64] docvqa_train_007071 [208, 4, 1024]
+[6/64] textvqa_train_001310 [192, 4, 1024]
+[7/64] showui_desktop_003420 [144, 4, 1024]
+[8/64] textvqa_train_013579 [192, 4, 1024]
+[9/64] docvqa_train_004286 [208, 4, 1024]
+[10/64] docvqa_train_003898 [208, 4, 1024]
+[11/64] train_001470 [192, 4, 1024]
+[12/64] textvqa_train_018832 [192, 4, 1024]
+[13/64] textvqa_train_017761 [176, 4, 1024]
+[14/64] train_006981 [192, 4, 1024]
+[15/64] textvqa_train_028061 [176, 4, 1024]
+[16/64] textvqa_train_002612 [256, 4, 1024]
+[17/64] textvqa_train_019689 [256, 4, 1024]
+[18/64] docvqa_train_001563 [208, 4, 1024]
+[19/64] textvqa_train_027970 [128, 4, 1024]
+[20/64] textvqa_train_006768 [192, 4, 1024]
+[21/64] textvqa_train_011003 [144, 4, 1024]
+[22/64] docvqa_train_004390 [192, 4, 1024]
+[23/64] docvqa_train_003684 [208, 4, 1024]
+[24/64] textvqa_train_016330 [112, 4, 1024]
+[25/64] textvqa_train_010587 [176, 4, 1024]
+[26/64] docvqa_train_003431 [208, 4, 1024]
+[27/64] textvqa_train_010911 [176, 4, 1024]
+[28/64] textvqa_train_021858 [192, 4, 1024]
+[29/64] textvqa_train_006695 [192, 4, 1024]
+[30/64] docvqa_train_006208 [208, 4, 1024]
+[31/64] textvqa_train_024794 [176, 4, 1024]
+[32/64] textvqa_train_002912 [192, 4, 1024]
+[33/64] showui_desktop_005032 [160, 4, 1024]
+[34/64] docvqa_train_007611 [192, 4, 1024]
+[35/64] textvqa_train_020581 [176, 4, 1024]
+[36/64] textvqa_train_011124 [256, 4, 1024]
+[37/64] textvqa_train_027008 [256, 4, 1024]
+[38/64] showui_desktop_004871 [160, 4, 1024]
+[39/64] showui_desktop_003924 [160, 4, 1024]
+[40/64] textvqa_train_011244 [144, 4, 1024]
+[41/64] docvqa_train_011331 [192, 4, 1024]
+[42/64] textvqa_train_023264 [192, 4, 1024]
+[43/64] textvqa_train_021973 [176, 4, 1024]
+[44/64] textvqa_train_007152 [192, 4, 1024]
+[45/64] textvqa_train_021888 [192, 4, 1024]
+[46/64] textvqa_train_014972 [176, 4, 1024]
+[47/64] textvqa_train_014743 [160, 4, 1024]
+[48/64] textvqa_train_011794 [176, 4, 1024]
+[49/64] textvqa_train_023687 [176, 4, 1024]
+[50/64] train_004596 [81, 4, 1024]
+[51/64] textvqa_train_002483 [192, 4, 1024]
+[52/64] textvqa_train_022041 [176, 4, 1024]
+[53/64] train_005274 [81, 4, 1024]
+[54/64] showui_desktop_003608 [144, 4, 1024]
+[55/64] textvqa_train_009799 [224, 4, 1024]
+[56/64] train_005515 [81, 4, 1024]
+[57/64] train_000503 [81, 4, 1024]
+[58/64] train_002898 [81, 4, 1024]
+[59/64] train_003734 [81, 4, 1024]
+[60/64] showui_desktop_002031 [160, 4, 1024]
+[61/64] train_007281 [81, 4, 1024]
+[62/64] docvqa_train_014277 [176, 4, 1024]
+[63/64] docvqa_train_008425 [192, 4, 1024]
+[64/64] docvqa_train_012096 [256, 4, 1024]
+{
+  "requested": 64,
+  "cached": 64,
+  "failed": 0,
+  "wall_seconds": 14.273948431015015,
+  "peak_gpu_memory_bytes": 1948235264,
+  "manifest": "MANIFEST.json",
+  "records": "cache_records.jsonl",
+  "failures": "failures.jsonl"
+}

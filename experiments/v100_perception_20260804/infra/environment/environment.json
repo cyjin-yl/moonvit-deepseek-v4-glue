@@ -1,0 +1,71 @@
+{
+  "run_id": "v100-perception-infra-20260804-a",
+  "captured_at": "2026-08-04T14:31:25.774302+00:00",
+  "git_sha": "20c2556f8f45a11f2ac5fea201da05013df41526",
+  "git_status_short": [
+    " M src/moonvit_glue/__init__.py",
+    " M tests/test_eval_outputs.py",
+    " M tests/test_training_protocol.py",
+    " M tools/eval_vlm.py",
+    " M tools/tools_common.py",
+    " M tools/train_overfit.py",
+    " M tools/training_protocol.py",
+    "?? configs/perception-v100-infra.json",
+    "?? experiments_env_capture.tmp",
+    "?? src/moonvit_glue/feature_cache.py",
+    "?? tests/test_feature_cache.py",
+    "?? tools/cache_moonvit_features.py",
+    "?? tools/capture_experiment_env.py"
+  ],
+  "hostname": "doesworkstation",
+  "platform": "Linux-6.19.14-300.fc44.x86_64-x86_64-with-glibc2.43",
+  "python": "3.12.11 | packaged by conda-forge | (main, Jun  4 2025, 14:45:31) [GCC 13.3.0]",
+  "python_executable": "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/bin/python",
+  "cpu_count": 8,
+  "packages": {
+    "torch": "2.10.0+cu128",
+    "transformers": "5.12.1",
+    "safetensors": "0.8.0",
+    "pillow": "12.2.0",
+    "numpy": "2.3.5",
+    "pyarrow": null,
+    "pytest": null,
+    "scikit-learn": null
+  },
+  "cuda": {
+    "available": true,
+    "torch_version": "2.10.0+cu128",
+    "cuda_build": "12.8",
+    "cudnn_version": 91002,
+    "device_name": "Tesla V100-PCIE-32GB",
+    "compute_capability": [
+      7,
+      0
+    ],
+    "total_memory_bytes": 34072559616,
+    "memory_info_bytes": [
+      33281343488,
+      34072559616
+    ],
+    "device_count": 1
+  },
+  "nvidia_smi": {
+    "argv": [
+      "nvidia-smi"
+    ],
+    "returncode": 18,
+    "stdout": "Failed to initialize NVML: Driver/library version mismatch\nNVML library version: 580.173\n",
+    "stderr": ""
+  },
+  "gpu_device_users": {
+    "argv": [
+      "sh",
+      "-lc",
+      "fuser -v /dev/nvidia0 2>&1 || true"
+    ],
+    "returncode": 0,
+    "stdout": "                     用户     进程号 权限   命令\n/dev/nvidia0:        ezra      323828 F...m gnome-calendar\n                     ezra      681767 F...m msedge\n                     ezra      2015336 F.... WebKitWebProces\n                     ezra      2071669 F.... nvtop\n                     ezra      2325339 F...m python\n                     ezra      2517686 F...m python\n                     ezra      2847960 F...m gnome-remote-de\n                     ezra      3850263 F...m gnome-shell\n                     ezra      3850784 F...m gnome-software\n                     ezra      4182802 F...m ptyxis\n",
+    "stderr": ""
+  },
+  "pip_freeze_file": "pip_freeze.txt"
+}

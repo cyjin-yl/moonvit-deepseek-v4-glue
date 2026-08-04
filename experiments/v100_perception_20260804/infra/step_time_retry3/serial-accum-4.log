@@ -1,0 +1,65 @@
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading weights:   0%|          | 0/290 [00:00<?, ?it/s]Loading weights:  76%|#######6  | 221/290 [00:00<00:00, 2198.70it/s]Loading weights: 100%|##########| 290/290 [00:00<00:00, 2386.03it/s]
+/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_overfit.py:405: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  step_loss += float(outputs.loss) / accumulation_steps
+optimizer_step 1/5 loss=11.5303 examples_seen=4 answer_tokens_seen=10 effective_epochs=0.0714
+final checkpoint: /run/media/ezra/13D010B6FDBC1A06/data/perception_v1/work/step-time-retry3/serial-accum-4/checkpoints/step-000005
+{
+  "text_model": "/run/media/ezra/13D010B6FDBC1A06/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+  "text_model_architectures": [
+    "Qwen2ForCausalLM"
+  ],
+  "text_backbone_native_multimodal": false,
+  "records_considered": 64,
+  "records_train": 56,
+  "records_eval": 8,
+  "data_records_manifest_sha256": "54ce83cdb4b4466867498b7acb1e9153ab08cc53a72fe739e56411e9804eae67",
+  "steps": 5,
+  "optimizer_steps": 5,
+  "examples_seen": 20,
+  "answer_tokens_seen": 68,
+  "effective_epochs": 0.35714285714285715,
+  "micro_batch_size": 1,
+  "gradient_accumulation_steps": 4,
+  "effective_batch_size": 4,
+  "answer_token_accounting_complete": true,
+  "legacy_batch_size_cli": null,
+  "legacy_batch_size_used": false,
+  "lr": 0.0005,
+  "answer_selection": "canonical",
+  "supervision_manifest": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/work/step-time-retry3/serial-accum-4/supervision_manifest.jsonl",
+  "validation_manifest": "experiments/v100_perception_20260804/infra/step_time_retry3/validation_manifest.json",
+  "validation_counts_by_source": {
+    "art": 2,
+    "docvqa": 2,
+    "showui": 2,
+    "textvqa": 2
+  },
+  "shuffle_repeats": 1,
+  "actual_batched_forward": false,
+  "forward_backward_calls_per_optimizer_step": 4,
+  "feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/train-seed0-limit64-448-retry1",
+  "vision_tower_instantiated": false,
+  "training_max_image_side": 448,
+  "evaluation_max_image_side": 448,
+  "projector_parameters": 20454272,
+  "checkpoint_source": "scratch",
+  "loss_first_window": 12.42139675617218,
+  "loss_last_window": 12.42139675617218,
+  "eval_true_loss": 10.192093074321747,
+  "eval_shuffled_loss": 10.323800802230835,
+  "shuffle_delta": 0.13170772790908813,
+  "shuffle_delta_std": 0.0,
+  "training_and_validation_wall_seconds": 2.3,
+  "wall_seconds": 3.5,
+  "peak_gpu_memory_bytes": 3646017536,
+  "step_time_seconds": {
+    "count": 5,
+    "mean": 0.32495861053466796,
+    "min": 0.26071882247924805,
+    "max": 0.5366377830505371
+  },
+  "projector_dir": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/work/step-time-retry3/serial-accum-4"
+}

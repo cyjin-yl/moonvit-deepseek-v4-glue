@@ -36,6 +36,7 @@ import json
 import platform
 import random
 import subprocess
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -43,6 +44,7 @@ import torch
 from PIL import Image
 
 from moonvit_glue import (
+    FeatureCache,
     MoonViTEncoder,
     PatchMergerProjector,
     ProjectorConfig,
@@ -52,6 +54,7 @@ from moonvit_glue import (
 )
 from moonvit_glue.metrics import score_record, summarize
 from tools_common import build_prompt_ids, encode_image, load_records
+from training_protocol import records_manifest_sha256
 
 
 def parse_args() -> argparse.Namespace:
@@ -67,6 +70,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--projector", help="Directory with projector_config.json + projector.safetensors")
     parser.add_argument("--random-projector", action="store_true", help="Use a freshly initialized projector (smoke runs)")
     parser.add_argument("--data", required=True, type=Path, help="Benchmark JSONL file")
+    parser.add_argument("--feature-cache", type=Path, default=None,
+                        help="Frozen MoonViT feature cache for image-bearing passes")
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--record-slice", choices=["even", "odd"], default=None,
                         help="Deterministic half-split: even=checkpoint-selection, odd=final (run once)")
@@ -95,23 +100,34 @@ def parse_args() -> argparse.Namespace:
     return args
 
 
-def build_model(args: argparse.Namespace):
+def build_model(args: argparse.Namespace, feature_cache=None):
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     dtype = getattr(torch, args.dtype)
     device = torch.device(args.device)
 
-    if args.vision_tower == "v2":
-        if not args.moonvit_v2_weights:
-            raise ValueError("--vision-tower v2 requires --moonvit-v2-weights")
-        moonvit = load_moonvit_v2_encoder(
-            args.moonvit_v2_weights,
-            attn_implementation=args.moonvit_v2_attn,
-            torch_dtype=dtype,
-        )
+    if feature_cache is not None:
+        if feature_cache.manifest.get("max_image_side") != args.max_image_side:
+            raise ValueError("feature cache and evaluation max-image-side differ")
+        moonvit = None
+        vision_width = int(feature_cache.manifest["vision_width"])
+        merge_factor = int(feature_cache.manifest["merge_factor"])
     else:
-        moonvit = MoonViTEncoder.from_pretrained(args.moonvit_model, torch_dtype=dtype)
-    moonvit.to(device)
+        if args.vision_tower == "v2":
+            if not args.moonvit_v2_weights:
+                raise ValueError("--vision-tower v2 requires --moonvit-v2-weights")
+            moonvit = load_moonvit_v2_encoder(
+                args.moonvit_v2_weights,
+                attn_implementation=args.moonvit_v2_attn,
+                torch_dtype=dtype,
+            )
+        else:
+            moonvit = MoonViTEncoder.from_pretrained(
+                args.moonvit_model, torch_dtype=dtype
+            )
+        moonvit.to(device)
+        vision_width = moonvit.vision_width
+        merge_factor = moonvit.merge_factor
     tokenizer = AutoTokenizer.from_pretrained(args.text_model)
     language_model = AutoModelForCausalLM.from_pretrained(args.text_model, dtype=dtype)
     language_model.to(device)
@@ -124,9 +140,9 @@ def build_model(args: argparse.Namespace):
     if args.random_projector:
         projector = PatchMergerProjector(
             ProjectorConfig(
-                vision_width=moonvit.vision_width,
+                vision_width=vision_width,
                 language_width=int(language_model.config.hidden_size),
-                merge_factor=moonvit.merge_factor,
+                merge_factor=merge_factor,
             )
         )
     else:
@@ -163,7 +179,15 @@ def make_scored_row(record: dict, prediction: str, index: int) -> dict:
     return row
 
 
-def build_metadata(args: argparse.Namespace, git_sha: str | None = None) -> dict:
+def build_metadata(
+    args: argparse.Namespace,
+    *,
+    git_sha: str | None = None,
+    model=None,
+    records: list[dict] | None = None,
+    wall_seconds: float | None = None,
+    peak_gpu_memory_bytes: int = 0,
+) -> dict:
     """Run context embedded in every report; aggregate_eval keys on ``data``."""
 
     return {
@@ -174,6 +198,24 @@ def build_metadata(args: argparse.Namespace, git_sha: str | None = None) -> dict
         "data": args.data.name,
         "limit": args.limit,
         "max_new_tokens": args.max_new_tokens,
+        "evaluation_max_image_side": getattr(args, "max_image_side", None),
+        "feature_cache": (
+            str(args.feature_cache) if getattr(args, "feature_cache", None) else None
+        ),
+        "data_records_manifest_sha256": (
+            records_manifest_sha256(records) if records is not None else None
+        ),
+        "projector_parameters": (
+            sum(parameter.numel() for parameter in model.projector.parameters())
+            if model is not None
+            else None
+        ),
+        "checkpoint_source": args.projector or "random",
+        "vision_tower_instantiated": (
+            getattr(args, "feature_cache", None) is None
+        ),
+        "wall_seconds": wall_seconds,
+        "peak_gpu_memory_bytes": peak_gpu_memory_bytes,
         "dtype": args.dtype,
         "seed": args.seed,
         "git": git_sha,
@@ -199,10 +241,26 @@ def expanded_length(input_ids: torch.Tensor, placeholder_token_id: int, feature_
     return input_ids.shape[1] - placeholders + image_tokens
 
 
-def run_generation(args, model, moonvit, tokenizer, placeholder_token_id, device, records):
+def feature_groups_for(args, model, moonvit, device, record, feature_cache):
+    if feature_cache is None:
+        return encode_image(
+            moonvit, record, args.max_image_side, base_dir=args.data.parent
+        )
+    return feature_cache.get(
+        str(record["id"]),
+        device=device,
+        dtype=next(model.projector.parameters()).dtype,
+    )
+
+
+def run_generation(
+    args, model, moonvit, tokenizer, placeholder_token_id, device, records, feature_cache=None
+):
     scored = []
     for index, record in enumerate(records):
-        feature_groups = encode_image(moonvit, record, args.max_image_side, base_dir=args.data.parent)
+        feature_groups = feature_groups_for(
+            args, model, moonvit, device, record, feature_cache
+        )
         input_ids = build_prompt_ids(
             tokenizer, args.prompt_template, record["question"], placeholder_token_id, device
         )
@@ -253,7 +311,9 @@ def summarize_shuffle(rows: list) -> dict:
     }
 
 
-def run_shuffle_loss(args, model, moonvit, tokenizer, placeholder_token_id, device, records):
+def run_shuffle_loss(
+    args, model, moonvit, tokenizer, placeholder_token_id, device, records, feature_cache=None
+):
     rng = random.Random(args.seed)
     records = [record for record in records if record.get("answers")]
     if not records:
@@ -272,7 +332,9 @@ def run_shuffle_loss(args, model, moonvit, tokenizer, placeholder_token_id, devi
 
     rows = []
     for index, record in enumerate(records):
-        true_groups = encode_image(moonvit, record, args.max_image_side, base_dir=args.data.parent)
+        true_groups = feature_groups_for(
+            args, model, moonvit, device, record, feature_cache
+        )
         prompt_ids = build_prompt_ids(
             tokenizer, args.prompt_template, record["question"], placeholder_token_id, device
         )
@@ -284,7 +346,9 @@ def run_shuffle_loss(args, model, moonvit, tokenizer, placeholder_token_id, devi
         shuffled_losses = []
         for _ in range(args.shuffle_repeats):
             other = rng.choice([r for r in records if r is not record])
-            other_groups = encode_image(moonvit, other, args.max_image_side, base_dir=args.data.parent)
+            other_groups = feature_groups_for(
+                args, model, moonvit, device, other, feature_cache
+            )
             shuffled_losses.append(loss_for(other_groups, answer_ids, prompt_ids))
         row = {
             "id": record.get("id", index),
@@ -300,21 +364,42 @@ def run_shuffle_loss(args, model, moonvit, tokenizer, placeholder_token_id, devi
 
 def main() -> None:
     args = parse_args()
+    started = time.time()
+    device_for_stats = torch.device(args.device)
+    if device_for_stats.type == "cuda":
+        torch.cuda.reset_peak_memory_stats(device_for_stats)
     records = load_records(args.data)
     records = slice_records(records, args.record_slice)
     if args.limit:
         records = records[: args.limit]
 
-    model, moonvit, tokenizer, placeholder_token_id, device = build_model(args)
+    feature_cache = FeatureCache(args.feature_cache) if args.feature_cache else None
+    model, moonvit, tokenizer, placeholder_token_id, device = build_model(
+        args, feature_cache
+    )
 
     if args.shuffle_loss:
         rows, summary = run_shuffle_loss(
-            args, model, moonvit, tokenizer, placeholder_token_id, device, records
+            args,
+            model,
+            moonvit,
+            tokenizer,
+            placeholder_token_id,
+            device,
+            records,
+            feature_cache,
         )
         report = {"mode": "shuffle_loss", "summary": summary, "records": rows}
     else:
         scored = run_generation(
-            args, model, moonvit, tokenizer, placeholder_token_id, device, records
+            args,
+            model,
+            moonvit,
+            tokenizer,
+            placeholder_token_id,
+            device,
+            records,
+            feature_cache,
         )
         report = {"mode": "generation", "summary": summarize(scored), "records": scored}
         if args.blind:
@@ -337,7 +422,16 @@ def main() -> None:
             report["blind_summary"] = summarize(blind_scored)
             report["blind_records"] = blind_scored
 
-    report["metadata"] = build_metadata(args, _git_sha())
+    report["metadata"] = build_metadata(
+        args,
+        git_sha=_git_sha(),
+        model=model,
+        records=records,
+        wall_seconds=time.time() - started,
+        peak_gpu_memory_bytes=(
+            int(torch.cuda.max_memory_allocated(device)) if device.type == "cuda" else 0
+        ),
+    )
     rendered = json.dumps(report, ensure_ascii=False, indent=2)
     tag = args.run_tag or datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     if args.out is None and args.upload_repo:

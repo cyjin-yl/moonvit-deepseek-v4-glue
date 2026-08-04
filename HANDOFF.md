@@ -1,5 +1,17 @@
 # Handoff
 
+## ⚠️ ACTIVE V100 PERCEPTION PILOT (2026-08-04 ~22:45)
+
+**Current task / hard boundary**: run the local V100-only “视觉感知机制方向筛选实验”. Do not rent any server, do not run full DeepSeek-V4, and do not inspect final evaluation halves. ComfyUI was stopped before GPU work and remains stopped. Start SHA was `20c2556f8f45a11f2ac5fea201da05013df41526`; exact environment is under `experiments/v100_perception_20260804/infra/environment/`.
+
+**Experiment package 1 COMPLETE locally; package 2 is next**: auditable frozen-feature cache, honest train/eval metadata, and real serial-accumulation timings are implemented. Valid cache run is `$HDD/data/perception_v1/cache/train-seed0-limit64-448-retry1` with Git metadata copy at `experiments/v100_perception_20260804/infra/feature_cache_retry1/`: 64/64 cached, 0 failures, 14.274s, peak 1.95 GB, four shard hashes + all-ID readback pass, records SHA `98f81a46…55d2a`, MoonViT weights SHA `01436a95…ced24`. Definitive cached-path timing is `experiments/v100_perception_20260804/infra/step_time_retry3/`: microbatch 1 / serial accum 1,4,8 = 0.0747s, 0.2720s, 0.5390s per optimizer step after one warm-up; throughput 13.38, 14.70, 14.84 examples/s; peak 3.31–3.65 GB; `actual_batched_forward=false` and `vision_tower_instantiated=false` for all three. retry2 timings remain usable but its 4.92–5.25 GB peak is superseded because the then-current cache path still instantiated an unused MoonViT tower.
+
+**Invalid results preserved, never use them**: `failed_cache_attempt_01` stopped after three computed rows because foreground SSH closed stdout and progress printing raised `BrokenPipeError`; no cache manifest, invalid. `step_time_failed_network_attempt_01` completed 0 steps due remote HF HEAD timeout; invalid. `step_time_failed_offline_cache_attempt_02` completed 0 steps because offline mode used the wrong default cache root; all three arm logs plus the zero-row CSV driver failure are preserved. Immutable local Qwen snapshot fixed retry2.
+
+**Exact next task**: commit/push package 1, then build package 2: reproducible train/selection synthetic minimal pairs for color, shape, count, spatial relation, unseen OCR strings, and grid/normalized localization (≥200 base samples per class), with parameters/seeds/manifests and no answer text in pixels. Do not start checkpoint tuning or choose a direction until package 2 and trajectory/probe/causal packages exist.
+
+**Go/no-go**: NO-GO for renting. Only infrastructure accounting is complete; checkpoint trajectory, synthetic controls, layerwise probes, causal interventions, and the single selected-direction validation remain outstanding.
+
 ## ⚠️ TAKEOVER NOTE (2026-08-04 ~18:52, Codex recovery — read this first)
 
 **Corrected stock positive-control suite is COMPLETE**: repaired Qwen3.5-4B eval finished with `STOCK_EVAL_REPAIRED_ALL_DONE` in `/tmp/stock_eval_repaired.log`; all five repaired JSONs are under `$HDD/data/stock_eval_qwen35_4b_repaired/`. Selection-half vision/blind results at 1024px: TextVQA soft-VQA **0.820 / 0.031**, DocVQA ANLS **0.926 / 0.071**, OCRBench exact **0.900 / 0**, ScreenSpot parse **0.86 / 0.99** and accuracy **0.760 / 0.010**, MMMU-Pro exact **0.300 / 0.280**. MMMU's +0.020 vision gap shows most of its raw 30% is text/options knowledge, not image contribution.

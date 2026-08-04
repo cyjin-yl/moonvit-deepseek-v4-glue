@@ -12,6 +12,8 @@ _LAZY_EXPORTS = {
     "CheckpointUploader": "checkpointing",
     "load_training_checkpoint": "checkpointing",
     "save_training_checkpoint": "checkpointing",
+    "FeatureCache": "feature_cache",
+    "FeatureCacheWriter": "feature_cache",
     "DEEPSEEK_FLASH_0731": "loaders",
     "DEFAULT_IMAGE_TOKEN": "loaders",
     "LoadedVisionLM": "loaders",

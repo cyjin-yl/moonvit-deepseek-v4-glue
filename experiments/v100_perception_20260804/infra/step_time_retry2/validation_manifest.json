@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "seed": 0,
+  "total_samples": 8,
+  "counts_by_source": {
+    "art": 2,
+    "docvqa": 2,
+    "showui": 2,
+    "textvqa": 2
+  },
+  "records": [
+    {
+      "id": "train_001470",
+      "source": "art"
+    },
+    {
+      "id": "train_003734",
+      "source": "art"
+    },
+    {
+      "id": "docvqa_train_001563",
+      "source": "docvqa"
+    },
+    {
+      "id": "docvqa_train_014277",
+      "source": "docvqa"
+    },
+    {
+      "id": "showui_desktop_002031",
+      "source": "showui"
+    },
+    {
+      "id": "showui_desktop_004871",
+      "source": "showui"
+    },
+    {
+      "id": "textvqa_train_016330",
+      "source": "textvqa"
+    },
+    {
+      "id": "textvqa_train_017761",
+      "source": "textvqa"
+    }
+  ]
+}

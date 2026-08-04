@@ -1,0 +1,10 @@
+{
+  "requested": 64,
+  "cached": 64,
+  "failed": 0,
+  "wall_seconds": 14.273948431015015,
+  "peak_gpu_memory_bytes": 1948235264,
+  "manifest": "MANIFEST.json",
+  "records": "cache_records.jsonl",
+  "failures": "failures.jsonl"
+}

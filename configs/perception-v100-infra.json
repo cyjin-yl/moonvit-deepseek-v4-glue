@@ -1,0 +1,35 @@
+{
+  "run_id": "v100-perception-infra-20260804-a",
+  "constraints": {
+    "gpu": "existing V100 32GB only",
+    "rent_new_server": false,
+    "run_full_deepseek_v4": false,
+    "use_final_eval_half": false
+  },
+  "data": {
+    "train_jsonl": "/run/media/ezra/13D010B6FDBC1A06/data/train_v1/train_mix.jsonl",
+    "selection_limit": 64,
+    "selection_seed": 0,
+    "validation_samples": 8
+  },
+  "models": {
+    "text": "Qwen/Qwen2.5-0.5B-Instruct",
+    "text_local_snapshot": "/run/media/ezra/13D010B6FDBC1A06/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+    "moonvit_v2_weights": "/run/media/ezra/13D010B6FDBC1A06/staging/k3/extracted/moonvit_v2.safetensors",
+    "moonvit_attention": "eager",
+    "dtype": "float32"
+  },
+  "feature_cache": {
+    "max_image_side": 448,
+    "shard_size": 16
+  },
+  "step_time_probe": {
+    "optimizer_steps": 5,
+    "warmup_steps_excluded": 1,
+    "micro_batch_size": 1,
+    "gradient_accumulation_steps": [1, 4, 8],
+    "actual_batched_forward": false,
+    "offline_model_loading": true,
+    "shuffle_repeats": 1
+  }
+}

@@ -88,14 +88,9 @@ def load_records(data_path: Path) -> list[dict]:
     return records
 
 
-def encode_image(moonvit: MoonViTEncoder, source, max_image_side: int | None = None,
-                 base_dir: Path | None = None):
-    """Encode one image through frozen MoonViT.
+def load_record_image(source, base_dir: Path | None = None) -> Image.Image:
+    """Decode one dataset image while preserving packed/file-backed inputs."""
 
-    ``source`` is either an image path, or a dataset record dict — packed
-    parquet rows carry their bytes in ``image_bytes``; JSONL rows resolve
-    ``image`` against ``base_dir``.
-    """
     if isinstance(source, dict):
         if source.get("image_bytes"):
             image = Image.open(io.BytesIO(source["image_bytes"])).convert("RGB")
@@ -103,6 +98,26 @@ def encode_image(moonvit: MoonViTEncoder, source, max_image_side: int | None = N
             image = Image.open(Path(base_dir) / source["image"]).convert("RGB")
     else:
         image = Image.open(source).convert("RGB")
+    return image
+
+
+def record_image_bytes(source, base_dir: Path | None = None) -> bytes:
+    """Return the original encoded image bytes used for provenance hashing."""
+
+    if isinstance(source, dict):
+        if source.get("image_bytes"):
+            return bytes(source["image_bytes"])
+        path = Path(base_dir) / source["image"]
+    else:
+        path = Path(source)
+    return path.read_bytes()
+
+
+def encode_image(moonvit: MoonViTEncoder, source, max_image_side: int | None = None,
+                 base_dir: Path | None = None):
+    """Encode one image through frozen MoonViT."""
+
+    image = load_record_image(source, base_dir)
     if max_image_side:
         image.thumbnail((max_image_side, max_image_side), Image.LANCZOS)
     image_inputs = moonvit.preprocess(image)

@@ -31,6 +31,7 @@ from pathlib import Path
 import torch
 
 from moonvit_glue import (
+    FeatureCache,
     MoonViTEncoder,
     PatchMergerProjector,
     ProjectorConfig,
@@ -54,6 +55,7 @@ from training_protocol import (
     TrainingProgress,
     make_derangements,
     prepare_validation_split,
+    records_manifest_sha256,
     resolve_batch_semantics,
     restore_progress_counts,
     select_supervision,
@@ -93,6 +95,8 @@ def parse_args() -> argparse.Namespace:
                         choices=["eager", "sdpa", "flash_attention_2"],
                         help="Attention backend for the V2 tower (eager/sdpa on hardware without flash-attn)")
     parser.add_argument("--data", required=True, type=Path)
+    parser.add_argument("--feature-cache", type=Path, default=None,
+                        help="Frozen MoonViT feature cache; avoids repeat tower forwards")
     parser.add_argument("--limit", type=int, default=512)
     parser.add_argument("--steps", type=int, default=300)
     parser.add_argument(
@@ -156,6 +160,7 @@ def build_sample(
     *,
     answer_rule="canonical",
     answer_rng=None,
+    feature_cache=None,
 ):
     """Teacher-forced (input_ids, labels, feature_groups) for one record.
 
@@ -164,7 +169,15 @@ def build_sample(
     """
 
     source = record if image_record is None else image_record
-    groups = encode_image(moonvit, source, args.max_image_side, base_dir=args.data.parent)
+    if feature_cache is None:
+        groups = encode_image(
+            moonvit, source, args.max_image_side, base_dir=args.data.parent
+        )
+    else:
+        projector_dtype = next(model.projector.parameters()).dtype
+        groups = feature_cache.get(
+            str(source["id"]), device=device, dtype=projector_dtype
+        )
     prompt_ids = build_prompt_ids(
         tokenizer, args.prompt_template, record["question"], placeholder_token_id, device
     )
@@ -181,13 +194,31 @@ def build_sample(
     return input_ids, labels, groups, supervision_metadata
 
 
-def losses_for(args, model, moonvit, tokenizer, placeholder_token_id, device, records, image_records=None):
+def losses_for(
+    args,
+    model,
+    moonvit,
+    tokenizer,
+    placeholder_token_id,
+    device,
+    records,
+    image_records=None,
+    feature_cache=None,
+):
     losses = []
     with torch.no_grad():
         for index, record in enumerate(records):
             image_record = None if image_records is None else image_records[index]
             input_ids, labels, feature_groups, _ = build_sample(
-                args, model, moonvit, tokenizer, placeholder_token_id, device, record, image_record
+                args,
+                model,
+                moonvit,
+                tokenizer,
+                placeholder_token_id,
+                device,
+                record,
+                image_record,
+                feature_cache=feature_cache,
             )
             outputs = model(
                 input_ids=input_ids,
@@ -200,6 +231,7 @@ def losses_for(args, model, moonvit, tokenizer, placeholder_token_id, device, re
 
 def main() -> None:
     args = parse_args()
+    started = time.time()
     args.out.mkdir(parents=True, exist_ok=True)
     log_file = open(args.out / "train.log", "a", encoding="utf-8")
     sys.stdout = _Tee(sys.__stdout__, log_file)
@@ -210,6 +242,8 @@ def main() -> None:
     rng = random.Random(args.seed)
     dtype = getattr(torch, args.dtype)
     device = torch.device(args.device)
+    if device.type == "cuda":
+        torch.cuda.reset_peak_memory_stats(device)
     batch_semantics = resolve_batch_semantics(
         micro_batch_size=args.micro_batch_size,
         gradient_accumulation_steps=args.gradient_accumulation_steps,
@@ -225,6 +259,7 @@ def main() -> None:
     records = [record for record in records if record.get("answers")]
     rng.shuffle(records)
     records = records[: args.limit]
+    data_records_sha256 = records_manifest_sha256(records)
     if len(records) < effective_batch_size + args.eval_samples:
         raise ValueError(
             f"Need at least effective_batch_size + validation records, got {len(records)}"
@@ -251,17 +286,30 @@ def main() -> None:
                 "training_selection_rule": args.answer_selection,
             }, ensure_ascii=False) + "\n")
 
-    if args.vision_tower == "v2":
-        if not args.moonvit_v2_weights:
-            raise ValueError("--vision-tower v2 requires --moonvit-v2-weights")
-        moonvit = load_moonvit_v2_encoder(
-            args.moonvit_v2_weights,
-            attn_implementation=args.moonvit_v2_attn,
-            torch_dtype=dtype,
-        )
+    feature_cache = FeatureCache(args.feature_cache) if args.feature_cache else None
+
+    if feature_cache is not None:
+        if feature_cache.manifest.get("max_image_side") != args.max_image_side:
+            raise ValueError("feature cache and training max-image-side differ")
+        moonvit = None
+        vision_width = int(feature_cache.manifest["vision_width"])
+        merge_factor = int(feature_cache.manifest["merge_factor"])
     else:
-        moonvit = MoonViTEncoder.from_pretrained(args.moonvit_model, torch_dtype=dtype)
-    moonvit.to(device)
+        if args.vision_tower == "v2":
+            if not args.moonvit_v2_weights:
+                raise ValueError("--vision-tower v2 requires --moonvit-v2-weights")
+            moonvit = load_moonvit_v2_encoder(
+                args.moonvit_v2_weights,
+                attn_implementation=args.moonvit_v2_attn,
+                torch_dtype=dtype,
+            )
+        else:
+            moonvit = MoonViTEncoder.from_pretrained(
+                args.moonvit_model, torch_dtype=dtype
+            )
+        moonvit.to(device)
+        vision_width = moonvit.vision_width
+        merge_factor = moonvit.merge_factor
     tokenizer = AutoTokenizer.from_pretrained(args.text_model)
     language_model = AutoModelForCausalLM.from_pretrained(args.text_model, dtype=dtype)
     language_model.to(device)
@@ -273,9 +321,9 @@ def main() -> None:
 
     projector = PatchMergerProjector(
         ProjectorConfig(
-            vision_width=moonvit.vision_width,
+            vision_width=vision_width,
             language_width=int(language_model.config.hidden_size),
-            merge_factor=moonvit.merge_factor,
+            merge_factor=merge_factor,
         )
     )
     projector.to(device=device, dtype=dtype)
@@ -327,8 +375,11 @@ def main() -> None:
         restored_counts["answer_token_accounting_complete"]
     )
     cursor = progress.examples_seen
-    started = time.time()
+    training_started = time.time()
     for step in range(start_step + 1, args.steps + 1):
+        if device.type == "cuda":
+            torch.cuda.synchronize(device)
+        step_started = time.time()
         batch, cursor = next_batch(train_records, cursor, effective_batch_size)
         optimizer.zero_grad(set_to_none=True)
         step_loss = 0.0
@@ -343,6 +394,7 @@ def main() -> None:
                 record,
                 answer_rule=args.answer_selection,
                 answer_rng=rng if args.answer_selection == "random" else None,
+                feature_cache=feature_cache,
             )
             outputs = model(
                 input_ids=input_ids,
@@ -355,7 +407,21 @@ def main() -> None:
         torch.nn.utils.clip_grad_norm_(projector.parameters(), args.grad_clip)
         optimizer.step()
         progress.record_optimizer_step()
-        history.append({"step": step, "loss": step_loss, **progress.snapshot()})
+        if device.type == "cuda":
+            torch.cuda.synchronize(device)
+        step_wall_seconds = time.time() - step_started
+        history.append({
+            "step": step,
+            "loss": step_loss,
+            "step_wall_seconds": step_wall_seconds,
+            "examples_per_second": effective_batch_size / step_wall_seconds,
+            "peak_gpu_memory_bytes": (
+                int(torch.cuda.max_memory_allocated(device))
+                if device.type == "cuda"
+                else 0
+            ),
+            **progress.snapshot(),
+        })
         if step % args.log_every == 0 or step == 1:
             window = [row["loss"] for row in history[-args.log_every :]]
             print(
@@ -380,7 +446,14 @@ def main() -> None:
 
     # Acceptance check: true-vs-seeded-deranged image loss, overall and by source.
     true_losses = losses_for(
-        args, model, moonvit, tokenizer, placeholder_token_id, device, eval_records
+        args,
+        model,
+        moonvit,
+        tokenizer,
+        placeholder_token_id,
+        device,
+        eval_records,
+        feature_cache=feature_cache,
     )
     shuffled_record_runs = make_derangements(
         eval_records,
@@ -397,6 +470,7 @@ def main() -> None:
             device,
             eval_records,
             image_records=shuffled_records,
+            feature_cache=feature_cache,
         )
         for shuffled_records in shuffled_record_runs
     ]
@@ -428,6 +502,11 @@ def main() -> None:
         else None
     )
     progress_snapshot = progress.snapshot()
+    timed_steps = [
+        float(row["step_wall_seconds"])
+        for row in history
+        if "step_wall_seconds" in row
+    ]
     report = {
         "text_model": args.text_model,
         "text_model_architectures": getattr(text_config, "architectures", None),
@@ -435,6 +514,7 @@ def main() -> None:
         "records_considered": len(records),
         "records_train": len(train_records),
         "records_eval": len(eval_records),
+        "data_records_manifest_sha256": data_records_sha256,
         "steps": args.steps,
         **progress_snapshot,
         "answer_token_accounting_complete": answer_token_accounting_complete,
@@ -446,13 +526,43 @@ def main() -> None:
         "validation_manifest": str(validation_manifest_path),
         "validation_counts_by_source": validation_manifest["counts_by_source"],
         "shuffle_repeats": args.shuffle_repeats,
+        "actual_batched_forward": False,
+        "forward_backward_calls_per_optimizer_step": accumulation_steps,
+        "feature_cache": str(args.feature_cache) if args.feature_cache else None,
+        "vision_tower_instantiated": moonvit is not None,
+        "training_max_image_side": args.max_image_side,
+        "evaluation_max_image_side": args.max_image_side,
+        "projector_parameters": sum(
+            parameter.numel() for parameter in projector.parameters()
+        ),
+        "checkpoint_source": (
+            args.resume or args.init_projector_trunk or "scratch"
+        ),
         "loss_first_window": first,
         "loss_last_window": last,
         "eval_true_loss": true_loss,
         "eval_shuffled_loss": shuffled_loss,
         "shuffle_delta": validation_summary["overall"]["shuffle_delta_mean"],
         "shuffle_delta_std": validation_summary["overall"]["shuffle_delta_std"],
+        "training_and_validation_wall_seconds": round(
+            time.time() - training_started, 1
+        ),
         "wall_seconds": round(time.time() - started, 1),
+        "peak_gpu_memory_bytes": (
+            int(torch.cuda.max_memory_allocated(device))
+            if device.type == "cuda"
+            else 0
+        ),
+        "step_time_seconds": (
+            {
+                "count": len(timed_steps),
+                "mean": sum(timed_steps) / len(timed_steps),
+                "min": min(timed_steps),
+                "max": max(timed_steps),
+            }
+            if timed_steps
+            else None
+        ),
         "projector_dir": str(args.out),
     }
     (args.out / "overfit_report.json").write_text(

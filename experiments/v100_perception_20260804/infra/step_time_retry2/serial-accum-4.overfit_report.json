@@ -1,0 +1,211 @@
+{
+  "report": {
+    "text_model": "/run/media/ezra/13D010B6FDBC1A06/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+    "text_model_architectures": [
+      "Qwen2ForCausalLM"
+    ],
+    "text_backbone_native_multimodal": false,
+    "records_considered": 64,
+    "records_train": 56,
+    "records_eval": 8,
+    "data_records_manifest_sha256": "54ce83cdb4b4466867498b7acb1e9153ab08cc53a72fe739e56411e9804eae67",
+    "steps": 5,
+    "optimizer_steps": 5,
+    "examples_seen": 20,
+    "answer_tokens_seen": 68,
+    "effective_epochs": 0.35714285714285715,
+    "micro_batch_size": 1,
+    "gradient_accumulation_steps": 4,
+    "effective_batch_size": 4,
+    "answer_token_accounting_complete": true,
+    "legacy_batch_size_cli": null,
+    "legacy_batch_size_used": false,
+    "lr": 0.0005,
+    "answer_selection": "canonical",
+    "supervision_manifest": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/work/step-time-retry2/serial-accum-4/supervision_manifest.jsonl",
+    "validation_manifest": "experiments/v100_perception_20260804/infra/step_time_retry2/validation_manifest.json",
+    "validation_counts_by_source": {
+      "art": 2,
+      "docvqa": 2,
+      "showui": 2,
+      "textvqa": 2
+    },
+    "shuffle_repeats": 1,
+    "actual_batched_forward": false,
+    "forward_backward_calls_per_optimizer_step": 4,
+    "feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/train-seed0-limit64-448-retry1",
+    "training_max_image_side": 448,
+    "evaluation_max_image_side": 448,
+    "projector_parameters": 20454272,
+    "checkpoint_source": "scratch",
+    "loss_first_window": 9.802420973777771,
+    "loss_last_window": 9.802420973777771,
+    "eval_true_loss": 5.709504097700119,
+    "eval_shuffled_loss": 6.0579599142074585,
+    "shuffle_delta": 0.3484558165073395,
+    "shuffle_delta_std": 0.0,
+    "training_and_validation_wall_seconds": 2.4,
+    "wall_seconds": 12.5,
+    "peak_gpu_memory_bytes": 5250891776,
+    "step_time_seconds": {
+      "count": 5,
+      "mean": 0.3243587017059326,
+      "min": 0.26341938972473145,
+      "max": 0.4266018867492676
+    },
+    "projector_dir": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/work/step-time-retry2/serial-accum-4"
+  },
+  "validation": {
+    "std_kind": "population_across_derangements",
+    "overall": {
+      "count": 8,
+      "true_loss": 5.709504097700119,
+      "shuffled_loss_mean": 6.0579599142074585,
+      "shuffle_delta_mean": 0.3484558165073395,
+      "shuffle_delta_std": 0.0
+    },
+    "by_source": {
+      "art": {
+        "count": 2,
+        "true_loss": 4.487317204475403,
+        "shuffled_loss_mean": 4.715659260749817,
+        "shuffle_delta_mean": 0.22834205627441406,
+        "shuffle_delta_std": 0.0
+      },
+      "docvqa": {
+        "count": 2,
+        "true_loss": 5.66789174079895,
+        "shuffled_loss_mean": 5.870401978492737,
+        "shuffle_delta_mean": 0.20251023769378662,
+        "shuffle_delta_std": 0.0
+      },
+      "showui": {
+        "count": 2,
+        "true_loss": 5.760164260864258,
+        "shuffled_loss_mean": 5.779736757278442,
+        "shuffle_delta_mean": 0.01957249641418457,
+        "shuffle_delta_std": 0.0
+      },
+      "textvqa": {
+        "count": 2,
+        "true_loss": 6.922643184661865,
+        "shuffled_loss_mean": 7.866041660308838,
+        "shuffle_delta_mean": 0.9433984756469727,
+        "shuffle_delta_std": 0.0
+      }
+    },
+    "shuffle_runs": [
+      {
+        "run": 1,
+        "shuffled_loss": 6.0579599142074585,
+        "delta": 0.3484558165073395,
+        "pairs": [
+          {
+            "record_id": "train_001470",
+            "image_id": "textvqa_train_017761"
+          },
+          {
+            "record_id": "train_003734",
+            "image_id": "docvqa_train_014277"
+          },
+          {
+            "record_id": "docvqa_train_001563",
+            "image_id": "train_001470"
+          },
+          {
+            "record_id": "docvqa_train_014277",
+            "image_id": "textvqa_train_016330"
+          },
+          {
+            "record_id": "showui_desktop_002031",
+            "image_id": "train_003734"
+          },
+          {
+            "record_id": "showui_desktop_004871",
+            "image_id": "docvqa_train_001563"
+          },
+          {
+            "record_id": "textvqa_train_016330",
+            "image_id": "showui_desktop_004871"
+          },
+          {
+            "record_id": "textvqa_train_017761",
+            "image_id": "showui_desktop_002031"
+          }
+        ]
+      }
+    ]
+  },
+  "history": [
+    {
+      "step": 1,
+      "loss": 11.890679836273193,
+      "step_wall_seconds": 0.4266018867492676,
+      "examples_per_second": 9.376423602999612,
+      "peak_gpu_memory_bytes": 4835867648,
+      "optimizer_steps": 1,
+      "examples_seen": 4,
+      "answer_tokens_seen": 10,
+      "effective_epochs": 0.07142857142857142,
+      "micro_batch_size": 1,
+      "gradient_accumulation_steps": 4,
+      "effective_batch_size": 4
+    },
+    {
+      "step": 2,
+      "loss": 8.430245459079742,
+      "step_wall_seconds": 0.30527162551879883,
+      "examples_per_second": 13.103084812426097,
+      "peak_gpu_memory_bytes": 4917282304,
+      "optimizer_steps": 2,
+      "examples_seen": 8,
+      "answer_tokens_seen": 36,
+      "effective_epochs": 0.14285714285714285,
+      "micro_batch_size": 1,
+      "gradient_accumulation_steps": 4,
+      "effective_batch_size": 4
+    },
+    {
+      "step": 3,
+      "loss": 13.185578107833862,
+      "step_wall_seconds": 0.33611249923706055,
+      "examples_per_second": 11.900777296528908,
+      "peak_gpu_memory_bytes": 5000032768,
+      "optimizer_steps": 3,
+      "examples_seen": 12,
+      "answer_tokens_seen": 46,
+      "effective_epochs": 0.21428571428571427,
+      "micro_batch_size": 1,
+      "gradient_accumulation_steps": 4,
+      "effective_batch_size": 4
+    },
+    {
+      "step": 4,
+      "loss": 10.088152766227722,
+      "step_wall_seconds": 0.2903881072998047,
+      "examples_per_second": 13.774668794787418,
+      "peak_gpu_memory_bytes": 5250891776,
+      "optimizer_steps": 4,
+      "examples_seen": 16,
+      "answer_tokens_seen": 53,
+      "effective_epochs": 0.2857142857142857,
+      "micro_batch_size": 1,
+      "gradient_accumulation_steps": 4,
+      "effective_batch_size": 4
+    },
+    {
+      "step": 5,
+      "loss": 5.417448699474335,
+      "step_wall_seconds": 0.26341938972473145,
+      "examples_per_second": 15.18491104310859,
+      "peak_gpu_memory_bytes": 5250891776,
+      "optimizer_steps": 5,
+      "examples_seen": 20,
+      "answer_tokens_seen": 68,
+      "effective_epochs": 0.35714285714285715,
+      "micro_batch_size": 1,
+      "gradient_accumulation_steps": 4,
+      "effective_batch_size": 4
+    }
+  ]
+}

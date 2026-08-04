@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import random
 import json
 from collections import Counter
@@ -13,6 +14,24 @@ from typing import Sequence, TypeVar
 from moonvit_glue.metrics import normalize_answer
 
 T = TypeVar("T")
+
+
+def records_manifest_sha256(records: Sequence[dict]) -> str:
+    """Hash logical dataset rows without re-reading large embedded image payloads."""
+
+    logical_rows = [
+        {key: value for key, value in record.items() if key != "image_bytes"}
+        for record in records
+    ]
+    logical_rows.sort(key=lambda record: str(record.get("id")))
+    encoded = json.dumps(
+        logical_rows,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        default=str,
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
 
 
 def resolve_batch_semantics(

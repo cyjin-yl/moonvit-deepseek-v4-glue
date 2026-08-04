@@ -9,6 +9,7 @@ from training_protocol import (
     TrainingProgress,
     make_derangements,
     prepare_validation_split,
+    records_manifest_sha256,
     resolve_batch_semantics,
     restore_progress_counts,
     select_supervision,
@@ -182,3 +183,29 @@ def test_legacy_resume_requires_explicit_original_accumulation_for_honest_counts
         "answer_tokens_seen": 31_984,
         "answer_token_accounting_complete": True,
     }
+
+
+def test_records_manifest_hash_is_order_stable_and_content_sensitive():
+    records = [
+        {
+            "id": "b",
+            "source": "docvqa_train",
+            "image": "b.png",
+            "question": "Read this",
+            "answers": ["one", "1"],
+            "image_bytes": b"large payload deliberately excluded",
+        },
+        {
+            "id": "a",
+            "source": "textvqa_train",
+            "image": "a.png",
+            "question": "What color?",
+            "answers": ["red"],
+        },
+    ]
+
+    digest = records_manifest_sha256(records)
+
+    assert digest == records_manifest_sha256(list(reversed(records)))
+    changed = [{**records[0], "question": "Changed"}, records[1]]
+    assert digest != records_manifest_sha256(changed)
