@@ -102,6 +102,8 @@ python -m pip install -e ".[large-model]"
 
 证据必须分层解读：原生 Qwen3.5 VLM 使用自己的视觉塔与既有多模态对齐，只能作为“数据/processor/评分器正常”的阳性对照，不能证明本项目的 MoonViT-V2 projector 能接入纯文本 DeepSeek。真正的租前接口实验使用 `Qwen2ForCausalLM`（无 `vision_config`）等纯文本主干；训练器会默认拒绝带原生视觉配置的 `--text-model`。即使纯文本小主干上学出对齐，也仍只证明接口可学习；完整 DeepSeek-V4 权重的可微加载、训练和最终 benchmark 才是目标能力证据。
 
+现有 Gate B 的 `Qwen2.5-0.5B-Instruct` 虽然是纯文本模型，但 0.5B 容量会压低 OCR、推理和格式遵从上限，也不能代表 DeepSeek Hash-MoE 的优化难度。因此其 shuffle/随机/blind 差异只作工程与信号证据，绝对分数和收敛速度都不得外推 0731。尚未完成的中间尺度对照应使用无 `vision_config` 的纯文本约 3B 主干，在相同数据、seen-record 数、分辨率、scratch projector 和 selection 评测下复测；原生 Qwen2.5-VL/Qwen3.5 VLM 不属于该实验。
+
 - `moonvit_glue.metrics`：纯 Python 指标实现，无 torch 依赖，可在任何机器上验证。
 - `tools/fetch_eval_data.py`：按 pin 的 revision 拉取 TextVQA / DocVQA / OCRBench / ScreenSpot，写 JSONL 与 `MANIFEST.json`（resolved sha + 文件 sha256）。
 - `tools/eval_vlm.py`：生成式评分（`--blind` 输出无图基线）；`--shuffle-loss` 模式给出真图 vs 随机图的 teacher-forced loss 差，是训练前最便宜的信号检验。

@@ -14,6 +14,8 @@ Commit `dbfacd5` fixes all three: optional local weight-manifest verification (`
 
 **Next task boundary**: wait for explicit rent authority. **Do NOT create a Vast instance without it.** Gate D runbook remains `docs/gate-d-runbook.md`; re-query offers immediately before any budget/rental decision. Native 9B/27B VLM controls do not close any remaining evidence gap and should not be scheduled by default.
 
+**0.5B capacity caveat (user correction, 2026-08-04)**: Gate B's Qwen2.5-0.5B is genuinely text-only, so the learned visual dependency is valid, but its low capacity confounds every absolute benchmark and its dense optimization does not predict DeepSeek Hash-MoE convergence. Gate B is an engineering/signal gate only. A clean optional bridge is a ~3B text-only `ForCausalLM` with no `vision_config` (7B optional), same mix/seen records/resolution/scratch projector/selection eval. No 3B/7B text-only weights are currently cached; this experiment has not run and should not be represented as complete. Native Qwen2.5-VL/Qwen3.5 is not a substitute.
+
 Everything below this note is current through the pre-repair project history; newer facts above override stale stock-control/download statements below. The HF model repo remains reorganized: root only `README.md` + `.gitattributes`; controls under `gate_b_qwen05_v100/` and `gate_b_smoke_smollm135_v100/`; no DeepSeek weights exist yet.
 
 ---
@@ -63,7 +65,7 @@ Everything below this note is current through the pre-repair project history; ne
 - Small-context text models overflow on native-resolution images (1064 merged tokens from 640×480 + prompt > 1024 positions of tiny-gpt2 → scatter-gather device assert, which surfaces at unrelated async locations; use `CUDA_LAUNCH_BLOCKING=1` to localize). Use `--max-image-side 448` for small models.
 - Under load (other agent compiling/running inference servers), torch import from the mechanical disk takes >90 s — budget timeouts generously.
 - The `fastllm` tmux pane runs another agent (GPT-5.6) optimizing Qwen inference; it launches GPU `apiserver` variants. Coordination messages were left in its pane, including the user's request to test `bottlecapai/ThinkingCap-Qwen3.6-27B-GGUF` 4-bit/6-bit quants as a replacement for the Fable Fusion model. ~15.6 GiB VRAM was free; keep our GPU usage small and short.
-- **ComfyUI intentionally stopped for this suite at the user's request**: its unit has `RefuseManualStop=yes` + `Restart=always`, so a runtime-only override lives at `/run/user/1000/systemd/user/comfyui.service.d/zz-stop.conf` (`Restart=no`, manual stop allowed); current state verified `inactive`. It disappears on reboot. To restore before reboot: remove that runtime file, `systemctl --user daemon-reload`, then `systemctl --user start comfyui.service`.
+- **ComfyUI was stopped during the stock suite at the user's request**, using a runtime-only override at `/run/user/1000/systemd/user/comfyui.service.d/zz-stop.conf` (`Restart=no`, manual stop allowed). Another session explicitly started it again at ~20:53 despite auto-restart being disabled; current state at 21:18 is `active`. The benchmark had already completed, so do not stop it again without coordinating with the session that restarted it. The runtime override disappears on reboot.
 
 ## Immediate next actions
 

@@ -226,6 +226,12 @@ shuffle\_delta +0.727 是此前三条 smoke 轨（+0.343 / +0.282 / +0.148）的
 
 判别力三条全部成立：vision 严格大于 blind；trained 严格大于 random（随机 projector 臂五项全零——冻结 LLM 收到噪声视觉 embedding 时输出不了任何切题内容）;shuffle\_delta +0.727。Gate B 作为租前闸门的结论：*信号真实、训练有效、评测可判别、checkpoint/上传管线可用（但易受代理抖动影响，需错峰）*。能力层面如实记录：所有绝对读数都低，与参照系一致——社区用 744B 的 GLM 跑同配方 ScreenSpot 也只有 4.3%/564px。0.5B 冻结主干 + 33.6M projector + 1.6 万样本见过的训练量，本来就只承担"对照组"角色；能力问题是 0731（激活 13B）那趟要回答的。
 
+=== 0.5B 主干的容量混杂
+
+Qwen2.5-0.5B-Instruct 是纯文本 `Qwen2ForCausalLM`，没有继承原生视觉能力，但它的容量本身显著影响实验。OCR、复杂视觉推理、指令/输出格式遵从均受 0.5B 语言主干的能力上限约束，所以 Gate B 的低绝对分数更接近能力下界，不能外推完整 0731 的最终分数。反过来，小型 dense Qwen 与 DeepSeek-V4 Hash-MoE 的表示空间和优化曲面不同；它可能更易对齐，也可能因容量不足更难对齐，因此 +0.727 的收敛速度同样不能预测 0731 的训练速度。
+
+不受这一混杂影响的最小结论只有：在一个确实纯文本的冻结 LM 上，训练后的 MoonViT-V2 projector 相对 random/blind 产生了可重复的图像依赖信号。故 Gate B 的正式定位降格为“工程与信号闸门”，不是能力代理。若在租机前追加中间尺度对照，应优先使用配置明确为 `ForCausalLM` 且无 `vision_config` 的约 3B 纯文本主干（7B 可选），保持相同 train mix、seen-record 数、分辨率、scratch 初始化和 selection benchmark；比较 loss、shuffle 统计及五项 vision−blind。该实验能量化容量敏感性，但仍不能替代完整 DeepSeek Gate D。当前工作站未缓存 3B/7B 纯文本权重，尚未运行此对照。
+
 === 证据边界：原生 VLM 不是 DeepSeek 代理
 
 必须区分两个名字相近但因果意义完全不同的 Qwen 实验。Gate B 的冻结文本主干配置是 `Qwen2ForCausalLM`，且 `vision_config` 为空；它本身没有图像输入路径，视觉信号只能来自外接 K3 MoonViT-V2 与本项目训练的 projector。因此 shuffle\_delta 和 trained/random/blind 差异可以证明“纯文本 LM 接口可学习”。训练器现已加入硬防线：`--text-model` 若暴露 `vision_config` 会直接拒绝，原生 VLM 只能进入独立的 stock-eval 路径。
@@ -494,6 +500,7 @@ shuffle\_delta +0.727 是此前三条 smoke 轨（+0.343 / +0.282 / +0.148）的
   [2026-08-04], [Gate B 全量 mix 训练完成（V100，Qwen2.5-0.5B + MoonViT-V2，2000 步）：loss 6.41→3.01，held-out shuffle\_delta *+0.727*，全量数据上视觉对齐信号明确；修复占位 token 双默认值不一致 bug（训练 Qwen `<|image_pad|>` vs 评测 DeepSeek `<｜image｜>`）为候选自动探测，85/85 测试；4 个 checkpoint 因代理 SSL 抖动待手动补传。],
   [2026-08-04], [Gate B 五基准终表（trained/random/blind）：textvqa 0.081/0/0、docvqa 0.039/0/0、ocrbench 0/0/0（地板）、screenspot 解析 0.51 精度 0.01、MMMU-Pro 0.073/0/0——判别力三条全成立，绝对读数如实留存（含坏结果）。误判审计：判别器清白（最宽提取 +1–2% 封顶）；抓到 MMMU 输入格式化两个 bug（选项字面量被逐字符拆行、缺字母标签），修复后 2.0%→7.3%，旧读数作废。],
   [2026-08-04], [原生 Qwen3.5-4B 阳性对照修复并跑完：发现同字节数坏 shard（视觉塔全集所在分片）→ SHA-256 manifest 校验、1024px 上限与指标化短输出约束。修复后 vision/blind：TextVQA 0.820/0.031、DocVQA 0.926/0.071、OCRBench 0.900/0、ScreenSpot acc 0.760/0.010、MMMU-Pro 0.300/0.280。用户指出并纠正证据边界：该模型自带视觉塔与多模态对齐，只验证评测器，不证明 MoonViT-V2→DeepSeek；训练器新增原生 VLM 拒绝保护，Gate D 才是目标能力证据。],
+  [2026-08-04], [用户指出 0.5B 容量混杂：Qwen2.5-0.5B 虽为纯文本主干，但会压低 OCR/推理/格式遵从上限，dense 小模型的收敛也不能预测 DeepSeek Hash-MoE。Gate B 正式降格为工程/信号闸门；尚未完成的干净桥接对照定义为无 `vision_config` 的约 3B 纯文本主干，在相同 mix、seen-record、分辨率、scratch projector 与 selection 评测下复测。],
 )
 
 = 下一位执行者的最短路径
