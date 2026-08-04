@@ -16,6 +16,7 @@ Example::
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import io
 import json
@@ -58,6 +59,27 @@ def format_click_answer(point, scale: float = SCALE) -> str:
 
     x, y = round(float(point[0]) * scale), round(float(point[1]) * scale)
     return f"click(start_box=[{x},{y}])"
+
+
+def format_mmmu_options(raw_options) -> str:
+    """Render MMMU-Pro options one per line.
+
+    The `standard (10 options)` parquet stores `options` as a STRING holding a
+    Python-list literal, not as a list column. Iterating that string produced
+    one character per line — an unreadable prompt (Gate B audit, 2026-08-04).
+    Parse the literal; keep a plain string as a single option block.
+    """
+
+    if isinstance(raw_options, str):
+        text = raw_options.strip()
+        parsed = None
+        if text.startswith("["):
+            try:
+                parsed = ast.literal_eval(text)
+            except (ValueError, SyntaxError):
+                parsed = None
+        raw_options = list(parsed) if isinstance(parsed, (list, tuple)) else [text]
+    return "\n".join(str(option) for option in raw_options)
 
 
 def keep_record(answers: list, max_words: int | None) -> bool:
@@ -198,7 +220,7 @@ def fetch(name: str, spec: FetchSpec, limit: int | None, out_dir: Path, revision
         if spec.adapter == "mmmu_pro":
             if row.get("image_2") is not None:
                 continue
-            options = "\n".join(str(option) for option in row["options"])
+            options = format_mmmu_options(row["options"])
             row = {
                 "image": row["image_1"],
                 "question": f"{row['question']}\nOptions:\n{options}",
