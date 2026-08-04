@@ -211,7 +211,25 @@ shuffle\_delta +0.727 是此前三条 smoke 轨（+0.343 / +0.282 / +0.148）的
 1. *checkpoint 流式上传全部失败*（step 500/1000/1500/2000 共 4 次）：训练期间代理 SSL 持续重置（`UNEXPECTED_EOF_WHILE_READING` 于 S3 multipart PUT），重试 5 次仍败。训练本身无损，4 个 checkpoint 本地完好；按"上传下载串行"纪律，等评测结束带宽空出后手动一次性补传。教训：租机上 checkpoint 上传同样要与数据集预取错开。
 2. *10 个评测进程全部启动即崩*：训练器默认占位 token 是 Qwen 的 `<|image_pad|>`，而评测器默认是 DeepSeek 的 `<｜image｜>`——两者默认值不一致，Qwen tokenizer 里没有后者，`resolve_placeholder_token_id` 按设计拒绝扩词表而报错。修复为候选自动探测（DeepSeek token 优先、Qwen token 兜底；显式指定仍严格报错），85/85 测试通过（commit `034be8b`）。此 bug 若不在本地炸出，租机首跑 DeepSeek 时训练器会以旧默认 `<|image_pad|>` 直接崩在 0731 tokenizer 上——本地彩排的价值正在于此。
 
-评测补跑（5 基准 × trained/random × vision/blind,selection 半侧，1024px）与仓库归置（Qwen 对照产物归入 `gate_b_qwen05_v100/` 并在 README 标注与 DeepSeek 目标无关）在本文截稿时进行中，结果落入变更日志与 HANDOFF。
+=== 五基准评测终表（selection 半侧，1024px，逐条原始输出已公开于 HF `eval/v100-fullmix-qwen05/`）
+
+#table(
+  columns: (1.4fr, 1.3fr, 1fr, 1fr, 1fr, 1.9fr),
+  [*基准*], [*指标*], [*trained*], [*random*], [*blind*], [*读法*],
+  [TextVQA (250)], [soft-VQA], [*0.081*], [0.000], [0.000], [真实对齐，距成熟 VLM 远],
+  [DocVQA (100)], [ANLS], [*0.039*], [0.000], [0.000], [同上，实体级读错居多],
+  [OCRBench (100)], [exact], [0.000], [0.000], [0.000], [地板；小字 OCR 超出 0.5B 能力],
+  [ScreenSpot (100)，域内], [解析率 / 精度\@50], [*0.51 / 0.01*], [0 / 0], [0 / 0], [格式学会一半，点位退化（常数坐标，中位误差 729/999）],
+  [MMMU-Pro (150)], [exact], [*0.073*], [0.000], [0.000], [修复输入后 2.0%→7.3%；宽松提取 18%],
+)
+
+判别力三条全部成立：vision 严格大于 blind；trained 严格大于 random（随机 projector 臂五项全零——冻结 LLM 收到噪声视觉 embedding 时输出不了任何切题内容）;shuffle\_delta +0.727。Gate B 作为租前闸门的结论：*信号真实、训练有效、评测可判别、checkpoint/上传管线可用（但易受代理抖动影响，需错峰）*。能力层面如实记录：所有绝对读数都低，与参照系一致——社区用 744B 的 GLM 跑同配方 ScreenSpot 也只有 4.3%/564px。0.5B 冻结主干 + 33.6M projector + 1.6 万样本见过的训练量，本来就只承担"对照组"角色；能力问题是 0731（激活 13B）那趟要回答的。
+
+=== 误判审计（应用户要求：先怀疑判别器，再怀疑模型）
+
+对五个基准逐条重打分，用逐级放宽的提取器量化"判错"成分。结论：*判别器基本清白，最宽提取也只多 1–2 分*——textvqa 单复数漏判 0 条、子串漏判 4 条（+1.6% 封顶）；screenspot 不可解析的 49% 中 48 条是纯散文无坐标（模型在描述而非点击），仅 1 条格式边缘漏判；ocrbench 用官方 contains 式口径依然全零；docvqa 无 32-token 截断。但审计抓到两个真 *输入侧* bug:(1) MMMU-Pro 的 `options` 列在 parquet 里是*字符串装的 Python 列表字面量*，旧代码直接 `join` 字符串导致选项被逐字符拆行，prompt 不可读；(2) 渲染选项缺字母标签，而参考答案是字母（"B"），模型无从对应。修复（解析字面量 + `A./B./C.` 标签，commit `bf3413b`/`f9b94a5`，含测试）后离线重建 300 条数据并重测：2.0% → 7.3%（严格），宽松"字母出现即算"18%——0.5B 输出多为推理散文、没有落字母的习惯，严格 exact-match 只承认单字母输出。此基准的 2.0% 旧读数作废，以修复版为准。
+
+评测补跑（5 基准 × trained/random × vision/blind）已全部完成并聚合；仓库归置（Qwen 对照产物归入 `gate_b_qwen05_v100/`、smoke 产物归入 `gate_b_smoke_smollm135_v100/`、README 标注与 DeepSeek 目标无关）与 4 个 checkpoint 补传按串行纪律排在 4B 下载之后。
 
 == Gate C：Vast 只读调研
 
@@ -421,7 +439,7 @@ shuffle\_delta +0.727 是此前三条 smoke 轨（+0.343 / +0.282 / +0.148）的
 - eval\_v1：五个评测集 1,400 行 + 1,400 张图像 + MANIFEST，完成并已上传 `cyjin-yl/moonvit-dsv4-data`。
 - train\_v1：59,198 行 mix（TextVQA 29,252 / DocVQA 17,351 / ShowUI 5,167 / art 7,428；三道去重合计丢弃 23%）打包 3 片约 20 GB，完成并已上传。
 - sft\_art：71,780 train / 2,220 val，完成并已上传。
-- Gate B 全量 mix 训练：完成（2000 步，shuffle\_delta +0.727，见上节）；五基准评测补跑中；4 个 checkpoint 待手动补传 HF。
+- Gate B 全量 mix 训练：完成（2000 步，shuffle\_delta +0.727）；五基准评测完成并聚合（见 9.5 终表）；待办：仓库归置 + 4 个 checkpoint 补传 + stock 4B 对照评测（下载收尾中）。
 
 = 变更日志
 
@@ -450,7 +468,8 @@ shuffle\_delta +0.727 是此前三条 smoke 轨（+0.343 / +0.282 / +0.148）的
   [2026-08-03], [外部评审（Max）并入 runbook：Gate D 分阶段化（含 `gate\_d\_dgrad.py` 单层 Dgrad reproducer、hook×梯度检查点数值一致性、`device\_map="auto"` 步时定律）；版本固定 + pip freeze 随产物；视觉 token 预算写死（训练 640 / 评测 1024）；配方谦逊条款（LR 探针兜底）；评测纪律（selection/final 两半、域内/跨域/零样本三组、3 种子 shuffle 统计）。],
   [2026-08-03], [数据管线定稿并写入报告新章节：评测 5 集 1,400 行（TextVQA/DocVQA/OCRBench/ScreenSpot/MMMU-Pro）与训练 4 类来源（TextVQA train 34.6k、DocVQA train 25k、ShowUI-desktop 7.5k、art 池 71.8k 取 10k）的挑选理由与排除项；93 个正式分片 sha256 校验 0 mismatch；三道去重、union-keys parquet 打包与串行上传纪律；DocVQA train 抽取收尾中。],
   [2026-08-04], [数据全链路闭合：train\_v1 mix 59,198 行（去重丢 23%）+ eval\_v1 + sft\_art\_v1 全部上传 `cyjin-yl/moonvit-dsv4-data`；数据仓 README 记录来源、revision、sha256 与复现命令。],
-  [2026-08-04], [Gate B 全量 mix 训练完成（V100，Qwen2.5-0.5B + MoonViT-V2，2000 步）：loss 6.41→3.01，held-out shuffle\_delta *+0.727*，全量数据上视觉对齐信号明确；修复占位 token 双默认值不一致 bug（训练 Qwen `<|image_pad|>` vs 评测 DeepSeek `<｜image｜>`）为候选自动探测，85/85 测试；4 个 checkpoint 因代理 SSL 抖动待手动补传；五基准评测补跑中。],
+  [2026-08-04], [Gate B 全量 mix 训练完成（V100，Qwen2.5-0.5B + MoonViT-V2，2000 步）：loss 6.41→3.01，held-out shuffle\_delta *+0.727*，全量数据上视觉对齐信号明确；修复占位 token 双默认值不一致 bug（训练 Qwen `<|image_pad|>` vs 评测 DeepSeek `<｜image｜>`）为候选自动探测，85/85 测试；4 个 checkpoint 因代理 SSL 抖动待手动补传。],
+  [2026-08-04], [Gate B 五基准终表（trained/random/blind）：textvqa 0.081/0/0、docvqa 0.039/0/0、ocrbench 0/0/0（地板）、screenspot 解析 0.51 精度 0.01、MMMU-Pro 0.073/0/0——判别力三条全成立，绝对读数如实留存（含坏结果）。误判审计：判别器清白（最宽提取 +1–2% 封顶）；抓到 MMMU 输入格式化两个 bug（选项字面量被逐字符拆行、缺字母标签），修复后 2.0%→7.3%，旧读数作废。],
 )
 
 = 下一位执行者的最短路径
