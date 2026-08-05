@@ -23,21 +23,26 @@ def answer_logprob_stats(logits, labels, *, ignore_index: int = -100) -> list[di
 
     if logits.ndim != 3 or labels.ndim != 2 or logits.shape[:2] != labels.shape:
         raise ValueError("logits [batch, sequence, vocab] must align with rank-2 labels")
-    shifted_logits = logits[:, :-1].float()
+    shifted_logits = logits[:, :-1]
     shifted_labels = labels[:, 1:]
     mask = shifted_labels.ne(ignore_index)
     if bool(((shifted_labels[mask] < 0) | (shifted_labels[mask] >= logits.shape[-1])).any()):
         raise ValueError("answer label is outside the logits vocabulary")
-    safe_labels = shifted_labels.masked_fill(~mask, 0)
-    token_logp = torch.log_softmax(shifted_logits, dim=-1).gather(
-        -1, safe_labels.unsqueeze(-1)
-    ).squeeze(-1)
     output = []
-    for row_logp, row_mask in zip(token_logp, mask):
+    for row_logits, row_labels, row_mask in zip(
+        shifted_logits, shifted_labels, mask
+    ):
         count = int(row_mask.sum())
         if count == 0:
             raise ValueError("every sample needs at least one scored answer token")
-        total = float(row_logp[row_mask].sum())
+        # 只对受监督 answer 位置计算 full-vocabulary log-softmax；长视觉前缀
+        # 不参与分数，提前筛掉可显著降低 1024px grounding 诊断的显存与计算量。
+        selected_logits = row_logits[row_mask].float()
+        selected_labels = row_labels[row_mask]
+        selected_logp = torch.log_softmax(selected_logits, dim=-1).gather(
+            -1, selected_labels.unsqueeze(-1)
+        ).squeeze(-1)
+        total = float(selected_logp.sum())
         mean = total / count
         output.append(
             {
