@@ -1,0 +1,115 @@
+{
+  "activation_checkpointing": true,
+  "answer_tokens_seen": 36589,
+  "capability_claim_allowed": false,
+  "effective_epochs": 0.06756985033278151,
+  "evaluation_required_for_capability_claim": true,
+  "examples_seen": 4000,
+  "final_checkpoint": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_grounding_enriched_4k_v1/checkpoints/step-000500",
+  "final_checkpoint_file_count": 5,
+  "final_checkpoint_total_bytes": 470388137,
+  "final_half_scored": false,
+  "first_gradient": {
+    "gradient_norm_before_clip": 175.7845458984375,
+    "language_parameter_gradient_tensors": 0,
+    "parameter_gradients": [
+      {
+        "name": "pre_norm.weight",
+        "nonzero": 1024,
+        "numel": 1024
+      },
+      {
+        "name": "pre_norm.bias",
+        "nonzero": 1024,
+        "numel": 1024
+      },
+      {
+        "name": "linear_1.weight",
+        "nonzero": 16777216,
+        "numel": 16777216
+      },
+      {
+        "name": "linear_1.bias",
+        "nonzero": 4096,
+        "numel": 4096
+      },
+      {
+        "name": "linear_2.weight",
+        "nonzero": 16777216,
+        "numel": 16777216
+      },
+      {
+        "name": "linear_2.bias",
+        "nonzero": 4096,
+        "numel": 4096
+      }
+    ],
+    "step": 1
+  },
+  "formal_training_complete": true,
+  "git_tracked_worktree_clean": true,
+  "gpu_name": "Tesla V100-PCIE-32GB",
+  "gradient_accumulation": 8,
+  "last_gradient": {
+    "gradient_norm_before_clip": 0.07166864722967148,
+    "language_parameter_gradient_tensors": 0,
+    "parameter_gradients": [
+      {
+        "name": "pre_norm.weight",
+        "nonzero": 1024,
+        "numel": 1024
+      },
+      {
+        "name": "pre_norm.bias",
+        "nonzero": 1024,
+        "numel": 1024
+      },
+      {
+        "name": "linear_1.weight",
+        "nonzero": 16777216,
+        "numel": 16777216
+      },
+      {
+        "name": "linear_1.bias",
+        "nonzero": 4096,
+        "numel": 4096
+      },
+      {
+        "name": "linear_2.weight",
+        "nonzero": 16649344,
+        "numel": 16777216
+      },
+      {
+        "name": "linear_2.bias",
+        "nonzero": 4086,
+        "numel": 4096
+      }
+    ],
+    "step": 500
+  },
+  "loss_first": 4.144003733992577,
+  "loss_last": 1.915631964802742,
+  "loss_mean": 2.4462315456820654,
+  "loss_min": 0.9511046288534999,
+  "micro_batch_size": 1,
+  "optimizer_steps": 500,
+  "paid_resources_used": false,
+  "peak_gpu_memory_bytes": 8973374976,
+  "previous_best": "step0",
+  "projector_parameter_count": 33564672,
+  "qwen_parameter_count": 3085938688,
+  "qwen_runtime_dtypes": [
+    "torch.float16"
+  ],
+  "qwen_trainable_parameter_count": 0,
+  "real_global_batch": 8,
+  "receiver_trainable_parameter_count": 0,
+  "runner_git_sha": "f0afdae9d475a87dba39a6204657bdc2ca28e307",
+  "status": "valid",
+  "subset_passes": 1.0,
+  "supervision_records_sha256": "d90ea7515a67b2f4d77320fe061aef1cfc44ef877726d312366a309390ab5bc9",
+  "total_wall_seconds": 529.2987551297992,
+  "training_wall_seconds": 489.6064462098293,
+  "transfer_label": "transferable_with_runtime_validation",
+  "visual_ability_established": false
+}

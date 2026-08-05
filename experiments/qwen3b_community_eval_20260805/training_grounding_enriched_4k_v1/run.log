@@ -1,0 +1,183 @@
+stage: contract_order_cache_verification
+stage: frozen_file_verification
+stage: tokenizer_config_supervision
+stage: cuda_and_model_load
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading weights:   0%|          | 0/434 [00:00<?, ?it/s]Loading weights:   0%|          | 1/434 [00:00<01:30,  4.77it/s]Loading weights:  20%|##        | 88/434 [00:00<00:00, 353.85it/s]Loading weights:  32%|###2      | 139/434 [00:00<00:00, 387.89it/s]Loading weights:  45%|####5     | 196/434 [00:00<00:00, 416.59it/s]Loading weights:  59%|#####8    | 255/434 [00:00<00:00, 450.69it/s]Loading weights:  73%|#######2  | 315/434 [00:00<00:00, 485.59it/s]Loading weights:  85%|########4 | 367/434 [00:00<00:00, 451.63it/s]Loading weights:  97%|#########7| 423/434 [00:01<00:00, 433.87it/s]Loading weights: 100%|##########| 434/434 [00:01<00:00, 414.94it/s]
+stage: projector_receiver_optimizer_load
+stage: projector_training
+optimizer_step 1/500 loss=4.144004 examples_seen=8 answer_tokens_seen=73 step_wall=2.853s
+optimizer_step 10/500 loss=3.692289 examples_seen=80 answer_tokens_seen=722 step_wall=0.916s
+optimizer_step 20/500 loss=8.610024 examples_seen=160 answer_tokens_seen=1453 step_wall=0.922s
+optimizer_step 30/500 loss=4.114178 examples_seen=240 answer_tokens_seen=2206 step_wall=0.972s
+optimizer_step 40/500 loss=4.665084 examples_seen=320 answer_tokens_seen=2949 step_wall=0.914s
+optimizer_step 50/500 loss=3.697336 examples_seen=400 answer_tokens_seen=3668 step_wall=0.986s
+optimizer_step 60/500 loss=4.274359 examples_seen=480 answer_tokens_seen=4394 step_wall=0.984s
+optimizer_step 70/500 loss=2.711574 examples_seen=560 answer_tokens_seen=5123 step_wall=0.971s
+optimizer_step 80/500 loss=1.500191 examples_seen=640 answer_tokens_seen=5871 step_wall=0.985s
+optimizer_step 90/500 loss=2.480288 examples_seen=720 answer_tokens_seen=6618 step_wall=0.877s
+optimizer_step 100/500 loss=2.275717 examples_seen=800 answer_tokens_seen=7362 step_wall=0.967s
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+checkpoint saved: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_grounding_enriched_4k_v1/checkpoints/step-000100 (470014974 bytes)
+optimizer_step 110/500 loss=1.930719 examples_seen=880 answer_tokens_seen=8099 step_wall=0.890s
+optimizer_step 120/500 loss=1.406677 examples_seen=960 answer_tokens_seen=8811 step_wall=0.869s
+optimizer_step 130/500 loss=1.744391 examples_seen=1040 answer_tokens_seen=9527 step_wall=0.981s
+optimizer_step 140/500 loss=1.214295 examples_seen=1120 answer_tokens_seen=10255 step_wall=0.953s
+optimizer_step 150/500 loss=1.934421 examples_seen=1200 answer_tokens_seen=10997 step_wall=0.971s
+optimizer_step 160/500 loss=2.203121 examples_seen=1280 answer_tokens_seen=11709 step_wall=0.957s
+optimizer_step 170/500 loss=1.542601 examples_seen=1360 answer_tokens_seen=12426 step_wall=0.964s
+optimizer_step 180/500 loss=1.982668 examples_seen=1440 answer_tokens_seen=13155 step_wall=0.949s
+optimizer_step 190/500 loss=1.590917 examples_seen=1520 answer_tokens_seen=13878 step_wall=0.880s
+optimizer_step 200/500 loss=2.315567 examples_seen=1600 answer_tokens_seen=14591 step_wall=0.984s
+checkpoint saved: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_grounding_enriched_4k_v1/checkpoints/step-000200 (470108096 bytes)
+optimizer_step 210/500 loss=1.733934 examples_seen=1680 answer_tokens_seen=15331 step_wall=1.001s
+optimizer_step 220/500 loss=2.101854 examples_seen=1760 answer_tokens_seen=16102 step_wall=0.968s
+optimizer_step 230/500 loss=1.583881 examples_seen=1840 answer_tokens_seen=16828 step_wall=0.940s
+optimizer_step 240/500 loss=2.149165 examples_seen=1920 answer_tokens_seen=17548 step_wall=1.017s
+optimizer_step 250/500 loss=2.498883 examples_seen=2000 answer_tokens_seen=18291 step_wall=0.936s
+optimizer_step 260/500 loss=2.187408 examples_seen=2080 answer_tokens_seen=19020 step_wall=0.930s
+optimizer_step 270/500 loss=2.821851 examples_seen=2160 answer_tokens_seen=19766 step_wall=0.971s
+optimizer_step 280/500 loss=2.139124 examples_seen=2240 answer_tokens_seen=20517 step_wall=0.952s
+optimizer_step 290/500 loss=3.644472 examples_seen=2320 answer_tokens_seen=21267 step_wall=0.949s
+optimizer_step 300/500 loss=1.962934 examples_seen=2400 answer_tokens_seen=21972 step_wall=0.854s
+checkpoint saved: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_grounding_enriched_4k_v1/checkpoints/step-000300 (470201359 bytes)
+optimizer_step 310/500 loss=1.746579 examples_seen=2480 answer_tokens_seen=22719 step_wall=0.964s
+optimizer_step 320/500 loss=1.663163 examples_seen=2560 answer_tokens_seen=23434 step_wall=0.933s
+optimizer_step 330/500 loss=3.104306 examples_seen=2640 answer_tokens_seen=24164 step_wall=0.952s
+optimizer_step 340/500 loss=1.922395 examples_seen=2720 answer_tokens_seen=24890 step_wall=1.016s
+optimizer_step 350/500 loss=1.294236 examples_seen=2800 answer_tokens_seen=25607 step_wall=0.978s
+optimizer_step 360/500 loss=1.645545 examples_seen=2880 answer_tokens_seen=26345 step_wall=0.982s
+optimizer_step 370/500 loss=2.010306 examples_seen=2960 answer_tokens_seen=27074 step_wall=0.919s
+optimizer_step 380/500 loss=1.383535 examples_seen=3040 answer_tokens_seen=27837 step_wall=0.989s
+optimizer_step 390/500 loss=1.451624 examples_seen=3120 answer_tokens_seen=28577 step_wall=0.893s
+optimizer_step 400/500 loss=2.060445 examples_seen=3200 answer_tokens_seen=29287 step_wall=0.938s
+checkpoint saved: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_grounding_enriched_4k_v1/checkpoints/step-000400 (470294751 bytes)
+optimizer_step 410/500 loss=1.284998 examples_seen=3280 answer_tokens_seen=30067 step_wall=0.963s
+optimizer_step 420/500 loss=1.454664 examples_seen=3360 answer_tokens_seen=30790 step_wall=0.934s
+optimizer_step 430/500 loss=1.630433 examples_seen=3440 answer_tokens_seen=31532 step_wall=0.972s
+optimizer_step 440/500 loss=2.601632 examples_seen=3520 answer_tokens_seen=32224 step_wall=0.942s
+optimizer_step 450/500 loss=2.391754 examples_seen=3600 answer_tokens_seen=32923 step_wall=0.897s
+optimizer_step 460/500 loss=1.804357 examples_seen=3680 answer_tokens_seen=33635 step_wall=1.038s
+optimizer_step 470/500 loss=1.588069 examples_seen=3760 answer_tokens_seen=34374 step_wall=0.952s
+optimizer_step 480/500 loss=2.037055 examples_seen=3840 answer_tokens_seen=35123 step_wall=0.967s
+optimizer_step 490/500 loss=1.412775 examples_seen=3920 answer_tokens_seen=35866 step_wall=0.987s
+optimizer_step 500/500 loss=1.915632 examples_seen=4000 answer_tokens_seen=36589 step_wall=1.006s
+checkpoint saved: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_grounding_enriched_4k_v1/checkpoints/step-000500 (470388137 bytes)
+stage: complete
+{
+  "status": "valid",
+  "formal_training_complete": true,
+  "capability_claim_allowed": false,
+  "evaluation_required_for_capability_claim": true,
+  "visual_ability_established": false,
+  "previous_best": "step0",
+  "final_half_scored": false,
+  "paid_resources_used": false,
+  "runner_git_sha": "f0afdae9d475a87dba39a6204657bdc2ca28e307",
+  "git_tracked_worktree_clean": true,
+  "optimizer_steps": 500,
+  "examples_seen": 4000,
+  "answer_tokens_seen": 36589,
+  "effective_epochs": 0.06756985033278151,
+  "subset_passes": 1.0,
+  "micro_batch_size": 1,
+  "gradient_accumulation": 8,
+  "real_global_batch": 8,
+  "loss_first": 4.144003733992577,
+  "loss_last": 1.915631964802742,
+  "loss_min": 0.9511046288534999,
+  "loss_mean": 2.4462315456820654,
+  "training_wall_seconds": 489.6064462098293,
+  "total_wall_seconds": 529.2987551297992,
+  "peak_gpu_memory_bytes": 8973374976,
+  "gpu_name": "Tesla V100-PCIE-32GB",
+  "qwen_parameter_count": 3085938688,
+  "qwen_runtime_dtypes": [
+    "torch.float16"
+  ],
+  "qwen_trainable_parameter_count": 0,
+  "projector_parameter_count": 33564672,
+  "receiver_trainable_parameter_count": 0,
+  "activation_checkpointing": true,
+  "first_gradient": {
+    "step": 1,
+    "gradient_norm_before_clip": 175.7845458984375,
+    "parameter_gradients": [
+      {
+        "name": "pre_norm.weight",
+        "nonzero": 1024,
+        "numel": 1024
+      },
+      {
+        "name": "pre_norm.bias",
+        "nonzero": 1024,
+        "numel": 1024
+      },
+      {
+        "name": "linear_1.weight",
+        "nonzero": 16777216,
+        "numel": 16777216
+      },
+      {
+        "name": "linear_1.bias",
+        "nonzero": 4096,
+        "numel": 4096
+      },
+      {
+        "name": "linear_2.weight",
+        "nonzero": 16777216,
+        "numel": 16777216
+      },
+      {
+        "name": "linear_2.bias",
+        "nonzero": 4096,
+        "numel": 4096
+      }
+    ],
+    "language_parameter_gradient_tensors": 0
+  },
+  "last_gradient": {
+    "step": 500,
+    "gradient_norm_before_clip": 0.07166864722967148,
+    "parameter_gradients": [
+      {
+        "name": "pre_norm.weight",
+        "nonzero": 1024,
+        "numel": 1024
+      },
+      {
+        "name": "pre_norm.bias",
+        "nonzero": 1024,
+        "numel": 1024
+      },
+      {
+        "name": "linear_1.weight",
+        "nonzero": 16777216,
+        "numel": 16777216
+      },
+      {
+        "name": "linear_1.bias",
+        "nonzero": 4096,
+        "numel": 4096
+      },
+      {
+        "name": "linear_2.weight",
+        "nonzero": 16649344,
+        "numel": 16777216
+      },
+      {
+        "name": "linear_2.bias",
+        "nonzero": 4086,
+        "numel": 4096
+      }
+    ],
+    "language_parameter_gradient_tensors": 0
+  },
+  "final_checkpoint": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_grounding_enriched_4k_v1/checkpoints/step-000500",
+  "final_checkpoint_file_count": 5,
+  "final_checkpoint_total_bytes": 470388137,
+  "supervision_records_sha256": "d90ea7515a67b2f4d77320fe061aef1cfc44ef877726d312366a309390ab5bc9",
+  "transfer_label": "transferable_with_runtime_validation"
+}

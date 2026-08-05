@@ -1,0 +1,171 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-05T23:40:57.141709+00:00",
+  "root": "train_grounding_enriched_4k_v1",
+  "git_base_sha": "f0afdae9d475a87dba39a6204657bdc2ca28e307",
+  "files": {
+    "ATTEMPT.json": {
+      "bytes": 1326,
+      "sha256": "250fa3b1437ca922ea8ab1d90c52e0cc6e85fb509eaf41820c34c6238f61224c"
+    },
+    "CACHE_VERIFICATION.json": {
+      "bytes": 752,
+      "sha256": "989d6e1bee684233d888860a6883d91419392537ecbf387c64d20db6da16ae1b"
+    },
+    "INDEPENDENT_VERIFICATION.json": {
+      "bytes": 7292,
+      "sha256": "239fd5d34bcde9eac570eb6b55b225836aafdf74adaaace2d63465a4fe05bd8f"
+    },
+    "RUN_CONFIG.json": {
+      "bytes": 7200,
+      "sha256": "cf65138de83c34d3a9ef31f60146027b9ee936b9001b56ac9caa8af907786244"
+    },
+    "SUMMARY.json": {
+      "bytes": 3097,
+      "sha256": "7e6a6244a4b41cea6169412efae0a987a078e1e539330579a301dc0da52ad2ae"
+    },
+    "SUPERVISION_RECORDS.jsonl": {
+      "bytes": 2275709,
+      "sha256": "d90ea7515a67b2f4d77320fe061aef1cfc44ef877726d312366a309390ab5bc9"
+    },
+    "SUPERVISION_SUMMARY.json": {
+      "bytes": 452,
+      "sha256": "b48ccd66814269906b96bebc6a5c3b48727a2d1ea0f935468e1e19ba33d94a7e"
+    },
+    "TRAINING_HISTORY.jsonl": {
+      "bytes": 298627,
+      "sha256": "c22a01631598d4ca4850347474f39171853cc9ba22da4176e0a0fac6067df3a8"
+    },
+    "checkpoints/step-000100/CHECKPOINT_MANIFEST.json": {
+      "bytes": 2058,
+      "sha256": "99bef0b084bba8a17f0ae960d6a73d4aea0f36457c04dfde8112e61c845113fc"
+    },
+    "checkpoints/step-000100/history.json": {
+      "bytes": 70513,
+      "sha256": "4e4fa1554545e625b098ae36acc142868180aa1b775b95c279026bd2ff6252a1"
+    },
+    "checkpoints/step-000100/projector.safetensors": {
+      "bytes": 134259248,
+      "sha256": "08bdda72d5f984edbf7931dc4eb3dad8f3b296b05c18afa0364071dd1fdc19b1"
+    },
+    "checkpoints/step-000100/projector_bf16.safetensors": {
+      "bytes": 67129856,
+      "sha256": "6b3458a972d8fa41068ef7601fedab7034e01309bf5f44b98f8e56d1e3d1a668"
+    },
+    "checkpoints/step-000100/projector_config.json": {
+      "bytes": 128,
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    "checkpoints/step-000100/training_state.pt": {
+      "bytes": 268555229,
+      "sha256": "c74c7b93d3a88c4fcf5e4c4df4ff216aa33df166bb8e8f5f5a63f05a4b865055"
+    },
+    "checkpoints/step-000200/CHECKPOINT_MANIFEST.json": {
+      "bytes": 2061,
+      "sha256": "4e6a3aab077259eca56119304a8a7941ff2784cc103097a68daf1d15acd6e29b"
+    },
+    "checkpoints/step-000200/history.json": {
+      "bytes": 141619,
+      "sha256": "e6383acb4f4cd13faf20f40dd35a255aba26b5e4bb466d36e92984a8047b0294"
+    },
+    "checkpoints/step-000200/projector.safetensors": {
+      "bytes": 134259248,
+      "sha256": "2964c1b63c6a28cd00caacadda81f412d2a346568afe2b691dc43181fdf6c7ce"
+    },
+    "checkpoints/step-000200/projector_bf16.safetensors": {
+      "bytes": 67129856,
+      "sha256": "d0aebd624678463ae028fa6fa8e092364124cda01cfaa24e88a0457c4cf10f3c"
+    },
+    "checkpoints/step-000200/projector_config.json": {
+      "bytes": 128,
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    "checkpoints/step-000200/training_state.pt": {
+      "bytes": 268577245,
+      "sha256": "0b4dc45da927642252def11d9c4e96f9847050312eb5d3e81f9c3ff765d4ade8"
+    },
+    "checkpoints/step-000300/CHECKPOINT_MANIFEST.json": {
+      "bytes": 2060,
+      "sha256": "055f4c23db751c0b7aead3bc91f90db14da5bf7bae4ad5cdda58764d443ed5d7"
+    },
+    "checkpoints/step-000300/history.json": {
+      "bytes": 212802,
+      "sha256": "898c47ff7e9a2ed1b48e020b9322c4b83a752396bc5a9fc73907fe26b27dc9a6"
+    },
+    "checkpoints/step-000300/projector.safetensors": {
+      "bytes": 134259248,
+      "sha256": "41c23b5f69aae4a8c9ea6bfaa0d097b1a81379d43d4aa1084a9b181b3a04095f"
+    },
+    "checkpoints/step-000300/projector_bf16.safetensors": {
+      "bytes": 67129856,
+      "sha256": "e5ed117decde2dd18c0db225645c03d25686b1a36705d5967d5fbf1c57f44ce1"
+    },
+    "checkpoints/step-000300/projector_config.json": {
+      "bytes": 128,
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    "checkpoints/step-000300/training_state.pt": {
+      "bytes": 268599325,
+      "sha256": "a1e497266e3b7657cfc8982a25bda1a6729a8f16869e396e6c94097b063cbd70"
+    },
+    "checkpoints/step-000400/CHECKPOINT_MANIFEST.json": {
+      "bytes": 2060,
+      "sha256": "1b874b8743f19823e52a334dce2d0b9d90bd9029f6b63b09d904590aca3e5d25"
+    },
+    "checkpoints/step-000400/history.json": {
+      "bytes": 283986,
+      "sha256": "11487554128c773863152f68c1dafb6bed6463035b35d4190b6987eca96fa9ee"
+    },
+    "checkpoints/step-000400/projector.safetensors": {
+      "bytes": 134259248,
+      "sha256": "96e5ddc17cad1de8443e46c7ef842702446ae440419e113adb847c01df66b5a9"
+    },
+    "checkpoints/step-000400/projector_bf16.safetensors": {
+      "bytes": 67129856,
+      "sha256": "0e5aabee34d7921035c3e589c7b515ad77b3b279c663f89697088f84cad6dd23"
+    },
+    "checkpoints/step-000400/projector_config.json": {
+      "bytes": 128,
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    "checkpoints/step-000400/training_state.pt": {
+      "bytes": 268621533,
+      "sha256": "9f61db11783e996df3f762d0468797f8d66a77b32dd374b6c0eec6fe696f7510"
+    },
+    "checkpoints/step-000500/CHECKPOINT_MANIFEST.json": {
+      "bytes": 2060,
+      "sha256": "19219dee0c22efa84a4b54e352075840cd725a2bb2f7bad0b63c395efc38774b"
+    },
+    "checkpoints/step-000500/history.json": {
+      "bytes": 355164,
+      "sha256": "f0b38e070f1bf3a7c2805e379e10c98b5fc6f851af7e5c481710ed0343a6ebd6"
+    },
+    "checkpoints/step-000500/projector.safetensors": {
+      "bytes": 134259248,
+      "sha256": "62f69393dd3d157446db05a7060942bdfbd23f834bbe2e6782560431b5773df4"
+    },
+    "checkpoints/step-000500/projector_bf16.safetensors": {
+      "bytes": 67129856,
+      "sha256": "9ac93e04beb8eb6e38686a384ed747c6af57096743868c8ce763c8ca433dbc4f"
+    },
+    "checkpoints/step-000500/projector_config.json": {
+      "bytes": 128,
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    "checkpoints/step-000500/training_state.pt": {
+      "bytes": 268643741,
+      "sha256": "201cd42da1acae285086159d84473d60f4da605fddb5e99c32423b4fb979d291"
+    },
+    "run.log": {
+      "bytes": 10027,
+      "sha256": "bb37063080c9092c5bad95c64f5b8f7c82d8cd8cc80971a2cb5d290b522e6a93"
+    },
+    "verify.log": {
+      "bytes": 7292,
+      "sha256": "b351ea381aae80131f54308523eaf3a4f4346ee680a36f8958dbd1efa4a9d3aa"
+    }
+  },
+  "file_count": 40,
+  "total_bytes": 2353629390,
+  "final_half_scored": false
+}
