@@ -1,0 +1,22 @@
+{
+  "status": "valid",
+  "source_files": {
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_interpolation_analysis_v1/DECISIONS.json": "c2a54bd3c853980fbadb4dab9b4550f583a068aed2e951016401b3e45a03c74c",
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_interpolation_screen_v1/preference_curve.csv": "e801e88efdc2692ac291c5ebdb85f1f387bfd8a442f550bf94a68e80adb4f60f",
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_interpolation_screen_v1/generation_curve.csv": "40e267a0061a96ecd22ca089028646a4816ea6efc666a511b420c1bc7a396e1b"
+  },
+  "charts": {
+    "01-task-preference.svg": {
+      "bytes": 5291,
+      "sha256": "3f97323d880f5e9fc64d09c2bb72f280a6824df819abf0b3b75915e776adda23"
+    },
+    "02-task-generation.svg": {
+      "bytes": 5284,
+      "sha256": "3b762c464a473c11e51345c8d3e2cc5cc45265791ccf366ebd9f0b0af890d68c"
+    },
+    "03-balance-summary.svg": {
+      "bytes": 3764,
+      "sha256": "b04c1bf0ad3a9aace9bc99f352d2801e380cd2037fa6ed17e932776fb1101386"
+    }
+  }
+}

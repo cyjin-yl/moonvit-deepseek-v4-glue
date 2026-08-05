@@ -50,6 +50,13 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="只评估这些相对步数，并始终保留 frozen base",
     )
+    parser.add_argument(
+        "--adaptation-kinds",
+        choices=("lora", "projector"),
+        nargs="*",
+        default=None,
+        help="只保留指定适配臂，并始终保留 frozen base",
+    )
     return parser.parse_args()
 
 
@@ -173,19 +180,23 @@ def checkpoint_states(
             raise ValueError("projector continuation run is not valid")
         for key, manifest in sorted(projector_summary["checkpoints"].items()):
             step = int(manifest["step"])
-            if step == 0:
+            if step == 0 and "evaluation_state_id" not in manifest:
                 continue
+            relative = Path(
+                manifest.get("relative_path", f"checkpoints/step-{step:06d}")
+            )
+            examples_seen = manifest.get("examples_seen")
             states.append(
                 {
-                    "id": f"projector-step{step}",
+                    "id": manifest.get("evaluation_state_id", f"projector-step{step}"),
                     "kind": "projector",
                     "adaptation_step": step,
-                    "adaptation_examples_seen": int(manifest["examples_seen"]),
+                    "adaptation_examples_seen": (
+                        int(examples_seen) if examples_seen is not None else None
+                    ),
+                    "interpolation_alpha": manifest.get("interpolation_alpha"),
                     "lora": lora_run / "checkpoints" / "step-000000" / "lora.safetensors",
-                    "projector": projector_run
-                    / "checkpoints"
-                    / f"step-{step:06d}"
-                    / "projector.safetensors",
+                    "projector": projector_run / relative / "projector.safetensors",
                 }
             )
     sources = {
@@ -198,18 +209,44 @@ def checkpoint_states(
 
 
 def filter_adaptation_states(
-    states: list[dict], requested_steps: list[int] | None
+    states: list[dict],
+    requested_steps: list[int] | None,
+    requested_kinds: list[str] | None = None,
 ) -> list[dict]:
-    if requested_steps is None:
+    if requested_steps is None and requested_kinds is None:
         return states
-    requested = {int(step) for step in requested_steps}
+    requested = (
+        {int(step) for step in requested_steps}
+        if requested_steps is not None
+        else None
+    )
+    kinds = set(requested_kinds) if requested_kinds is not None else None
     filtered = [
         state
         for state in states
-        if state["kind"] == "frozen" or int(state["adaptation_step"]) in requested
+        if state["kind"] == "frozen"
+        or (
+            (kinds is None or str(state["kind"]) in kinds)
+            and (requested is None or int(state["adaptation_step"]) in requested)
+        )
     ]
-    kinds = {str(state["kind"]) for state in filtered}
-    if requested and not {"frozen", "lora", "projector"} <= kinds:
+    present_kinds = {str(state["kind"]) for state in filtered}
+    if kinds is not None and not kinds <= present_kinds:
+        raise ValueError("requested adaptation kind is absent")
+    if kinds is not None and requested is not None:
+        missing = [
+            (kind, step)
+            for kind in sorted(kinds)
+            for step in sorted(requested)
+            if not any(
+                str(state["kind"]) == kind
+                and int(state["adaptation_step"]) == step
+                for state in filtered
+            )
+        ]
+        if missing:
+            raise ValueError(f"requested adaptation states are absent: {missing}")
+    if kinds is None and requested and not {"frozen", "lora", "projector"} <= present_kinds:
         raise ValueError("requested endpoint is absent from one adaptation arm")
     return filtered
 
@@ -231,13 +268,16 @@ def run(args: argparse.Namespace) -> None:
     states, sources = checkpoint_states(
         config=config, lora_run=args.lora_run, projector_run=args.projector_run
     )
-    states = filter_adaptation_states(states, args.adaptation_steps)
+    states = filter_adaptation_states(
+        states, args.adaptation_steps, requested_kinds=args.adaptation_kinds
+    )
     config["evaluation_override"] = {
         "limit": args.limit,
         "limit_per_task": args.limit_per_task,
         "teacher_batch_size": args.teacher_batch_size,
         "generation_batch_size": args.generation_batch_size,
         "adaptation_steps": args.adaptation_steps,
+        "adaptation_kinds": args.adaptation_kinds,
     }
     config["evaluation_states"] = [
         {
@@ -414,6 +454,7 @@ def run(args: argparse.Namespace) -> None:
                             "kind": state["kind"],
                             "adaptation_step": state["adaptation_step"],
                             "adaptation_examples_seen": state["adaptation_examples_seen"],
+                            "interpolation_alpha": state.get("interpolation_alpha"),
                             "condition": condition,
                             "id": str(record["id"]),
                             "pair_id": str(record["pair_id"]),
@@ -452,6 +493,7 @@ def run(args: argparse.Namespace) -> None:
                             "kind": state["kind"],
                             "adaptation_step": state["adaptation_step"],
                             "adaptation_examples_seen": state["adaptation_examples_seen"],
+                            "interpolation_alpha": state.get("interpolation_alpha"),
                             "condition": condition,
                             "task": task,
                             "records": summary["samples"],
@@ -503,6 +545,7 @@ def run(args: argparse.Namespace) -> None:
                             "kind": state["kind"],
                             "adaptation_step": state["adaptation_step"],
                             "adaptation_examples_seen": state["adaptation_examples_seen"],
+                            "interpolation_alpha": state.get("interpolation_alpha"),
                             "condition": condition,
                             "id": str(record["id"]),
                             "pair_id": str(record["pair_id"]),
@@ -533,6 +576,7 @@ def run(args: argparse.Namespace) -> None:
                             "kind": state["kind"],
                             "adaptation_step": state["adaptation_step"],
                             "adaptation_examples_seen": state["adaptation_examples_seen"],
+                            "interpolation_alpha": state.get("interpolation_alpha"),
                             "condition": condition,
                             "task": task,
                             "records": summary["samples"],

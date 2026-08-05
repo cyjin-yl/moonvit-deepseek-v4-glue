@@ -1,0 +1,40 @@
+{
+  "status": "valid",
+  "interpolation_checkpoints": 5,
+  "endpoint_tensor_reproduction": {
+    "0.0": {
+      "exact_tensor_equality": true,
+      "source_tensor_sha256": "fd7b07e6fe9f4e9054b9f4e4dcbecf8bbeaf83241c937ec6d5c4d589a017d192",
+      "output_tensor_sha256": "fd7b07e6fe9f4e9054b9f4e4dcbecf8bbeaf83241c937ec6d5c4d589a017d192"
+    },
+    "1.0": {
+      "exact_tensor_equality": true,
+      "source_tensor_sha256": "7b731cffcb11da833efbd7d99a41ee77cba9eda3dfdb1135989e79adbb921a76",
+      "output_tensor_sha256": "7b731cffcb11da833efbd7d99a41ee77cba9eda3dfdb1135989e79adbb921a76"
+    }
+  },
+  "endpoint_evaluation_reproduction": {
+    "projector-interp000": {
+      "reference_state": "projector-step50",
+      "preference_rows_exact": 1800,
+      "generation_rows_exact": 1200
+    },
+    "projector-interp100": {
+      "reference_state": "projector-step100",
+      "preference_rows_exact": 1800,
+      "generation_rows_exact": 1200
+    }
+  },
+  "evaluation": {
+    "states": 6,
+    "preference_rows": 10800,
+    "generation_rows": 7200,
+    "files_verified": 5
+  },
+  "analysis": {
+    "metric_rows": 630,
+    "contrasts": 651,
+    "files_verified": 3
+  },
+  "final_half_scored": false
+}

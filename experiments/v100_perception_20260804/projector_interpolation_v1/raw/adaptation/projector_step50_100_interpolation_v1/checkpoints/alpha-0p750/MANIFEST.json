@@ -1,0 +1,22 @@
+{
+  "status": "valid",
+  "kind": "projector",
+  "step": 75,
+  "examples_seen": null,
+  "evaluation_state_id": "projector-interp075",
+  "interpolation_alpha": 0.75,
+  "relative_path": "checkpoints/alpha-0p750",
+  "source_early_step": 50,
+  "source_late_step": 100,
+  "weights_tensor_sha256": "0f4197e80ec1cf5e9fc99f407e1280c64db986f35142f12eb0ff1dc592b30196",
+  "files": {
+    "projector.safetensors": {
+      "bytes": 81817592,
+      "sha256": "d44c4bd07d72888b99db595aed0feeb164af3e5f0c40ae4a47ab4b96ec195061"
+    },
+    "projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    }
+  }
+}

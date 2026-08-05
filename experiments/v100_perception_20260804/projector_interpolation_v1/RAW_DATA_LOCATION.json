@@ -1,0 +1,17 @@
+{
+  "status": "valid",
+  "package": "projector_interpolation_v1",
+  "workstation_root": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation",
+  "packaged_losslessly": [
+    "projector_interpolation_smoke_v1",
+    "projector_interpolation_screen_v1",
+    "projector_interpolation_analysis_v1",
+    "projector_interpolation_charts_v1",
+    "projector_interpolation_verification_v1.json"
+  ],
+  "interpolation_metadata": "projector_step50_100_interpolation_v1/SUMMARY.json and per-alpha MANIFEST/config files are committed.",
+  "large_weight_policy": "Five 81.8 MB interpolation safetensors remain on the V100 HDD; ordered tensor hashes and file hashes are committed in the manifests.",
+  "source_training_package": "../balanced_adaptation_compare_v1",
+  "reference_trajectory_package": "../balanced_adaptation_trajectory_v1",
+  "final_half_scored": false
+}

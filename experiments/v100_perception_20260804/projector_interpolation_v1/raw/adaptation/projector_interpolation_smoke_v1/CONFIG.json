@@ -1,0 +1,186 @@
+{
+  "run_id": "v100-perception-balanced-adaptation-compare-20260805-v1",
+  "training_format_version": "balanced-multitask-adaptation-training-v2",
+  "seed": 20260816,
+  "device": "cuda",
+  "language_dtype": "bfloat16",
+  "projector_dtype": "float32",
+  "text_model": "/run/media/ezra/13D010B6FDBC1A06/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+  "placeholder_token_id": 151643,
+  "prompt_template": "User: {image}\n{question}\nAssistant:",
+  "base_projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_multitask_projector_v1/checkpoints/step-000100",
+  "projector_config_source": "/run/media/ezra/13D010B6FDBC1A06/data/gate_b/ckpt/checkpoints/step-000500",
+  "dataset": {
+    "tasks": [
+      "color",
+      "coordinate",
+      "count",
+      "ocr",
+      "shape",
+      "spatial"
+    ],
+    "train_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/train.jsonl",
+    "selection_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/selection.jsonl",
+    "generation_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/trajectory/synthetic-generation-selection-v1/synthetic_generation_selection.jsonl",
+    "controls": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/controls.jsonl",
+    "train_feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/synthetic-train-256-v1",
+    "selection_feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/synthetic-selection-256-v1",
+    "selection_manifest": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/MANIFEST.json",
+    "generation_selection_manifest": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/trajectory/synthetic-generation-selection-v1/MANIFEST.json",
+    "expected_train_records": 2400,
+    "expected_train_records_per_task": 400,
+    "expected_train_pairs_per_task": 200,
+    "expected_selection_records": 2400,
+    "expected_generation_records": 600,
+    "logical_dataset_sha256": "122ae820381e11e12c7dd9db03a525b801a5ebee5adbef037919185e65cbaa71",
+    "max_image_side": 256
+  },
+  "training": {
+    "steps": 100,
+    "batch_size": 24,
+    "learning_rate": 0.0005,
+    "weight_decay": 0.0,
+    "gradient_clip": 1.0,
+    "checkpoint_steps": [
+      0,
+      25,
+      50,
+      100
+    ],
+    "examples_per_task_at_final": 400,
+    "balanced_examples_per_task_per_step": 4
+  },
+  "arms": {
+    "additional_projector_epoch": {
+      "kind": "projector",
+      "resume_optimizer": true
+    },
+    "lora_top12": {
+      "kind": "lora",
+      "layer_indices": [
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "target_modules": [
+        "self_attn.q_proj",
+        "self_attn.v_proj",
+        "self_attn.o_proj"
+      ],
+      "rank": 8,
+      "alpha": 16.0,
+      "initialization": "kaiming A, zero B; exact zero initial delta"
+    }
+  },
+  "evaluation": {
+    "projector_dtype": "bfloat16",
+    "teacher_forced_records": 2400,
+    "generation_records": 600,
+    "conditions": [
+      "vision",
+      "shuffled_image",
+      "paired_counterfactual_image"
+    ],
+    "generation_max_new_tokens": 8,
+    "bootstrap_seed": 20260817,
+    "bootstrap_samples": 2000
+  },
+  "hard_constraints": {
+    "gpu": "existing Tesla V100-PCIE-32GB only",
+    "rent_new_server": false,
+    "run_full_deepseek_v4": false,
+    "score_final_odd_half": false
+  },
+  "evaluation_override": {
+    "limit": null,
+    "limit_per_task": 2,
+    "teacher_batch_size": 12,
+    "generation_batch_size": 12,
+    "adaptation_steps": [
+      0,
+      25,
+      50,
+      75,
+      100
+    ],
+    "adaptation_kinds": [
+      "projector"
+    ]
+  },
+  "evaluation_states": [
+    {
+      "id": "frozen-base",
+      "kind": "frozen",
+      "adaptation_step": 0,
+      "adaptation_examples_seen": 0,
+      "lora": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_lora_v1/checkpoints/step-000000/lora.safetensors",
+      "lora_sha256": "36ccda7c832f1f58edfbe5ff45880a1a5d67c710d34fad52e15feff88cb6725e",
+      "projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_multitask_projector_v1/checkpoints/step-000100/projector.safetensors",
+      "projector_sha256": "98a566eb2c8414f105662b6532734a4246830b7e5a2df56ae3da14ad23737ef3"
+    },
+    {
+      "id": "projector-interp000",
+      "kind": "projector",
+      "adaptation_step": 0,
+      "adaptation_examples_seen": null,
+      "interpolation_alpha": 0.0,
+      "lora": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_lora_v1/checkpoints/step-000000/lora.safetensors",
+      "lora_sha256": "36ccda7c832f1f58edfbe5ff45880a1a5d67c710d34fad52e15feff88cb6725e",
+      "projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_step50_100_interpolation_v1/checkpoints/alpha-0p000/projector.safetensors",
+      "projector_sha256": "0a83c9c4c290d80cc965455e105d7cc03f1d06927a79a8c5aea9363de26e5e85"
+    },
+    {
+      "id": "projector-interp025",
+      "kind": "projector",
+      "adaptation_step": 25,
+      "adaptation_examples_seen": null,
+      "interpolation_alpha": 0.25,
+      "lora": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_lora_v1/checkpoints/step-000000/lora.safetensors",
+      "lora_sha256": "36ccda7c832f1f58edfbe5ff45880a1a5d67c710d34fad52e15feff88cb6725e",
+      "projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_step50_100_interpolation_v1/checkpoints/alpha-0p250/projector.safetensors",
+      "projector_sha256": "c42d3f9c133666914f2b0522528eb96dcca5b6e3e8520826c20bfc55efedfc27"
+    },
+    {
+      "id": "projector-interp050",
+      "kind": "projector",
+      "adaptation_step": 50,
+      "adaptation_examples_seen": null,
+      "interpolation_alpha": 0.5,
+      "lora": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_lora_v1/checkpoints/step-000000/lora.safetensors",
+      "lora_sha256": "36ccda7c832f1f58edfbe5ff45880a1a5d67c710d34fad52e15feff88cb6725e",
+      "projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_step50_100_interpolation_v1/checkpoints/alpha-0p500/projector.safetensors",
+      "projector_sha256": "647d3e6aa9cdfa9c0eb3254c57cd6973c151bd0b8987a65c7e221bb5828071bd"
+    },
+    {
+      "id": "projector-interp075",
+      "kind": "projector",
+      "adaptation_step": 75,
+      "adaptation_examples_seen": null,
+      "interpolation_alpha": 0.75,
+      "lora": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_lora_v1/checkpoints/step-000000/lora.safetensors",
+      "lora_sha256": "36ccda7c832f1f58edfbe5ff45880a1a5d67c710d34fad52e15feff88cb6725e",
+      "projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_step50_100_interpolation_v1/checkpoints/alpha-0p750/projector.safetensors",
+      "projector_sha256": "d44c4bd07d72888b99db595aed0feeb164af3e5f0c40ae4a47ab4b96ec195061"
+    },
+    {
+      "id": "projector-interp100",
+      "kind": "projector",
+      "adaptation_step": 100,
+      "adaptation_examples_seen": null,
+      "interpolation_alpha": 1.0,
+      "lora": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_lora_v1/checkpoints/step-000000/lora.safetensors",
+      "lora_sha256": "36ccda7c832f1f58edfbe5ff45880a1a5d67c710d34fad52e15feff88cb6725e",
+      "projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_step50_100_interpolation_v1/checkpoints/alpha-1p000/projector.safetensors",
+      "projector_sha256": "078db4422acadbbe67a842c9263b2075b886e245cffbe575a9ceecd7e1131d9b"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading weights:   0%|          | 0/290 [00:00<?, ?it/s]Loading weights: 100%|██████████| 290/290 [00:00<00:00, 21580.61it/s]
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+completed frozen-base
+completed projector-interp000
+completed projector-interp025
+completed projector-interp050
+completed projector-interp075
+completed projector-interp100
+{
+  "status": "valid",
+  "format_version": "shape-adaptation-eval-v1",
+  "metadata": {
+    "completed_at_utc": "2026-08-05T04:41:46.341438+00:00",
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "wall_seconds": 541.314769744873,
+    "peak_gpu_memory_bytes": 12720825856,
+    "final_half_scored": false
+  },
+  "states": 6,
+  "teacher_forced_records_per_cell": 600,
+  "generation_records_per_cell": 600,
+  "preference_rows": 10800,
+  "generation_rows": 7200,
+  "sources": {
+    "lora_summary_sha256": "b605c0c8427d3e1f4b0f66dadaa5ace8c90d507e8a6ab2a313212a1d19fc4515",
+    "projector_summary_sha256": "bac783e4f272feee9928fd4c4a8dcccf3ea2e89bc37333d86211d1f72af5c4cd"
+  },
+  "files": {
+    "preference_records.jsonl": {
+      "bytes": 6579432,
+      "sha256": "0b5dd32ef92b10a1e25d60eb176f8a87f514bde8242e4d3574589c1be16dc4ad"
+    },
+    "generation_records.jsonl": {
+      "bytes": 3183482,
+      "sha256": "aa450c1d1ea3f8cc2e077a3279ee299b7727bb35cd10f1bacb539e44d5cda0a3"
+    },
+    "preference_curve.csv": {
+      "bytes": 12760,
+      "sha256": "e801e88efdc2692ac291c5ebdb85f1f387bfd8a442f550bf94a68e80adb4f60f"
+    },
+    "generation_curve.csv": {
+      "bytes": 7999,
+      "sha256": "40e267a0061a96ecd22ca089028646a4816ea6efc666a511b420c1bc7a396e1b"
+    },
+    "DECISIONS.json": {
+      "bytes": 1223,
+      "sha256": "d4cdcf3af55d0999def5e7f54eccebf54aa867681f929c929c6cf81eab308cd7"
+    }
+  },
+  "final_half_scored": false
+}

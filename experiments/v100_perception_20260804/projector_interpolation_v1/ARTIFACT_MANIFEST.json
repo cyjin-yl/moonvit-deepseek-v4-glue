@@ -1,0 +1,159 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-05T04:51:23.402274+00:00",
+  "root": "projector_interpolation_v1",
+  "git_base_sha": "4796933c6ff0b0264838c6899a839f708f18f4fb",
+  "files": {
+    "charts/01-task-preference.svg": {
+      "bytes": 5291,
+      "sha256": "3f97323d880f5e9fc64d09c2bb72f280a6824df819abf0b3b75915e776adda23"
+    },
+    "charts/02-task-generation.svg": {
+      "bytes": 5284,
+      "sha256": "3b762c464a473c11e51345c8d3e2cc5cc45265791ccf366ebd9f0b0af890d68c"
+    },
+    "charts/03-balance-summary.svg": {
+      "bytes": 3764,
+      "sha256": "b04c1bf0ad3a9aace9bc99f352d2801e380cd2037fa6ed17e932776fb1101386"
+    },
+    "charts/CHARTS.json": {
+      "bytes": 1070,
+      "sha256": "af472bc6aa85ac2a320f085ccc10567381a7f0159875df502d8e0ee24d326cbb"
+    },
+    "logs/projector_interpolation_screen_v1.log": {
+      "bytes": 2229,
+      "sha256": "1a1fc5774b5d391ea021533a67e7a8c215dba36a4acfac73e9191ef14bbbbccd"
+    },
+    "PACKAGE_VERIFICATION.json": {
+      "bytes": 1199,
+      "sha256": "a43a9282d16117247aa1f59dd3d98515eefd1138449be4801c2bc689689e5868"
+    },
+    "raw/adaptation/projector_interpolation_analysis_v1/DECISIONS.json": {
+      "bytes": 3227,
+      "sha256": "c2a54bd3c853980fbadb4dab9b4550f583a068aed2e951016401b3e45a03c74c"
+    },
+    "raw/adaptation/projector_interpolation_analysis_v1/interpolation_contrasts.csv": {
+      "bytes": 129526,
+      "sha256": "bceb8cfaf237a212e3930a75c2d77c665a69abfe0d22ea0b419956fe4f9b5517"
+    },
+    "raw/adaptation/projector_interpolation_analysis_v1/interpolation_metrics.csv": {
+      "bytes": 54892,
+      "sha256": "75685ae994223eb8a898bf65b9697e95c0e19fba6c7c468eaee10a4bd7db3fcb"
+    },
+    "raw/adaptation/projector_interpolation_analysis_v1/SUMMARY.json": {
+      "bytes": 1062,
+      "sha256": "167abeafdf6cc0fdb33cfa5fd73df44f324047daae45d292b475d11be8deb033"
+    },
+    "raw/adaptation/projector_interpolation_screen_v1/CONFIG.json": {
+      "bytes": 7925,
+      "sha256": "47ab0a21106cab7b8fff7db78626eba2ec2bece16a4b8af03febe1659ad6b6d1"
+    },
+    "raw/adaptation/projector_interpolation_screen_v1/DECISIONS.json": {
+      "bytes": 1223,
+      "sha256": "d4cdcf3af55d0999def5e7f54eccebf54aa867681f929c929c6cf81eab308cd7"
+    },
+    "raw/adaptation/projector_interpolation_screen_v1/generation_curve.csv": {
+      "bytes": 7999,
+      "sha256": "40e267a0061a96ecd22ca089028646a4816ea6efc666a511b420c1bc7a396e1b"
+    },
+    "raw/adaptation/projector_interpolation_screen_v1/generation_records.jsonl": {
+      "bytes": 3183482,
+      "sha256": "aa450c1d1ea3f8cc2e077a3279ee299b7727bb35cd10f1bacb539e44d5cda0a3"
+    },
+    "raw/adaptation/projector_interpolation_screen_v1/preference_curve.csv": {
+      "bytes": 12760,
+      "sha256": "e801e88efdc2692ac291c5ebdb85f1f387bfd8a442f550bf94a68e80adb4f60f"
+    },
+    "raw/adaptation/projector_interpolation_screen_v1/preference_records.jsonl": {
+      "bytes": 6579432,
+      "sha256": "0b5dd32ef92b10a1e25d60eb176f8a87f514bde8242e4d3574589c1be16dc4ad"
+    },
+    "raw/adaptation/projector_interpolation_screen_v1/SUMMARY.json": {
+      "bytes": 1543,
+      "sha256": "fe89c3197b50b8551ded0732b664a44c089a14c7fd42e38cfe754b9cf1b9c6ab"
+    },
+    "raw/adaptation/projector_interpolation_smoke_v1/CONFIG.json": {
+      "bytes": 7923,
+      "sha256": "af481caa2c18c3e765e98b8bd10ed5dfdba221e334324327b8ba6d5d3b0a707f"
+    },
+    "raw/adaptation/projector_interpolation_smoke_v1/DECISIONS.json": {
+      "bytes": 1184,
+      "sha256": "b5be47186d1ba03dad0c2416b7250c86e5d89eb5d848b4b4c4cd56dd030387ca"
+    },
+    "raw/adaptation/projector_interpolation_smoke_v1/generation_curve.csv": {
+      "bytes": 7641,
+      "sha256": "93ad2b0ccb1623a666c86295f97fef8dea1c21366a1005706d2d229e4f5d0a77"
+    },
+    "raw/adaptation/projector_interpolation_smoke_v1/generation_records.jsonl": {
+      "bytes": 63598,
+      "sha256": "800898130ed46b99c14eb062aa7a48c41f32231c780700666d869507b1f4f07e"
+    },
+    "raw/adaptation/projector_interpolation_smoke_v1/preference_curve.csv": {
+      "bytes": 11870,
+      "sha256": "cdabb381f36e53bfb26f431c2e105b806f53592ba81c48c29e2aee99f9796f18"
+    },
+    "raw/adaptation/projector_interpolation_smoke_v1/preference_records.jsonl": {
+      "bytes": 131041,
+      "sha256": "d0987e14ca037dbf59c96a4e4f9e5da700717872c08d4c0799ecc9d5fa9e286b"
+    },
+    "raw/adaptation/projector_interpolation_smoke_v1/SUMMARY.json": {
+      "bytes": 1536,
+      "sha256": "57774fdfbd7eb91c879d1439c80a9852770427fe23eb628d76a0d42c6bb125d6"
+    },
+    "raw/adaptation/projector_step50_100_interpolation_v1/checkpoints/alpha-0p000/MANIFEST.json": {
+      "bytes": 662,
+      "sha256": "754a6c89b3987942a0997e618e3d5d8bb82ce536041c25cf414711ef0f72040e"
+    },
+    "raw/adaptation/projector_step50_100_interpolation_v1/checkpoints/alpha-0p000/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_step50_100_interpolation_v1/checkpoints/alpha-0p250/MANIFEST.json": {
+      "bytes": 664,
+      "sha256": "e7c018cbfe6e8fab9672cd812e920f6ad2ceef5d607ce8468cfe65f1c44d650d"
+    },
+    "raw/adaptation/projector_step50_100_interpolation_v1/checkpoints/alpha-0p250/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_step50_100_interpolation_v1/checkpoints/alpha-0p500/MANIFEST.json": {
+      "bytes": 663,
+      "sha256": "b7e34387af4019419612f8b3ee2fe6fe682d28025d6a96651e8f62013761757c"
+    },
+    "raw/adaptation/projector_step50_100_interpolation_v1/checkpoints/alpha-0p500/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_step50_100_interpolation_v1/checkpoints/alpha-0p750/MANIFEST.json": {
+      "bytes": 664,
+      "sha256": "66388fb1c85192280ba9ad072fdfef838ff4e3515e0187bfd905d0be0a9bc146"
+    },
+    "raw/adaptation/projector_step50_100_interpolation_v1/checkpoints/alpha-0p750/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_step50_100_interpolation_v1/checkpoints/alpha-1p000/MANIFEST.json": {
+      "bytes": 664,
+      "sha256": "d2b8e2e54d885fe33111a0365ea8b64d7347904237dc4000d2c784d323ef5469"
+    },
+    "raw/adaptation/projector_step50_100_interpolation_v1/checkpoints/alpha-1p000/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_step50_100_interpolation_v1/SUMMARY.json": {
+      "bytes": 6643,
+      "sha256": "bac783e4f272feee9928fd4c4a8dcccf3ea2e89bc37333d86211d1f72af5c4cd"
+    },
+    "RAW_DATA_LOCATION.json": {
+      "bytes": 867,
+      "sha256": "b2f2ebe608186afe6f1dcdf3fb6edfcab29769b5b2693d9fd2c001de23b22566"
+    },
+    "RUN_NOTES.md": {
+      "bytes": 3269,
+      "sha256": "3aed1f0e4538d7485a308760c89240a54bf5e5c8fd1ccdc09ebf116ddc6eb47a"
+    }
+  },
+  "file_count": 37,
+  "total_bytes": 10241432,
+  "final_half_scored": false
+}

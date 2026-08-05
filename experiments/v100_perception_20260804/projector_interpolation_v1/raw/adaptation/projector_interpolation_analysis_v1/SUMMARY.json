@@ -1,0 +1,40 @@
+{
+  "status": "valid",
+  "format_version": "projector-interpolation-analysis-v1",
+  "completed_at_utc": "2026-08-05T04:42:31.641451+00:00",
+  "states": [
+    "frozen-base",
+    "projector-interp000",
+    "projector-interp025",
+    "projector-interp050",
+    "projector-interp075",
+    "projector-interp100"
+  ],
+  "tasks": [
+    "color",
+    "coordinate",
+    "count",
+    "ocr",
+    "shape",
+    "spatial"
+  ],
+  "metric_rows": 630,
+  "contrasts": 651,
+  "bootstrap_samples": 2000,
+  "evaluation_summary_sha256": "fe89c3197b50b8551ded0732b664a44c089a14c7fd42e38cfe754b9cf1b9c6ab",
+  "files": {
+    "interpolation_metrics.csv": {
+      "bytes": 54892,
+      "sha256": "75685ae994223eb8a898bf65b9697e95c0e19fba6c7c468eaee10a4bd7db3fcb"
+    },
+    "interpolation_contrasts.csv": {
+      "bytes": 129526,
+      "sha256": "bceb8cfaf237a212e3930a75c2d77c665a69abfe0d22ea0b419956fe4f9b5517"
+    },
+    "DECISIONS.json": {
+      "bytes": 3227,
+      "sha256": "c2a54bd3c853980fbadb4dab9b4550f583a068aed2e951016401b3e45a03c74c"
+    }
+  },
+  "final_half_scored": false
+}

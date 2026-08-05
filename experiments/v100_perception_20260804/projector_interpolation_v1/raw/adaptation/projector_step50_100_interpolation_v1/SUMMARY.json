@@ -1,0 +1,193 @@
+{
+  "status": "valid",
+  "format_version": "projector-linear-interpolation-v1",
+  "metadata": {
+    "completed_at_utc": "2026-08-05T04:30:52.134439+00:00",
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "final_half_scored": false
+  },
+  "kind": "projector_interpolation",
+  "formula": "(1 - alpha) * projector_step_early + alpha * projector_step_late",
+  "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1",
+  "source_summary_sha256": "adcdee5c6e36e13f6ee052e34a78ec021ebd3290acb14e9d25573468ee446ecc",
+  "early_step": 50,
+  "late_step": 100,
+  "early_source_manifest": {
+    "status": "valid",
+    "arm": "additional_projector_epoch",
+    "kind": "projector",
+    "step": 50,
+    "examples_seen": 1200,
+    "weights_tensor_sha256": "fd7b07e6fe9f4e9054b9f4e4dcbecf8bbeaf83241c937ec6d5c4d589a017d192",
+    "files": {
+      "projector.safetensors": {
+        "bytes": 81817648,
+        "sha256": "8dd9321656d2d745303213634e61fe429587a76c149ac00631cc78e2ef0128a8"
+      },
+      "projector_config.json": {
+        "bytes": 127,
+        "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+      },
+      "training_state.pt": {
+        "bytes": 163640597,
+        "sha256": "57e9ddbcd4a3b60594aa169c6d4e4b4adf2a5803d22a9da41e4fad4c23ac2f32"
+      }
+    }
+  },
+  "late_source_manifest": {
+    "status": "valid",
+    "arm": "additional_projector_epoch",
+    "kind": "projector",
+    "step": 100,
+    "examples_seen": 2400,
+    "weights_tensor_sha256": "7b731cffcb11da833efbd7d99a41ee77cba9eda3dfdb1135989e79adbb921a76",
+    "files": {
+      "projector.safetensors": {
+        "bytes": 81817648,
+        "sha256": "05f19079bc6db6757f378c22b05a5cb3ae3e638551513f642bb25dea04ef092d"
+      },
+      "projector_config.json": {
+        "bytes": 127,
+        "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+      },
+      "training_state.pt": {
+        "bytes": 163640597,
+        "sha256": "8f96c2a4cf165c47a78cf039a687c6fae2a2c26b5ca5c9d8cc4e8da78aa4a408"
+      }
+    }
+  },
+  "alphas": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "endpoint_reproduction": {
+    "0.0": {
+      "exact_tensor_equality": true,
+      "source_tensor_sha256": "fd7b07e6fe9f4e9054b9f4e4dcbecf8bbeaf83241c937ec6d5c4d589a017d192",
+      "output_tensor_sha256": "fd7b07e6fe9f4e9054b9f4e4dcbecf8bbeaf83241c937ec6d5c4d589a017d192"
+    },
+    "1.0": {
+      "exact_tensor_equality": true,
+      "source_tensor_sha256": "7b731cffcb11da833efbd7d99a41ee77cba9eda3dfdb1135989e79adbb921a76",
+      "output_tensor_sha256": "7b731cffcb11da833efbd7d99a41ee77cba9eda3dfdb1135989e79adbb921a76"
+    }
+  },
+  "checkpoints": {
+    "alpha-0p000": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 0,
+      "examples_seen": null,
+      "evaluation_state_id": "projector-interp000",
+      "interpolation_alpha": 0.0,
+      "relative_path": "checkpoints/alpha-0p000",
+      "source_early_step": 50,
+      "source_late_step": 100,
+      "weights_tensor_sha256": "fd7b07e6fe9f4e9054b9f4e4dcbecf8bbeaf83241c937ec6d5c4d589a017d192",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817592,
+          "sha256": "0a83c9c4c290d80cc965455e105d7cc03f1d06927a79a8c5aea9363de26e5e85"
+        },
+        "projector_config.json": {
+          "bytes": 127,
+          "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+        }
+      }
+    },
+    "alpha-0p250": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 25,
+      "examples_seen": null,
+      "evaluation_state_id": "projector-interp025",
+      "interpolation_alpha": 0.25,
+      "relative_path": "checkpoints/alpha-0p250",
+      "source_early_step": 50,
+      "source_late_step": 100,
+      "weights_tensor_sha256": "b4e9d11b0184dba719bcbf5a7e0b219772014c2a1afb3c9a5ba4163cca0c19ca",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817592,
+          "sha256": "c42d3f9c133666914f2b0522528eb96dcca5b6e3e8520826c20bfc55efedfc27"
+        },
+        "projector_config.json": {
+          "bytes": 127,
+          "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+        }
+      }
+    },
+    "alpha-0p500": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 50,
+      "examples_seen": null,
+      "evaluation_state_id": "projector-interp050",
+      "interpolation_alpha": 0.5,
+      "relative_path": "checkpoints/alpha-0p500",
+      "source_early_step": 50,
+      "source_late_step": 100,
+      "weights_tensor_sha256": "a9c3163e2b45bc4c31f49a86e52623f25df92d0a69d1366e9bd3b8821e8e0d84",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817592,
+          "sha256": "647d3e6aa9cdfa9c0eb3254c57cd6973c151bd0b8987a65c7e221bb5828071bd"
+        },
+        "projector_config.json": {
+          "bytes": 127,
+          "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+        }
+      }
+    },
+    "alpha-0p750": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 75,
+      "examples_seen": null,
+      "evaluation_state_id": "projector-interp075",
+      "interpolation_alpha": 0.75,
+      "relative_path": "checkpoints/alpha-0p750",
+      "source_early_step": 50,
+      "source_late_step": 100,
+      "weights_tensor_sha256": "0f4197e80ec1cf5e9fc99f407e1280c64db986f35142f12eb0ff1dc592b30196",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817592,
+          "sha256": "d44c4bd07d72888b99db595aed0feeb164af3e5f0c40ae4a47ab4b96ec195061"
+        },
+        "projector_config.json": {
+          "bytes": 127,
+          "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+        }
+      }
+    },
+    "alpha-1p000": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 100,
+      "examples_seen": null,
+      "evaluation_state_id": "projector-interp100",
+      "interpolation_alpha": 1.0,
+      "relative_path": "checkpoints/alpha-1p000",
+      "source_early_step": 50,
+      "source_late_step": 100,
+      "weights_tensor_sha256": "7b731cffcb11da833efbd7d99a41ee77cba9eda3dfdb1135989e79adbb921a76",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817592,
+          "sha256": "078db4422acadbbe67a842c9263b2075b886e245cffbe575a9ceecd7e1131d9b"
+        },
+        "projector_config.json": {
+          "bytes": 127,
+          "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+        }
+      }
+    }
+  },
+  "final_half_scored": false
+}

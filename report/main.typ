@@ -17,7 +17,7 @@
 
 = 执行摘要
 
-本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段不训练视觉塔和语言模型，只训练一个 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。当前结论是：V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证。包 3–6 依次定位 shape 内容信号、证明 tower/projector 保留信息、用短程 projector 续训完全恢复 shape，并确认这种 shape-only 恢复不跨任务泛化。包 7 用一轮六任务均衡监督使全部任务的 teacher-forced paired preference 和 vision−shuffle 下界同时转正；自由生成仍只有 shape/spatial 形成 paired 改善。包 8 从该 checkpoint 做严格等顺序对照：额外 projector epoch 把总体 strict preference 从 0.224 提至 0.511、paired generation 从 0.063 提至 0.257，并新解锁 color/coordinate/spatial 生成；顶部 LoRA 只显著强化 shape，且伤害 count/spatial。包 9 进一步证明 projector step 50 与 100 的总体 strict preference 几乎相同，却在 count/shape 与 coordinate/spatial 之间发生大幅能力重排；当前瓶颈已收敛到同一训练轨迹内的多任务 Pareto 冲突、OCR/count 的生成裂缝和辅助目标设计。正式 0731 大权重的 FP4/FP8 可微 kernel 仍是尚未消除的主要风险。
+本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段不训练视觉塔和语言模型，只训练一个 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。当前结论是：V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证。包 3–6 依次定位 shape 内容信号、证明 tower/projector 保留信息、用短程 projector 续训完全恢复 shape，并确认这种 shape-only 恢复不跨任务泛化。包 7 用一轮六任务均衡监督使全部任务的 teacher-forced paired preference 和 vision−shuffle 下界同时转正；自由生成仍只有 shape/spatial 形成 paired 改善。包 8 从该 checkpoint 做严格等顺序对照：额外 projector epoch 把总体 strict preference 从 0.224 提至 0.511、paired generation 从 0.063 提至 0.257，并新解锁 color/coordinate/spatial 生成；顶部 LoRA 只显著强化 shape，且伤害 count/spatial。包 9 进一步证明 projector step 50 与 100 的总体 strict preference 几乎相同，却在 count/shape 与 coordinate/spatial 之间发生大幅能力重排；包 10 验证两端处于平滑相连的权重路径，但线性插值仍沿相同 Pareto 权衡移动，无法无训练地合并互补能力。当前瓶颈已收敛到任务条件抗遗忘、梯度冲突、OCR/count 的生成裂缝和辅助目标设计。正式 0731 大权重的 FP4/FP8 可微 kernel 仍是尚未消除的主要风险。
 
 MoonViT-V2 有 401.2M 参数，抽取后的 BF16 权重约 802 MB，相对于约 160 GB 级的 DeepSeek 混合精度权重很小。更大的资源变量是图像分辨率带来的视觉 token 数和冻结 LLM 反向所保留的激活，而不是视觉塔权重。
 
@@ -753,6 +753,56 @@ LoRA step 50 的 shape strict/generation 相对 base 提高 +0.340 [0.275, 0.405
 
 下一项先对 projector step 50/100 做固定系数权重插值，并用相同 canonical-bf16 50-pair screen 判断能否同时保留 count/shape、获得 coordinate/spatial。若某个插值点改善多任务 Pareto 前沿，再做全量确认；若所有点沿同一权衡曲线移动，则从 step 50 测试抗遗忘辅助目标或梯度冲突干预。付费 Gate D、完整 DeepSeek-V4 与任何租卡继续暂缓。
 
+== Projector checkpoint 插值与同 basin 合并检验（包 10，2026-08-05）
+
+=== 预注册规则与端点精确复现
+
+包 9 的 step 50/100 总体分数相同、任务能力互补，因而先检验最低成本的线性 mode-connectivity/model-soup 假设。构造公式为 `(1−alpha) P50 + alpha P100`，固定 alpha=0/.25/.50/.75/1。候选必须同时满足：count/shape 距 alpha 0 不超过 0.05；coordinate/spatial 严格高于 alpha 0；worst-task strict preference 高于两个端点；macro strict 距最佳端点不超过 0.02。规则在读取中间点之前写入分析器。
+
+插值器逐张量检查 key/shape/dtype，保存后重载并计算 ordered-tensor SHA。alpha 0/1 的 tensor SHA 分别精确复现 `fd7b07e6…d192` 与 `7b731cff…a76`。canonical-bf16 screen 含 frozen 与五个插值状态，10,800 条 preference、7,200 条 generation、630 个 metric 与 651 个 pair-bootstrap contrast；耗时 541.3s、峰值 12.72 GB、零失败。独立 verifier 进一步确认两端各有 1,800 条 preference 和 1,200 条 generation 与包 9 原端点逐字段完全一致，覆盖 raw logp/NLL/margin 与生成字符串。
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 10pt,
+    image("../experiments/v100_perception_20260804/projector_interpolation_v1/charts/01-task-preference.svg", width: 100%),
+    image("../experiments/v100_perception_20260804/projector_interpolation_v1/charts/02-task-generation.svg", width: 100%),
+  ),
+  caption: [左：六任务 strict paired preference；右：paired generation。spatial 在 alpha=.25 即到 1.0，count/shape 沿路径下降，未出现两端能力并集。],
+)
+
+=== 中间点提高宏平均，但没有保留 count/shape
+
+没有插值点通过预注册合并规则。alpha=.25 是最佳 balance diagnostic：macro strict 0.5333、worst-task 0.160、macro generation 0.2700、endpoint regret 0.520。相对 alpha 0，它把 spatial strict 从 0.74 提到 1.00，差值 *+0.26 [0.14, 0.38]*，macro generation 提高 *+0.0433 [0.0100, 0.0767]*；与此同时 count 从 0.42 降到 0.26，差值 *−0.16 [−0.28, −0.04]*，shape 从 0.80 降到 0.70，差值 −0.10 [−0.20, 0.00]。alpha=.50/.75 的 count 进一步降到 0.14。
+
+#table(
+  columns: (0.7fr, 1fr, 1fr, 1fr, 1fr, 1fr),
+  [*alpha*], [*macro strict*], [*worst strict*], [*macro generation*], [*endpoint regret*], [*目标合并*],
+  [0], [0.5267], [0.180], [0.2267], [0.560], [endpoint],
+  [.25], [0.5333], [0.160], [0.2700], [0.520], [fail],
+  [.50], [0.5267], [0.140], [0.2833], [0.560], [fail],
+  [.75], [0.5233], [0.140], [0.2733], [0.620], [fail],
+  [1], [0.5167], [0.120], [0.2567], [0.620], [endpoint],
+)
+
+alpha=.25 对 alpha 1 的小幅 macro 优势都不确定：strict +0.0167 [−0.0267, 0.0633]，generation +0.0133 [−0.0233, 0.0533]。因此它不进入全量确认。结果支持两个 checkpoint 处于 aggregate 平滑的连接路径，同时反驳“线性平均可恢复能力并集”。能力竞争发生在路径内部，后续需要改变目标或梯度，而非继续挑选同一直线上的权重。
+
+#figure(
+  image("../experiments/v100_perception_20260804/projector_interpolation_v1/charts/03-balance-summary.svg", width: 78%),
+  caption: [macro preference、worst-task preference 与 macro generation 的插值轨迹。宏平均平滑，worst-task 没有越过端点前沿。],
+)
+
+#table(
+  columns: (1.8fr, 1fr, 2.7fr),
+  [*假设*], [*包 10 更新*], [*证据与动作*],
+  [step 50/100 位于完全断裂的权重 basin], [反驳], [插值全程保持稳定 macro，未出现灾难性坍塌；两端评测逐字段精确复现。],
+  [线性 checkpoint 合并可兼得互补任务], [反驳], [alpha=.25 已显著获得 spatial，却显著丢失 count；所有中间点都未通过预注册 retention/worst-task 规则。],
+  [单看 macro 足以选 checkpoint], [反驳], [alpha=.25/.50 的 macro 更高，但 worst-task 更低，并掩盖 count/shape 遗忘。],
+  [需要改变训练目标或梯度], [支持], [下一项从 step 50 沿精确剩余记录顺序加入 count/shape projector-output anchoring；失败再转 per-task gradient conflict。],
+)
+
+下一项从 step 50 恢复优化器和原 step 51–100 记录顺序，加入仅作用于 count/shape 的 frozen-step50 projector-output anchoring，并同时复现无正则 continuation 控制。先以最小 lambda screen 判断是否能保留 count/shape 且继续学习 coordinate/spatial；无效时转逐任务梯度冲突干预。付费 Gate D 继续暂缓。
+
 == Gate C：Vast 只读调研
 
 2026-08-02 12:23（UTC+8）用官方 Search Offers API 查询 verified、rentable、可靠度至少 0.98、至少 4 张卡、单卡至少 80 GB、总显存至少 320 GB 的 on-demand offer。市场是动态的，以下价格只用于预算，offer ID 不应写进自动租用脚本。
@@ -1003,6 +1053,7 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
   [2026-08-05], [V100 包 7 完成一轮 true-batch 六任务均衡 projector 续训：step 100 时六项 strict paired preference 与 vision−shuffle 下界全部转正；自由生成仅 shape/spatial 改善，定位出四项明确的 teacher-forced/生成裂缝。下一项做等顺序额外 projector epoch 与顶部 LoRA screen。],
   [2026-08-05], [V100 包 8 等顺序 endpoint 对照：额外 projector epoch 使总体 strict preference 0.224→0.511、paired generation 0.063→0.257，并解锁 color/coordinate/spatial 生成；top-12 LoRA 只显著强化 shape 且伤害 count/spatial。fp32/bf16 敏感性被显式保留，canonical bf16 base 精确复现包 7。],
   [2026-08-05], [V100 包 9 canonical-bf16 step 25/50/100 轨迹与 step-50 全量确认：projector step 50/100 总体 strict 几乎相同，但 count/shape 与 coordinate/spatial 出现显著反向迁移；OCR 有正 vision−shuffle 内部证据、base-relative 区间仍跨零且 generation 为零。下一项先做同 basin checkpoint 插值，再决定抗遗忘辅助目标。],
+  [2026-08-05], [V100 包 10 step-50/100 projector 插值：alpha 0/1 的张量和逐条评测精确复现；alpha=.25 虽提高 macro generation，却显著损失 count，并未改善 worst-task 或保留 shape。线性权重平均无法合并两端能力，下一项转任务条件抗遗忘辅助目标。],
 )
 
 = 下一位执行者的最短路径

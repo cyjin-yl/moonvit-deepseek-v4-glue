@@ -26,6 +26,9 @@ from analyze_adaptation_compare import (
     trajectory_peak_summary,
 )
 from compare_adaptation_checkpoints import paired_run_metric_rows
+from interpolate_projector_checkpoints import interpolate_state_dict
+from analyze_projector_interpolation import select_interpolation_candidate
+from verify_projector_interpolation import endpoint_equivalence
 
 
 def test_balanced_epoch_indices_keeps_every_batch_task_balanced() -> None:
@@ -155,6 +158,27 @@ def test_endpoint_screen_keeps_frozen_and_requested_steps() -> None:
     ]
 
 
+def test_interpolation_screen_can_keep_only_projector_states() -> None:
+    states = [
+        {"id": "frozen-base", "kind": "frozen", "adaptation_step": 0},
+        {"id": "lora-step25", "kind": "lora", "adaptation_step": 25},
+        {"id": "projector-interp25", "kind": "projector", "adaptation_step": 25},
+        {"id": "projector-interp50", "kind": "projector", "adaptation_step": 50},
+        {"id": "projector-interp75", "kind": "projector", "adaptation_step": 75},
+    ]
+
+    filtered = filter_adaptation_states(
+        states, [25, 50, 75], requested_kinds=["projector"]
+    )
+
+    assert [row["id"] for row in filtered] == [
+        "frozen-base",
+        "projector-interp25",
+        "projector-interp50",
+        "projector-interp75",
+    ]
+
+
 def test_endpoint_direction_requires_two_task_level_generation_wins() -> None:
     decisions = {
         "shape": {
@@ -274,3 +298,91 @@ def test_flat_trajectory_is_not_reported_as_a_nonmonotonic_peak() -> None:
     )
     assert summary["latest_state"] == "lora-step100"
     assert summary["nonmonotonic_peak"] is False
+
+
+def test_projector_interpolation_reproduces_endpoints_and_midpoint() -> None:
+    early = {"weight": torch.tensor([1.0, 3.0])}
+    late = {"weight": torch.tensor([5.0, 7.0])}
+
+    start = interpolate_state_dict(early, late, alpha=0.0)
+    middle = interpolate_state_dict(early, late, alpha=0.5)
+    end = interpolate_state_dict(early, late, alpha=1.0)
+
+    assert torch.equal(start["weight"], early["weight"])
+    assert torch.equal(middle["weight"], torch.tensor([3.0, 5.0]))
+    assert torch.equal(end["weight"], late["weight"])
+
+
+def test_interpolation_candidate_requires_retention_and_worst_task_gain() -> None:
+    states = {
+        "projector-interp000": {
+            "alpha": 0.0,
+            "preference": {
+                "color": 0.60,
+                "coordinate": 0.40,
+                "count": 0.40,
+                "ocr": 0.10,
+                "shape": 0.80,
+                "spatial": 0.70,
+            },
+            "generation_macro": 0.20,
+        },
+        "projector-interp050": {
+            "alpha": 0.5,
+            "preference": {
+                "color": 0.65,
+                "coordinate": 0.50,
+                "count": 0.36,
+                "ocr": 0.20,
+                "shape": 0.76,
+                "spatial": 0.80,
+            },
+            "generation_macro": 0.23,
+        },
+        "projector-interp100": {
+            "alpha": 1.0,
+            "preference": {
+                "color": 0.70,
+                "coordinate": 0.55,
+                "count": 0.10,
+                "ocr": 0.15,
+                "shape": 0.45,
+                "spatial": 1.00,
+            },
+            "generation_macro": 0.25,
+        },
+    }
+
+    decision = select_interpolation_candidate(states)
+
+    assert decision["selected_state"] == "projector-interp050"
+    assert decision["targeted_merge_pass"] is True
+
+
+def test_interpolation_endpoint_verifier_allows_only_state_metadata_to_differ() -> None:
+    reference = [
+        {
+            "state": "projector-step50",
+            "condition": "vision",
+            "id": "sample-a",
+            "pair_id": "pair-1",
+            "pair_variant": "a",
+            "task": "shape",
+            "correct_margin": 1.25,
+        }
+    ]
+    interpolation = [
+        {
+            **reference[0],
+            "state": "projector-interp000",
+            "interpolation_alpha": 0.0,
+        }
+    ]
+
+    assert endpoint_equivalence(
+        interpolation,
+        reference,
+        interpolation_state="projector-interp000",
+        reference_state="projector-step50",
+        value_fields=("correct_margin",),
+    ) == 1
