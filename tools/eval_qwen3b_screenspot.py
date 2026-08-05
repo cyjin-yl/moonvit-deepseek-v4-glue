@@ -75,6 +75,11 @@ def write_json(path: Path, payload: Any) -> None:
     temporary.replace(path)
 
 
+def set_stage(stage: dict[str, str], name: str) -> None:
+    stage["name"] = name
+    print(f"stage: {name}", flush=True)
+
+
 def canonical_sha256(value: Any) -> str:
     encoded = json.dumps(
         value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
@@ -344,7 +349,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         and args.development_limit is None
     )
 
-    stage["name"] = "cache_and_frozen_file_verification"
+    set_stage(stage, "cache_and_frozen_file_verification")
     cache_verification = verify_feature_cache(
         args.feature_cache,
         expected_count=len(manifest["samples"]),
@@ -426,7 +431,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
     else:
         write_json(config_path, binding)
 
-    stage["name"] = "model_and_prompt_load"
+    set_stage(stage, "model_and_prompt_load")
     from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
     import transformers
 
@@ -542,7 +547,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
     predictions_dir = args.out / "predictions"
     predictions_dir.mkdir(exist_ok=True)
 
-    stage["name"] = "condition_generation"
+    set_stage(stage, "condition_generation")
     summaries = []
     condition_specs = [
         ("blind", None, None),
@@ -598,7 +603,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         else:
             shutil.copyfile(source_path, destination_path)
 
-    stage["name"] = "complete"
+    set_stage(stage, "complete")
     prediction_files = {
         path.stem: {
             "path": str(path),
