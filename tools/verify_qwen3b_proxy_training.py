@@ -144,6 +144,34 @@ def verify_checkpoint_inventory(directory: Path) -> dict[str, Any]:
     }
 
 
+def build_checkpoint_binding(
+    *,
+    contract: dict[str, Any],
+    order: dict[str, Any],
+    cache: dict[str, Any],
+    contract_path: Path,
+    order_path: Path,
+    cache_manifest_path: Path,
+    runner_git_sha: str,
+) -> dict[str, Any]:
+    """从冻结输入重建 checkpoint 身份；不复用预算摘要字段。"""
+
+    return {
+        "runner_git_sha": runner_git_sha,
+        "contract_file_sha256": sha256_file(contract_path),
+        "training_order_manifest_file_sha256": sha256_file(order_path),
+        "training_order_manifest_sha256": order["manifest_sha256"],
+        "training_order_records_sha256": order["records_sha256"],
+        "feature_cache_manifest_file_sha256": sha256_file(cache_manifest_path),
+        "feature_cache_records_sha256": cache["records_sha256"],
+        "feature_cache_runner_git_sha": cache["git_sha"],
+        "initial_projector_sha256": contract["canonical_projector"][
+            "initialization_contract"
+        ]["step0"]["weights_sha256"],
+        "proxy_receiver_sha256": contract["qwen_proxy_receiver"]["buffer_sha256"],
+    }
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run", type=Path, required=True)
@@ -196,14 +224,22 @@ def main() -> None:
         != run_config["feature_cache_manifest_file_sha256"]
     ):
         raise ValueError("formal training input file binding differs")
-    binding = run_config["binding"]
+    budget_binding = run_config["binding"]
     if (
-        binding["training_order_manifest_sha256"] != order["manifest_sha256"]
-        or binding["training_order_records_sha256"] != order["records_sha256"]
-        or binding["feature_cache_records_sha256"] != cache["records_sha256"]
-        or binding["feature_cache_runner_git_sha"] != cache["git_sha"]
+        int(budget_binding["optimizer_steps"]) != expected_steps
+        or int(budget_binding["examples_seen"]) != expected_examples
+        or int(budget_binding["gradient_accumulation"]) != accumulation
     ):
-        raise ValueError("formal training logical order/cache binding differs")
+        raise ValueError("formal training budget binding differs")
+    checkpoint_binding = build_checkpoint_binding(
+        contract=contract,
+        order=order,
+        cache=cache,
+        contract_path=args.contract,
+        order_path=args.training_order_manifest,
+        cache_manifest_path=cache_manifest_path,
+        runner_git_sha=args.expected_runner_git_sha,
+    )
     if len(supervision) != expected_examples or sha256_file(supervision_path) != summary[
         "supervision_records_sha256"
     ]:
@@ -254,7 +290,9 @@ def main() -> None:
         manifest = verified["manifest"]
         if int(manifest["step"]) != step:
             raise ValueError(f"checkpoint step differs: {step}")
-        if any(manifest.get(key) != binding.get(key) for key in binding_keys):
+        if any(
+            manifest.get(key) != checkpoint_binding.get(key) for key in binding_keys
+        ):
             raise ValueError(f"checkpoint binding differs: {step}")
         history_payload = json.loads(
             (args.run / "checkpoints" / f"step-{step:06d}" / "history.json").read_text(
