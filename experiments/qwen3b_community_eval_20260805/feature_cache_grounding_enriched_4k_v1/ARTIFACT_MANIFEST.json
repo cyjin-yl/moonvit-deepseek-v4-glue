@@ -1,0 +1,47 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-05T23:22:54.131776+00:00",
+  "root": "feature_cache_grounding_enriched_4k_v1",
+  "git_base_sha": "aa933ca1cf5a9386f60cd67658083d4e79b2b376",
+  "files": {
+    "cache_records.jsonl": {
+      "bytes": 778931,
+      "sha256": "08d7d68810fc3b326e79239c31868497bc0e75e29acd2a34c3fd203ca9e08b05"
+    },
+    "failures.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "INDEPENDENT_VERIFICATION.json": {
+      "bytes": 752,
+      "sha256": "8b50cc1c7ce8d9d7585c968d071087548ba8ffd4f224f6a7505b70848f7a4e3c"
+    },
+    "MANIFEST.json": {
+      "bytes": 1593497,
+      "sha256": "1f035374a0db01c8347dfcb2fb6aa6c5e4aad7128ccaa4e169e17f784a6c8a41"
+    },
+    "README.md": {
+      "bytes": 1752,
+      "sha256": "52066ecde1c43ced8c33b2947c9538c57098b0a156aabdbb1d6d1e8a40783023"
+    },
+    "REMOTE_ARTIFACT_MANIFEST.json": {
+      "bytes": 10795,
+      "sha256": "8c1c6e24e963dbefaefd306099350861c9359500be895aafe12cc31e7ab92e06"
+    },
+    "run.log": {
+      "bytes": 248057,
+      "sha256": "90ca4106884c044322051f3bba3e2ee9a80d77b53cd543b0ac2833c9cc8036ae"
+    },
+    "SUMMARY.json": {
+      "bytes": 324,
+      "sha256": "0dcbbb05494ca39a51e3af4a8661da601f53f20399a9991fb82beee2b9353e96"
+    },
+    "verify.log": {
+      "bytes": 752,
+      "sha256": "8b50cc1c7ce8d9d7585c968d071087548ba8ffd4f224f6a7505b70848f7a4e3c"
+    }
+  },
+  "file_count": 9,
+  "total_bytes": 2634860,
+  "final_half_scored": false
+}

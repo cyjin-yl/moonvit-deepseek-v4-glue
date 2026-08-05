@@ -93,8 +93,9 @@ Teacher-forced correct-versus-counterfactual preference 进一步定位：traine
 11. **已完成（Package 15G）**：完整 1,272-row public ScreenSpot 七条件生成与 2,000 paired bootstrap；GLM50 的负结果在完整集复现，所有 predictions 和逐行 scores 已保存。
 12. **已完成（Package 15H）**：step0/step500 teacher-forced correct-vs-counterfactual preference；训练显著提高绝对坐标答案概率，却没有正确图相对 blind/shuffled 的选择优势。
 13. **已完成（Package 15I，训练前）**：exact step0、500 steps、4,000 examples、分辨率、receiver 与 evaluator 全部固定；从冻结源 pack 分别取前 2,000 ShowUI grounding 与前 2,000 short-answer，按 grounding-first 严格交替。Manifest `d632ecc2…0bf1` 与 order `f3c3dec1…15ab` 已独立匹配 4,000 records/targets/images 和 1,255,969,179 image bytes。
-14. **当前 fixed-budget screen**：构建并独立验证绑定 Package-15I 的 MoonViT cache，随后从 exact step0 运行 500 steps。先跑单 seed；只有 preference 与 GLM50 因果指标同时改善才扩大到 full/三 seed。
-15. **并行工程缺口**：补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 240-row language-retention evaluator；任何候选替换 previous-best 前必须跑完。
-16. 若 grounding enrichment 仍无 correct-image preference，转向 discard-after-training 的 correct-vs-counterfactual margin auxiliary objective；不得延长同一 baseline stream 或只调 decoding。
+14. **已完成（Package 15J）**：绑定 Package-15I 的内容寻址 MoonViT cache 为 4,000/4,000、零失败、2,013 real forwards、1,987 aliases 和 63 shards；独立 verifier 检查 2,742,976,512 logical values、全部 shard SHA 和 exact order binding。
+15. **当前 fixed-budget screen**：从 exact step0 和 Package-15J cache 运行 500 steps。先跑单 seed；只有 preference 与 GLM50 因果指标同时改善才扩大到 full/三 seed。
+16. **并行工程缺口**：补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 240-row language-retention evaluator；任何候选替换 previous-best 前必须跑完。
+17. 若 grounding enrichment 仍无 correct-image preference，转向 discard-after-training 的 correct-vs-counterfactual margin auxiliary objective；不得延长同一 baseline stream 或只调 decoding。
 
 在完成以上本地证据后，若剩余阻塞只来自完整权重容量和量化 DGRAD，再提交最小付费 Gate D 的硬件、时价、GPU-hour、存储与止损上限，等待单独授权。
