@@ -1118,6 +1118,27 @@ DeepSeek canonical projector 保持 33,564,672 参数与 4096 输出；Qwen 经�
 
 #pagebreak()
 
+== Qwen2.5-3B 4k MoonViT 特征缓存（包 15D，2026-08-06）
+
+Package-15C 的 4,000-row 顺序在任何 3B optimizer step 前物化为 frozen-MoonViT 内容寻址 cache。Canonical runner 来自 clean Git commit `1e4c400…4142`，运行时先校验训练顺序 self/file/record hashes、59,198-row 数据文件、每张编码图像 SHA/bytes/dimensions、MoonViT-V2 权重 `01436a95…ced24` 与 max-side 448 合同。V100 使用 eager attention 与 fp32 tower/storage；缓存特征保持 `[groups,4,1024]`，每条最多 256 groups。
+
+#table(
+  columns: (2fr, 1.5fr, 3fr),
+  [*检查*], [*结果*], [*含义/边界*],
+  [完成率], [4,000/4,000；0 failures], [503.5901 s wall；1,949,755,904 peak GPU bytes。],
+  [内容寻址], [3,534 forwards；466 aliases], [同图多问题记录复用首个 image-byte SHA 的 tensor span，减少 11.65% tower forwards，同时保留全部记录顺序。],
+  [完整存储], [111 shards；10,372,103,792 bytes], [3,534 unique spans；完整 V100 root 共 118 files / 10,374,552,697 bytes，Git 不复制 9.66 GiB tensor payload。],
+  [独立 verifier], [4,000 records；111/111 shards], [重哈希并读回 2,921,816,064 logical values；2,593,021,952 unique values 均 finite，shape/order/alias/source hash 全匹配。],
+  [Package-15C binding], [`ddca738e…c2fd`], [逐行匹配 ID、image SHA、width/height；3,534 unique images、466 first-occurrence aliases、max groups 256。],
+  [迁移/结果边界], [`directly_transferable`], [冻结 MoonViT 表示和数据顺序不依赖 Qwen receiver；无 trained checkpoint、grounding score、paired preference 或 final-half 结果。],
+)
+
+首次 attempt 在 1,128 条后被 provenance audit 主动终止：进程执行 Package-15D 未提交源码，Git HEAD 仍为 `018b798…`，因此即使 33 个 shard 数值正常也不能作为 canonical 输入。失败根、1,128-row log、33-shard 全文件 hash 均保留，`training_use_allowed=false`；retry1 改由 clean detached worktree 和 `--require-clean-git` 在新目录重跑。随后 verifier commit `a9bd07b…a646` 独立校验 runner Git SHA、clean attestation、三份 runtime source hash 与全部 tensor 内容。Git curated package 保存 14 files / 2,728,827 bytes 加 artifact manifest，完整 shard hash 留在 `REMOTE_ARTIFACT_MANIFEST.json`。四项 verifier tests 与三项 artifact tests 通过，完整 V100 suite 为 288 passed；54 页报告的包 15D 第 41 页与 Gate-D 第 42 页完成文本和渲染检查。
+
+结果支持“V100 能在固定顺序下低显存生成完整真实 MoonViT 训练输入”和“内容寻址能安全消除重复视觉前向”；它反驳“每条训练记录都需要独立 tower forward”。本包不触及模型是否会读图。下一步只进入严格 4,000-example projector-only 训练，再由 vision−blind、vision−shuffled、trained−random 与真实 ScreenSpot 指标作能力判定。
+
+#pagebreak()
+
 == 工程主线与 Gate D 真实缺口（2026-08-05）
 
 当前仓库已经有真实 MoonViT-V2 编码、视觉 token 映射、placeholder 展开、loss mask、generic `inputs_embeds` 注入、DeepSeek routing-ID 保留、projector-only 训练、checkpoint 保存恢复和两分支生成实现。小文本主干与真实视觉塔已经跑通；tiny `DeepseekV4ForCausalLM` 只验证专用接口。完整 `deepseek-ai/DeepSeek-V4-Flash-0731` 权重从未完成图像 forward/backward/train/save/resume/generate，因此 Gate D 判定为 *NO-GO*。
@@ -1128,12 +1149,12 @@ DeepSeek canonical projector 保持 33,564,672 参数与 4096 输出；Qwen 经�
   [MoonViT-V2 真实权重与预处理], [通过], [V100 输出 `[tokens,4,1024]`，可进入 projector。],
   [通用纯文本 glue 闭环], [通过（小主干）], [真实数据训练、保存、恢复和生成均有证据。],
   [Qwen2.5-0.5B 真实数据], [早期对齐证据], [16,000 examples、约 0.27 epoch；低容量混杂绝对 benchmark。],
-  [Qwen2.5-3B 固定真实合同], [工程 smoke、4k 顺序冻结通过 / baseline 待执行], [真图像 forward/backward/恢复已通过；4,000 条记录、图像和 teacher target 已独立验签；step0 vision=blind。],
+  [Qwen2.5-3B 固定真实合同], [工程 smoke、4k 顺序/cache 通过 / baseline 待执行], [真图像 forward/backward/恢复已通过；4,000 条记录、target 和 111 个特征 shard 已独立验签；step0 vision=blind。],
   [完整 DeepSeek-V4-Flash 闭环], [未通过], [完整权重未加载联跑；真实 FP4/FP8 input DGRAD 仍 `hardware_pending`。],
   [语言保持与真实视觉显著性], [合同已冻结 / 结果待执行], [需要 ScreenSpot/TextVQA/DocVQA/OCRBench 的 vision−blind、vision−shuffle 与 paired CI。],
 )
 
-下一条 V100 路径固定使用纯文本 `Qwen/Qwen2.5-3B-Instruct`。MoonViT-V2 保持最终视觉塔，canonical projector 输出保持 4096；Qwen 使用已冻结的无参数 4096→2048 readout，不能改写 DeepSeek 主合同。先建立绑定 `ddca738e…c2fd` 的 MoonViT 特征 cache 并运行第一个 matched-budget projector-only baseline，再由固定 ScreenSpot50/full、TextVQA、DocVQA、OCRBench、synthetic 与语言保持合同筛选后续策略。详细合同见 `docs/qwen2.5-3b-community-eval-contract.md`，硬阻塞与最短路径见 `docs/project-status-and-gate-d-gap.md`。付费 Gate D 继续等待明确授权，本地 3B 研究持续推进。
+下一条 V100 路径固定使用纯文本 `Qwen/Qwen2.5-3B-Instruct`。MoonViT-V2 保持最终视觉塔，canonical projector 输出保持 4096；Qwen 使用已冻结的无参数 4096→2048 readout，不能改写 DeepSeek 主合同。绑定 `ddca738e…c2fd` 的 MoonViT 特征 cache 已独立验收；现在实现 fail-closed cached-feature trainer 并运行第一个 matched-budget projector-only baseline，再由固定 ScreenSpot50/full、TextVQA、DocVQA、OCRBench、synthetic 与语言保持合同筛选后续策略。详细合同见 `docs/qwen2.5-3b-community-eval-contract.md`，硬阻塞与最短路径见 `docs/project-status-and-gate-d-gap.md`。付费 Gate D 继续等待明确授权，本地 3B 研究持续推进。
 
 == Gate C：Vast 只读调研
 
@@ -1400,9 +1421,10 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
   [2026-08-05], [包 15A 在任何 3B 输出前冻结 Qwen2.5-3B revision 与 9 个文件 SHA、1,272 条完整 ScreenSpot 和十 strata 各 5 条的 GLM-format 50、严格 click parser、七条件/paired bootstrap、无参数 4096→2048 receiver、exact step0/random projector、240 条语言保持集及 4k–64k matched-budget 节点。此提交不含能力分数。],
   [2026-08-05], [包 15B 在 V100 完成纯文本 Qwen2.5-3B + 真 MoonViT 图像的 load/generate/backward/一步 AdamW/save-resume smoke：projector 六个参数梯度均 finite/nonzero，语言梯度张量为 0，恢复逐值一致；step0 vision=blind，因此只确认工程链路。],
   [2026-08-05], [包 15C 在训练结果前冻结首个 4,000-example prefix：500 optimizer steps、零 shuffle/holdout；4,000 条 record/target/image 经第二遍独立验签。339 条旧 click 监督规范化，2 条 normalization-empty TextVQA target 显式回退原始多数答案。],
+  [2026-08-06], [包 15D 将 exact 4k 顺序物化为内容寻址 MoonViT-V2 cache：4,000/4,000、0 failure、3,534 tower forwards、466 aliases；独立 verifier 重哈希 111 shards 并逐条验证 29.218 亿 logical values、Package-15C 顺序和 clean runner provenance。首个 dirty-run attempt 保留且禁止训练。],
   [2026-08-05], [固定 revision 的 DeepSeek 量化 runtime 源码审计与 GPU 矩阵成稿：forward 集成缺少已确认 autograd 证据，SM120/121 受 DeepGEMM #372 weight-load blocker 影响；首个付费建议降为单卡 SM100/B200 最小 kernel gate，仍等待授权。],
 )
 
 = 下一位执行者的最短路径
 
-包 15A 的 pre-result contract、包 15B 的 3B 真图像工程 smoke 和包 15C 的 exact 4k order/target freeze 已完成。下一步建立绑定 manifest `ddca738e…c2fd` 的内容寻址 MoonViT feature cache，运行最小 projector-only ScreenSpot baseline 与 step0/random/vision/blind/shuffled 条件，再决定是否扩至 8k/16k。候选才进入完整 1,272 ScreenSpot、TextVQA、DocVQA、OCRBench、synthetic 与 language retention。正式 0731 仍必须通过完整权重 load、真实 FP4/FP8 input DGRAD、图像 forward/backward、20-step 稳定性和 save/resume/generate Gate D；任何付费动作等待用户明确授权。
+包 15A 的 pre-result contract、包 15B 的 3B 真图像工程 smoke、包 15C 的 exact 4k order/target freeze 和包 15D 的完整 MoonViT feature cache 已完成。下一步用该 verified cache 运行最小 projector-only ScreenSpot baseline 与 step0/random/vision/blind/shuffled 条件，再决定是否扩至 8k/16k。候选才进入完整 1,272 ScreenSpot、TextVQA、DocVQA、OCRBench、synthetic 与 language retention。正式 0731 仍必须通过完整权重 load、真实 FP4/FP8 input DGRAD、图像 forward/backward、20-step 稳定性和 save/resume/generate Gate D；任何付费动作等待用户明确授权。

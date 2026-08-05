@@ -1,0 +1,67 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-05T19:31:19.904791+00:00",
+  "root": "feature_cache_4k_v1",
+  "git_base_sha": "a9bd07b97e9bfc11ae4b82d69584a88b8799a646",
+  "files": {
+    "cache_records.jsonl": {
+      "bytes": 717507,
+      "sha256": "7e61a48164b6935861e81e5a176e752c222ba3f3dd0c51d97333985ca2bff5ca"
+    },
+    "failures/attempt01_uncommitted_runner/cache_records.jsonl": {
+      "bytes": 198987,
+      "sha256": "7950cbe02a490aa6a2e9aff9cfb722e97fee09b29bb96782f9534ca2eea7cfc4"
+    },
+    "failures/attempt01_uncommitted_runner/failures.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "failures/attempt01_uncommitted_runner/REMOTE_ARTIFACT_MANIFEST.json": {
+      "bytes": 5834,
+      "sha256": "b35da62d9eb084df2046922e000c3b8788f498376fac20781c086b71a10bbaa0"
+    },
+    "failures/attempt01_uncommitted_runner/run.log": {
+      "bytes": 53669,
+      "sha256": "38af5daa87ef9daae0fd823d9c2b5fae7d5ecfd1240050e033160364f00bb94b"
+    },
+    "failures/attempt01_uncommitted_runner/SUMMARY.json": {
+      "bytes": 1138,
+      "sha256": "451aff96047fd178fd47c3b7214a734f52c87e224862b408d004c10e7dcbf6b5"
+    },
+    "failures.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "INDEPENDENT_VERIFICATION.json": {
+      "bytes": 740,
+      "sha256": "aae83c6f752dad1d7e95fc25b783b35bd7308ce85ef20820bd8ab2c7294cb78b"
+    },
+    "MANIFEST.json": {
+      "bytes": 1530240,
+      "sha256": "055f458fb3525dd81d6d381dbd1e628a8a07ed31a42017e956bbe117c62c98b1"
+    },
+    "README.md": {
+      "bytes": 2260,
+      "sha256": "6fa25c28c9388a4290ef5c0aaa34b1f1bf9b6dc3d827a98ab0356b6a65fc7d99"
+    },
+    "REMOTE_ARTIFACT_MANIFEST.json": {
+      "bytes": 18034,
+      "sha256": "23cf9faea23aeb6201d2047dbfe8c4a4fda6102e47eca42790db4892c08d1449"
+    },
+    "run.log": {
+      "bytes": 199356,
+      "sha256": "6e5a20f360c9a5832cc4c01c04f3a6f513fee67c06773668d89b5836d135bacd"
+    },
+    "SUMMARY.json": {
+      "bytes": 322,
+      "sha256": "cb0e2c75bf4525ee02de2e51e7a28e45b5489073d3dd25faae77d17ef21b0d76"
+    },
+    "verify.log": {
+      "bytes": 740,
+      "sha256": "aae83c6f752dad1d7e95fc25b783b35bd7308ce85ef20820bd8ab2c7294cb78b"
+    }
+  },
+  "file_count": 14,
+  "total_bytes": 2728827,
+  "final_half_scored": false
+}
