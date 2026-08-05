@@ -1,0 +1,253 @@
+{
+  "status": "valid",
+  "format_version": "matched-projector-retention-training-v1",
+  "arm": "anchor_1e-3",
+  "kind": "projector",
+  "metadata": {
+    "completed_at_utc": "2026-08-05T05:34:47.735714+00:00",
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "wall_seconds": 59.16877818107605,
+    "peak_gpu_memory_bytes": 11897019904,
+    "final_half_scored": false
+  },
+  "initial_step": 50,
+  "steps": 100,
+  "continuation_steps": 50,
+  "batch_size": 24,
+  "examples_seen": 2400,
+  "continuation_examples_seen": 1200,
+  "train_records": 2400,
+  "train_pairs": 1200,
+  "tasks": [
+    "color",
+    "coordinate",
+    "count",
+    "ocr",
+    "shape",
+    "spatial"
+  ],
+  "train_records_by_task": {
+    "color": 400,
+    "coordinate": 400,
+    "count": 400,
+    "ocr": 400,
+    "shape": 400,
+    "spatial": 400
+  },
+  "trainable_parameters": 20454272,
+  "resolved_lora_modules": [],
+  "base_projector_sha256": "8dd9321656d2d745303213634e61fe429587a76c149ac00631cc78e2ef0128a8",
+  "projector_config_source": "/run/media/ezra/13D010B6FDBC1A06/data/gate_b/ckpt/checkpoints/step-000500",
+  "projector_config_sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804",
+  "optimizer_resume": {
+    "restored": true,
+    "source": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/checkpoints/step-000050/training_state.pt",
+    "source_step": 50,
+    "source_sha256": "57e9ddbcd4a3b60594aa169c6d4e4b4adf2a5803d22a9da41e4fad4c23ac2f32"
+  },
+  "training_order_resume": {
+    "source": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/training_order.jsonl",
+    "source_sha256": "a0929326fc8b494f85b82fc504855cd23f1ddfa74348ccc9b364a13ada39f2f5",
+    "start_step_exclusive": 50,
+    "end_step_inclusive": 100,
+    "steps": [
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100
+    ],
+    "first_batch_ids": [
+      "train-color-00008-b",
+      "train-color-00104-b",
+      "train-color-00013-b",
+      "train-color-00106-b",
+      "train-coordinate-00127-a",
+      "train-coordinate-00089-a",
+      "train-coordinate-00157-b",
+      "train-coordinate-00152-a",
+      "train-count-00010-b",
+      "train-count-00186-b",
+      "train-count-00114-b",
+      "train-count-00053-a",
+      "train-ocr-00071-b",
+      "train-ocr-00078-b",
+      "train-ocr-00145-a",
+      "train-ocr-00037-a",
+      "train-shape-00042-a",
+      "train-shape-00197-b",
+      "train-shape-00015-a",
+      "train-shape-00057-b",
+      "train-spatial-00098-a",
+      "train-spatial-00157-a",
+      "train-spatial-00184-b",
+      "train-spatial-00066-a"
+    ],
+    "last_batch_ids": [
+      "train-color-00136-b",
+      "train-color-00186-a",
+      "train-color-00070-b",
+      "train-color-00020-b",
+      "train-coordinate-00054-b",
+      "train-coordinate-00145-a",
+      "train-coordinate-00192-b",
+      "train-coordinate-00032-b",
+      "train-count-00015-b",
+      "train-count-00022-a",
+      "train-count-00065-a",
+      "train-count-00095-a",
+      "train-ocr-00150-a",
+      "train-ocr-00123-a",
+      "train-ocr-00093-b",
+      "train-ocr-00051-b",
+      "train-shape-00146-a",
+      "train-shape-00173-a",
+      "train-shape-00033-b",
+      "train-shape-00055-a",
+      "train-spatial-00161-a",
+      "train-spatial-00153-b",
+      "train-spatial-00003-b",
+      "train-spatial-00000-a"
+    ]
+  },
+  "representation_anchor": {
+    "objective": "task-conditioned-projector-output-mse-v1",
+    "weight": 0.001,
+    "tasks": [
+      "count",
+      "shape"
+    ],
+    "reference": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/checkpoints/step-000050/projector.safetensors",
+    "reference_sha256": "8dd9321656d2d745303213634e61fe429587a76c149ac00631cc78e2ef0128a8",
+    "reference_tensor_sha256": "fd7b07e6fe9f4e9054b9f4e4dcbecf8bbeaf83241c937ec6d5c4d589a017d192"
+  },
+  "exact_reproduction": null,
+  "selection_manifest_sha256": "b5a851bb969b41607fc95299df90ec51cc7a0db6c1e0d560380bed1f7abac71e",
+  "checkpoints": {
+    "step-000050": {
+      "status": "valid",
+      "arm": "anchor_1e-3",
+      "kind": "projector",
+      "step": 50,
+      "examples_seen": 1200,
+      "weights_tensor_sha256": "fd7b07e6fe9f4e9054b9f4e4dcbecf8bbeaf83241c937ec6d5c4d589a017d192",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "8dd9321656d2d745303213634e61fe429587a76c149ac00631cc78e2ef0128a8"
+        },
+        "projector_config.json": {
+          "bytes": 127,
+          "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+        },
+        "training_state.pt": {
+          "bytes": 163640597,
+          "sha256": "57e9ddbcd4a3b60594aa169c6d4e4b4adf2a5803d22a9da41e4fad4c23ac2f32"
+        }
+      }
+    },
+    "step-000075": {
+      "status": "valid",
+      "arm": "anchor_1e-3",
+      "kind": "projector",
+      "step": 75,
+      "examples_seen": 1800,
+      "weights_tensor_sha256": "0f56756017e844511439a277a6e2fee4ccf8eae53807db7d1a4a832b7d188cb4",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "41839cf51b71e3e6543ca3cef9948f6e793225a84c928bc5613abbf90ed6692e"
+        },
+        "projector_config.json": {
+          "bytes": 127,
+          "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+        },
+        "training_state.pt": {
+          "bytes": 163640597,
+          "sha256": "353ff288edf933089668be14e26ac5630f409b158608d9dffaa55e1ff12b962e"
+        }
+      }
+    },
+    "step-000100": {
+      "status": "valid",
+      "arm": "anchor_1e-3",
+      "kind": "projector",
+      "step": 100,
+      "examples_seen": 2400,
+      "weights_tensor_sha256": "a7f1133090132d028585c059f8530630b03ede27a00ee761ab329ed0a8c55d9a",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "fc63f05451df64f33a2070db91e3ed35792d6b8e521dacb50aeebe1f631a1e42"
+        },
+        "projector_config.json": {
+          "bytes": 127,
+          "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+        },
+        "training_state.pt": {
+          "bytes": 163640597,
+          "sha256": "9fb507795be9a8d7a2de36401f5f838001c149158655bf594d00ba2576c1f867"
+        }
+      }
+    }
+  },
+  "files": {
+    "train_history.jsonl": {
+      "bytes": 24352,
+      "sha256": "5cf970087e5d982ea918d1287f43af871bb06f55b525a66a62632235026d7668"
+    },
+    "training_order.jsonl": {
+      "bytes": 29701,
+      "sha256": "c44b513689af00194b6269ad186525ed5051ad3093829776d2e8082edd26eaad"
+    }
+  },
+  "final_half_scored": false
+}

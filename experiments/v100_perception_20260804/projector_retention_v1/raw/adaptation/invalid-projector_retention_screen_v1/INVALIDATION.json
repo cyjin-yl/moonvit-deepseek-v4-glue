@@ -1,0 +1,38 @@
+{
+  "status": "invalid",
+  "invalidated_at_utc": "2026-08-05T05:28:58.783878+00:00",
+  "reason": "evaluates-wrong-source-runs",
+  "impact": "metrics-do-not-test-the-package10-retention-hypothesis",
+  "replacement_run": "projector_retention_screen_v2",
+  "old_results_must_not_be_used": true,
+  "files": {
+    "CONFIG.json": {
+      "bytes": 9796,
+      "sha256": "9e98693351dfadd14f7ea7aa01bd243c0d5228c8ea97b0dee2c8a1a9547b942e"
+    },
+    "DECISIONS.json": {
+      "bytes": 1210,
+      "sha256": "e3c7aecbf3a82d8ecc56500333a42b03b15480ed50f77608228fa8ee9a7d5a34"
+    },
+    "SUMMARY.json": {
+      "bytes": 1542,
+      "sha256": "27d6c939117f69f29f369a31a92dcfd2ca58637f0de330d595b08e0a73701cc5"
+    },
+    "generation_curve.csv": {
+      "bytes": 6262,
+      "sha256": "653c18313c0e0d93e14e570e9b8a3edb3d88794984790ec448931c1af48748d6"
+    },
+    "generation_records.jsonl": {
+      "bytes": 2611670,
+      "sha256": "5ccfe0fff13a2ac38a8ba04802a90652b70a0dfd462b56f6ea8acea856deda55"
+    },
+    "preference_curve.csv": {
+      "bytes": 10125,
+      "sha256": "2b81880dadaef4d54c143c25456566403611ca19a4b2a487f1e59108bac20ce9"
+    },
+    "preference_records.jsonl": {
+      "bytes": 5421512,
+      "sha256": "087f80dbe5f8170733e33c4d3fd113948d02be29a9c05e48e7cac75d430f39ac"
+    }
+  }
+}

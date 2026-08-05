@@ -1,0 +1,9 @@
+{
+  "status": "invalid",
+  "invalidated_at_utc": "2026-08-05T05:59:34.973810+00:00",
+  "reason": "strict-cross-run-generation-equality-is-not-reproducible",
+  "impact": "analysis-aborted-before-writing-decisions",
+  "replacement_run": "projector_retention_analysis_v2",
+  "old_results_must_not_be_used": true,
+  "files": {}
+}

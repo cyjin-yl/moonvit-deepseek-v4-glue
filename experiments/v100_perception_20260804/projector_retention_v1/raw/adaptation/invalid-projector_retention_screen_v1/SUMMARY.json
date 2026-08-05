@@ -1,0 +1,46 @@
+{
+  "status": "valid",
+  "format_version": "shape-adaptation-eval-v1",
+  "metadata": {
+    "completed_at_utc": "2026-08-05T05:24:39.198956+00:00",
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "wall_seconds": 505.6980550289154,
+    "peak_gpu_memory_bytes": 6886173184,
+    "final_half_scored": false
+  },
+  "states": 5,
+  "teacher_forced_records_per_cell": 600,
+  "generation_records_per_cell": 600,
+  "preference_rows": 9000,
+  "generation_rows": 6000,
+  "sources": {
+    "lora_summary_sha256": "b605c0c8427d3e1f4b0f66dadaa5ace8c90d507e8a6ab2a313212a1d19fc4515",
+    "projector_summary_sha256": "61012e222c86c2db0555f22b95929a9a1666921d1197638d3c0028d9e7184822"
+  },
+  "files": {
+    "preference_records.jsonl": {
+      "bytes": 5421512,
+      "sha256": "087f80dbe5f8170733e33c4d3fd113948d02be29a9c05e48e7cac75d430f39ac"
+    },
+    "generation_records.jsonl": {
+      "bytes": 2611670,
+      "sha256": "5ccfe0fff13a2ac38a8ba04802a90652b70a0dfd462b56f6ea8acea856deda55"
+    },
+    "preference_curve.csv": {
+      "bytes": 10125,
+      "sha256": "2b81880dadaef4d54c143c25456566403611ca19a4b2a487f1e59108bac20ce9"
+    },
+    "generation_curve.csv": {
+      "bytes": 6262,
+      "sha256": "653c18313c0e0d93e14e570e9b8a3edb3d88794984790ec448931c1af48748d6"
+    },
+    "DECISIONS.json": {
+      "bytes": 1210,
+      "sha256": "e3c7aecbf3a82d8ecc56500333a42b03b15480ed50f77608228fa8ee9a7d5a34"
+    }
+  },
+  "final_half_scored": false
+}

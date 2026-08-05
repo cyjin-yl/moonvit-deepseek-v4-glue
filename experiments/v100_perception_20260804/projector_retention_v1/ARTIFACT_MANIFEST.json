@@ -1,0 +1,343 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-05T06:21:37.100359+00:00",
+  "root": "projector_retention_v1",
+  "git_base_sha": "d60e70b1fa9f1d57285425d97b33cece67990980",
+  "files": {
+    "charts/01-task-preference.svg": {
+      "bytes": 5298,
+      "sha256": "a27311e78532fef74624ad34ff0a6d39ed5fc46dc55b0ec90a6399089b35cb4a"
+    },
+    "charts/02-task-generation.svg": {
+      "bytes": 5293,
+      "sha256": "de9a0ca1b9802ac079f30580533d848a7ba3e31f700153e2bf816a32d6955e84"
+    },
+    "charts/03-balance-summary.svg": {
+      "bytes": 3771,
+      "sha256": "c56b4273673bf74acff903214bdfb4d9e0ab54799c03e690cafc217979b4f130"
+    },
+    "charts/CHARTS.json": {
+      "bytes": 1179,
+      "sha256": "ce644b3fecfe3af6478015115f55ed9449f9c9b0271c62bf493beb092575521b"
+    },
+    "logs/anchor_1e-2.log": {
+      "bytes": 9164,
+      "sha256": "564aeab673393b6b2a20c92db1571dd0a598b03862246a64389f416c6c43d01b"
+    },
+    "logs/anchor_1e-2_v2.log": {
+      "bytes": 9159,
+      "sha256": "b21531ed49c23068b52a6c975610bba01c0034861058830a19e5410082325d33"
+    },
+    "logs/anchor_1e-3.log": {
+      "bytes": 9713,
+      "sha256": "8b2bcb1346556936ae9241e425c0b3349407fc20e180e04da8c5e1ac1af41841"
+    },
+    "logs/anchor_1e-3_v2.log": {
+      "bytes": 9162,
+      "sha256": "6440b35e7ccbcc0e38798165f2787ba968ee9bcaf4a4edfc0bcae51d4c063564"
+    },
+    "logs/anchor_1e-4.log": {
+      "bytes": 9170,
+      "sha256": "55a96a8df5a760421bf607de9948dae8d04a67232f47d2c1f97bee3056fb0ba4"
+    },
+    "logs/anchor_1e-4_v2.log": {
+      "bytes": 9250,
+      "sha256": "485e9fd3285bfeec32406db2aaad42fc7220a60fd9ae5fcb2ddf28a7cd95efc6"
+    },
+    "logs/index.log": {
+      "bytes": 4681,
+      "sha256": "61012e222c86c2db0555f22b95929a9a1666921d1197638d3c0028d9e7184822"
+    },
+    "logs/index_v2.log": {
+      "bytes": 4681,
+      "sha256": "bfbdddb2a9111ecf035f33db621afc7e3b17df9ad77443a7a94a8b7311da8724"
+    },
+    "logs/resume_control_v2.log": {
+      "bytes": 9609,
+      "sha256": "1b4cbd924d8736ffbaf055ce4016ed320f35f85de3ab7f00a060ea928ceec5e5"
+    },
+    "logs/screen.log": {
+      "bytes": 2650,
+      "sha256": "cd156faa5e45289902e478f90f71ec123d3deea9c76ccd3bec0c0a8184fdf73a"
+    },
+    "logs/screen_v2.log": {
+      "bytes": 2169,
+      "sha256": "b3aa5088371232426003bcc30dc35a492aca1e9bd5e2e0e6b04e6e4c28b709b3"
+    },
+    "PACKAGE_VERIFICATION.json": {
+      "bytes": 2106,
+      "sha256": "5c933eb7e127e8510c1009232c9642008197143da035d40d5385a8c3a4335614"
+    },
+    "raw/adaptation/invalid-projector_retention_analysis_v1/INVALIDATION.json": {
+      "bytes": 326,
+      "sha256": "a91725bac24d9309cd2faae014301dbb812176bf5ef0ad1f7bac11dea34c4fec"
+    },
+    "raw/adaptation/invalid-projector_retention_anchor_1e-2_v1/INVALIDATION.json": {
+      "bytes": 2856,
+      "sha256": "f53c52db481b988e9b4081370c2754eed8cad6c05a4c2badf673b80791ef7049"
+    },
+    "raw/adaptation/invalid-projector_retention_anchor_1e-2_v1/SUMMARY.json": {
+      "bytes": 7207,
+      "sha256": "a02c0d07510e4b682a76be60fa3827a57e2c329bb875d52671b749d24b75618d"
+    },
+    "raw/adaptation/invalid-projector_retention_anchor_1e-3_v1/INVALIDATION.json": {
+      "bytes": 2856,
+      "sha256": "756a62cb5c12e555984e49140e5f3c18048b453f29e8571272f080ebde71b22a"
+    },
+    "raw/adaptation/invalid-projector_retention_anchor_1e-3_v1/SUMMARY.json": {
+      "bytes": 7207,
+      "sha256": "3b14488c4d62c95b0ca8ca71dbff1917144213e7a1fd9bffe70f21f3e4c685c1"
+    },
+    "raw/adaptation/invalid-projector_retention_anchor_1e-4_v1/INVALIDATION.json": {
+      "bytes": 2856,
+      "sha256": "368c09f84155457f9e13bcfe67e58da4f229cf2c9ff2f40296e9912304f4df26"
+    },
+    "raw/adaptation/invalid-projector_retention_anchor_1e-4_v1/SUMMARY.json": {
+      "bytes": 7209,
+      "sha256": "2eaa93f8d74545067a6b62fd961f5cd9b872357c29bb3ae458d7418b78fed0f6"
+    },
+    "raw/adaptation/invalid-projector_retention_index_v1/INVALIDATION.json": {
+      "bytes": 436,
+      "sha256": "feaf8198356a6c37b5687abc6d2774c7267f1825ef086812669122ff5b99b8ab"
+    },
+    "raw/adaptation/invalid-projector_retention_index_v1/SUMMARY.json": {
+      "bytes": 4681,
+      "sha256": "61012e222c86c2db0555f22b95929a9a1666921d1197638d3c0028d9e7184822"
+    },
+    "raw/adaptation/invalid-projector_retention_resume_control_v1/INVALIDATION.json": {
+      "bytes": 2859,
+      "sha256": "b88931e602fc7349b2b5d40b4ad49c35824515b43aadfef76acdb45fd24456ed"
+    },
+    "raw/adaptation/invalid-projector_retention_resume_control_v1/SUMMARY.json": {
+      "bytes": 7132,
+      "sha256": "aa2d96f33bee3db0e988a93081fc2fc1f8f16e61430a656de24e8c53d40653be"
+    },
+    "raw/adaptation/invalid-projector_retention_screen_v1/INVALIDATION.json": {
+      "bytes": 1289,
+      "sha256": "9f6d163a5e21b1989bd38534e0a655272b97ab4e611d583957b2eb4db613e04f"
+    },
+    "raw/adaptation/invalid-projector_retention_screen_v1/SUMMARY.json": {
+      "bytes": 1542,
+      "sha256": "27d6c939117f69f29f369a31a92dcfd2ca58637f0de330d595b08e0a73701cc5"
+    },
+    "raw/adaptation/projector_retention_analysis_v2/DECISIONS.json": {
+      "bytes": 4028,
+      "sha256": "03d87bbc188499d63b5490b57fd5dbcbc020090857ad0d2c06bea118d89725e3"
+    },
+    "raw/adaptation/projector_retention_analysis_v2/retention_contrasts.csv": {
+      "bytes": 73281,
+      "sha256": "1589ddc9755c3f3a9a54dff145e77f9bda4727a7460d9dcf3424445afdf7933a"
+    },
+    "raw/adaptation/projector_retention_analysis_v2/retention_metrics.csv": {
+      "bytes": 42592,
+      "sha256": "bb0f705c167e1fd2f8fa24929e10254ac3d864658bc085f2e0f40858494fb0e1"
+    },
+    "raw/adaptation/projector_retention_analysis_v2/SUMMARY.json": {
+      "bytes": 2194,
+      "sha256": "8b581cb324bb2d68313bb936c72694d3921935b88e5bd6cacda21a9852f14ff6"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-2_v2/checkpoints/step-000050/MANIFEST.json": {
+      "bytes": 652,
+      "sha256": "76c8efba9e972571bb7b7942711547fc10b01ace70d73833fec0380a6864e243"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-2_v2/checkpoints/step-000050/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-2_v2/checkpoints/step-000075/MANIFEST.json": {
+      "bytes": 652,
+      "sha256": "32b201cb69e6ea4ccf151a873ead3256da7cb268af45d448eff144e52b4d94a7"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-2_v2/checkpoints/step-000075/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-2_v2/checkpoints/step-000100/MANIFEST.json": {
+      "bytes": 653,
+      "sha256": "216f803136a9f3eafd5ed5760a2177c8967b10cfd74530153b10d8666728c6f9"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-2_v2/checkpoints/step-000100/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-2_v2/CONFIG.json": {
+      "bytes": 6335,
+      "sha256": "047fd7157b0479d257fdb42c9f7150a3d727d27f47ebd638467b923333854703"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-2_v2/SUMMARY.json": {
+      "bytes": 7200,
+      "sha256": "1f4d0bb421c367400e6e74a5384453e281d58151c9ce2707a12ba13ec876f815"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-2_v2/train_history.jsonl": {
+      "bytes": 24319,
+      "sha256": "b3e083705e13b0825d1c3faaccea34b3ce7b89050dc37145e44e74f403846c37"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-2_v2/training_order.jsonl": {
+      "bytes": 29701,
+      "sha256": "c44b513689af00194b6269ad186525ed5051ad3093829776d2e8082edd26eaad"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-3_v2/checkpoints/step-000050/MANIFEST.json": {
+      "bytes": 652,
+      "sha256": "56f72bc1478827ce96a5f007c44d4309dfec08289ca1bc678485bd315ce816b5"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-3_v2/checkpoints/step-000050/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-3_v2/checkpoints/step-000075/MANIFEST.json": {
+      "bytes": 652,
+      "sha256": "3978172ae32eb425532a9ca38189f21cd94c49f044fe93f3c3b8ff1038fa2fab"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-3_v2/checkpoints/step-000075/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-3_v2/checkpoints/step-000100/MANIFEST.json": {
+      "bytes": 653,
+      "sha256": "26ffaeae7d8bf09d42e21a2ffe4536a7ac3d7bc0d78972c7edbfbfd85a0d42f8"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-3_v2/checkpoints/step-000100/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-3_v2/CONFIG.json": {
+      "bytes": 6335,
+      "sha256": "f804e5021d914d493d44955bbecbe6e76a139d5cabef5bcdcf7e68f68e564be8"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-3_v2/SUMMARY.json": {
+      "bytes": 7201,
+      "sha256": "665468e7a8d35db5064ccc95a26fd5d4b2c351ebf9abc451efcd403400ed3ea9"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-3_v2/train_history.jsonl": {
+      "bytes": 24352,
+      "sha256": "5cf970087e5d982ea918d1287f43af871bb06f55b525a66a62632235026d7668"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-3_v2/training_order.jsonl": {
+      "bytes": 29701,
+      "sha256": "c44b513689af00194b6269ad186525ed5051ad3093829776d2e8082edd26eaad"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-4_v2/checkpoints/step-000050/MANIFEST.json": {
+      "bytes": 652,
+      "sha256": "1660e97f7bdc70a7d71658b809d639197d9eb866fa71f748b4a092517e784311"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-4_v2/checkpoints/step-000050/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-4_v2/checkpoints/step-000075/MANIFEST.json": {
+      "bytes": 652,
+      "sha256": "6e010b615feb12d18e8543af6e5d5087a69e29eb052cbb35f920097b56e8d390"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-4_v2/checkpoints/step-000075/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-4_v2/checkpoints/step-000100/MANIFEST.json": {
+      "bytes": 653,
+      "sha256": "e28318a31781282e0ad30645ea2c61747ff61279b5dea626618a7e58c4277db3"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-4_v2/checkpoints/step-000100/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-4_v2/CONFIG.json": {
+      "bytes": 6335,
+      "sha256": "285ab9e6715f73001139fa4a2304fba1eae6297e95aba9351bd504a8df7b5172"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-4_v2/SUMMARY.json": {
+      "bytes": 7202,
+      "sha256": "b0656129f20473684e4381a6464225b9173ad21957b9f0ebf8e5a03ccd3ca3cf"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-4_v2/train_history.jsonl": {
+      "bytes": 24420,
+      "sha256": "059f4e935d0208ff6bf1740f6b3aa90edb0e65f2f9ee6cd5f9a8a985b608675a"
+    },
+    "raw/adaptation/projector_retention_anchor_1e-4_v2/training_order.jsonl": {
+      "bytes": 29701,
+      "sha256": "c44b513689af00194b6269ad186525ed5051ad3093829776d2e8082edd26eaad"
+    },
+    "raw/adaptation/projector_retention_index_v2/SUMMARY.json": {
+      "bytes": 4681,
+      "sha256": "bfbdddb2a9111ecf035f33db621afc7e3b17df9ad77443a7a94a8b7311da8724"
+    },
+    "raw/adaptation/projector_retention_resume_control_v2/checkpoints/step-000050/MANIFEST.json": {
+      "bytes": 655,
+      "sha256": "2eb1aa8514b46c92f9d81c4c71fe0008cc6716dab7a9530f70f748c9fff29284"
+    },
+    "raw/adaptation/projector_retention_resume_control_v2/checkpoints/step-000050/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_retention_resume_control_v2/checkpoints/step-000075/MANIFEST.json": {
+      "bytes": 655,
+      "sha256": "00ef339187583b0b15d0a4b9c25f40735198a374f7ce0f7e27a91bb5dc773c9c"
+    },
+    "raw/adaptation/projector_retention_resume_control_v2/checkpoints/step-000075/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_retention_resume_control_v2/checkpoints/step-000100/MANIFEST.json": {
+      "bytes": 656,
+      "sha256": "9e7fb142adce795af62d0c49d5c54a59fdb44cb1e189d7cff00320b5f2961f46"
+    },
+    "raw/adaptation/projector_retention_resume_control_v2/checkpoints/step-000100/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "raw/adaptation/projector_retention_resume_control_v2/CONFIG.json": {
+      "bytes": 6338,
+      "sha256": "b75d9139bc922409165ff6e330e49e09d65d1e20e6f6594f33d6f65b0d8a441a"
+    },
+    "raw/adaptation/projector_retention_resume_control_v2/SUMMARY.json": {
+      "bytes": 7126,
+      "sha256": "f88153d6f6ebb7bbf9082eb3cd17b0641772d901544f2d635b2596a2a6439cbf"
+    },
+    "raw/adaptation/projector_retention_resume_control_v2/train_history.jsonl": {
+      "bytes": 23544,
+      "sha256": "fdb8ac6da7280e34f658c0b1795adb3ef85b27a88f63d68cfc8641b37accb7c3"
+    },
+    "raw/adaptation/projector_retention_resume_control_v2/training_order.jsonl": {
+      "bytes": 29701,
+      "sha256": "c44b513689af00194b6269ad186525ed5051ad3093829776d2e8082edd26eaad"
+    },
+    "raw/adaptation/projector_retention_screen_v2/CONFIG.json": {
+      "bytes": 9782,
+      "sha256": "428221b51343387edaddf63192c60158a7ee9b13887a29ad5091659c7794e19f"
+    },
+    "raw/adaptation/projector_retention_screen_v2/DECISIONS.json": {
+      "bytes": 1196,
+      "sha256": "ebd7770abbdfbe18704a1fad5b43b247d1c4c2991b6321b872168dbe4b10f2e2"
+    },
+    "raw/adaptation/projector_retention_screen_v2/generation_curve.csv": {
+      "bytes": 6366,
+      "sha256": "337d9f9db40a33683412ef428702cb50fd2ab8bdeebe4cd8b85963cc623283fe"
+    },
+    "raw/adaptation/projector_retention_screen_v2/generation_records.jsonl": {
+      "bytes": 2625760,
+      "sha256": "be511f8533032f60b9d89af965d8ce4a3523a83320d7d91ea5da0c1ef58bcc52"
+    },
+    "raw/adaptation/projector_retention_screen_v2/preference_curve.csv": {
+      "bytes": 10065,
+      "sha256": "1914491c13531bf5890e67319ba46468577dab2e5d87705631f9aa31097f0569"
+    },
+    "raw/adaptation/projector_retention_screen_v2/preference_records.jsonl": {
+      "bytes": 5444320,
+      "sha256": "6cb22ae637677100d7e58f5a77b1860750668727b82e873851dfb833fd3440f2"
+    },
+    "raw/adaptation/projector_retention_screen_v2/SUMMARY.json": {
+      "bytes": 1542,
+      "sha256": "57e7d1f52975ac555729e4d45a387e8c785a2a894db3b2c59569d7dcf954e67e"
+    },
+    "RAW_DATA_LOCATION.json": {
+      "bytes": 1315,
+      "sha256": "07dc43bce012377c1cf2781e567b25b31da10d76e49637b949932f9724656899"
+    },
+    "RUN_NOTES.md": {
+      "bytes": 4467,
+      "sha256": "41c0925f1c6cefbd42757ddb8afaf2ed0c4b804d0028bd5984627d4ead63bb18"
+    }
+  },
+  "file_count": 83,
+  "total_bytes": 8655972,
+  "final_half_scored": false
+}

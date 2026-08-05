@@ -1,0 +1,136 @@
+{
+  "selected_state": null,
+  "targeted_retention_pass": false,
+  "best_diagnostic_state": "anchor-1e-4",
+  "baseline_state": "frozen-base",
+  "control_state": "resume-control",
+  "retention_tolerance": 0.05,
+  "macro_tolerance": 0.02,
+  "candidates": [
+    {
+      "state": "anchor-1e-4",
+      "weight": 0.0001,
+      "preference_macro": 0.49666666666666665,
+      "preference_worst_task": 0.16,
+      "generation_macro": 0.24666666666666667,
+      "endpoint_regret": 0.7400000000000002,
+      "retains_count_shape": false,
+      "gains_coordinate_spatial": true,
+      "meets_macro_floor": false,
+      "targeted_retention_pass": false
+    },
+    {
+      "state": "anchor-1e-2",
+      "weight": 0.01,
+      "preference_macro": 0.5433333333333333,
+      "preference_worst_task": 0.16,
+      "generation_macro": 0.3,
+      "endpoint_regret": 0.76,
+      "retains_count_shape": false,
+      "gains_coordinate_spatial": true,
+      "meets_macro_floor": true,
+      "targeted_retention_pass": false
+    },
+    {
+      "state": "anchor-1e-3",
+      "weight": 0.001,
+      "preference_macro": 0.57,
+      "preference_worst_task": 0.1,
+      "generation_macro": 0.38333333333333336,
+      "endpoint_regret": 0.62,
+      "retains_count_shape": false,
+      "gains_coordinate_spatial": true,
+      "meets_macro_floor": true,
+      "targeted_retention_pass": false
+    }
+  ],
+  "decision_rule": "an anchor must retain count/shape within 0.05 of step 50, strictly gain coordinate/spatial over step 50, and remain within 0.02 of the better endpoint macro paired-preference accuracy",
+  "status": "valid",
+  "state_metrics": {
+    "frozen-base": {
+      "preference": {
+        "color": 0.58,
+        "coordinate": 0.44,
+        "count": 0.42,
+        "ocr": 0.18,
+        "shape": 0.8,
+        "spatial": 0.74
+      },
+      "generation_macro": 0.23333333333333334
+    },
+    "anchor-1e-2": {
+      "weight": 0.01,
+      "preference": {
+        "color": 0.86,
+        "coordinate": 0.72,
+        "count": 0.16,
+        "ocr": 0.22,
+        "shape": 0.54,
+        "spatial": 0.76
+      },
+      "generation_macro": 0.3
+    },
+    "anchor-1e-3": {
+      "weight": 0.001,
+      "preference": {
+        "color": 0.94,
+        "coordinate": 0.66,
+        "count": 0.1,
+        "ocr": 0.18,
+        "shape": 0.54,
+        "spatial": 1.0
+      },
+      "generation_macro": 0.38333333333333336
+    },
+    "anchor-1e-4": {
+      "weight": 0.0001,
+      "preference": {
+        "color": 0.7,
+        "coordinate": 0.48,
+        "count": 0.16,
+        "ocr": 0.22,
+        "shape": 0.42,
+        "spatial": 1.0
+      },
+      "generation_macro": 0.24666666666666667
+    },
+    "resume-control": {
+      "preference": {
+        "color": 0.74,
+        "coordinate": 0.54,
+        "count": 0.12,
+        "ocr": 0.22,
+        "shape": 0.48,
+        "spatial": 1.0
+      },
+      "generation_macro": 0.25666666666666665
+    }
+  },
+  "endpoint_evaluation_reproduction": {
+    "frozen-base": {
+      "reference_state": "projector-interp000",
+      "preference_rows_exact": 1800,
+      "generation_rows_structurally_exact": 1200,
+      "generation_value_differences": {
+        "prediction": 42,
+        "normalized_prediction": 42,
+        "correct": 18
+      },
+      "generation_strict_exact": false,
+      "interpretation": "teacher-forced values are bit-exact; free generation is reported with observed cross-run GPU decode variability and is not used by the candidate selection rule"
+    },
+    "resume-control": {
+      "reference_state": "projector-interp100",
+      "preference_rows_exact": 1800,
+      "generation_rows_structurally_exact": 1200,
+      "generation_value_differences": {
+        "prediction": 62,
+        "normalized_prediction": 62,
+        "correct": 0
+      },
+      "generation_strict_exact": false,
+      "interpretation": "teacher-forced values are bit-exact; free generation is reported with observed cross-run GPU decode variability and is not used by the candidate selection rule"
+    }
+  },
+  "final_half_scored": false
+}

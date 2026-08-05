@@ -803,6 +803,58 @@ alpha=.25 对 alpha 1 的小幅 macro 优势都不确定：strict +0.0167 [−0.
 
 下一项从 step 50 恢复优化器和原 step 51–100 记录顺序，加入仅作用于 count/shape 的 frozen-step50 projector-output anchoring，并同时复现无正则 continuation 控制。先以最小 lambda screen 判断是否能保留 count/shape 且继续学习 coordinate/spatial；无效时转逐任务梯度冲突干预。付费 Gate D 继续暂缓。
 
+== Task-conditioned projector 表示锚定（包 11，2026-08-05）
+
+=== 精确续训复现与单一辅助目标
+
+从包 9 的 `balanced_compare_projector_v1` step 50 出发，恢复 AdamW 状态 `57e9ddb…ac2f32`，读取原训练顺序 `a0929326…f2f5` 的 step 51–100。无正则控制逐张量复现原 step 100：六个 tensor 全部相等，tensor SHA 为 `7b731cff…a76`，序列化文件 SHA 也精确等于 `05f19079…092d`。这同时验证 checkpoint 权重、optimizer state 和 record cursor 的可恢复性。
+
+辅助目标只在每个 batch 的 count/shape 八条样本上约束当前 projector 输出接近 frozen-step50 输出，主损失继续使用正常语言建模 loss，语言模型保持冻结。screen 固定 $lambda=10^(-4),10^(-3),10^(-2)$，所有 arm 共享相同 1,200 个 continuation examples、24 条首批 ID、训练顺序、seed 和 canonical-bf16 评测。候选必须同时满足：count/shape 距 step 50 不超过 0.05；coordinate/spatial 严格高于 step 50；macro strict 距最佳端点不超过 0.02。
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 10pt,
+    image("../experiments/v100_perception_20260804/projector_retention_v1/charts/01-task-preference.svg", width: 100%),
+    image("../experiments/v100_perception_20260804/projector_retention_v1/charts/02-task-generation.svg", width: 100%),
+  ),
+  caption: [左：六任务 strict paired preference；右：paired generation。锚定改变了能力分配，但三个强度都没有保留 step-50 的 count/shape 前沿。],
+)
+
+=== 表示距离可控，旧任务决策边界仍然遗忘
+
+三个系数都未通过预注册规则。训练末端 count/shape projector-output MSE 随约束增强从轻锚定 26.26 降到中锚定 8.59、强锚定 2.09，说明目标确实控制了表示距离；能力保留没有随之出现。step 50 的 count/shape strict 为 0.42/0.80；最佳 count 的强锚定仅为 0.16/0.54，最佳 macro 的中锚定为 0.10/0.54。
+
+#table(
+  columns: (1.2fr, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr),
+  [*状态*], [*macro strict*], [*worst*], [*macro gen*], [*count*], [*shape*], [*coord / spatial*],
+  [step 50], [0.5267], [0.180], [0.2333], [0.42], [0.80], [0.44 / 0.74],
+  [control 100], [0.5167], [0.120], [0.2567], [0.12], [0.48], [0.54 / 1.00],
+  [$lambda=10^(-4)$], [0.4967], [0.160], [0.2467], [0.16], [0.42], [0.48 / 1.00],
+  [$lambda=10^(-3)$], [*0.5700*], [0.100], [*0.3833*], [0.10], [0.54], [0.66 / 1.00],
+  [$lambda=10^(-2)$], [0.5433], [0.160], [0.3000], [0.16], [0.54], [0.72 / 0.76],
+)
+
+中锚定仍给出有判别力的 Pareto 改变：相对精确 control，overall strict 提高 *+0.0533 [0.0200, 0.0867]*，paired generation 提高 *+0.1267 [0.0900, 0.1633]*；相对 step 50，count 为 *−0.32 [−0.46, −0.18]*，shape 为 *−0.26 [−0.38, −0.14]*。color/coordinate/spatial generation 分别达到 0.64/0.52/1.00；count 仍为 0.02，OCR 仍为 0。中锚定 overall vision−shuffle strict 为 *+0.4300 [0.3667, 0.4933]*，但 count vision−shuffle 为 −0.04 [−0.18, 0.08]，其 count 点估计不能解释成可靠视觉计数。
+
+#figure(
+  image("../experiments/v100_perception_20260804/projector_retention_v1/charts/03-balance-summary.svg", width: 78%),
+  caption: [端点与三个锚定强度的 macro、worst-task 和 macro generation。中锚定提高宏平均与生成，worst-task 仍受 count 限制。],
+)
+
+#table(
+  columns: (1.9fr, 1fr, 2.6fr),
+  [*假设*], [*包 11 更新*], [*证据与动作*],
+  [完整 projector 输出距离足以保持旧能力], [反驳], [MSE 单调降到 2.09，count/shape 仍比 step 50 低 0.26；表示接近没有保持答案决策边界。],
+  [辅助目标无法改变优化路径], [反驳], [$lambda=10^(-3)$ 相对 control 显著提高 macro strict 与 paired generation，说明 trade-off 可被目标塑形。],
+  [延长训练带来的交换仅是不可复现噪声], [反驳], [control 权重与原 step 100 文件逐字节一致；两端 teacher-forced 各 1,800 行逐字段精确复现。],
+  [立即放大语言主干是下一优先项], [继续暂缓], [count/shape 已在同一 0.5B 主干的 step 50 达到更高值；先完成分层 batch 对照与遗忘触发 replay。],
+)
+
+screen 含 9,000 条 preference 与 6,000 条 generation，零 failure，分析含 525 个 metric 和 399 个 paired-bootstrap contrast。重复 GPU generation 在相同端点出现文本级非确定性：frozen/control 分别 42/62 条 prediction 不同，correct flag 为 18/0 条不同；teacher-forced logp/NLL/margin 完全一致，候选选择只使用同一 run 内 strict preference。首轮因误选更早的 `balanced_multitask_projector_v1` step 50 而失效，六个相关 run 与一次过严 generation verifier 共七份 invalidation 均已保留和独立核验。
+
+下一项执行严格匹配的六任务分层 batch 对全局随机 batch，随后运行预注册遗忘触发式 replay。只有两者仍无法缓解遗忘时，才进入 per-task gradient-conflict 方法。付费 Gate D、完整 DeepSeek-V4 与租卡继续暂缓。
+
 == Gate C：Vast 只读调研
 
 2026-08-02 12:23（UTC+8）用官方 Search Offers API 查询 verified、rentable、可靠度至少 0.98、至少 4 张卡、单卡至少 80 GB、总显存至少 320 GB 的 on-demand offer。市场是动态的，以下价格只用于预算，offer ID 不应写进自动租用脚本。

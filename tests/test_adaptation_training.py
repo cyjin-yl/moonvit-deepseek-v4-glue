@@ -10,6 +10,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
 from train_shape_adaptation import (
     balanced_epoch_indices,
     maybe_resume_projector_optimizer,
+    projector_representation_anchor_loss,
+    read_training_order_window,
     resolve_projector_config_source,
 )
 from eval_shape_adaptation import (
@@ -29,6 +31,7 @@ from compare_adaptation_checkpoints import paired_run_metric_rows
 from interpolate_projector_checkpoints import interpolate_state_dict
 from analyze_projector_interpolation import select_interpolation_candidate
 from verify_projector_interpolation import endpoint_equivalence
+from analyze_projector_retention import select_retention_candidate
 
 
 def test_balanced_epoch_indices_keeps_every_batch_task_balanced() -> None:
@@ -112,6 +115,84 @@ def test_lora_arm_never_inherits_projector_optimizer(tmp_path: Path) -> None:
     )
 
     assert provenance == {"restored": False, "source": None, "source_step": None}
+
+
+def test_resume_reads_the_exact_requested_training_order_window(tmp_path: Path) -> None:
+    records = [{"id": f"sample-{index}"} for index in range(6)]
+    order_path = tmp_path / "training_order.jsonl"
+    order_path.write_text(
+        "".join(
+            [
+                '{"step":1,"ids":["sample-0","sample-1"]}\n',
+                '{"step":2,"ids":["sample-2","sample-3"]}\n',
+                '{"step":3,"ids":["sample-4","sample-5"]}\n',
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    batches, provenance = read_training_order_window(
+        order_path,
+        records,
+        start_step=1,
+        end_step=3,
+        batch_size=2,
+    )
+
+    assert batches == [[2, 3], [4, 5]]
+    assert provenance["steps"] == [2, 3]
+    assert provenance["first_batch_ids"] == ["sample-2", "sample-3"]
+
+
+def test_resume_rejects_a_missing_source_step(tmp_path: Path) -> None:
+    records = [{"id": f"sample-{index}"} for index in range(4)]
+    order_path = tmp_path / "training_order.jsonl"
+    order_path.write_text(
+        '{"step":1,"ids":["sample-0","sample-1"]}\n'
+        '{"step":3,"ids":["sample-2","sample-3"]}\n',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="steps mismatch"):
+        read_training_order_window(
+            order_path,
+            records,
+            start_step=1,
+            end_step=3,
+            batch_size=2,
+        )
+
+
+def test_projector_anchor_uses_only_preregistered_tasks() -> None:
+    current = [
+        torch.tensor([[1.0, 1.0]]),
+        torch.tensor([[3.0, 3.0]]),
+    ]
+    reference = [
+        torch.tensor([[0.0, 0.0]]),
+        torch.tensor([[0.0, 0.0]]),
+    ]
+    records = [{"task": "count"}, {"task": "spatial"}]
+
+    loss, selected = projector_representation_anchor_loss(
+        current,
+        reference,
+        records,
+        anchor_tasks={"count", "shape"},
+    )
+
+    assert float(loss) == pytest.approx(1.0)
+    assert selected == 1
+
+
+def test_projector_anchor_rejects_a_batch_without_anchor_tasks() -> None:
+    with pytest.raises(ValueError, match="no selected records"):
+        projector_representation_anchor_loss(
+            [torch.tensor([[1.0]])],
+            [torch.tensor([[0.0]])],
+            [{"task": "spatial"}],
+            anchor_tasks={"count"},
+        )
 
 
 def test_multitask_evaluation_can_read_a_complete_manifest_without_ids(
@@ -386,3 +467,61 @@ def test_interpolation_endpoint_verifier_allows_only_state_metadata_to_differ() 
         reference_state="projector-step50",
         value_fields=("correct_margin",),
     ) == 1
+
+
+def test_retention_candidate_must_keep_old_tasks_and_gain_new_tasks() -> None:
+    states = {
+        "frozen-base": {
+            "preference": {
+                "color": 0.58,
+                "coordinate": 0.44,
+                "count": 0.42,
+                "ocr": 0.18,
+                "shape": 0.80,
+                "spatial": 0.74,
+            },
+            "generation_macro": 0.23,
+        },
+        "resume-control": {
+            "preference": {
+                "color": 0.74,
+                "coordinate": 0.54,
+                "count": 0.12,
+                "ocr": 0.22,
+                "shape": 0.48,
+                "spatial": 1.00,
+            },
+            "generation_macro": 0.26,
+        },
+        "anchor-good": {
+            "weight": 0.001,
+            "preference": {
+                "color": 0.66,
+                "coordinate": 0.50,
+                "count": 0.40,
+                "ocr": 0.20,
+                "shape": 0.78,
+                "spatial": 0.90,
+            },
+            "generation_macro": 0.27,
+        },
+        "anchor-static": {
+            "weight": 0.01,
+            "preference": {
+                "color": 0.58,
+                "coordinate": 0.44,
+                "count": 0.42,
+                "ocr": 0.18,
+                "shape": 0.80,
+                "spatial": 0.74,
+            },
+            "generation_macro": 0.23,
+        },
+    }
+
+    decision = select_retention_candidate(states)
+
+    assert decision["selected_state"] == "anchor-good"
+    assert decision["targeted_retention_pass"] is True
+    static = next(row for row in decision["candidates"] if row["state"] == "anchor-static")
+    assert static["gains_coordinate_spatial"] is False

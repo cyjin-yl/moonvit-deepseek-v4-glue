@@ -1,0 +1,29 @@
+{
+  "status": "valid",
+  "state_order": [
+    "frozen-base",
+    "resume-control",
+    "anchor-1e-4",
+    "anchor-1e-3",
+    "anchor-1e-2"
+  ],
+  "source_files": {
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_retention_analysis_v2/DECISIONS.json": "03d87bbc188499d63b5490b57fd5dbcbc020090857ad0d2c06bea118d89725e3",
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_retention_screen_v2/preference_curve.csv": "1914491c13531bf5890e67319ba46468577dab2e5d87705631f9aa31097f0569",
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_retention_screen_v2/generation_curve.csv": "337d9f9db40a33683412ef428702cb50fd2ab8bdeebe4cd8b85963cc623283fe"
+  },
+  "charts": {
+    "01-task-preference.svg": {
+      "bytes": 5298,
+      "sha256": "a27311e78532fef74624ad34ff0a6d39ed5fc46dc55b0ec90a6399089b35cb4a"
+    },
+    "02-task-generation.svg": {
+      "bytes": 5293,
+      "sha256": "de9a0ca1b9802ac079f30580533d848a7ba3e31f700153e2bf816a32d6955e84"
+    },
+    "03-balance-summary.svg": {
+      "bytes": 3771,
+      "sha256": "c56b4273673bf74acff903214bdfb4d9e0ab54799c03e690cafc217979b4f130"
+    }
+  }
+}

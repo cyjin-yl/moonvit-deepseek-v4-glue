@@ -1,0 +1,14 @@
+{
+  "status": "invalid",
+  "invalidated_at_utc": "2026-08-05T05:28:58.514597+00:00",
+  "reason": "indexes-wrong-source-runs",
+  "impact": "all-indexed-candidates-use-the-wrong-step50-source",
+  "replacement_run": "projector_retention_index_v2",
+  "old_results_must_not_be_used": true,
+  "files": {
+    "SUMMARY.json": {
+      "bytes": 4681,
+      "sha256": "61012e222c86c2db0555f22b95929a9a1666921d1197638d3c0028d9e7184822"
+    }
+  }
+}

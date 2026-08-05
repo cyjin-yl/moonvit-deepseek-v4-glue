@@ -1,0 +1,103 @@
+{
+  "status": "valid",
+  "format_version": "projector-comparison-index-v1",
+  "metadata": {
+    "completed_at_utc": "2026-08-05T05:37:27.944452+00:00",
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "host": "doesworkstation",
+    "final_half_scored": false
+  },
+  "source_runs": {
+    "resume-control": {
+      "run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_retention_resume_control_v2",
+      "summary_sha256": "f88153d6f6ebb7bbf9082eb3cd17b0641772d901544f2d635b2596a2a6439cbf",
+      "step": 100
+    },
+    "anchor-1e-4": {
+      "run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_retention_anchor_1e-4_v2",
+      "summary_sha256": "b0656129f20473684e4381a6464225b9173ad21957b9f0ebf8e5a03ccd3ca3cf",
+      "step": 100
+    },
+    "anchor-1e-3": {
+      "run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_retention_anchor_1e-3_v2",
+      "summary_sha256": "665468e7a8d35db5064ccc95a26fd5d4b2c351ebf9abc451efcd403400ed3ea9",
+      "step": 100
+    },
+    "anchor-1e-2": {
+      "run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_retention_anchor_1e-2_v2",
+      "summary_sha256": "1f4d0bb421c367400e6e74a5384453e281d58151c9ce2707a12ba13ec876f815",
+      "step": 100
+    }
+  },
+  "checkpoints": {
+    "resume-control": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 100,
+      "examples_seen": 2400,
+      "evaluation_state_id": "resume-control",
+      "relative_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_retention_resume_control_v2/checkpoints/step-000100",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_retention_resume_control_v2",
+      "source_summary_sha256": "f88153d6f6ebb7bbf9082eb3cd17b0641772d901544f2d635b2596a2a6439cbf",
+      "weights_tensor_sha256": "7b731cffcb11da833efbd7d99a41ee77cba9eda3dfdb1135989e79adbb921a76",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "05f19079bc6db6757f378c22b05a5cb3ae3e638551513f642bb25dea04ef092d"
+        }
+      }
+    },
+    "anchor-1e-4": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 100,
+      "examples_seen": 2400,
+      "evaluation_state_id": "anchor-1e-4",
+      "relative_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_retention_anchor_1e-4_v2/checkpoints/step-000100",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_retention_anchor_1e-4_v2",
+      "source_summary_sha256": "b0656129f20473684e4381a6464225b9173ad21957b9f0ebf8e5a03ccd3ca3cf",
+      "weights_tensor_sha256": "da2bd1d759191ffde88be481ce8be11c7204d92550323fa5009d0a661954ecca",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "a8ac5a142c9b3697e6134c5911b55d570860543e04b296e730b466e75193ced2"
+        }
+      }
+    },
+    "anchor-1e-3": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 100,
+      "examples_seen": 2400,
+      "evaluation_state_id": "anchor-1e-3",
+      "relative_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_retention_anchor_1e-3_v2/checkpoints/step-000100",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_retention_anchor_1e-3_v2",
+      "source_summary_sha256": "665468e7a8d35db5064ccc95a26fd5d4b2c351ebf9abc451efcd403400ed3ea9",
+      "weights_tensor_sha256": "a7f1133090132d028585c059f8530630b03ede27a00ee761ab329ed0a8c55d9a",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "fc63f05451df64f33a2070db91e3ed35792d6b8e521dacb50aeebe1f631a1e42"
+        }
+      }
+    },
+    "anchor-1e-2": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 100,
+      "examples_seen": 2400,
+      "evaluation_state_id": "anchor-1e-2",
+      "relative_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_retention_anchor_1e-2_v2/checkpoints/step-000100",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/projector_retention_anchor_1e-2_v2",
+      "source_summary_sha256": "1f4d0bb421c367400e6e74a5384453e281d58151c9ce2707a12ba13ec876f815",
+      "weights_tensor_sha256": "3d9b590339f769f6fc1d09a9ff7944fe5cc74a9f8e63c671e9b815cc6dcedc3c",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "6a5d5ebc0f6b1a3147805733425988ddd76864cecd7bc31ce7fd16a1f18d6d74"
+        }
+      }
+    }
+  },
+  "final_half_scored": false
+}

@@ -1,0 +1,29 @@
+{
+  "status": "valid",
+  "canonical_hdd_root": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation",
+  "canonical_runs": {
+    "control": "projector_retention_resume_control_v2",
+    "anchor_1e-4": "projector_retention_anchor_1e-4_v2",
+    "anchor_1e-3": "projector_retention_anchor_1e-3_v2",
+    "anchor_1e-2": "projector_retention_anchor_1e-2_v2",
+    "comparison_index": "projector_retention_index_v2",
+    "evaluation": "projector_retention_screen_v2",
+    "analysis": "projector_retention_analysis_v2",
+    "charts": "projector_retention_charts_v1",
+    "logs": "projector_retention_logs_v1"
+  },
+  "invalid_runs": [
+    "projector_retention_resume_control_v1",
+    "projector_retention_anchor_1e-4_v1",
+    "projector_retention_anchor_1e-3_v1",
+    "projector_retention_anchor_1e-2_v1",
+    "projector_retention_index_v1",
+    "projector_retention_screen_v1",
+    "projector_retention_analysis_v1"
+  ],
+  "git_policy": {
+    "committed": "all raw evaluation rows, curves, analysis tables, configs, training histories/orders, checkpoint manifests, logs, charts, and invalidation records",
+    "hdd_only": "projector weights and AdamW training_state.pt files; their exact bytes and SHA-256 values are embedded in committed checkpoint manifests and run summaries"
+  },
+  "final_half_scored": false
+}

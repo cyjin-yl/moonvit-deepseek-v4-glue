@@ -108,3 +108,9 @@ synthetic 集报告 single accuracy、paired accuracy、answer-flip accuracy、b
 6. 只有上述结果确定训练分辨率、主干敏感性和真实 step time 后，才重新估算 DeepSeek Gate D 租期；Gate D 仍需单独验证 Hash-MoE 路由与量化 kernel 的 input gradient。
 
 任何阶段都不得用原生 VLM 高分替代 MoonViT-V2 → 纯文本主干的接口证据，也不得把 0.27 epoch 的历史 Gate B 低分写成能力上限。
+
+## 8. Checkpoint 合并与抗遗忘边界（包 10–11）
+
+包 10 对同一 projector 训练 basin 的 step 50/100 做了 `alpha=0/.25/.50/.75/1` 线性权重插值。两端 tensor 与原始评测精确复现；所有中间点都未同时保留 count/shape 并获得 coordinate/spatial。最佳折中 `alpha=.25` 仍使 count 相对 step 50 下降 0.16、shape 下降 0.10。当前结果否定的是同一训练 basin 中两个 checkpoint 的简单线性平均，不等于否定所有模型合并方法。正式 DeepSeek 训练不得把 checkpoint averaging 设为默认抗遗忘方案。
+
+包 11 从 step 50 精确恢复权重、optimizer 与数据游标，测试 count/shape-only frozen-step50 projector-output MSE。MSE 随系数增强显著下降，旧任务 paired preference 仍未保住；完整表示距离不能代替答案决策边界或任务级哨兵。`1e-3` 改善 macro preference 与 generation，说明辅助目标可改变 Pareto 路径。后续按顺序执行：严格匹配的分层 batch 对全局随机 batch、固定 replay 对遗忘触发 replay；两者都失败后才引入 per-task gradient-conflict 方法，避免同时堆叠多个机制。

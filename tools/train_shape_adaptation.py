@@ -15,6 +15,7 @@ from pathlib import Path
 
 import torch
 from safetensors.torch import load_file, save_file
+from torch.nn import functional as F
 
 from extract_layerwise_representations import visual_prompt_batch
 from moonvit_glue import FeatureCache, PatchMergerProjector, ProjectorConfig, VisionCausalLM
@@ -66,9 +67,17 @@ def maybe_resume_projector_optimizer(
     state_path = base_projector / "training_state.pt"
     if not state_path.is_file():
         raise FileNotFoundError(f"projector optimizer state is missing: {state_path}")
+    expected_sha256 = arm.get("expected_optimizer_sha256")
+    if expected_sha256 is not None and sha256(state_path) != str(expected_sha256):
+        raise ValueError("projector optimizer checkpoint SHA-256 mismatch")
     state = torch.load(state_path, map_location="cpu", weights_only=False)
     if "optimizer" not in state or "step" not in state:
         raise ValueError("projector training state is incomplete")
+    expected_step = arm.get("expected_optimizer_step")
+    if expected_step is not None and int(state["step"]) != int(expected_step):
+        raise ValueError(
+            f"projector optimizer step mismatch: {state['step']} != {expected_step}"
+        )
     optimizer.load_state_dict(state["optimizer"])
     # PyTorch 通常会自动迁移状态；显式迁移避免旧版本把 AdamW 动量留在 CPU。
     for parameter_state in optimizer.state.values():
@@ -155,6 +164,121 @@ def balanced_epoch_indices(
         for task in tasks:
             order.extend(shuffled[task][start : start + quota])
     return order
+
+
+def read_training_order_window(
+    path: Path,
+    records: list[dict],
+    *,
+    start_step: int,
+    end_step: int,
+    batch_size: int,
+    expected_sha256: str | None = None,
+) -> tuple[list[list[int]], dict]:
+    """读取已冻结训练顺序中的连续窗口，并把样本 ID 映射回当前数据集。"""
+    actual_sha256 = sha256(path)
+    if expected_sha256 is not None and actual_sha256 != expected_sha256:
+        raise ValueError("source training order SHA-256 mismatch")
+    index_by_id = {str(record["id"]): index for index, record in enumerate(records)}
+    if len(index_by_id) != len(records):
+        raise ValueError("adaptation records contain duplicate IDs")
+    rows_by_step: dict[int, list[str]] = {}
+    with path.open("r", encoding="utf-8") as stream:
+        for line in stream:
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            step = int(row["step"])
+            if step in rows_by_step:
+                raise ValueError(f"source training order repeats step {step}")
+            rows_by_step[step] = [str(sample_id) for sample_id in row["ids"]]
+    expected_steps = list(range(start_step + 1, end_step + 1))
+    actual_steps = [step for step in expected_steps if step in rows_by_step]
+    if actual_steps != expected_steps:
+        raise ValueError(
+            f"source training order steps mismatch: {actual_steps} != {expected_steps}"
+        )
+    batches: list[list[int]] = []
+    for step in expected_steps:
+        ids = rows_by_step[step]
+        if len(ids) != batch_size:
+            raise ValueError(
+                f"source training order batch {step} has {len(ids)} IDs, expected {batch_size}"
+            )
+        missing = [sample_id for sample_id in ids if sample_id not in index_by_id]
+        if missing:
+            raise ValueError(f"source training order IDs are missing: {missing[:3]}")
+        batches.append([index_by_id[sample_id] for sample_id in ids])
+    return batches, {
+        "source": str(path),
+        "source_sha256": actual_sha256,
+        "start_step_exclusive": start_step,
+        "end_step_inclusive": end_step,
+        "steps": expected_steps,
+        "first_batch_ids": rows_by_step[expected_steps[0]] if expected_steps else [],
+        "last_batch_ids": rows_by_step[expected_steps[-1]] if expected_steps else [],
+    }
+
+
+def projector_representation_anchor_loss(
+    current: list[torch.Tensor],
+    reference: list[torch.Tensor],
+    records: list[dict],
+    *,
+    anchor_tasks: set[str],
+) -> tuple[torch.Tensor, int]:
+    """对指定任务的 projector 输出做逐样本均方锚定。"""
+    if not (len(current) == len(reference) == len(records)):
+        raise ValueError("projector anchor batch lengths disagree")
+    losses = [
+        F.mse_loss(current_item, reference_item, reduction="mean")
+        for current_item, reference_item, record in zip(current, reference, records)
+        if str(record["task"]) in anchor_tasks
+    ]
+    if not losses:
+        raise ValueError("projector anchor batch has no selected records")
+    return torch.stack(losses).mean(), len(losses)
+
+
+def verify_exact_projector_target(
+    projector: PatchMergerProjector,
+    target_path: Path,
+    *,
+    expected_file_sha256: str | None = None,
+    expected_tensor_sha256: str | None = None,
+) -> dict:
+    """逐张量校验复现目标；任一位不同都拒绝把 run 标成有效。"""
+    target_file_sha256 = sha256(target_path)
+    if expected_file_sha256 is not None and target_file_sha256 != expected_file_sha256:
+        raise ValueError("exact reproduction target file SHA-256 mismatch")
+    target = load_file(str(target_path), device="cpu")
+    target_tensor_sha256 = tensor_state_hash(target)
+    if (
+        expected_tensor_sha256 is not None
+        and target_tensor_sha256 != expected_tensor_sha256
+    ):
+        raise ValueError("exact reproduction target tensor SHA-256 mismatch")
+    actual = {
+        name: value.detach().cpu().contiguous()
+        for name, value in projector.state_dict().items()
+    }
+    mismatched = [
+        name
+        for name in sorted(target)
+        if name not in actual or not torch.equal(actual[name], target[name])
+    ]
+    mismatched.extend(name for name in sorted(actual) if name not in target)
+    if mismatched:
+        raise ValueError(
+            f"exact projector reproduction failed for tensors: {mismatched[:5]}"
+        )
+    return {
+        "status": "exact",
+        "target": str(target_path),
+        "target_file_sha256": target_file_sha256,
+        "target_tensor_sha256": target_tensor_sha256,
+        "matched_tensors": len(target),
+    }
 
 
 def teacher_forced_batch(
@@ -280,11 +404,12 @@ def run(args: argparse.Namespace) -> None:
     arm = config["arms"][args.arm]
     training = config["training"]
     steps = int(args.steps if args.steps is not None else training["steps"])
+    initial_step = int(training.get("initial_step", 0))
     batch_size = int(
         args.batch_size if args.batch_size is not None else training["batch_size"]
     )
-    if steps <= 0 or batch_size <= 0:
-        raise ValueError("adaptation steps and batch size must be positive")
+    if steps <= initial_step or initial_step < 0 or batch_size <= 0:
+        raise ValueError("adaptation final step must exceed a non-negative initial step")
     config["runtime_override"] = {"steps": args.steps, "batch_size": args.batch_size}
     config["resolved_arm"] = args.arm
     args.out.mkdir(parents=True)
@@ -324,8 +449,56 @@ def run(args: argparse.Namespace) -> None:
         device=device, dtype=projector_dtype
     )
     base_state_path = projector_source / "projector.safetensors"
+    expected_base_sha256 = arm.get("expected_base_projector_sha256")
+    if expected_base_sha256 is not None and sha256(base_state_path) != str(
+        expected_base_sha256
+    ):
+        raise ValueError("base projector SHA-256 mismatch")
     projector.load_state_dict(load_file(str(base_state_path), device="cpu"), strict=True)
     base_projector_sha256 = sha256(base_state_path)
+    anchor_config = arm.get("representation_anchor")
+    reference_projector = None
+    anchor_tasks: set[str] = set()
+    anchor_weight = 0.0
+    anchor_provenance = None
+    if anchor_config is not None:
+        if arm["kind"] != "projector":
+            raise ValueError("representation anchoring is only supported for projector arms")
+        anchor_weight = float(anchor_config["weight"])
+        if anchor_weight <= 0:
+            raise ValueError("representation anchor weight must be positive")
+        anchor_tasks = {str(task) for task in anchor_config["tasks"]}
+        if not anchor_tasks:
+            raise ValueError("representation anchor tasks must be non-empty")
+        reference_source = Path(anchor_config["reference_projector"])
+        reference_path = (
+            reference_source / "projector.safetensors"
+            if reference_source.is_dir()
+            else reference_source
+        )
+        reference_sha256 = sha256(reference_path)
+        expected_reference_sha256 = anchor_config.get("expected_reference_sha256")
+        if expected_reference_sha256 is not None and reference_sha256 != str(
+            expected_reference_sha256
+        ):
+            raise ValueError("representation anchor reference SHA-256 mismatch")
+        reference_projector = PatchMergerProjector(projector_config).to(
+            device=device, dtype=projector_dtype
+        )
+        reference_projector.load_state_dict(
+            load_file(str(reference_path), device="cpu"), strict=True
+        )
+        reference_projector.requires_grad_(False).eval()
+        anchor_provenance = {
+            "objective": "task-conditioned-projector-output-mse-v1",
+            "weight": anchor_weight,
+            "tasks": sorted(anchor_tasks),
+            "reference": str(reference_path),
+            "reference_sha256": reference_sha256,
+            "reference_tensor_sha256": tensor_state_hash(
+                reference_projector.state_dict()
+            ),
+        }
     resolved_modules: list[str] = []
     if arm["kind"] == "lora":
         projector.requires_grad_(False).eval()
@@ -378,13 +551,17 @@ def run(args: argparse.Namespace) -> None:
     if int(cache.manifest["max_image_side"]) != int(dataset["max_image_side"]):
         raise ValueError("shape adaptation cache resolution mismatch")
     checkpoint_steps = sorted(
-        {0, steps}
-        | {int(value) for value in training["checkpoint_steps"] if int(value) <= steps}
+        {initial_step, steps}
+        | {
+            int(value)
+            for value in training["checkpoint_steps"]
+            if initial_step <= int(value) <= steps
+        }
     )
     checkpoint_manifests = {}
-    checkpoint_manifests["step-000000"] = save_checkpoint(
+    checkpoint_manifests[f"step-{initial_step:06d}"] = save_checkpoint(
         args.out,
-        step=0,
+        step=initial_step,
         arm=arm,
         arm_name=args.arm,
         projector=projector,
@@ -397,23 +574,37 @@ def run(args: argparse.Namespace) -> None:
     generator = torch.Generator(device="cpu").manual_seed(int(config["seed"]))
     order: list[int] = []
     cursor = 0
+    frozen_order_batches = None
+    order_provenance = None
+    if training.get("source_training_order"):
+        frozen_order_batches, order_provenance = read_training_order_window(
+            Path(training["source_training_order"]),
+            train_records,
+            start_step=initial_step,
+            end_step=steps,
+            batch_size=batch_size,
+            expected_sha256=training.get("source_training_order_sha256"),
+        )
     answer_tokens_seen = 0
     history_path = args.out / "train_history.jsonl"
     order_path = args.out / "training_order.jsonl"
     with history_path.open("w", encoding="utf-8", newline="\n") as history_stream, order_path.open(
         "w", encoding="utf-8", newline="\n"
     ) as order_stream:
-        for step in range(1, steps + 1):
-            if cursor + batch_size > len(order):
-                order = balanced_epoch_indices(
-                    train_records,
-                    tasks=tasks,
-                    batch_size=batch_size,
-                    generator=generator,
-                )
-                cursor = 0
-            indices = order[cursor : cursor + batch_size]
-            cursor += batch_size
+        for step in range(initial_step + 1, steps + 1):
+            if frozen_order_batches is not None:
+                indices = frozen_order_batches[step - initial_step - 1]
+            else:
+                if cursor + batch_size > len(order):
+                    order = balanced_epoch_indices(
+                        train_records,
+                        tasks=tasks,
+                        batch_size=batch_size,
+                        generator=generator,
+                    )
+                    cursor = 0
+                indices = order[cursor : cursor + batch_size]
+                cursor += batch_size
             batch = [train_records[index] for index in indices]
             groups = [
                 cache.get(str(record["id"]), device=device, dtype=projector_dtype)[0]
@@ -428,15 +619,38 @@ def run(args: argparse.Namespace) -> None:
             )
             optimizer.zero_grad(set_to_none=True)
             step_started = time.time()
-            outputs = model(
-                input_ids=ids,
-                attention_mask=mask,
-                labels=labels,
-                image_feature_groups=groups,
-            )
-            if not bool(torch.isfinite(outputs.loss)):
+            if reference_projector is None:
+                outputs = model(
+                    input_ids=ids,
+                    attention_mask=mask,
+                    labels=labels,
+                    image_feature_groups=groups,
+                )
+                anchor_loss = None
+                anchor_selected_records = 0
+                total_loss = outputs.loss
+            else:
+                current_embeddings = projector(groups)
+                with torch.no_grad():
+                    reference_embeddings = reference_projector(groups)
+                anchor_loss, anchor_selected_records = (
+                    projector_representation_anchor_loss(
+                        current_embeddings,
+                        reference_embeddings,
+                        batch,
+                        anchor_tasks=anchor_tasks,
+                    )
+                )
+                outputs = model(
+                    input_ids=ids,
+                    attention_mask=mask,
+                    labels=labels,
+                    image_embeddings=current_embeddings,
+                )
+                total_loss = outputs.loss + anchor_weight * anchor_loss
+            if not bool(torch.isfinite(total_loss)):
                 raise ValueError(f"non-finite adaptation loss at step {step}")
-            outputs.loss.backward()
+            total_loss.backward()
             grad_norm = torch.nn.utils.clip_grad_norm_(
                 parameters, float(training["gradient_clip"])
             )
@@ -448,10 +662,17 @@ def run(args: argparse.Namespace) -> None:
                 torch.cuda.synchronize(device)
             row = {
                 "step": step,
-                "loss": float(outputs.loss.detach()),
+                "loss": float(total_loss.detach()),
+                "task_loss": float(outputs.loss.detach()),
+                "anchor_loss": (
+                    float(anchor_loss.detach()) if anchor_loss is not None else 0.0
+                ),
+                "anchor_weight": anchor_weight,
+                "anchor_selected_records": anchor_selected_records,
                 "gradient_norm_before_clip": float(grad_norm),
                 "batch_size": batch_size,
                 "examples_seen": step * batch_size,
+                "continuation_examples_seen": (step - initial_step) * batch_size,
                 "answer_tokens_seen": answer_tokens_seen,
                 "task_counts": {
                     task: sum(str(record["task"]) == task for record in batch)
@@ -485,8 +706,17 @@ def run(args: argparse.Namespace) -> None:
                     base_projector_sha256=base_projector_sha256,
                     batch_size=batch_size,
                 )
-            if step == 1 or step % 25 == 0:
+            if step == initial_step + 1 or step % 25 == 0:
                 print(json.dumps(row), flush=True)
+    exact_reproduction = None
+    if arm.get("exact_reproduction_target"):
+        target = arm["exact_reproduction_target"]
+        exact_reproduction = verify_exact_projector_target(
+            projector,
+            Path(target["projector"]),
+            expected_file_sha256=target.get("file_sha256"),
+            expected_tensor_sha256=target.get("tensor_sha256"),
+        )
     summary = {
         "status": "valid",
         "format_version": config.get(
@@ -506,9 +736,12 @@ def run(args: argparse.Namespace) -> None:
             ),
             "final_half_scored": False,
         },
+        "initial_step": initial_step,
         "steps": steps,
+        "continuation_steps": steps - initial_step,
         "batch_size": batch_size,
         "examples_seen": steps * batch_size,
+        "continuation_examples_seen": (steps - initial_step) * batch_size,
         "train_records": len(train_records),
         "train_pairs": len({str(record["pair_id"]) for record in train_records}),
         "tasks": tasks,
@@ -524,6 +757,9 @@ def run(args: argparse.Namespace) -> None:
             projector_config_source / "projector_config.json"
         ),
         "optimizer_resume": optimizer_resume,
+        "training_order_resume": order_provenance,
+        "representation_anchor": anchor_provenance,
+        "exact_reproduction": exact_reproduction,
         "selection_manifest_sha256": sha256(Path(dataset["selection_manifest"])),
         "checkpoints": checkpoint_manifests,
         "files": {

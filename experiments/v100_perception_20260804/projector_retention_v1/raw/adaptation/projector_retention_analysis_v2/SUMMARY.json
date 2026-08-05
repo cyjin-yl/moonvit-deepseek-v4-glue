@@ -1,0 +1,66 @@
+{
+  "status": "valid",
+  "format_version": "projector-retention-analysis-v1",
+  "completed_at_utc": "2026-08-05T06:01:02.569264+00:00",
+  "states": [
+    "frozen-base",
+    "anchor-1e-2",
+    "anchor-1e-3",
+    "anchor-1e-4",
+    "resume-control"
+  ],
+  "tasks": [
+    "color",
+    "coordinate",
+    "count",
+    "ocr",
+    "shape",
+    "spatial"
+  ],
+  "metric_rows": 525,
+  "contrasts": 399,
+  "bootstrap_samples": 2000,
+  "evaluation_summary_sha256": "57e7d1f52975ac555729e4d45a387e8c785a2a894db3b2c59569d7dcf954e67e",
+  "reference_evaluation_summary_sha256": "fe89c3197b50b8551ded0732b664a44c089a14c7fd42e38cfe754b9cf1b9c6ab",
+  "endpoint_evaluation_reproduction": {
+    "frozen-base": {
+      "reference_state": "projector-interp000",
+      "preference_rows_exact": 1800,
+      "generation_rows_structurally_exact": 1200,
+      "generation_value_differences": {
+        "prediction": 42,
+        "normalized_prediction": 42,
+        "correct": 18
+      },
+      "generation_strict_exact": false,
+      "interpretation": "teacher-forced values are bit-exact; free generation is reported with observed cross-run GPU decode variability and is not used by the candidate selection rule"
+    },
+    "resume-control": {
+      "reference_state": "projector-interp100",
+      "preference_rows_exact": 1800,
+      "generation_rows_structurally_exact": 1200,
+      "generation_value_differences": {
+        "prediction": 62,
+        "normalized_prediction": 62,
+        "correct": 0
+      },
+      "generation_strict_exact": false,
+      "interpretation": "teacher-forced values are bit-exact; free generation is reported with observed cross-run GPU decode variability and is not used by the candidate selection rule"
+    }
+  },
+  "files": {
+    "retention_metrics.csv": {
+      "bytes": 42592,
+      "sha256": "bb0f705c167e1fd2f8fa24929e10254ac3d864658bc085f2e0f40858494fb0e1"
+    },
+    "retention_contrasts.csv": {
+      "bytes": 73281,
+      "sha256": "1589ddc9755c3f3a9a54dff145e77f9bda4727a7460d9dcf3424445afdf7933a"
+    },
+    "DECISIONS.json": {
+      "bytes": 4028,
+      "sha256": "03d87bbc188499d63b5490b57fd5dbcbc020090857ad0d2c06bea118d89725e3"
+    }
+  },
+  "final_half_scored": false
+}

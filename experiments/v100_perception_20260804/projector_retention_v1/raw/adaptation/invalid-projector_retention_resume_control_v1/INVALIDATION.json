@@ -1,0 +1,74 @@
+{
+  "status": "invalid",
+  "invalidated_at_utc": "2026-08-05T05:28:41.312071+00:00",
+  "reason": "wrong-source-run",
+  "impact": "first-stage-balanced-multitask-step50-was-used-instead-of-balanced-compare-step50",
+  "replacement_run": "projector_retention_resume_control_v2",
+  "old_results_must_not_be_used": true,
+  "files": {
+    "CONFIG.json": {
+      "bytes": 6350,
+      "sha256": "25a8d9f99d3a76c9bd3339cfe630851888645048f7653ffe53342805953ca5f9"
+    },
+    "SUMMARY.json": {
+      "bytes": 7132,
+      "sha256": "aa2d96f33bee3db0e988a93081fc2fc1f8f16e61430a656de24e8c53d40653be"
+    },
+    "checkpoints/step-000050/MANIFEST.json": {
+      "bytes": 655,
+      "sha256": "e68b2d1e35538b70c6a21d4516816c85e036111384b7255695c02ef2561d2d04"
+    },
+    "checkpoints/step-000050/projector.safetensors": {
+      "bytes": 81817648,
+      "sha256": "54f4e79b49f8840829e725c309e1fdee85ac7cc584bb95b7a26aee45e01e4384"
+    },
+    "checkpoints/step-000050/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "checkpoints/step-000050/training_state.pt": {
+      "bytes": 163640597,
+      "sha256": "c7fe19dd7f71a2a4fbf24799ebe778ea69ad9bd802d2086ee8dd86a827058745"
+    },
+    "checkpoints/step-000075/MANIFEST.json": {
+      "bytes": 655,
+      "sha256": "d1bbf36173d6f453d4c3dc826f72c83f59597933a121d825734bb85d7707516c"
+    },
+    "checkpoints/step-000075/projector.safetensors": {
+      "bytes": 81817648,
+      "sha256": "a090dbea641ea1accfe3f5d7a0740cfa3e9374df872731a7e0be4740af645f39"
+    },
+    "checkpoints/step-000075/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "checkpoints/step-000075/training_state.pt": {
+      "bytes": 163640597,
+      "sha256": "b89e1abaa43fdbc8affff8ccc771e706b865c5fba24525adf3127fb61b0891ae"
+    },
+    "checkpoints/step-000100/MANIFEST.json": {
+      "bytes": 656,
+      "sha256": "e3b2c3e12a36c5a29783be67214a88d3557445000d2ff7f8bfa821d6f0710488"
+    },
+    "checkpoints/step-000100/projector.safetensors": {
+      "bytes": 81817648,
+      "sha256": "70d8e66f13b5d90f058884eb2130aedef3a0f210e1ec52a7f744a8cbf968b0dd"
+    },
+    "checkpoints/step-000100/projector_config.json": {
+      "bytes": 127,
+      "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+    },
+    "checkpoints/step-000100/training_state.pt": {
+      "bytes": 163640597,
+      "sha256": "a0c16c4cde7ab5ed71caeb8a117f2468ee92e6a3ffaccd95a2cb4f388e0f058c"
+    },
+    "train_history.jsonl": {
+      "bytes": 23558,
+      "sha256": "4e2efa4e9025ed6a6666553307692df9483e89603dfe637bdd5619c4a4363aea"
+    },
+    "training_order.jsonl": {
+      "bytes": 29701,
+      "sha256": "41379034c6cd6f2c091f4a526c7d211198c185b071664c327e57cedda66acb61"
+    }
+  }
+}
