@@ -1,0 +1,12 @@
+{
+  "status": "invalid_for_trajectory_peak_labels",
+  "affected_artifact": "DECISIONS.json trajectory.*.*.*.nonmonotonic_peak",
+  "unaffected_artifacts": [
+    "adaptation_metrics.csv",
+    "adaptation_contrasts.csv"
+  ],
+  "reason": "A flat trajectory selected the earliest tied checkpoint and compared its state name with the latest checkpoint, incorrectly labeling an all-equal curve as a nonmonotonic peak.",
+  "replacement": "../balanced_compare_trajectory_analysis_v3",
+  "matrix_rerun_required": false,
+  "final_half_scored": false
+}

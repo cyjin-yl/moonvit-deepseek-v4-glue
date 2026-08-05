@@ -1,0 +1,20 @@
+{
+  "status": "valid",
+  "package": "balanced_adaptation_trajectory_v1",
+  "workstation_root": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation",
+  "training_sources": {
+    "lora": "balanced_compare_lora_v1",
+    "projector": "balanced_compare_projector_v1",
+    "committed_package": "../balanced_adaptation_compare_v1/raw/adaptation"
+  },
+  "packaged_losslessly": [
+    "balanced_compare_trajectory_screen_v1",
+    "balanced_compare_trajectory_analysis_v2_invalid_flat_peak",
+    "balanced_compare_trajectory_analysis_v3",
+    "balanced_compare_step50_confirm_v1",
+    "balanced_compare_step50_analysis_v1",
+    "balanced_compare_step50_to100_full_v1"
+  ],
+  "large_checkpoint_policy": "Checkpoint safetensors remain on the V100 HDD; package-8 training summaries and independent verification bind their hashes and tensor counts.",
+  "final_half_scored": false
+}

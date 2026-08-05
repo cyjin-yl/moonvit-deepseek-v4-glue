@@ -1,0 +1,21 @@
+{
+  "status": "valid",
+  "source_files": {
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_trajectory_screen_v1/preference_curve.csv": "4a2c975de4ba4997987ba04fadc9b7215df541bb8ff9b2fed4725d9a3cae3346",
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_trajectory_screen_v1/generation_curve.csv": "a48afc3531a1d9a0fc20fc4e104ede4c08bffca1580fcb4bfbe70299140eced8"
+  },
+  "charts": {
+    "01-trajectory-paired-preference.svg": {
+      "bytes": 8631,
+      "sha256": "956610581359e3f24321ad611acad9b7682c472306e760ef5265183e17e63f71"
+    },
+    "02-trajectory-paired-generation.svg": {
+      "bytes": 8627,
+      "sha256": "2992509481f5414d8f6bd7b82e823649e970f8ebf054037eab396fd72ff094db"
+    },
+    "03-trajectory-vision-minus-shuffle.svg": {
+      "bytes": 8672,
+      "sha256": "ddf9916ceb2181a8580fbdebf42e2a0d05c9308e6cd4fddecbaf679823531d0c"
+    }
+  }
+}

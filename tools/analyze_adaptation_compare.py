@@ -62,6 +62,54 @@ def latest_adaptation_state(states: list[str], prefix: str) -> str:
     return max(candidates, key=lambda state: int(state.removeprefix(prefix)))
 
 
+def matched_adaptation_states(
+    states: list[str], left_prefix: str, right_prefix: str
+) -> list[tuple[str, str, int]]:
+    left = {
+        int(state.removeprefix(left_prefix)): state
+        for state in states
+        if state.startswith(left_prefix)
+    }
+    right = {
+        int(state.removeprefix(right_prefix)): state
+        for state in states
+        if state.startswith(right_prefix)
+    }
+    if set(left) != set(right) or not left:
+        raise ValueError("adaptation arms do not expose the same checkpoint steps")
+    return [(left[step], right[step], step) for step in sorted(left)]
+
+
+def ordered_adaptation_states(states: list[str], prefix: str) -> list[str]:
+    ordered = [state for state in states if state.startswith(prefix)]
+    if not ordered:
+        raise ValueError(f"adaptation state prefix is absent: {prefix}")
+    return sorted(ordered, key=lambda state: int(state.removeprefix(prefix)))
+
+
+def trajectory_peak_summary(candidates: list[dict], prefix: str) -> dict:
+    if not candidates:
+        raise ValueError(f"trajectory candidates are absent: {prefix}")
+    best = max(
+        candidates,
+        key=lambda row: (
+            float(row["mean"]),
+            -int(str(row["state"]).removeprefix(prefix)),
+        ),
+    )
+    latest = max(
+        candidates,
+        key=lambda row: int(str(row["state"]).removeprefix(prefix)),
+    )
+    return {
+        "best_state": best["state"],
+        "best_mean": best["mean"],
+        "latest_state": latest["state"],
+        "latest_mean": latest["mean"],
+        "nonmonotonic_peak": float(best["mean"]) > float(latest["mean"]),
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--eval-run", required=True, type=Path)
@@ -84,6 +132,9 @@ def main() -> None:
     frozen = next(state for state in states if state.startswith("frozen"))
     lora = latest_adaptation_state(states, "lora-step")
     projector = latest_adaptation_state(states, "projector-step")
+    matched_states = matched_adaptation_states(
+        states, "lora-step", "projector-step"
+    )
 
     modalities = {
         "preference": (
@@ -164,7 +215,10 @@ def main() -> None:
 
     for modality, (rows, metrics) in modalities.items():
         conditions = sorted({str(row["condition"]) for row in rows})
-        for state in (lora, projector):
+        for state in [
+            *(left for left, _, _ in matched_states),
+            *(right for _, right, _ in matched_states),
+        ]:
             for task in ["overall", *tasks]:
                 for metric in metrics:
                     add_contrast(
@@ -177,18 +231,19 @@ def main() -> None:
                         "vision",
                         task,
                     )
-        for task in ["overall", *tasks]:
-            for metric in metrics:
-                add_contrast(
-                    "lora_minus_projector",
-                    modality,
-                    metric,
-                    lora,
-                    "vision",
-                    projector,
-                    "vision",
-                    task,
-                )
+        for left, right, _ in matched_states:
+            for task in ["overall", *tasks]:
+                for metric in metrics:
+                    add_contrast(
+                        "lora_minus_projector",
+                        modality,
+                        metric,
+                        left,
+                        "vision",
+                        right,
+                        "vision",
+                        task,
+                    )
         if "shuffled_image" in conditions:
             for state in states:
                 for task in ["overall", *tasks]:
@@ -201,6 +256,21 @@ def main() -> None:
                             "vision",
                             state,
                             "shuffled_image",
+                            task,
+                        )
+        for prefix in ("lora-step", "projector-step"):
+            ordered = ordered_adaptation_states(states, prefix)
+            for earlier, later in zip(ordered, ordered[1:]):
+                for task in ["overall", *tasks]:
+                    for metric in metrics:
+                        add_contrast(
+                            "within_arm_later_minus_earlier",
+                            modality,
+                            metric,
+                            later,
+                            "vision",
+                            earlier,
+                            "vision",
                             task,
                         )
 
@@ -220,12 +290,34 @@ def main() -> None:
             "generation_lora_minus_projector_ci95_low": generation_delta["ci95_low"],
             "generation_lora_minus_projector_ci95_high": generation_delta["ci95_high"],
         }
+    trajectory = {}
+    for task in tasks:
+        trajectory[task] = {}
+        for modality, metric in (
+            ("preference", "paired_preference"),
+            ("generation", "generation_paired"),
+        ):
+            trajectory[task][modality] = {}
+            for prefix in ("lora-step", "projector-step"):
+                candidates = [
+                    row
+                    for row in metric_rows
+                    if row["modality"] == modality
+                    and row["metric"] == metric
+                    and row["condition"] == "vision"
+                    and row["task"] == task
+                    and row["state"].startswith(prefix)
+                ]
+                trajectory[task][modality][prefix.removesuffix("-step")] = (
+                    trajectory_peak_summary(candidates, prefix)
+                )
     decisions = {
         "status": "valid",
         "frozen_state": frozen,
         "lora_state": lora,
         "projector_state": projector,
         "tasks": task_decisions,
+        "trajectory": trajectory,
         "selected_direction": endpoint_direction(task_decisions),
         "decision_rule": (
             "at least two task-level paired-generation confidence intervals must "

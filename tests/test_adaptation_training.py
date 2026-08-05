@@ -18,7 +18,14 @@ from eval_shape_adaptation import (
     read_evaluation_records,
     take_complete_pair_limit_per_task,
 )
-from analyze_adaptation_compare import endpoint_direction, latest_adaptation_state
+from analyze_adaptation_compare import (
+    endpoint_direction,
+    latest_adaptation_state,
+    matched_adaptation_states,
+    ordered_adaptation_states,
+    trajectory_peak_summary,
+)
+from compare_adaptation_checkpoints import paired_run_metric_rows
 
 
 def test_balanced_epoch_indices_keeps_every_batch_task_balanced() -> None:
@@ -202,3 +209,68 @@ def test_trajectory_analysis_uses_the_latest_endpoint() -> None:
         ["frozen-base", "lora-step25", "lora-step100", "lora-step50"],
         "lora-step",
     ) == "lora-step100"
+
+
+def test_trajectory_analysis_pairs_equal_arm_steps() -> None:
+    assert matched_adaptation_states(
+        [
+            "frozen-base",
+            "lora-step25",
+            "lora-step100",
+            "projector-step25",
+            "projector-step100",
+        ],
+        "lora-step",
+        "projector-step",
+    ) == [
+        ("lora-step25", "projector-step25", 25),
+        ("lora-step100", "projector-step100", 100),
+    ]
+
+
+def test_trajectory_analysis_orders_numeric_steps() -> None:
+    assert ordered_adaptation_states(
+        ["lora-step100", "lora-step25", "lora-step50"], "lora-step"
+    ) == ["lora-step25", "lora-step50", "lora-step100"]
+
+
+def test_cross_run_comparison_keeps_identical_complete_pair_ids() -> None:
+    def rows(state: str, scores: tuple[float, float]) -> list[dict]:
+        return [
+            {
+                "state": state,
+                "condition": "vision",
+                "task": "shape",
+                "id": f"sample-{index}",
+                "pair_id": "pair-1",
+                "pair_variant": variant,
+                "correct_margin": score,
+                "failure": None,
+            }
+            for index, (variant, score) in enumerate(zip(("a", "b"), scores))
+        ]
+
+    early, late = paired_run_metric_rows(
+        rows("projector-step50", (-1.0, 1.0)),
+        rows("projector-step100", (1.0, 2.0)),
+        early_state="projector-step50",
+        late_state="projector-step100",
+        condition="vision",
+        task="shape",
+        metric="paired_preference",
+    )
+    assert early == [{"id": "pair-1", "score": 0.0}]
+    assert late == [{"id": "pair-1", "score": 1.0}]
+
+
+def test_flat_trajectory_is_not_reported_as_a_nonmonotonic_peak() -> None:
+    summary = trajectory_peak_summary(
+        [
+            {"state": "lora-step25", "mean": 0.0},
+            {"state": "lora-step50", "mean": 0.0},
+            {"state": "lora-step100", "mean": 0.0},
+        ],
+        "lora-step",
+    )
+    assert summary["latest_state"] == "lora-step100"
+    assert summary["nonmonotonic_peak"] is False

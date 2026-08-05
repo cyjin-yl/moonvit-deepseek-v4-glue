@@ -1,0 +1,39 @@
+{
+  "status": "valid",
+  "trajectory_screen": {
+    "states_verified": 7,
+    "preference_rows_verified": 12600,
+    "generation_rows_verified": 8400,
+    "contrast_rows_verified": 693,
+    "authoritative_analysis": "balanced_compare_trajectory_analysis_v3"
+  },
+  "full_step50_confirmation": {
+    "states_verified": 3,
+    "preference_rows_verified": 21600,
+    "generation_rows_verified": 3600,
+    "contrast_rows_verified": 189,
+    "wall_seconds": 1137.619669675827,
+    "peak_gpu_memory_bytes": 12720825856
+  },
+  "cross_run_step100_minus_step50": {
+    "status": "valid",
+    "sample_identity_contract": [
+      "id",
+      "pair_id",
+      "pair_variant",
+      "task",
+      "condition"
+    ],
+    "contrast_rows": 210,
+    "bootstrap_samples": 2000
+  },
+  "training": {
+    "equal_training_order_sha256": "a0929326fc8b494f85b82fc504855cd23f1ddfa74348ccc9b364a13ada39f2f5",
+    "projector_checkpoint_tensors_verified": 24,
+    "lora_checkpoint_tensors_verified": 288
+  },
+  "invalid_artifacts": {
+    "balanced_compare_trajectory_analysis_v2_invalid_flat_peak": "Only flat-trajectory nonmonotonic_peak labels are invalid; numeric metrics and contrasts are unaffected and replaced by v3."
+  },
+  "final_half_scored": false
+}

@@ -1,0 +1,264 @@
+{
+  "status": "valid",
+  "frozen_state": "frozen-base",
+  "lora_state": "lora-step50",
+  "projector_state": "projector-step50",
+  "tasks": {
+    "color": {
+      "preference_lora_minus_projector": -0.285,
+      "preference_lora_minus_projector_ci95_low": -0.35,
+      "preference_lora_minus_projector_ci95_high": -0.22,
+      "generation_lora_minus_projector": -0.14,
+      "generation_lora_minus_projector_ci95_low": -0.24,
+      "generation_lora_minus_projector_ci95_high": -0.06
+    },
+    "coordinate": {
+      "preference_lora_minus_projector": -0.37,
+      "preference_lora_minus_projector_ci95_low": -0.445,
+      "preference_lora_minus_projector_ci95_high": -0.3,
+      "generation_lora_minus_projector": -0.02,
+      "generation_lora_minus_projector_ci95_low": -0.06,
+      "generation_lora_minus_projector_ci95_high": 0.0
+    },
+    "count": {
+      "preference_lora_minus_projector": -0.37,
+      "preference_lora_minus_projector_ci95_low": -0.44,
+      "preference_lora_minus_projector_ci95_high": -0.3,
+      "generation_lora_minus_projector": -0.02,
+      "generation_lora_minus_projector_ci95_low": -0.06,
+      "generation_lora_minus_projector_ci95_high": 0.0
+    },
+    "ocr": {
+      "preference_lora_minus_projector": 0.0,
+      "preference_lora_minus_projector_ci95_low": -0.045,
+      "preference_lora_minus_projector_ci95_high": 0.05,
+      "generation_lora_minus_projector": 0.0,
+      "generation_lora_minus_projector_ci95_low": 0.0,
+      "generation_lora_minus_projector_ci95_high": 0.0
+    },
+    "shape": {
+      "preference_lora_minus_projector": 0.165,
+      "preference_lora_minus_projector_ci95_low": 0.115,
+      "preference_lora_minus_projector_ci95_high": 0.22,
+      "generation_lora_minus_projector": 0.2,
+      "generation_lora_minus_projector_ci95_low": 0.1,
+      "generation_lora_minus_projector_ci95_high": 0.32
+    },
+    "spatial": {
+      "preference_lora_minus_projector": -0.75,
+      "preference_lora_minus_projector_ci95_low": -0.81,
+      "preference_lora_minus_projector_ci95_high": -0.69,
+      "generation_lora_minus_projector": -0.78,
+      "generation_lora_minus_projector_ci95_low": -0.88,
+      "generation_lora_minus_projector_ci95_high": -0.66
+    }
+  },
+  "trajectory": {
+    "color": {
+      "preference": {
+        "lora": {
+          "best_state": "lora-step50",
+          "best_mean": 0.35,
+          "latest_state": "lora-step50",
+          "latest_mean": 0.35,
+          "nonmonotonic_peak": false
+        },
+        "projector": {
+          "best_state": "projector-step50",
+          "best_mean": 0.635,
+          "latest_state": "projector-step50",
+          "latest_mean": 0.635,
+          "nonmonotonic_peak": false
+        }
+      },
+      "generation": {
+        "lora": {
+          "best_state": "lora-step50",
+          "best_mean": 0.0,
+          "latest_state": "lora-step50",
+          "latest_mean": 0.0,
+          "nonmonotonic_peak": false
+        },
+        "projector": {
+          "best_state": "projector-step50",
+          "best_mean": 0.14,
+          "latest_state": "projector-step50",
+          "latest_mean": 0.14,
+          "nonmonotonic_peak": false
+        }
+      }
+    },
+    "coordinate": {
+      "preference": {
+        "lora": {
+          "best_state": "lora-step50",
+          "best_mean": 0.045,
+          "latest_state": "lora-step50",
+          "latest_mean": 0.045,
+          "nonmonotonic_peak": false
+        },
+        "projector": {
+          "best_state": "projector-step50",
+          "best_mean": 0.415,
+          "latest_state": "projector-step50",
+          "latest_mean": 0.415,
+          "nonmonotonic_peak": false
+        }
+      },
+      "generation": {
+        "lora": {
+          "best_state": "lora-step50",
+          "best_mean": 0.0,
+          "latest_state": "lora-step50",
+          "latest_mean": 0.0,
+          "nonmonotonic_peak": false
+        },
+        "projector": {
+          "best_state": "projector-step50",
+          "best_mean": 0.02,
+          "latest_state": "projector-step50",
+          "latest_mean": 0.02,
+          "nonmonotonic_peak": false
+        }
+      }
+    },
+    "count": {
+      "preference": {
+        "lora": {
+          "best_state": "lora-step50",
+          "best_mean": 0.01,
+          "latest_state": "lora-step50",
+          "latest_mean": 0.01,
+          "nonmonotonic_peak": false
+        },
+        "projector": {
+          "best_state": "projector-step50",
+          "best_mean": 0.38,
+          "latest_state": "projector-step50",
+          "latest_mean": 0.38,
+          "nonmonotonic_peak": false
+        }
+      },
+      "generation": {
+        "lora": {
+          "best_state": "lora-step50",
+          "best_mean": 0.0,
+          "latest_state": "lora-step50",
+          "latest_mean": 0.0,
+          "nonmonotonic_peak": false
+        },
+        "projector": {
+          "best_state": "projector-step50",
+          "best_mean": 0.02,
+          "latest_state": "projector-step50",
+          "latest_mean": 0.02,
+          "nonmonotonic_peak": false
+        }
+      }
+    },
+    "ocr": {
+      "preference": {
+        "lora": {
+          "best_state": "lora-step50",
+          "best_mean": 0.155,
+          "latest_state": "lora-step50",
+          "latest_mean": 0.155,
+          "nonmonotonic_peak": false
+        },
+        "projector": {
+          "best_state": "projector-step50",
+          "best_mean": 0.155,
+          "latest_state": "projector-step50",
+          "latest_mean": 0.155,
+          "nonmonotonic_peak": false
+        }
+      },
+      "generation": {
+        "lora": {
+          "best_state": "lora-step50",
+          "best_mean": 0.0,
+          "latest_state": "lora-step50",
+          "latest_mean": 0.0,
+          "nonmonotonic_peak": false
+        },
+        "projector": {
+          "best_state": "projector-step50",
+          "best_mean": 0.0,
+          "latest_state": "projector-step50",
+          "latest_mean": 0.0,
+          "nonmonotonic_peak": false
+        }
+      }
+    },
+    "shape": {
+      "preference": {
+        "lora": {
+          "best_state": "lora-step50",
+          "best_mean": 0.9,
+          "latest_state": "lora-step50",
+          "latest_mean": 0.9,
+          "nonmonotonic_peak": false
+        },
+        "projector": {
+          "best_state": "projector-step50",
+          "best_mean": 0.735,
+          "latest_state": "projector-step50",
+          "latest_mean": 0.735,
+          "nonmonotonic_peak": false
+        }
+      },
+      "generation": {
+        "lora": {
+          "best_state": "lora-step50",
+          "best_mean": 0.6,
+          "latest_state": "lora-step50",
+          "latest_mean": 0.6,
+          "nonmonotonic_peak": false
+        },
+        "projector": {
+          "best_state": "projector-step50",
+          "best_mean": 0.4,
+          "latest_state": "projector-step50",
+          "latest_mean": 0.4,
+          "nonmonotonic_peak": false
+        }
+      }
+    },
+    "spatial": {
+      "preference": {
+        "lora": {
+          "best_state": "lora-step50",
+          "best_mean": 0.0,
+          "latest_state": "lora-step50",
+          "latest_mean": 0.0,
+          "nonmonotonic_peak": false
+        },
+        "projector": {
+          "best_state": "projector-step50",
+          "best_mean": 0.75,
+          "latest_state": "projector-step50",
+          "latest_mean": 0.75,
+          "nonmonotonic_peak": false
+        }
+      },
+      "generation": {
+        "lora": {
+          "best_state": "lora-step50",
+          "best_mean": 0.0,
+          "latest_state": "lora-step50",
+          "latest_mean": 0.0,
+          "nonmonotonic_peak": false
+        },
+        "projector": {
+          "best_state": "projector-step50",
+          "best_mean": 0.78,
+          "latest_state": "projector-step50",
+          "latest_mean": 0.78,
+          "nonmonotonic_peak": false
+        }
+      }
+    }
+  },
+  "selected_direction": "additional_projector_training_supported",
+  "decision_rule": "at least two task-level paired-generation confidence intervals must exclude zero in the same arm direction"
+}

@@ -1,0 +1,58 @@
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading weights:   0%|          | 0/290 [00:00<?, ?it/s]Loading weights:  19%|█▊        | 54/290 [00:00<00:00, 511.11it/s]Loading weights:  37%|███▋      | 106/290 [00:00<00:00, 362.23it/s]Loading weights:  50%|█████     | 145/290 [00:00<00:00, 256.25it/s]Loading weights:  63%|██████▎   | 182/290 [00:00<00:00, 281.15it/s]Loading weights:  75%|███████▍  | 217/290 [00:00<00:00, 295.92it/s]Loading weights:  86%|████████▌ | 249/290 [00:00<00:00, 271.05it/s]Loading weights:  96%|█████████▌| 278/290 [00:00<00:00, 271.42it/s]Loading weights: 100%|██████████| 290/290 [00:00<00:00, 300.59it/s]
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+completed frozen-base
+completed lora-step25
+completed lora-step50
+completed lora-step100
+completed projector-step25
+completed projector-step50
+completed projector-step100
+{
+  "status": "valid",
+  "format_version": "shape-adaptation-eval-v1",
+  "metadata": {
+    "completed_at_utc": "2026-08-05T03:51:15.940784+00:00",
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "wall_seconds": 845.0634124279022,
+    "peak_gpu_memory_bytes": 12720825856,
+    "final_half_scored": false
+  },
+  "states": 7,
+  "teacher_forced_records_per_cell": 600,
+  "generation_records_per_cell": 600,
+  "preference_rows": 12600,
+  "generation_rows": 8400,
+  "sources": {
+    "lora_summary_sha256": "b605c0c8427d3e1f4b0f66dadaa5ace8c90d507e8a6ab2a313212a1d19fc4515",
+    "projector_summary_sha256": "adcdee5c6e36e13f6ee052e34a78ec021ebd3290acb14e9d25573468ee446ecc"
+  },
+  "files": {
+    "preference_records.jsonl": {
+      "bytes": 7225306,
+      "sha256": "7ec56f43e2ce566ed08f897cbf0913342db2af01401cc7675cbee4dad16598b6"
+    },
+    "generation_records.jsonl": {
+      "bytes": 3412298,
+      "sha256": "e4811103026ee496d7446339453f878fd5b5b8a8a79c3c6c2c872e193a09e499"
+    },
+    "preference_curve.csv": {
+      "bytes": 13859,
+      "sha256": "4a2c975de4ba4997987ba04fadc9b7215df541bb8ff9b2fed4725d9a3cae3346"
+    },
+    "generation_curve.csv": {
+      "bytes": 8620,
+      "sha256": "a48afc3531a1d9a0fc20fc4e104ede4c08bffca1580fcb4bfbe70299140eced8"
+    },
+    "DECISIONS.json": {
+      "bytes": 1169,
+      "sha256": "a0a94ccca4c38be423c41785f38dfa8404b035e492f22a85f08bf286913fcc47"
+    }
+  },
+  "final_half_scored": false
+}

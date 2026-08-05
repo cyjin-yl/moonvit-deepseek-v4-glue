@@ -1,0 +1,46 @@
+{
+  "status": "valid",
+  "format_version": "cross-run-adaptation-checkpoint-comparison-v1",
+  "completed_at_utc": "2026-08-05T04:16:05.685580+00:00",
+  "arm_states": {
+    "lora": [
+      "lora-step50",
+      "lora-step100"
+    ],
+    "projector": [
+      "projector-step50",
+      "projector-step100"
+    ]
+  },
+  "tasks": [
+    "color",
+    "coordinate",
+    "count",
+    "ocr",
+    "shape",
+    "spatial"
+  ],
+  "contrasts": 210,
+  "bootstrap_samples": 2000,
+  "source_files": {
+    "early": {
+      "preference_records.jsonl": "3cdec62a89994955759cc19a1fe5c0cf9fbb6c1f405fa2793e64347c54c2c32b",
+      "generation_records.jsonl": "74fd07dbbd043510c788332278ea097878a85c8952ca63baf368d8e3483f61f7"
+    },
+    "late": {
+      "preference_records.jsonl": "e0bb88901a00babda403f1d5337fff65b46c9e5d2a6296f0d8786041e09191b8",
+      "generation_records.jsonl": "58159df60c4be5bb509d85cfc85cb90a89817a5c8cca0d3c7375d8ed7fb3a108"
+    }
+  },
+  "files": {
+    "checkpoint_contrasts.csv": {
+      "bytes": 43522,
+      "sha256": "d9539d7d89eeb54351908f5a5c5c858b3339b8b934c56b15659b475f9d164d4c"
+    },
+    "DECISIONS.json": {
+      "bytes": 17591,
+      "sha256": "01758f4eebf14f42487c5f06865b292ae58612df00b415afa3adefc06eea04ed"
+    }
+  },
+  "final_half_scored": false
+}
