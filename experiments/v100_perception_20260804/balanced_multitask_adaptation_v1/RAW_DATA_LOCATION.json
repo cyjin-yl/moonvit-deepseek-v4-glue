@@ -1,0 +1,30 @@
+{
+  "status": "valid",
+  "workstation": "doesworkstation",
+  "data_root": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1",
+  "canonical_runs": {
+    "feature_cache": "cache/synthetic-train-256-v1",
+    "training": "adaptation/balanced_multitask_projector_v1",
+    "preference": "transfer/balanced_multitask_preference_v2",
+    "generation": "transfer/balanced_multitask_generation_v2",
+    "analysis": "transfer/balanced_multitask_analysis_v1"
+  },
+  "retained_invalid_runs": {
+    "padding_placeholder_smoke": "adaptation/balanced_multitask_projector_smoke_v1",
+    "incomplete_preference": "transfer/balanced_multitask_preference_v1",
+    "random_required_generation": "transfer/balanced_multitask_generation_v1"
+  },
+  "large_artifacts_retained_on_workstation": {
+    "feature_shards": {
+      "count": 75,
+      "bytes": 3932170800,
+      "manifest_sha256": "65126dec487d07f51da842573a048c1b94c56db35190ca308fbded371c3e7004"
+    },
+    "training_checkpoints": "four complete projector/optimizer checkpoints; exact bytes and SHA-256 are embedded in raw/adaptation/balanced_multitask_projector_v1/SUMMARY.json"
+  },
+  "git_package": "experiments/v100_perception_20260804/balanced_multitask_adaptation_v1",
+  "evaluation_raw_data_committed_losslessly": true,
+  "large_checkpoint_and_cache_shards_committed": false,
+  "final_half_scored": false,
+  "paid_resources_used": false
+}

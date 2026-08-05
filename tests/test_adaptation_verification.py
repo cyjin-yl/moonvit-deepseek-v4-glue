@@ -1,6 +1,11 @@
-"""适配 verifier 的 LoRA tensor 合同必须显式且封闭。"""
+"""适配 verifier 的 tensor 与 balanced-batch 合同必须显式且封闭。"""
 
-from moonvit_glue.adaptation_verification import expected_lora_state_keys
+import pytest
+
+from moonvit_glue.adaptation_verification import (
+    expected_lora_state_keys,
+    validate_balanced_task_history,
+)
 
 
 def test_expected_lora_state_keys_expands_only_a_and_b():
@@ -13,3 +18,17 @@ def test_expected_lora_state_keys_expands_only_a_and_b():
         "model.layers.23.self_attn.v_proj.lora_b",
     }
 
+
+def test_balanced_history_requires_every_task_in_every_true_batch():
+    history = [
+        {"task_counts": {"color": 2, "shape": 2}},
+        {"task_counts": {"color": 2, "shape": 2}},
+    ]
+
+    assert validate_balanced_task_history(
+        history, tasks=["color", "shape"], batch_size=4
+    ) == {"color": 4, "shape": 4}
+
+    history[1]["task_counts"]["shape"] = 1
+    with pytest.raises(ValueError, match="balanced adaptation task quota drift"):
+        validate_balanced_task_history(history, tasks=["color", "shape"], batch_size=4)

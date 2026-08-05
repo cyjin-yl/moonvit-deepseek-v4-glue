@@ -1,0 +1,38 @@
+{
+  "status": "invalid",
+  "invalidated_at_utc": "2026-08-05T01:21:10.935114+00:00",
+  "reason": "mixed-task padding used the same token id as the image placeholder, so masked pad positions were counted as extra images",
+  "impact": "training aborted before optimizer step 1; no metrics or checkpoint from this smoke may be used",
+  "replacement_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_multitask_projector_smoke_v2",
+  "old_results_must_not_be_used": true,
+  "files": {
+    "CONFIG.json": {
+      "bytes": 2690,
+      "sha256": "035f27db3d83931fe12057f52ba8a2821c83524d8c855336d11517f5ce6a40fd"
+    },
+    "FAILURE.json": {
+      "bytes": 1563,
+      "sha256": "fa212c5e54947d12a850c1152b4f0381126c730069d96d4fd45d6fa62e012304"
+    },
+    "checkpoints/step-000000/MANIFEST.json": {
+      "bytes": 522,
+      "sha256": "f052f7da0eb8e6766502a658734ff7e79a1d4e3aa84a806a044cfe9d005a926c"
+    },
+    "checkpoints/step-000000/projector.safetensors": {
+      "bytes": 81817592,
+      "sha256": "2652eef0d32b640839dd0c5e7abe040d639fad5fbffcd7a607f96af6ae40e2a9"
+    },
+    "checkpoints/step-000000/training_state.pt": {
+      "bytes": 1623,
+      "sha256": "fb62ba87d0d7036ab25847dbdef60a9e134abd748c84ca5cf5ca758841d4bbf2"
+    },
+    "train_history.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "training_order.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

@@ -37,3 +37,21 @@ def test_image_count_must_match_placeholder_count():
             image_embeddings=[],
             placeholder_token_id=99,
         )
+
+
+def test_masked_padding_is_not_counted_as_an_image_placeholder():
+    input_ids = torch.tensor([[99, 11, 12], [99, 21, 99]])
+    attention_mask = torch.tensor([[1, 1, 1], [1, 1, 0]])
+    text_embeddings = torch.zeros(2, 3, 2)
+
+    merged = expand_image_placeholders(
+        input_ids=input_ids,
+        text_embeddings=text_embeddings,
+        image_embeddings=[torch.ones(1, 2), torch.full((1, 2), 2.0)],
+        placeholder_token_id=99,
+        attention_mask=attention_mask,
+        pad_token_id=99,
+    )
+
+    assert merged.inputs_embeds[:, 0].tolist() == [[1.0, 1.0], [2.0, 2.0]]
+    assert merged.attention_mask.tolist() == [[1, 1, 1], [1, 1, 0]]

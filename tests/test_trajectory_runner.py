@@ -1,5 +1,6 @@
 """Batched visual prompts must not confuse padding with image placeholders."""
 
+import json
 import sys
 from pathlib import Path
 
@@ -11,6 +12,7 @@ from eval_checkpoint_trajectory import (
     apply_screening_overrides,
     benchmark_summary,
     checkpoint_training_metrics,
+    find_random_checkpoint,
     scoring_record_for_condition,
     visual_prompt_batch,
 )
@@ -116,6 +118,33 @@ def test_checkpoint_metrics_support_jsonl_adaptation_history(tmp_path: Path):
     assert metrics["last_train_loss"] == 50.0
     assert metrics["mean_last_50_train_loss"] == 25.5
     assert len(metrics["history_sha256"]) == 64
+
+
+def test_balanced_projector_eval_checkpoints_keep_required_training_provenance():
+    config_path = (
+        Path(__file__).resolve().parent.parent
+        / "configs"
+        / "perception-multitask-projector-eval-v1.json"
+    )
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    required = {
+        "id",
+        "kind",
+        "optimizer_steps",
+        "examples_seen",
+        "effective_epochs",
+    }
+
+    assert all(required <= set(checkpoint) for checkpoint in config["checkpoints"])
+
+
+def test_saved_checkpoint_trajectory_does_not_require_random_control():
+    trained = [{"id": "step-1", "kind": "trained"}]
+
+    assert find_random_checkpoint(trained) is None
+    assert find_random_checkpoint(
+        [*trained, {"id": "random", "kind": "random", "random_seed": 7}]
+    )["id"] == "random"
 
 
 def test_grounding_summary_reports_parse_and_coordinate_collapse_counts():

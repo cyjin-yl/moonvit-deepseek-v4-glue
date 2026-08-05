@@ -1,0 +1,136 @@
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading weights:   0%|          | 0/290 [00:00<?, ?it/s]Loading weights: 100%|██████████| 290/290 [00:00<00:00, 10799.60it/s]
+{"step": 1, "loss": 2.777834415435791, "gradient_norm_before_clip": 0.6851578950881958, "batch_size": 24, "examples_seen": 24, "answer_tokens_seen": 64, "task_counts": {"color": 4, "coordinate": 4, "count": 4, "ocr": 4, "shape": 4, "spatial": 4}, "step_wall_seconds": 1.0854299068450928, "peak_gpu_memory_bytes": 11427777536}
+{"step": 25, "loss": 1.4494956731796265, "gradient_norm_before_clip": 0.7748010158538818, "batch_size": 24, "examples_seen": 600, "answer_tokens_seen": 1637, "task_counts": {"color": 4, "coordinate": 4, "count": 4, "ocr": 4, "shape": 4, "spatial": 4}, "step_wall_seconds": 0.8869047164916992, "peak_gpu_memory_bytes": 11797675520}
+{"step": 50, "loss": 1.4593960046768188, "gradient_norm_before_clip": 0.9551934003829956, "batch_size": 24, "examples_seen": 1200, "answer_tokens_seen": 3299, "task_counts": {"color": 4, "coordinate": 4, "count": 4, "ocr": 4, "shape": 4, "spatial": 4}, "step_wall_seconds": 0.8993325233459473, "peak_gpu_memory_bytes": 11797675520}
+{"step": 75, "loss": 1.5687501430511475, "gradient_norm_before_clip": 1.0552538633346558, "batch_size": 24, "examples_seen": 1800, "answer_tokens_seen": 4942, "task_counts": {"color": 4, "coordinate": 4, "count": 4, "ocr": 4, "shape": 4, "spatial": 4}, "step_wall_seconds": 0.8788473606109619, "peak_gpu_memory_bytes": 11797675520}
+{"step": 100, "loss": 1.3490134477615356, "gradient_norm_before_clip": 1.880113959312439, "batch_size": 24, "examples_seen": 2400, "answer_tokens_seen": 6577, "task_counts": {"color": 4, "coordinate": 4, "count": 4, "ocr": 4, "shape": 4, "spatial": 4}, "step_wall_seconds": 0.8887200355529785, "peak_gpu_memory_bytes": 11797675520}
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+{
+  "status": "valid",
+  "format_version": "balanced-multitask-adaptation-training-v1",
+  "arm": "balanced_projector_continuation",
+  "kind": "projector",
+  "metadata": {
+    "completed_at_utc": "2026-08-05T01:24:33.889904+00:00",
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "wall_seconds": 144.45338106155396,
+    "peak_gpu_memory_bytes": 11797675520,
+    "final_half_scored": false
+  },
+  "steps": 100,
+  "batch_size": 24,
+  "examples_seen": 2400,
+  "train_records": 2400,
+  "train_pairs": 1200,
+  "tasks": [
+    "color",
+    "coordinate",
+    "count",
+    "ocr",
+    "shape",
+    "spatial"
+  ],
+  "train_records_by_task": {
+    "color": 400,
+    "coordinate": 400,
+    "count": 400,
+    "ocr": 400,
+    "shape": 400,
+    "spatial": 400
+  },
+  "trainable_parameters": 20454272,
+  "resolved_lora_modules": [],
+  "base_projector_sha256": "f9524215b3ccacb341caf2d1e118d2bc0e2c9855f5f4569157bf75ba5e63ddbf",
+  "selection_manifest_sha256": "b5a851bb969b41607fc95299df90ec51cc7a0db6c1e0d560380bed1f7abac71e",
+  "checkpoints": {
+    "step-000000": {
+      "status": "valid",
+      "arm": "balanced_projector_continuation",
+      "kind": "projector",
+      "step": 0,
+      "examples_seen": 0,
+      "weights_tensor_sha256": "ff0b28fd797efbb5dd36aba70f8662dfa90bfb3998353989d81149d43d9fe12c",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817592,
+          "sha256": "2652eef0d32b640839dd0c5e7abe040d639fad5fbffcd7a607f96af6ae40e2a9"
+        },
+        "training_state.pt": {
+          "bytes": 1623,
+          "sha256": "fb62ba87d0d7036ab25847dbdef60a9e134abd748c84ca5cf5ca758841d4bbf2"
+        }
+      }
+    },
+    "step-000025": {
+      "status": "valid",
+      "arm": "balanced_projector_continuation",
+      "kind": "projector",
+      "step": 25,
+      "examples_seen": 600,
+      "weights_tensor_sha256": "03aa1db7de1d7b43e83aed1d603c01644a022dbfe5fd8f3d7f7efc9a3ed45c37",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817592,
+          "sha256": "8d8679f8deb2b79dc1adf13b9284fcff9c3aad13f7fd70f8efc590b7b61bb60c"
+        },
+        "training_state.pt": {
+          "bytes": 163640533,
+          "sha256": "909f4df2cf878b1f888640419f1d39c2ad6d7474d6ffd60cd4f79eb53be67b10"
+        }
+      }
+    },
+    "step-000050": {
+      "status": "valid",
+      "arm": "balanced_projector_continuation",
+      "kind": "projector",
+      "step": 50,
+      "examples_seen": 1200,
+      "weights_tensor_sha256": "78ae42dc65f9ec98d4d55db931847f865b922b3701391438076ae68c9bb697f0",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817592,
+          "sha256": "995e3475a033ae1ffb274ea4c9dfa5ebd429b0f7a2a3ae71f4a786b52d654748"
+        },
+        "training_state.pt": {
+          "bytes": 163640533,
+          "sha256": "0588e4d958afeafb22679b54e1b364ccf054574a43291f8fbea9629b675b45ad"
+        }
+      }
+    },
+    "step-000100": {
+      "status": "valid",
+      "arm": "balanced_projector_continuation",
+      "kind": "projector",
+      "step": 100,
+      "examples_seen": 2400,
+      "weights_tensor_sha256": "d2b413c2155d6e70ef6f2fa3a5fd8b9ba8d56d0ef163d4d31d719543c2f70e69",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817592,
+          "sha256": "98a566eb2c8414f105662b6532734a4246830b7e5a2df56ae3da14ad23737ef3"
+        },
+        "training_state.pt": {
+          "bytes": 163640533,
+          "sha256": "47ceb28f64df2573beae51480e75fe5626d32e6c134f67dc91f35cfc6ba97196"
+        }
+      }
+    }
+  },
+  "files": {
+    "train_history.jsonl": {
+      "bytes": 33086,
+      "sha256": "25f7b3d1e554108672ec364c6eb62923ff52298d46defb465081c57e48055781"
+    },
+    "training_order.jsonl": {
+      "bytes": 59392,
+      "sha256": "628a6f2d561910eb6eb7ddc7ea27869e40df94ea93c5e5622937871c25319e71"
+    }
+  },
+  "final_half_scored": false
+}

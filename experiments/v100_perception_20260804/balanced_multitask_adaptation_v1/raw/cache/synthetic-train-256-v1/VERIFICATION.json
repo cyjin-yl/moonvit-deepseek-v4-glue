@@ -1,0 +1,9 @@
+{
+  "status": "valid",
+  "cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/synthetic-train-256-v1",
+  "manifest_sha256": "65126dec487d07f51da842573a048c1b94c56db35190ca308fbded371c3e7004",
+  "records_verified": 2400,
+  "shards_verified": 75,
+  "values_verified": 983040000,
+  "total_shard_bytes": 3932170800
+}

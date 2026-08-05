@@ -1,0 +1,26 @@
+{
+  "status": "invalid",
+  "invalidated_at_utc": "2026-08-05T01:34:45.544157+00:00",
+  "reason": "adapted checkpoint metadata omitted effective_epochs required by the paired-preference summary contract",
+  "impact": "only the frozen baseline 9600 rows were written; the four-checkpoint matrix is incomplete and must not be analyzed",
+  "replacement_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/transfer/balanced_multitask_preference_v2",
+  "old_results_must_not_be_used": true,
+  "files": {
+    "CONFIG.json": {
+      "bytes": 5832,
+      "sha256": "e1a04935daff01b71a7da1fd3a9634b2849997179e7bfde895d38de24205779b"
+    },
+    "SUMMARY.partial.json": {
+      "bytes": 26117,
+      "sha256": "5dcebc21cf75da5d88a68aa4493450caa122c3a7605ab9b25489c5a105a180ef"
+    },
+    "failures.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "preference_records.jsonl": {
+      "bytes": 8317448,
+      "sha256": "42e782ebab22bceaf4691a2ab4ef41429281ee97736a30ab16ecde84a2f941cb"
+    }
+  }
+}

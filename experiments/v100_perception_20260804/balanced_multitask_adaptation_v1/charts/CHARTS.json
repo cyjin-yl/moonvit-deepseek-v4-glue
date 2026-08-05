@@ -1,0 +1,28 @@
+{
+  "status": "valid",
+  "source_csv": {
+    "experiments\\v100_perception_20260804\\balanced_multitask_adaptation_v1\\raw\\transfer\\balanced_multitask_analysis_v1\\transfer_metrics.csv": "dfb622a283413ef8f1236dd461947d435fe1858bcb4a1e0aab0c5648edf49df6",
+    "experiments\\v100_perception_20260804\\balanced_multitask_adaptation_v1\\raw\\transfer\\balanced_multitask_analysis_v1\\transfer_contrasts.csv": "db6fa548e7bd07b9a1e81a2ed896efa3145e33bf899441e0cde2bd9a5753fa2b"
+  },
+  "source_jsonl": {
+    "experiments\\v100_perception_20260804\\balanced_multitask_adaptation_v1\\raw\\adaptation\\balanced_multitask_projector_v1\\train_history.jsonl": "25f7b3d1e554108672ec364c6eb62923ff52298d46defb465081c57e48055781"
+  },
+  "charts": {
+    "00-training-loss.svg": {
+      "bytes": 9304,
+      "sha256": "cd001f80ee7e52ca7bd743230ef6445b0f04f1c77eda2b266e891cf29e634c9e"
+    },
+    "01-paired-preference.svg": {
+      "bytes": 5519,
+      "sha256": "f17c1cf713cf8f48bd88bf7e9b7602bfe4e2523f5e146ffe2e3cc5f5a9cdc92c"
+    },
+    "02-paired-generation.svg": {
+      "bytes": 5517,
+      "sha256": "3cf0d3fe4b5c22620a4b0043b495a4db38e36f8478663f6fa7537dd68d3bd429"
+    },
+    "03-vision-minus-shuffle.svg": {
+      "bytes": 3354,
+      "sha256": "12239a6f7bb2312d2a8b839130bec42587971066de468bbbbd430365a39d58d5"
+    }
+  }
+}

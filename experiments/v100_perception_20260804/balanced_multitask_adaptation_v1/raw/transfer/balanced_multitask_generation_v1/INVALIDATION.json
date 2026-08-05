@@ -1,0 +1,14 @@
+{
+  "status": "invalid",
+  "invalidated_at_utc": "2026-08-05T02:09:23.127601+00:00",
+  "reason": "generation trajectory runner required a random checkpoint even when every requested state was a saved trained checkpoint",
+  "impact": "run aborted before loading any evaluation rows; CONFIG only, no generation metrics",
+  "replacement_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/transfer/balanced_multitask_generation_v2",
+  "old_results_must_not_be_used": true,
+  "files": {
+    "CONFIG.json": {
+      "bytes": 5973,
+      "sha256": "e72973262214ddf6926fe40433265dfc6d961ae72c6c0097d58731919b8c4d8d"
+    }
+  }
+}

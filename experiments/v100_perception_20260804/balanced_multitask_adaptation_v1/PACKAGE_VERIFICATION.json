@@ -1,0 +1,26 @@
+{
+  "status": "valid",
+  "preference_rows_verified": 38400,
+  "generation_rows_verified": 12000,
+  "preference_cells_verified": 16,
+  "generation_checkpoints_verified": 4,
+  "metric_rows_verified": 756,
+  "contrast_rows_verified": 714,
+  "bootstrap_samples": 2000,
+  "latest_checkpoint": "balanced-projector-step100",
+  "validated_preference_transfer_tasks": [
+    "color",
+    "coordinate",
+    "count",
+    "ocr",
+    "shape",
+    "spatial"
+  ],
+  "validated_generation_transfer_tasks": [
+    "shape",
+    "spatial"
+  ],
+  "broad_non_shape_transfer_supported": true,
+  "shape_specific_supported": false,
+  "final_half_scored": false
+}

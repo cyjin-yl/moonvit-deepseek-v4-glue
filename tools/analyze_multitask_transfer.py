@@ -63,6 +63,35 @@ def pair_metric_rows(rows: list[dict], metric: str) -> list[dict]:
     return output
 
 
+def classify_checkpoint_transfer(
+    checkpoint_tasks: dict[str, dict[str, dict]], *, shape_task: str = "shape"
+) -> dict:
+    """在完整适配轨迹上分类，避免只看最后一步漏掉非单调峰值。"""
+
+    broad = []
+    shape_specific = []
+    validated_by_checkpoint = {}
+    for checkpoint, tasks in checkpoint_tasks.items():
+        validated = sorted(
+            task
+            for task, decision in tasks.items()
+            if decision["validated_preference_transfer"]
+        )
+        validated_by_checkpoint[checkpoint] = validated
+        non_shape = [task for task in validated if task != shape_task]
+        if len(non_shape) >= 3:
+            broad.append(checkpoint)
+        if shape_task in validated and len(non_shape) < 2:
+            shape_specific.append(checkpoint)
+    return {
+        "validated_preference_transfer_tasks_by_checkpoint": validated_by_checkpoint,
+        "broad_supporting_checkpoints": broad,
+        "shape_specific_checkpoints": shape_specific,
+        "broad_non_shape_transfer_supported": bool(broad),
+        "shape_specific_supported": bool(shape_specific) and not bool(broad),
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--preference-run", required=True, type=Path)
@@ -205,46 +234,83 @@ def main() -> None:
                             task,
                         )
 
-    latest = checkpoints[-1]
-    validated_tasks = []
-    negative_transfer_tasks = []
-    generation_improved_tasks = []
-    task_decisions = {}
-    for task in tasks:
-        improvement = contrast_index[
-            ("checkpoint_minus_baseline", "preference", "paired_preference", latest, task)
-        ]
-        causal = next(
-            row
-            for row in contrasts
-            if row["family"] == "vision_minus_condition"
-            and row["modality"] == "preference"
-            and row["metric"] == "paired_preference"
-            and row["checkpoint_a"] == latest
-            and row["condition_b"] == "shuffled_image"
-            and row["task"] == task
-        )
-        generation_improvement = contrast_index[
-            ("checkpoint_minus_baseline", "generation", "generation_paired", latest, task)
-        ]
-        validated = improvement["ci95_low"] > 0 and causal["ci95_low"] > 0
-        negative = improvement["ci95_high"] < 0
-        generation_improved = generation_improvement["ci95_low"] > 0
-        if validated:
-            validated_tasks.append(task)
-        if negative:
-            negative_transfer_tasks.append(task)
-        if generation_improved:
-            generation_improved_tasks.append(task)
-        task_decisions[task] = {
-            "paired_preference_improvement": improvement,
-            "vision_minus_shuffled_paired_preference": causal,
-            "paired_generation_improvement": generation_improvement,
-            "validated_preference_transfer": validated,
-            "negative_preference_transfer": negative,
-            "validated_generation_transfer": generation_improved,
+    baseline_index = checkpoints.index(args.baseline_checkpoint)
+    adaptation_checkpoints = checkpoints[baseline_index + 1 :]
+    if not adaptation_checkpoints:
+        raise ValueError("multitask analysis needs a checkpoint after the baseline")
+    checkpoint_task_decisions = {}
+    for checkpoint in adaptation_checkpoints:
+        checkpoint_task_decisions[checkpoint] = {}
+        for task in tasks:
+            improvement = contrast_index[
+                (
+                    "checkpoint_minus_baseline",
+                    "preference",
+                    "paired_preference",
+                    checkpoint,
+                    task,
+                )
+            ]
+            causal = next(
+                row
+                for row in contrasts
+                if row["family"] == "vision_minus_condition"
+                and row["modality"] == "preference"
+                and row["metric"] == "paired_preference"
+                and row["checkpoint_a"] == checkpoint
+                and row["condition_b"] == "shuffled_image"
+                and row["task"] == task
+            )
+            generation_improvement = contrast_index[
+                (
+                    "checkpoint_minus_baseline",
+                    "generation",
+                    "generation_paired",
+                    checkpoint,
+                    task,
+                )
+            ]
+            checkpoint_task_decisions[checkpoint][task] = {
+                "paired_preference_improvement": improvement,
+                "vision_minus_shuffled_paired_preference": causal,
+                "paired_generation_improvement": generation_improvement,
+                "validated_preference_transfer": (
+                    improvement["ci95_low"] > 0 and causal["ci95_low"] > 0
+                ),
+                "negative_preference_transfer": improvement["ci95_high"] < 0,
+                "validated_generation_transfer": generation_improvement["ci95_low"] > 0,
+            }
+
+    latest = adaptation_checkpoints[-1]
+    latest_tasks = checkpoint_task_decisions[latest]
+    validated_tasks = sorted(
+        task
+        for task, decision in latest_tasks.items()
+        if decision["validated_preference_transfer"]
+    )
+    negative_transfer_tasks = sorted(
+        task
+        for task, decision in latest_tasks.items()
+        if decision["negative_preference_transfer"]
+    )
+    generation_improved_tasks = sorted(
+        task
+        for task, decision in latest_tasks.items()
+        if decision["validated_generation_transfer"]
+    )
+    task_decisions = {
+        task: {
+            **latest_tasks[task],
+            "by_checkpoint": {
+                checkpoint: checkpoint_task_decisions[checkpoint][task]
+                for checkpoint in adaptation_checkpoints
+            },
         }
-    non_shape_validated = [task for task in validated_tasks if task != "shape"]
+        for task in tasks
+    }
+    trajectory_classification = classify_checkpoint_transfer(
+        checkpoint_task_decisions, shape_task="shape"
+    )
     decisions = {
         "status": "valid",
         "baseline_checkpoint": args.baseline_checkpoint,
@@ -252,15 +318,14 @@ def main() -> None:
         "validated_preference_transfer_tasks": validated_tasks,
         "validated_generation_transfer_tasks": generation_improved_tasks,
         "negative_preference_transfer_tasks": negative_transfer_tasks,
-        "broad_non_shape_transfer_supported": len(non_shape_validated) >= 3,
-        "shape_specific_supported": (
-            "shape" in validated_tasks and len(non_shape_validated) < 2
-        ),
+        **trajectory_classification,
+        "adaptation_checkpoints": adaptation_checkpoints,
+        "checkpoint_transfer": checkpoint_task_decisions,
         "decision_rule": "broad transfer requires positive paired-bootstrap lower bounds for checkpoint-minus-baseline and vision-minus-shuffle on at least three of five non-shape tasks",
         "tasks": task_decisions,
         "interpretation_limits": [
             "all bootstrap resampling units are complete counterfactual pairs",
-            "shape-projector-step50 was trained only on shape records",
+            "adaptation supervision scope is defined by checkpoint training provenance",
             "synthetic selection is disjoint from all adaptation train IDs and pairs",
             "final odd halves remain unscored",
         ],

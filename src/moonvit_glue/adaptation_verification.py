@@ -41,6 +41,25 @@ def _check_file(path: Path, entry: dict) -> None:
         raise ValueError(f"adaptation artifact hash/bytes mismatch: {path}")
 
 
+def validate_balanced_task_history(
+    history: Sequence[dict], *, tasks: Sequence[str], batch_size: int
+) -> dict[str, int]:
+    """确认每个真实 batch 都保持完全相同的任务配额。"""
+
+    task_names = [str(task) for task in tasks]
+    if not task_names or batch_size % len(task_names) != 0:
+        raise ValueError("balanced adaptation batch/task contract is invalid")
+    quota = batch_size // len(task_names)
+    totals = {task: 0 for task in task_names}
+    for row in history:
+        counts = {str(key): int(value) for key, value in row.get("task_counts", {}).items()}
+        if set(counts) != set(task_names) or any(counts[task] != quota for task in task_names):
+            raise ValueError("balanced adaptation task quota drift")
+        for task in task_names:
+            totals[task] += counts[task]
+    return totals
+
+
 def verify_training_run(run: Path) -> dict:
     summary = json.loads((run / "SUMMARY.json").read_text(encoding="utf-8"))
     if summary.get("status") != "valid" or summary.get("final_half_scored"):
@@ -64,6 +83,16 @@ def verify_training_run(run: Path) -> dict:
                 raise ValueError("adaptation history contains non-finite values")
     if int(summary["examples_seen"]) != len(history) * batch_size:
         raise ValueError("adaptation summary examples_seen mismatch")
+    task_examples = None
+    if summary.get("tasks"):
+        task_examples = validate_balanced_task_history(
+            history, tasks=summary["tasks"], batch_size=batch_size
+        )
+        if task_examples != {
+            str(task): int(count)
+            for task, count in summary["train_records_by_task"].items()
+        }:
+            raise ValueError("balanced adaptation per-task epoch denominator mismatch")
     verified_tensors = 0
     for key, embedded_manifest in summary["checkpoints"].items():
         directory = run / "checkpoints" / key
@@ -97,6 +126,7 @@ def verify_training_run(run: Path) -> dict:
         "examples_verified": int(summary["examples_seen"]),
         "checkpoints_verified": len(summary["checkpoints"]),
         "checkpoint_tensors_verified": verified_tensors,
+        "task_examples_verified": task_examples,
         "final_half_scored": False,
     }
 
@@ -193,4 +223,3 @@ def verify_analysis(run: Path, evaluation: Path) -> dict:
         "contrast_rows_verified": len(rows),
         "final_half_scored": False,
     }
-

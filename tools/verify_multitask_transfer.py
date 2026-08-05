@@ -26,11 +26,15 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("package", type=Path)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--expected-latest")
+    parser.add_argument("--preference-dir", default="preference")
+    parser.add_argument("--generation-dir", default="generation")
+    parser.add_argument("--analysis-dir", default="analysis")
     args = parser.parse_args()
     root = args.package.resolve()
-    preference = root / "preference"
-    generation = root / "generation"
-    analysis = root / "analysis"
+    preference = root / args.preference_dir
+    generation = root / args.generation_dir
+    analysis = root / args.analysis_dir
 
     preference_summary = json.loads(
         (preference / "SUMMARY.json").read_text(encoding="utf-8")
@@ -83,7 +87,10 @@ def main() -> None:
         if path.stat().st_size != expected["bytes"] or sha256(path) != expected["sha256"]:
             raise ValueError(f"analysis artifact mismatch: {filename}")
     decisions = json.loads((analysis / "DECISIONS.json").read_text(encoding="utf-8"))
-    if decisions["latest_checkpoint"] != "shape-projector-step50":
+    if (
+        args.expected_latest is not None
+        and decisions["latest_checkpoint"] != args.expected_latest
+    ):
         raise ValueError("unexpected transfer checkpoint")
 
     payload = {
@@ -97,6 +104,7 @@ def main() -> None:
         "metric_rows_verified": analysis_summary["metric_rows"],
         "contrast_rows_verified": analysis_summary["contrast_rows"],
         "bootstrap_samples": analysis_summary["bootstrap_samples"],
+        "latest_checkpoint": decisions["latest_checkpoint"],
         "validated_preference_transfer_tasks": decisions[
             "validated_preference_transfer_tasks"
         ],

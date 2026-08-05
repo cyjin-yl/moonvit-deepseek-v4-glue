@@ -1,0 +1,121 @@
+{
+  "run_id": "v100-perception-balanced-multitask-projector-eval-20260805-v1",
+  "seed": 20260814,
+  "device": "cuda",
+  "dtype": "bfloat16",
+  "text_model": "/run/media/ezra/13D010B6FDBC1A06/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+  "placeholder_token_id": 151643,
+  "prompt_template": "User: {image}\n{question}\nAssistant:",
+  "projector_config_source": "/run/media/ezra/13D010B6FDBC1A06/data/gate_b/ckpt/checkpoints/step-000500",
+  "eval_batch_size": 64,
+  "hard_constraints": {
+    "gpu": "existing Tesla V100-PCIE-32GB only",
+    "rent_new_server": false,
+    "run_full_deepseek_v4": false,
+    "score_final_odd_half": false
+  },
+  "checkpoints": [
+    {
+      "id": "step-001500",
+      "kind": "trained",
+      "optimizer_steps": 1500,
+      "examples_seen": 12000,
+      "effective_epochs": 0.20281918669506135,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/gate_b/ckpt/checkpoints/step-001500"
+    },
+    {
+      "id": "balanced-projector-step25",
+      "kind": "trained",
+      "optimizer_steps": 1525,
+      "examples_seen": 12600,
+      "effective_epochs": 0.20281918669506135,
+      "adaptation_optimizer_steps": 25,
+      "adaptation_examples_seen": 600,
+      "adaptation_effective_synthetic_epochs": 0.25,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_multitask_projector_v1/checkpoints/step-000025",
+      "history_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_multitask_projector_v1/train_history.jsonl",
+      "history_max_step": 25
+    },
+    {
+      "id": "balanced-projector-step50",
+      "kind": "trained",
+      "optimizer_steps": 1550,
+      "examples_seen": 13200,
+      "effective_epochs": 0.20281918669506135,
+      "adaptation_optimizer_steps": 50,
+      "adaptation_examples_seen": 1200,
+      "adaptation_effective_synthetic_epochs": 0.5,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_multitask_projector_v1/checkpoints/step-000050",
+      "history_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_multitask_projector_v1/train_history.jsonl",
+      "history_max_step": 50
+    },
+    {
+      "id": "balanced-projector-step100",
+      "kind": "trained",
+      "optimizer_steps": 1600,
+      "examples_seen": 14400,
+      "effective_epochs": 0.20281918669506135,
+      "adaptation_optimizer_steps": 100,
+      "adaptation_examples_seen": 2400,
+      "adaptation_effective_synthetic_epochs": 1.0,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_multitask_projector_v1/checkpoints/step-000100",
+      "history_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_multitask_projector_v1/train_history.jsonl",
+      "history_max_step": 100
+    }
+  ],
+  "aliases": [],
+  "synthetic": {
+    "data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/selection.jsonl",
+    "controls": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/controls.jsonl",
+    "feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/synthetic-selection-256-v1",
+    "control_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/synthetic-controls-256-v1",
+    "background_aux_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/selection-background-matched-aux-v1/selection_background_matched_aux.jsonl",
+    "background_aux_feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/selection-background-matched-aux-256-v1",
+    "logical_dataset_sha256": "122ae820381e11e12c7dd9db03a525b801a5ebee5adbef037919185e65cbaa71",
+    "expected_records": 2400,
+    "batch_size": 16,
+    "max_image_side": 256,
+    "conditions": [
+      "vision",
+      "shuffled_image",
+      "paired_counterfactual_image",
+      "background_matched_aux"
+    ]
+  },
+  "datasets": [
+    {
+      "name": "synthetic",
+      "kind": "synthetic",
+      "split": "selection",
+      "data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/trajectory/synthetic-generation-selection-v1/synthetic_generation_selection.jsonl",
+      "authoritative_selection_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/selection.jsonl",
+      "generation_selection_manifest": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/trajectory/synthetic-generation-selection-v1/MANIFEST.json",
+      "controls": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/controls.jsonl",
+      "feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/synthetic-selection-256-v1",
+      "control_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/synthetic-controls-256-v1",
+      "background_aux_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/selection-background-matched-aux-v1/selection_background_matched_aux.jsonl",
+      "background_aux_feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/selection-background-matched-aux-256-v1",
+      "logical_dataset_sha256": "122ae820381e11e12c7dd9db03a525b801a5ebee5adbef037919185e65cbaa71",
+      "expected_records": 600,
+      "batch_size": 64,
+      "max_new_tokens": 8,
+      "max_image_side": 256,
+      "conditions": [
+        "vision",
+        "blind",
+        "shuffled_image",
+        "paired_counterfactual_image",
+        "background_matched_aux"
+      ]
+    }
+  ],
+  "heldout_shuffle_loss": {
+    "data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/trajectory/data_v1/historical_heldout.jsonl",
+    "feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/historical-heldout-448-v1",
+    "max_image_side": 448,
+    "expected_records": 32,
+    "shuffle_repeats": 10,
+    "seed": 20260814,
+    "answer_rule": "canonical normalized majority"
+  }
+}

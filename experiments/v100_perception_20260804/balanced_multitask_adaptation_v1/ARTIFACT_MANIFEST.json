@@ -1,0 +1,327 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-05T02:29:33.342202+00:00",
+  "root": "balanced_multitask_adaptation_v1",
+  "git_base_sha": "3ecd7470bbc81d4498c19a4d843180160ea7e755",
+  "files": {
+    "charts/00-training-loss.svg": {
+      "bytes": 9304,
+      "sha256": "cd001f80ee7e52ca7bd743230ef6445b0f04f1c77eda2b266e891cf29e634c9e"
+    },
+    "charts/01-paired-preference.svg": {
+      "bytes": 5519,
+      "sha256": "f17c1cf713cf8f48bd88bf7e9b7602bfe4e2523f5e146ffe2e3cc5f5a9cdc92c"
+    },
+    "charts/02-paired-generation.svg": {
+      "bytes": 5517,
+      "sha256": "3cf0d3fe4b5c22620a4b0043b495a4db38e36f8478663f6fa7537dd68d3bd429"
+    },
+    "charts/03-vision-minus-shuffle.svg": {
+      "bytes": 3354,
+      "sha256": "12239a6f7bb2312d2a8b839130bec42587971066de468bbbbd430365a39d58d5"
+    },
+    "charts/CHARTS.json": {
+      "bytes": 1347,
+      "sha256": "f1041ca041c9c69971951fe7a6b55440bc5ec316b5d23422de1b462cd9e5c7f9"
+    },
+    "logs/balanced_multitask_generation_v2.log": {
+      "bytes": 19275,
+      "sha256": "ac7108a81355b4ad8868fbc11876f3020e790fd957bc8c2941a2ee2c2b926e2d"
+    },
+    "logs/balanced_multitask_preference_v2.log": {
+      "bytes": 153227,
+      "sha256": "d8aeb5009361cccbd1484bf7f21f434914d1b86c3ed46c4229094e0da11dcbb7"
+    },
+    "logs/balanced_multitask_projector_v1.log": {
+      "bytes": 6107,
+      "sha256": "0e94150bd9b142353776daaa63cb5eb85924d97cec6a2514bf31e61cfa6a846a"
+    },
+    "logs/synthetic_train_cache_v1.log": {
+      "bytes": 114292,
+      "sha256": "17c3511d7b123e1822b21a248e0ad9b36e39cec51a587f8ef5c3d0b2a3938efd"
+    },
+    "PACKAGE_VERIFICATION.json": {
+      "bytes": 663,
+      "sha256": "5581e74d61fe53e0eea4202553c76fb8e4c1403158ddaf00900f95917cd4acb9"
+    },
+    "raw/adaptation/balanced_multitask_projector_smoke_v1/checkpoints/step-000000/MANIFEST.json": {
+      "bytes": 522,
+      "sha256": "f052f7da0eb8e6766502a658734ff7e79a1d4e3aa84a806a044cfe9d005a926c"
+    },
+    "raw/adaptation/balanced_multitask_projector_smoke_v1/CONFIG.json": {
+      "bytes": 2690,
+      "sha256": "035f27db3d83931fe12057f52ba8a2821c83524d8c855336d11517f5ce6a40fd"
+    },
+    "raw/adaptation/balanced_multitask_projector_smoke_v1/FAILURE.json": {
+      "bytes": 1563,
+      "sha256": "fa212c5e54947d12a850c1152b4f0381126c730069d96d4fd45d6fa62e012304"
+    },
+    "raw/adaptation/balanced_multitask_projector_smoke_v1/INVALIDATION.json": {
+      "bytes": 1543,
+      "sha256": "8f1935ef33e08f46531e2128b4a348f65934853877892c8c8fdfd53da1895ee2"
+    },
+    "raw/adaptation/balanced_multitask_projector_smoke_v1/train_history.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "raw/adaptation/balanced_multitask_projector_smoke_v1/training_order.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "raw/adaptation/balanced_multitask_projector_smoke_v2/checkpoints/step-000000/MANIFEST.json": {
+      "bytes": 522,
+      "sha256": "f052f7da0eb8e6766502a658734ff7e79a1d4e3aa84a806a044cfe9d005a926c"
+    },
+    "raw/adaptation/balanced_multitask_projector_smoke_v2/checkpoints/step-000001/MANIFEST.json": {
+      "bytes": 528,
+      "sha256": "d790764b2cd956f1dc6a7097ef57cb6f4ba407367fb7f1a9488f90c8fc537d41"
+    },
+    "raw/adaptation/balanced_multitask_projector_smoke_v2/CONFIG.json": {
+      "bytes": 2690,
+      "sha256": "035f27db3d83931fe12057f52ba8a2821c83524d8c855336d11517f5ce6a40fd"
+    },
+    "raw/adaptation/balanced_multitask_projector_smoke_v2/SUMMARY.json": {
+      "bytes": 2689,
+      "sha256": "4506afd73ea39f3d432f03eb631d430b845f25231b5205bfd51630d049faf42b"
+    },
+    "raw/adaptation/balanced_multitask_projector_smoke_v2/train_history.jsonl": {
+      "bytes": 326,
+      "sha256": "e83f1fa316473e3ef999a87143dd94340ecd8073474771ec0f73625b8a0bce04"
+    },
+    "raw/adaptation/balanced_multitask_projector_smoke_v2/training_order.jsonl": {
+      "bytes": 593,
+      "sha256": "824b6280f93055e351744e8fe6a8874e84d0671037644f75fa3d4f3153a4cc62"
+    },
+    "raw/adaptation/balanced_multitask_projector_v1/checkpoints/step-000000/MANIFEST.json": {
+      "bytes": 522,
+      "sha256": "f052f7da0eb8e6766502a658734ff7e79a1d4e3aa84a806a044cfe9d005a926c"
+    },
+    "raw/adaptation/balanced_multitask_projector_v1/checkpoints/step-000025/MANIFEST.json": {
+      "bytes": 530,
+      "sha256": "ade9dd231f67b11701d1feb23eb1f79d98fea13a3cc50baf6ccead0172bfba42"
+    },
+    "raw/adaptation/balanced_multitask_projector_v1/checkpoints/step-000050/MANIFEST.json": {
+      "bytes": 531,
+      "sha256": "4224291ff21f39cb97c4abc596c8b84ec8cdcb59630badbeae861530a392a292"
+    },
+    "raw/adaptation/balanced_multitask_projector_v1/checkpoints/step-000100/MANIFEST.json": {
+      "bytes": 532,
+      "sha256": "1a7005d19df146f16f98220ed5ed093b81057e7893e3bc08b22a43433111972b"
+    },
+    "raw/adaptation/balanced_multitask_projector_v1/CONFIG.json": {
+      "bytes": 2695,
+      "sha256": "a53ced7baf1cc8b36ec77184b8112dd9dc5d4f907ec79e8b7aaae82eef4e84a3"
+    },
+    "raw/adaptation/balanced_multitask_projector_v1/SUMMARY.json": {
+      "bytes": 3940,
+      "sha256": "c6d70ba0dae69cac07d2fea6ef9acf1a5399c3d28161d0ff84595a8fa61c746c"
+    },
+    "raw/adaptation/balanced_multitask_projector_v1/train_history.jsonl": {
+      "bytes": 33086,
+      "sha256": "25f7b3d1e554108672ec364c6eb62923ff52298d46defb465081c57e48055781"
+    },
+    "raw/adaptation/balanced_multitask_projector_v1/training_order.jsonl": {
+      "bytes": 59392,
+      "sha256": "628a6f2d561910eb6eb7ddc7ea27869e40df94ea93c5e5622937871c25319e71"
+    },
+    "raw/adaptation/balanced_multitask_projector_v1/VERIFICATION.json": {
+      "bytes": 344,
+      "sha256": "418104855c84727f3db44df46bb43a89939f5bcaa49d020eecebaf8f2b3a9fc5"
+    },
+    "raw/cache/synthetic-train-256-v1/cache_records.jsonl": {
+      "bytes": 362868,
+      "sha256": "be6c206681de21918c96189d721c65c76adc1208d5edba4ef741569406b09d11"
+    },
+    "raw/cache/synthetic-train-256-v1/failures.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "raw/cache/synthetic-train-256-v1/MANIFEST.json": {
+      "bytes": 906663,
+      "sha256": "65126dec487d07f51da842573a048c1b94c56db35190ca308fbded371c3e7004"
+    },
+    "raw/cache/synthetic-train-256-v1/SUMMARY.json": {
+      "bytes": 233,
+      "sha256": "86e46d46362c99a7172b0fbec05f773954988f185cb199e5fa192c0648fc94d6"
+    },
+    "raw/cache/synthetic-train-256-v1/VERIFICATION.json": {
+      "bytes": 328,
+      "sha256": "ddf7c7b3d1ebd568063544a9f06aa062e3ed40a15ee89984f86fc5e451709b4c"
+    },
+    "raw/transfer/balanced_multitask_analysis_v1/DECISIONS.json": {
+      "bytes": 105132,
+      "sha256": "4a7d930765215cee3d106c239042221a512446bde5a5c706c392186285f4cc42"
+    },
+    "raw/transfer/balanced_multitask_analysis_v1/SUMMARY.json": {
+      "bytes": 954,
+      "sha256": "a0ef1841f42a6565d842167a390617fe4df7db30463dc9623e35fc7f6cf32e72"
+    },
+    "raw/transfer/balanced_multitask_analysis_v1/transfer_contrasts.csv": {
+      "bytes": 148123,
+      "sha256": "db6fa548e7bd07b9a1e81a2ed896efa3145e33bf899441e0cde2bd9a5753fa2b"
+    },
+    "raw/transfer/balanced_multitask_analysis_v1/transfer_metrics.csv": {
+      "bytes": 65707,
+      "sha256": "dfb622a283413ef8f1236dd461947d435fe1858bcb4a1e0aab0c5648edf49df6"
+    },
+    "raw/transfer/balanced_multitask_generation_smoke_v1/benchmark_curve.csv": {
+      "bytes": 223,
+      "sha256": "3be0272600b03365501cef2389284574bf28c4f3e977af01165595f2fd5a93df"
+    },
+    "raw/transfer/balanced_multitask_generation_smoke_v1/CONFIG.json": {
+      "bytes": 4608,
+      "sha256": "fbce4c5b10eeac23e7d94a1176c25a6a54cf1f4cb26093dbe25d16ccb3340d4d"
+    },
+    "raw/transfer/balanced_multitask_generation_smoke_v1/failures.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "raw/transfer/balanced_multitask_generation_smoke_v1/records.jsonl": {
+      "bytes": 14992,
+      "sha256": "5fcb1b935f22f7cb7723c8523df5782f7a6466e84045b98e4254a846bb8e2e16"
+    },
+    "raw/transfer/balanced_multitask_generation_smoke_v1/shuffle_loss_curve.csv": {
+      "bytes": 519,
+      "sha256": "acd396842e50edc73434165ab9d074c20cdcef245f1766f5de134312ea70411d"
+    },
+    "raw/transfer/balanced_multitask_generation_smoke_v1/shuffle_loss_records.jsonl": {
+      "bytes": 3282,
+      "sha256": "67a1a154543369b34a68c61d80836e04280dd6b63bacc0f793e9cb9310433453"
+    },
+    "raw/transfer/balanced_multitask_generation_smoke_v1/SUMMARY.json": {
+      "bytes": 18879,
+      "sha256": "383ba13068898a615192f643bf1c4b58666c959e604d3b79ed4aad278f093e82"
+    },
+    "raw/transfer/balanced_multitask_generation_smoke_v1/SUMMARY.partial.json": {
+      "bytes": 17862,
+      "sha256": "389ca818fdad1f12923d0e450d43c014e4849f24d18c5f3934e5b6f69796e984"
+    },
+    "raw/transfer/balanced_multitask_generation_smoke_v1/synthetic_curve.csv": {
+      "bytes": 1134,
+      "sha256": "833e6a18a2911620902499e58e45a396c0c91712df924dd8296a0f3397352b1b"
+    },
+    "raw/transfer/balanced_multitask_generation_v1/CONFIG.json": {
+      "bytes": 5973,
+      "sha256": "e72973262214ddf6926fe40433265dfc6d961ae72c6c0097d58731919b8c4d8d"
+    },
+    "raw/transfer/balanced_multitask_generation_v1/INVALIDATION.json": {
+      "bytes": 627,
+      "sha256": "87cadb46858017b87a561318a7622819f668db82d0f30d5fdc4ead6600e0929e"
+    },
+    "raw/transfer/balanced_multitask_generation_v2/benchmark_curve.csv": {
+      "bytes": 223,
+      "sha256": "3be0272600b03365501cef2389284574bf28c4f3e977af01165595f2fd5a93df"
+    },
+    "raw/transfer/balanced_multitask_generation_v2/CONFIG.json": {
+      "bytes": 5973,
+      "sha256": "e72973262214ddf6926fe40433265dfc6d961ae72c6c0097d58731919b8c4d8d"
+    },
+    "raw/transfer/balanced_multitask_generation_v2/failures.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "raw/transfer/balanced_multitask_generation_v2/records.jsonl": {
+      "bytes": 9144836,
+      "sha256": "e63fc024d4078ceccda3bcede6aa964f1568bc99658d7ca982098b6f9884c37c"
+    },
+    "raw/transfer/balanced_multitask_generation_v2/shuffle_loss_curve.csv": {
+      "bytes": 2656,
+      "sha256": "ee2dc4d916763c8a466958f3137a0eee6b038dc131a554f2c51e835a50c00d3e"
+    },
+    "raw/transfer/balanced_multitask_generation_v2/shuffle_loss_records.jsonl": {
+      "bytes": 92064,
+      "sha256": "0699f0d79937d41962756c5c1bb4b1259a90683a6ee9fce90afb472be544066b"
+    },
+    "raw/transfer/balanced_multitask_generation_v2/SUMMARY.json": {
+      "bytes": 167199,
+      "sha256": "43b60e8d4f379a06d4964f81b1d80322a96ff1d7df7cd9b3b4807131dab1e266"
+    },
+    "raw/transfer/balanced_multitask_generation_v2/SUMMARY.partial.json": {
+      "bytes": 166176,
+      "sha256": "db3c72731a38960d02f865aadf4a96a889968a3f4ce3fdf04e074d279e438350"
+    },
+    "raw/transfer/balanced_multitask_generation_v2/synthetic_curve.csv": {
+      "bytes": 13512,
+      "sha256": "19a96283fe6f1714a01f1f38421ec3b16ef54f341f921648610373dc614b63e5"
+    },
+    "raw/transfer/balanced_multitask_generation_v2/VERIFICATION.json": {
+      "bytes": 312,
+      "sha256": "8d9ab33e21750ac1e2ca127d4dadf79f46d4d03f6bf272742df680a6cc74c3f2"
+    },
+    "raw/transfer/balanced_multitask_preference_smoke_v1/CONFIG.json": {
+      "bytes": 4593,
+      "sha256": "07bddd3d045d120ab4bdeeee9d8d5d61fccc8842b8bd9cea65e5a20b14b1acc2"
+    },
+    "raw/transfer/balanced_multitask_preference_smoke_v1/failures.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "raw/transfer/balanced_multitask_preference_smoke_v1/preference_records.jsonl": {
+      "bytes": 41509,
+      "sha256": "f3137253adfac3e15843dfc8bfcf58fdcdd637b3501c6cc902236204d3dc3e00"
+    },
+    "raw/transfer/balanced_multitask_preference_smoke_v1/SUMMARY.json": {
+      "bytes": 10828,
+      "sha256": "31d612d2ef19c504b2502388e5a91b66d844fccdd3d48e94f237dc37642cb4a2"
+    },
+    "raw/transfer/balanced_multitask_preference_smoke_v1/SUMMARY.partial.json": {
+      "bytes": 10023,
+      "sha256": "15624621acd7acf0664a95e2d24176c2f36b3f4379d5f0126d4a09ac391917d5"
+    },
+    "raw/transfer/balanced_multitask_preference_v1/CONFIG.json": {
+      "bytes": 5832,
+      "sha256": "e1a04935daff01b71a7da1fd3a9634b2849997179e7bfde895d38de24205779b"
+    },
+    "raw/transfer/balanced_multitask_preference_v1/failures.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "raw/transfer/balanced_multitask_preference_v1/INVALIDATION.json": {
+      "bytes": 1064,
+      "sha256": "57b8637caa17a961bcaa4805491989493edd9c6f0a4b07fa52cc9af4c0113c74"
+    },
+    "raw/transfer/balanced_multitask_preference_v1/preference_records.jsonl": {
+      "bytes": 8317448,
+      "sha256": "42e782ebab22bceaf4691a2ab4ef41429281ee97736a30ab16ecde84a2f941cb"
+    },
+    "raw/transfer/balanced_multitask_preference_v1/SUMMARY.partial.json": {
+      "bytes": 26117,
+      "sha256": "5dcebc21cf75da5d88a68aa4493450caa122c3a7605ab9b25489c5a105a180ef"
+    },
+    "raw/transfer/balanced_multitask_preference_v2/CONFIG.json": {
+      "bytes": 5973,
+      "sha256": "e72973262214ddf6926fe40433265dfc6d961ae72c6c0097d58731919b8c4d8d"
+    },
+    "raw/transfer/balanced_multitask_preference_v2/failures.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "raw/transfer/balanced_multitask_preference_v2/preference_records.jsonl": {
+      "bytes": 33709276,
+      "sha256": "c319e1739baf981c18282f94489b2ecfaa436d580439651cf3f9378e0547e528"
+    },
+    "raw/transfer/balanced_multitask_preference_v2/SUMMARY.json": {
+      "bytes": 96722,
+      "sha256": "80eff9088552c81e99c3bdef9a7db8f45bb450118ed226699910b05431075b88"
+    },
+    "raw/transfer/balanced_multitask_preference_v2/SUMMARY.partial.json": {
+      "bytes": 95912,
+      "sha256": "fb666886f8b10bc22a2d258d9e29818b932777c9b30fb47bdcc264489874f36e"
+    },
+    "raw/transfer/balanced_multitask_preference_v2/VERIFICATION.json": {
+      "bytes": 125,
+      "sha256": "bc2f78d66bad99711da4ce5e7d4b4adb17a0dd9f3f75a308082293d46fcee46b"
+    },
+    "RAW_DATA_LOCATION.json": {
+      "bytes": 1385,
+      "sha256": "3f38036729061de3304fc56464f06fe4c01c88fa871b6ca76fd6ba55b15043ee"
+    },
+    "RUN_NOTES.md": {
+      "bytes": 4388,
+      "sha256": "7667f7fbfdffd5ca643e61b3e1b600ee3914bb30dd50d91384f8215ec80a7fe1"
+    }
+  },
+  "file_count": 79,
+  "total_bytes": 54016096,
+  "final_half_scored": false
+}

@@ -132,6 +132,15 @@ def matched_random_state(config: ProjectorConfig, seed: int) -> dict[str, torch.
     return {key: value.detach().clone() for key, value in projector.state_dict().items()}
 
 
+def find_random_checkpoint(checkpoints: list[dict]) -> dict | None:
+    """返回可选 random control；纯保存-checkpoint 轨迹无需强制计算它。"""
+
+    return next(
+        (checkpoint for checkpoint in checkpoints if checkpoint["kind"] == "random"),
+        None,
+    )
+
+
 def load_controls(path: Path) -> dict[str, dict]:
     controls = {
         str(row["id"]): row
@@ -736,8 +745,15 @@ def state_sha256(state: dict[str, torch.Tensor]) -> str:
     return digest.hexdigest()
 
 
-def load_checkpoint_state(model, checkpoint: dict, random_state: dict[str, torch.Tensor], device) -> str:
+def load_checkpoint_state(
+    model,
+    checkpoint: dict,
+    random_state: dict[str, torch.Tensor] | None,
+    device,
+) -> str:
     if checkpoint["kind"] == "random":
+        if random_state is None:
+            raise ValueError("random checkpoint requested without a random state")
         model.projector.load_state_dict(random_state, strict=True)
         return state_sha256(random_state)
     weights = Path(checkpoint["path"]) / "projector.safetensors"
@@ -888,11 +904,11 @@ def main() -> None:
         freeze_language_model=True,
         pad_token_id=int(tokenizer.pad_token_id),
     ).eval()
-    random_checkpoint = next(
-        checkpoint for checkpoint in config["checkpoints"] if checkpoint["kind"] == "random"
-    )
-    random_state = matched_random_state(
-        projector_config, int(random_checkpoint["random_seed"])
+    random_checkpoint = find_random_checkpoint(config["checkpoints"])
+    random_state = (
+        matched_random_state(projector_config, int(random_checkpoint["random_seed"]))
+        if random_checkpoint is not None
+        else None
     )
 
     datasets = []

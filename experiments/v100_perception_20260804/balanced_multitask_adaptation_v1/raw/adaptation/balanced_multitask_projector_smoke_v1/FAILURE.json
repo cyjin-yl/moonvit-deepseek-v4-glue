@@ -1,0 +1,7 @@
+{
+  "status": "invalid",
+  "error_type": "ValueError",
+  "error": "Found 80 image placeholder token(s) but received 24 image feature tensor(s)",
+  "traceback": "Traceback (most recent call last):\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package5/tools/train_shape_adaptation.py\", line 500, in main\n    run(args)\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package5/tools/train_shape_adaptation.py\", line 384, in run\n    outputs = model(\n              ^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1776, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1787, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package5/src/moonvit_glue/model.py\", line 129, in forward\n    merged = expand_image_placeholders(\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package5/src/moonvit_glue/merge.py\", line 75, in expand_image_placeholders\n    _validate_inputs(\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package5/src/moonvit_glue/merge.py\", line 41, in _validate_inputs\n    raise ValueError(\nValueError: Found 80 image placeholder token(s) but received 24 image feature tensor(s)\n",
+  "final_half_scored": false
+}

@@ -28,6 +28,7 @@ def _validate_inputs(
     text_embeddings: Tensor,
     image_embeddings: Sequence[Tensor],
     placeholder_token_id: int,
+    attention_mask: Tensor,
 ) -> None:
     if input_ids.ndim != 2:
         raise ValueError(f"input_ids must be rank 2, got shape {tuple(input_ids.shape)}")
@@ -36,7 +37,12 @@ def _validate_inputs(
             "text_embeddings must have shape [batch, sequence, hidden] matching "
             f"input_ids; got {tuple(text_embeddings.shape)} and {tuple(input_ids.shape)}"
         )
-    placeholder_count = int(input_ids.eq(placeholder_token_id).sum().item())
+    if attention_mask.shape != input_ids.shape:
+        raise ValueError("attention_mask must have the same shape as input_ids")
+    active = attention_mask.to(dtype=torch.bool)
+    placeholder_count = int(
+        (input_ids.eq(placeholder_token_id) & active).sum().item()
+    )
     if placeholder_count != len(image_embeddings):
         raise ValueError(
             f"Found {placeholder_count} image placeholder token(s) but received "
@@ -72,13 +78,15 @@ def expand_image_placeholders(
     depends on token IDs.
     """
 
-    _validate_inputs(
-        input_ids, text_embeddings, image_embeddings, placeholder_token_id
-    )
     if attention_mask is None:
         attention_mask = torch.ones_like(input_ids)
-    if attention_mask.shape != input_ids.shape:
-        raise ValueError("attention_mask must have the same shape as input_ids")
+    _validate_inputs(
+        input_ids,
+        text_embeddings,
+        image_embeddings,
+        placeholder_token_id,
+        attention_mask,
+    )
     if labels is not None and labels.shape != input_ids.shape:
         raise ValueError("labels must have the same shape as input_ids")
 
@@ -91,7 +99,8 @@ def expand_image_placeholders(
         row_labels: list[Tensor] = []
         for token_index in range(input_ids.shape[1]):
             token_id = int(input_ids[batch_index, token_index].item())
-            if token_id == placeholder_token_id:
+            is_active = bool(attention_mask[batch_index, token_index].item())
+            if token_id == placeholder_token_id and is_active:
                 features = image_embeddings[image_index].to(
                     device=text_embeddings.device, dtype=text_embeddings.dtype
                 )

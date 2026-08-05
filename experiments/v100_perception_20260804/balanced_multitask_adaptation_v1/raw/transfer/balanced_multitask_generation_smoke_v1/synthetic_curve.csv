@@ -1,0 +1,11 @@
+checkpoint,optimizer_steps,examples_seen,condition,task,accuracy_numerator,accuracy_denominator,accuracy,paired_numerator,paired_denominator,paired_accuracy,answer_flip_numerator,answer_flip_denominator,answer_flip_accuracy,prediction_flip_rate
+balanced-projector-step25,1525,12600,vision,overall,0,4,0.0,0,2,0.0,0,2,0.0,0.5
+balanced-projector-step25,1525,12600,vision,color,0,4,0.0,0,2,0.0,0,2,0.0,0.5
+balanced-projector-step25,1525,12600,blind,overall,0,4,0.0,0,2,0.0,0,2,0.0,0.0
+balanced-projector-step25,1525,12600,blind,color,0,4,0.0,0,2,0.0,0,2,0.0,0.0
+balanced-projector-step25,1525,12600,shuffled_image,overall,0,4,0.0,0,2,0.0,0,2,0.0,0.0
+balanced-projector-step25,1525,12600,shuffled_image,color,0,4,0.0,0,2,0.0,0,2,0.0,0.0
+balanced-projector-step25,1525,12600,paired_counterfactual_image,overall,0,4,0.0,0,2,0.0,0,2,0.0,0.5
+balanced-projector-step25,1525,12600,paired_counterfactual_image,color,0,4,0.0,0,2,0.0,0,2,0.0,0.5
+balanced-projector-step25,1525,12600,background_matched_aux,overall,0,4,0.0,0,2,0.0,0,2,0.0,0.0
+balanced-projector-step25,1525,12600,background_matched_aux,color,0,4,0.0,0,2,0.0,0,2,0.0,0.0
