@@ -25,24 +25,9 @@ def main() -> None:
     if output.exists():
         raise FileExistsError(f"refusing to overwrite invalidation: {output}")
     files = {}
-    for name in (
-        "CONFIG.json",
-        "SUMMARY.json",
-        "SUMMARY.partial.json",
-        "preference_records.jsonl",
-        "records.jsonl",
-        "shuffle_loss_records.jsonl",
-        "patching_records.jsonl",
-        "patching_curve.csv",
-        "probe_metrics.csv",
-        "probe_intervals.csv",
-        "probe_predictions.jsonl",
-        "PROBES.safetensors",
-        "DECISIONS.json",
-        "failures.jsonl",
-    ):
-        path = args.run / name
-        if path.exists():
+    for path in sorted(args.run.rglob("*")):
+        if path.is_file() and path != output:
+            name = path.relative_to(args.run).as_posix()
             files[name] = {"bytes": path.stat().st_size, "sha256": sha256(path)}
     payload = {
         "status": "invalid",

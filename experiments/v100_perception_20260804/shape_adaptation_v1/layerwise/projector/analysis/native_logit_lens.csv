@@ -1,0 +1,5 @@
+checkpoint,condition,records,target_accuracy,target_balanced_accuracy,source_accuracy
+projector-step50,vision,400,1.0,1.0,1.0
+projector-step50,paired_counterfactual_image,400,0.0,0.0,1.0
+projector-step50,shuffled_image,400,0.23749999701976776,0.23424719274044037,1.0
+projector-step50,patch_permutation,400,0.8399999737739563,0.859649121761322,0.8399999737739563

@@ -1,0 +1,163 @@
+{
+  "status": "valid",
+  "format_version": "shape-adaptation-training-v1",
+  "arm": "lora_top12",
+  "kind": "lora",
+  "metadata": {
+    "completed_at_utc": "2026-08-04T23:43:07.767906+00:00",
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "wall_seconds": 64.15532422065735,
+    "peak_gpu_memory_bytes": 3742658560,
+    "final_half_scored": false
+  },
+  "steps": 200,
+  "batch_size": 8,
+  "examples_seen": 1600,
+  "train_records": 400,
+  "train_pairs": 200,
+  "trainable_parameters": 442368,
+  "resolved_lora_modules": [
+    "model.layers.12.self_attn.q_proj",
+    "model.layers.12.self_attn.v_proj",
+    "model.layers.12.self_attn.o_proj",
+    "model.layers.13.self_attn.q_proj",
+    "model.layers.13.self_attn.v_proj",
+    "model.layers.13.self_attn.o_proj",
+    "model.layers.14.self_attn.q_proj",
+    "model.layers.14.self_attn.v_proj",
+    "model.layers.14.self_attn.o_proj",
+    "model.layers.15.self_attn.q_proj",
+    "model.layers.15.self_attn.v_proj",
+    "model.layers.15.self_attn.o_proj",
+    "model.layers.16.self_attn.q_proj",
+    "model.layers.16.self_attn.v_proj",
+    "model.layers.16.self_attn.o_proj",
+    "model.layers.17.self_attn.q_proj",
+    "model.layers.17.self_attn.v_proj",
+    "model.layers.17.self_attn.o_proj",
+    "model.layers.18.self_attn.q_proj",
+    "model.layers.18.self_attn.v_proj",
+    "model.layers.18.self_attn.o_proj",
+    "model.layers.19.self_attn.q_proj",
+    "model.layers.19.self_attn.v_proj",
+    "model.layers.19.self_attn.o_proj",
+    "model.layers.20.self_attn.q_proj",
+    "model.layers.20.self_attn.v_proj",
+    "model.layers.20.self_attn.o_proj",
+    "model.layers.21.self_attn.q_proj",
+    "model.layers.21.self_attn.v_proj",
+    "model.layers.21.self_attn.o_proj",
+    "model.layers.22.self_attn.q_proj",
+    "model.layers.22.self_attn.v_proj",
+    "model.layers.22.self_attn.o_proj",
+    "model.layers.23.self_attn.q_proj",
+    "model.layers.23.self_attn.v_proj",
+    "model.layers.23.self_attn.o_proj"
+  ],
+  "base_projector_sha256": "f9524215b3ccacb341caf2d1e118d2bc0e2c9855f5f4569157bf75ba5e63ddbf",
+  "selection_manifest_sha256": "1162ad7be105d65f6eb9e742828cdd715a10efe20ff8d9020713d960eff59c46",
+  "checkpoints": {
+    "step-000000": {
+      "status": "valid",
+      "arm": "lora_top12",
+      "kind": "lora",
+      "step": 0,
+      "examples_seen": 0,
+      "weights_tensor_sha256": "d4fb99ced6ee64c8e4d1008340ba8660ca72d0fa33862e0f3a504eb630b30856",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1895,
+          "sha256": "e06fccda889e0e4ec9447a8784fd6819ee6f44062f3000c6a2ae46fc7bef2e83"
+        },
+        "lora.safetensors": {
+          "bytes": 1777096,
+          "sha256": "532c8e8c1f03f927b6630ecb993c3ba8cff5c0a0a000f007aeaeac75ef9aaa06"
+        },
+        "training_state.pt": {
+          "bytes": 1751,
+          "sha256": "a80df104479d0c3aad33889c5ee2ec2f37fd8606ece0f1e81640e03a780f9752"
+        }
+      }
+    },
+    "step-000050": {
+      "status": "valid",
+      "arm": "lora_top12",
+      "kind": "lora",
+      "step": 50,
+      "examples_seen": 400,
+      "weights_tensor_sha256": "226ababcec7ed2a0873090457c1611f4f43b892c4d5e898ae5cf26909c1e0627",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1896,
+          "sha256": "f8a0fa48475054dc9cb202f6ec319f54edc3f985342239b5e9de50282481edb4"
+        },
+        "lora.safetensors": {
+          "bytes": 1777096,
+          "sha256": "bd40a3396fbd00d94207e3ecb75e89c8f3d502e4257aab578c4ade8be782f271"
+        },
+        "training_state.pt": {
+          "bytes": 3601121,
+          "sha256": "2bec26a963df5d54b721119ec608c18673ccc5dc0f6038d1d6aa1ca9f03c3ace"
+        }
+      }
+    },
+    "step-000100": {
+      "status": "valid",
+      "arm": "lora_top12",
+      "kind": "lora",
+      "step": 100,
+      "examples_seen": 800,
+      "weights_tensor_sha256": "896de3cecdaa0594e3c4037fe7ce24d375aca8df0e5e9613b8ca6289ab671e2a",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1897,
+          "sha256": "26f82d0041d818a98ab5dbefc36a1fe450288bc8af593678cc21b3fc3ab9f379"
+        },
+        "lora.safetensors": {
+          "bytes": 1777096,
+          "sha256": "95e441ef0ef60a3c799a6466006dedcc51f7f404e1193e6f9af329f2fbfd3fc7"
+        },
+        "training_state.pt": {
+          "bytes": 3601121,
+          "sha256": "5dd8e9e7545b33b6da029b00c91502e74be35cf72ef9a573ab30243b9e154054"
+        }
+      }
+    },
+    "step-000200": {
+      "status": "valid",
+      "arm": "lora_top12",
+      "kind": "lora",
+      "step": 200,
+      "examples_seen": 1600,
+      "weights_tensor_sha256": "a5227b6cbc05290a018ea16a77b28026b400a9e24279484eff4e4c00ab4a1976",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1897,
+          "sha256": "51c7b37f8bfe2b458ad893dfbc2f088130b89029fc04f0294f316a15905867c8"
+        },
+        "lora.safetensors": {
+          "bytes": 1777096,
+          "sha256": "b219437610f7351d0c1023061b144d3e02fb9d59a9984eca4520be0d143c1f70"
+        },
+        "training_state.pt": {
+          "bytes": 3601121,
+          "sha256": "0cb333972b6a9f3a551b6d904a68bb00763914246eec9132a37c427927df601b"
+        }
+      }
+    }
+  },
+  "files": {
+    "train_history.jsonl": {
+      "bytes": 47487,
+      "sha256": "b3dc8c61f41058948dc7a03c405514a8ad35ba1c71febbc1201db7fbcea1a114"
+    },
+    "training_order.jsonl": {
+      "bytes": 41292,
+      "sha256": "993f1b2eb7015c042fcb7d76bbb475fe6aae865cd43be8d194e56aa118476988"
+    }
+  },
+  "final_half_scored": false
+}

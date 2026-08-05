@@ -1,0 +1,34 @@
+{
+  "status": "valid",
+  "best_vision_paired_preference": {
+    "state": "projector-step50",
+    "kind": "projector",
+    "adaptation_step": 50,
+    "adaptation_examples_seen": 400,
+    "condition": "vision",
+    "records": 400,
+    "pairs": 200,
+    "sample_preference_accuracy": 1.0,
+    "paired_preference_accuracy": 1.0,
+    "mean_correct_margin": 10.222968741107907
+  },
+  "best_vision_paired_generation": {
+    "state": "projector-step50",
+    "kind": "projector",
+    "adaptation_step": 50,
+    "adaptation_examples_seen": 400,
+    "condition": "vision",
+    "records": 100,
+    "pairs": 50,
+    "accuracy": 1.0,
+    "paired_accuracy": 1.0,
+    "answer_flip_accuracy": 1.0,
+    "prediction_flip_rate": 1.0
+  },
+  "interpretation_limits": [
+    "all selection records are disjoint from the 400-record shape adaptation train split",
+    "LoRA and projector continuation see equal true-batch examples from the same frozen order",
+    "this shape-only diagnostic does not estimate general benchmark transfer",
+    "final odd halves remain unscored"
+  ]
+}

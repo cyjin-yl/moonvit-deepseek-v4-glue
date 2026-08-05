@@ -17,7 +17,7 @@
 
 = 执行摘要
 
-本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段不训练视觉塔和语言模型，只训练一个 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。当前结论是：V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证，projector-only 全量数据训练已得到明确视觉对齐信号。包 3 定位到 step 1500 的 shape 内容信号；包 4 进一步证明 tower/projector 完整保留 shape，语言主干中层可读且可因果干预，上层在已训练 checkpoint 把信号压回 chance。下一项 V100 实验因此优先做小规模顶部 LoRA 诊断，并保留 projector-only continuation 对照。正式 0731 大权重的 FP4/FP8 可微 kernel 仍是尚未消除的主要风险。
+本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段不训练视觉塔和语言模型，只训练一个 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。当前结论是：V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证，projector-only 全量数据训练已得到明确视觉对齐信号。包 3 定位到 step 1500 的 shape 内容信号；包 4 证明 tower/projector 完整保留 shape、语言主干中层可读且可因果干预；包 5 的等数据顺序诊断又显示，顶部 LoRA 只能部分恢复输出，短程 projector 续训在 400 个 shape 样本后已把 strict paired preference 与自由生成 paired accuracy 同时恢复到 1.000。当前最优先问题变成这条恢复是否跨 synthetic task 泛化，以及需要何种 balanced multi-task 目标。正式 0731 大权重的 FP4/FP8 可微 kernel 仍是尚未消除的主要风险。
 
 MoonViT-V2 有 401.2M 参数，抽取后的 BF16 权重约 802 MB，相对于约 160 GB 级的 DeepSeek 混合精度权重很小。更大的资源变量是图像分辨率带来的视觉 token 数和冻结 LLM 反向所保留的激活，而不是视觉塔权重。
 
@@ -69,7 +69,7 @@ DeepSeek-V4 的早期 Hash-MoE 通过 `tid2eid[input_ids]` 选 expert。只给 `
   [eval\_vlm 生成/blind/shuffle-loss 干跑], [通过], [评测管线端到端],
   [generate()：generic 与 deepseek_v4 两种路径], [通过], [评测/推理前置],
   [指标库（VQA/ANLS/token-F1/grounding）], [通过], [纯 Python，无 torch],
-  [完整测试集], [167/167], [Linux + torch 2.10.0+cu128；含包 4 机制回归],
+  [完整测试集], [174/174], [Linux + torch 2.10.0+cu128；含包 5 适配与逐层 provenance 回归],
 )
 
 V100 实测：真实 K3 MoonViT-V2 在 1024×1024 输入下输出 `[1369,4,1024]`，特征全部 finite、逐位确定，eager 与 sdpa 最大绝对差 3.1e-05；真实权重 strict-load、预处理与 loss/backward 合同均正常。旧 V1 路径也保留了 448px 和原生分辨率回归，但不再代表当前训练主线。评测管线的生成、blind 基线与 shuffle-loss 全部端到端通过；训练后 shuffle-loss 差值应当变正，这是对齐信号最便宜的读数。
@@ -440,6 +440,66 @@ final-layer image-span effect 为 0，因为该层之后没有注意力运算把
 
 下一包冻结 step-1500 projector，以小规模顶部 LoRA 只适配 Qwen2.5-0.5B 上层，并运行 projector-only continuation 与 frozen baseline。训练 checkpoint 同时计算 teacher-forced strict paired preference、paired margin、自由生成 paired/answer-flip，以及逐层 probe 是否能把中层信号传到 final。若 LoRA 有效，继续做层数/rank/辅助目标最小消融；若无效，再转 Qwen2.5-1.5B 容量对照与视觉输入 region 干预。付费 Gate D 继续暂缓。
 
+== Shape 适配诊断（包 5，2026-08-05）
+
+=== 等训练顺序的顶部 LoRA 与 projector 续训
+
+两个 arm 都从 step 1500 projector 出发，使用同一 400 条 shape train、同一 shuffle 顺序、true batch 8，并在 0/50/100/200 optimizer step 保存完整 checkpoint。LoRA 在 Qwen layer 12–23 的 `q_proj/v_proj/o_proj` 注入 rank 8、alpha 16，共 442,368 个可训练参数；projector arm 继续训练全部 20,454,272 个参数。两份 `training_order.jsonl` 的 SHA-256 均为 `993f1b2e…6988`。LoRA 与 projector 的 200 步训练分别耗时 64.2s/74.6s，峰值显存 3.74/4.41 GB。
+
+#table(
+  columns: (1.8fr, 1fr, 1.15fr, 1.15fr),
+  [*状态*], [*已见样本*], [*strict paired preference*], [*自由生成 paired*],
+  [frozen step 1500], [0], [0.130], [0.000],
+  [LoRA step 50], [400], [0.180], [0.000],
+  [LoRA step 100], [800], [0.605], [0.080],
+  [LoRA step 200], [1,600], [0.430], [0.080],
+  [projector step 50], [400], [*1.000*], [*1.000*],
+  [projector step 100], [800], [0.945], [0.880],
+  [projector step 200], [1,600], [0.945], [0.880],
+)
+
+projector step 50 相对 frozen 的 strict paired preference 提升为 *+0.870 [0.825, 0.915]*，自由生成 paired 提升为 *+1.000 [1.000, 1.000]*。其 vision/shuffled strict paired 为 1.000/0.180，差值 *+0.820 [0.765, 0.870]*；vision−paired-counterfactual correct-margin 为 *+20.4459 [19.7584, 21.1797]*。这排除了只记住 answer 先验的解释。等 400 个样本下，LoRA−projector 的 strict paired 为 *−0.820 [−0.870, −0.765]*，生成 paired 为 *−1.000 [−1.000, −1.000]*。
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 10pt,
+    image("../experiments/v100_perception_20260804/shape_adaptation_v1/charts/01-paired-preference.svg", width: 100%),
+    image("../experiments/v100_perception_20260804/shape_adaptation_v1/charts/02-paired-generation.svg", width: 100%),
+  ),
+  caption: [左：strict paired preference；右：自由生成 paired accuracy。projector 续训在 400 个 shape 样本处已达到完整配对恢复，LoRA 只恢复一部分。],
+)
+
+=== 逐层复测：projector 重新建立稳定的晚层通路
+
+最佳 LoRA step 100 与 projector step 50 都从头抽取 train/selection 表征并重跑 2,000 次 pair-label permutation probe。LoRA 的最佳 assistant 仍在 layer 12，balanced accuracy 为 0.816；layer 14–21 再度压到 chance，final assistant probe 与 native LM-head 都只有 balanced 0.500。它确实改变了自由生成，但没有建立稳定的上层线性通路。
+
+projector step 50 的轨迹不同：layer 12 为 0.691、layer 14 为 0.750、layer 17/18 为 1.000，final assistant probe 仍有 0.945，native LM-head 达到 1.000。paired-counterfactual native target/source 为 0/1，shuffled-image native target 为 0.2375，说明最终 head 读取的是实际视觉来源。primary vision probe 的 pair-permutation p 均为 `1/2001`。
+
+#figure(
+  grid(
+    columns: (1.25fr, 0.75fr),
+    gutter: 10pt,
+    image("../experiments/v100_perception_20260804/shape_adaptation_v1/charts/05-assistant-layerwise.svg", width: 100%),
+    image("../experiments/v100_perception_20260804/shape_adaptation_v1/charts/04-vision-shuffle-control.svg", width: 100%),
+  ),
+  caption: [左：冻结、LoRA 与 projector 续训的 assistant 逐层 balanced accuracy；右：strict paired preference 的 vision/shuffled 控制。短程 projector 续训把中层信号延伸到 native head。],
+)
+
+=== 假设更新与下一项本地实验
+
+#table(
+  columns: (1.55fr, 1fr, 2.7fr),
+  [*假设*], [*包 5 更新*], [*证据与动作*],
+  [冻结主干上层不会使用视觉证据], [部分支持], [顶部 LoRA 把 strict paired 从 0.130 提到 0.605、生成 paired 从 0 提到 0.080，确认 use/decoding 瓶颈真实存在；效果显著弱于 projector 续训。],
+  [当前 shape 主瓶颈是 projector 接口训练不足], [强支持], [projector step 50 在 vision 达到 preference/generation 1.000，shuffle 仅 0.180；晚层 probe 与 native head 同时恢复。],
+  [需要先扩大 projector 结构], [本任务反驳], [不改结构、不改初始化，400 个额外 shape 样本已完全恢复；结构消融应等多任务迁移读数。],
+  [0.5B 容量是 shape 首要瓶颈], [削弱], [同一个 0.5B 冻结主干可被短程 projector 续训驱动到 1.000；容量仍可能限制 OCR、推理与自然图像。],
+  [shape 恢复会跨任务泛化], [未检验], [立即用现有六任务 selection 评估 projector step 50，并跑 balanced multi-task 最小训练；结果决定辅助目标、1.5B 对照与分辨率域偏移的顺序。],
+)
+
+独立 verifier 已重读两条训练轨迹的 8 个 checkpoint、8,400 条 preference、1,400 条 generation、63 个配对 bootstrap contrast、4,000 条 layerwise representation metadata 与 179,200 条 probe prediction。projector 大权重和两组约 286 MB 表征保留在 V100 HDD，Git 包含完整路径、bytes/SHA、聚合表、probe 权重及无损 gzip 预测。付费 Gate D 继续暂缓。
+
 == Gate C：Vast 只读调研
 
 2026-08-02 12:23（UTC+8）用官方 Search Offers API 查询 verified、rentable、可靠度至少 0.98、至少 4 张卡、单卡至少 80 GB、总显存至少 320 GB 的 on-demand offer。市场是动态的，以下价格只用于预算，offer ID 不应写进自动租用脚本。
@@ -684,6 +744,8 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
   [2026-08-04], [原生 Qwen3.5-4B 阳性对照修复并跑完：发现同字节数坏 shard（视觉塔全集所在分片）→ SHA-256 manifest 校验、1024px 上限与指标化短输出约束。修复后 vision/blind：TextVQA 0.820/0.031、DocVQA 0.926/0.071、OCRBench 0.900/0、ScreenSpot acc 0.760/0.010、MMMU-Pro 0.300/0.280。用户指出并纠正证据边界：该模型自带视觉塔与多模态对齐，只验证评测器，不证明 MoonViT-V2→DeepSeek；训练器新增原生 VLM 拒绝保护，Gate D 才是目标能力证据。],
   [2026-08-04], [用户指出 0.5B 容量混杂：Qwen2.5-0.5B 虽为纯文本主干，但会压低 OCR/推理/格式遵从上限，dense 小模型的收敛也不能预测 DeepSeek Hash-MoE。Gate B 正式降格为工程/信号闸门；尚未完成的干净桥接对照定义为无 `vision_config` 的约 3B 纯文本主干，在相同 mix、seen-record、分辨率、scratch projector 与 selection 评测下复测。],
   [2026-08-04], [训练计量审计：历史 `batch 8` 是 micro-batch 1 下串行累积，full-mix Gate B 共见 16,000 样本、仅约 0.27 epoch，故重命名为 early alignment，低 benchmark 不作能力上限。训练器新增 examples/answer tokens/effective epochs 与显式 batch 语义、固定分层 validation manifest、10 组 derangement mean±std、多答案监督 provenance；租前实验按容量→projector/LoRA→分辨率→因果/合成诊断排序，true batching 实测前暂停锁定租时。],
+  [2026-08-05], [V100 包 3/4 完成 paired preference、checkpoint 轨迹、逐层 probe 与 activation patching：shape 在 step 1500 出现内容特异中层通路，tower/projector 保留完整线性信息，训练后的语言上层把读出压回 chance。],
+  [2026-08-05], [V100 包 5 等顺序适配诊断：顶部 rank-8 LoRA 最佳 strict/generation paired 为 0.605/0.080；projector 续训仅见 400 个 shape 样本即达到 1.000/1.000，vision−shuffle strict paired +0.820，并把 final assistant probe/native head 恢复到 0.945/1.000。下一项转向六任务迁移与 balanced multi-task 最小训练。],
 )
 
 = 下一位执行者的最短路径

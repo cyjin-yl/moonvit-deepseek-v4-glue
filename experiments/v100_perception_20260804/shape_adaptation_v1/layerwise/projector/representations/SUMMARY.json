@@ -1,0 +1,95 @@
+{
+  "status": "valid",
+  "format_version": "layerwise-representations-v1",
+  "metadata": {
+    "started_at_utc": "2026-08-05T00:03:11.611911+00:00",
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "dtype": "bfloat16",
+    "save_dtype": "bfloat16",
+    "final_half_scored": false,
+    "completed_at_utc": "2026-08-05T00:03:45.310836+00:00",
+    "wall_seconds": 43.29232978820801,
+    "peak_gpu_memory_bytes": 3612558336
+  },
+  "selection_manifest_sha256": "1162ad7be105d65f6eb9e742828cdd715a10efe20ff8d9020713d960eff59c46",
+  "train_records": 400,
+  "selection_records": 400,
+  "classes": [
+    "circle",
+    "square",
+    "star",
+    "triangle"
+  ],
+  "checkpoints": {
+    "projector-step50": {
+      "state_sha256": "cb62709b42a537cf5aae238becdd67c259b648f07ab43c0c1a76c9215853c38e",
+      "cells": {
+        "train/vision": {
+          "records": 400,
+          "tensor_keys": 59,
+          "tensor_file": "projector-step50__train__vision.safetensors",
+          "tensor_bytes": 59819784,
+          "tensor_sha256": "e5eb714cbe36a78b77080547c65707f4fdf9f75e6e7b8ce628aff037a4308269",
+          "metadata_file": "projector-step50__train__vision.jsonl",
+          "metadata_bytes": 78440,
+          "metadata_sha256": "44f7d43d804389087ab83c0ff50d91e215c20413a4cf6c7b0e1e097690278da9"
+        },
+        "selection/vision": {
+          "records": 400,
+          "tensor_keys": 59,
+          "tensor_file": "projector-step50__selection__vision.safetensors",
+          "tensor_bytes": 59819784,
+          "tensor_sha256": "047c35e0b6d40535e3496740800a8870fec83e2cb2e1e0e2de0d6c4c630672a8",
+          "metadata_file": "projector-step50__selection__vision.jsonl",
+          "metadata_bytes": 83192,
+          "metadata_sha256": "92739981d11e22940d57897984ce04df9d0204cacdacd0e07c155244c2ed829b"
+        },
+        "selection/paired_counterfactual_image": {
+          "records": 400,
+          "tensor_keys": 59,
+          "tensor_file": "projector-step50__selection__paired_counterfactual_image.safetensors",
+          "tensor_bytes": 59819784,
+          "tensor_sha256": "657be43cd52cffb2f01eac3fa3810f6eed53fe06cf97a1f9c1285f39cbe0d978",
+          "metadata_file": "projector-step50__selection__paired_counterfactual_image.jsonl",
+          "metadata_bytes": 91592,
+          "metadata_sha256": "93b19087dc35e756a977506748d5be8faae534b311982501f616819f128bf1a4"
+        },
+        "selection/shuffled_image": {
+          "records": 400,
+          "tensor_keys": 59,
+          "tensor_file": "projector-step50__selection__shuffled_image.safetensors",
+          "tensor_bytes": 59819784,
+          "tensor_sha256": "f1fec1e26a1b84f7c7e62742ef0f213c7169126c3054ee806839e7069415f1c1",
+          "metadata_file": "projector-step50__selection__shuffled_image.jsonl",
+          "metadata_bytes": 86392,
+          "metadata_sha256": "e12e306f4da5a08873f0733c9baa0bc7737bb11a656a6cb93e57e58c361898c2"
+        },
+        "selection/patch_permutation": {
+          "records": 400,
+          "tensor_keys": 59,
+          "tensor_file": "projector-step50__selection__patch_permutation.safetensors",
+          "tensor_bytes": 59819784,
+          "tensor_sha256": "31f1bf827c5abfb725a711117f6be16efdfc8e46149e10668e5982788f8e240b",
+          "metadata_file": "projector-step50__selection__patch_permutation.jsonl",
+          "metadata_bytes": 87592,
+          "metadata_sha256": "c8db732aa9d6f30d466a9f6d16125fa2bac0d18da7cfcaf4e70a4c37b726a909"
+        }
+      }
+    }
+  },
+  "files": {
+    "projector-step50__train__vision.safetensors": "e5eb714cbe36a78b77080547c65707f4fdf9f75e6e7b8ce628aff037a4308269",
+    "projector-step50__train__vision.jsonl": "44f7d43d804389087ab83c0ff50d91e215c20413a4cf6c7b0e1e097690278da9",
+    "projector-step50__selection__vision.safetensors": "047c35e0b6d40535e3496740800a8870fec83e2cb2e1e0e2de0d6c4c630672a8",
+    "projector-step50__selection__vision.jsonl": "92739981d11e22940d57897984ce04df9d0204cacdacd0e07c155244c2ed829b",
+    "projector-step50__selection__paired_counterfactual_image.safetensors": "657be43cd52cffb2f01eac3fa3810f6eed53fe06cf97a1f9c1285f39cbe0d978",
+    "projector-step50__selection__paired_counterfactual_image.jsonl": "93b19087dc35e756a977506748d5be8faae534b311982501f616819f128bf1a4",
+    "projector-step50__selection__shuffled_image.safetensors": "f1fec1e26a1b84f7c7e62742ef0f213c7169126c3054ee806839e7069415f1c1",
+    "projector-step50__selection__shuffled_image.jsonl": "e12e306f4da5a08873f0733c9baa0bc7737bb11a656a6cb93e57e58c361898c2",
+    "projector-step50__selection__patch_permutation.safetensors": "31f1bf827c5abfb725a711117f6be16efdfc8e46149e10668e5982788f8e240b",
+    "projector-step50__selection__patch_permutation.jsonl": "c8db732aa9d6f30d466a9f6d16125fa2bac0d18da7cfcaf4e70a4c37b726a909"
+  }
+}

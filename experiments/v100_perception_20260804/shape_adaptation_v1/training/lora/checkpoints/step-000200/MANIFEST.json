@@ -1,0 +1,22 @@
+{
+  "status": "valid",
+  "arm": "lora_top12",
+  "kind": "lora",
+  "step": 200,
+  "examples_seen": 1600,
+  "weights_tensor_sha256": "a5227b6cbc05290a018ea16a77b28026b400a9e24279484eff4e4c00ab4a1976",
+  "files": {
+    "adapter_config.json": {
+      "bytes": 1897,
+      "sha256": "51c7b37f8bfe2b458ad893dfbc2f088130b89029fc04f0294f316a15905867c8"
+    },
+    "lora.safetensors": {
+      "bytes": 1777096,
+      "sha256": "b219437610f7351d0c1023061b144d3e02fb9d59a9984eca4520be0d143c1f70"
+    },
+    "training_state.pt": {
+      "bytes": 3601121,
+      "sha256": "0cb333972b6a9f3a551b6d904a68bb00763914246eec9132a37c427927df601b"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "status": "valid",
+  "arm": "projector_continuation",
+  "kind": "projector",
+  "step": 50,
+  "examples_seen": 400,
+  "weights_tensor_sha256": "ecdf260772ea41e0244aa07c2da46ecc941876f86a5768704604ebc1d3cc86da",
+  "files": {
+    "projector.safetensors": {
+      "bytes": 81817592,
+      "sha256": "979151c975d2f4059b73bff3224820653113cb72694cd6c72242448c3c0616fa"
+    },
+    "training_state.pt": {
+      "bytes": 163640533,
+      "sha256": "9c2eb3dc5e5e598a4c3b30cbf76fdf43f3f6dca54d97ef1ae24d0f51016ee671"
+    }
+  }
+}

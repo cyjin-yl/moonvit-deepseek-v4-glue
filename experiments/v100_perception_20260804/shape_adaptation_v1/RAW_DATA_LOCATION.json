@@ -1,0 +1,53 @@
+{
+  "format_version": "raw-data-location-v1",
+  "host": "doesworkstation",
+  "storage_root": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation",
+  "git_base_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+  "runs": {
+    "lora_training": {
+      "path": "shape_lora_top12_v1",
+      "bytes": 18021108,
+      "complete_in_git": true
+    },
+    "projector_training": {
+      "path": "shape_projector_continuation_v1",
+      "bytes": 818291988,
+      "complete_in_git": false,
+      "omitted_from_git": "four 81.8 MB projector checkpoints and three 163.6 MB optimizer states; compact manifests retain exact hashes"
+    },
+    "evaluation": {
+      "path": "shape_adaptation_eval_v1",
+      "bytes": 5413629,
+      "complete_in_git": true
+    },
+    "analysis": {
+      "path": "shape_adaptation_eval_v1_analysis",
+      "bytes": 13260,
+      "complete_in_git": true
+    },
+    "lora_layerwise_representations": {
+      "path": "shape_lora_step100_layerwise_v1",
+      "bytes": 299540006,
+      "complete_in_git": false
+    },
+    "lora_layerwise_analysis": {
+      "path": "shape_lora_step100_layerwise_v1_analysis",
+      "bytes": 39923315,
+      "complete_in_git": false,
+      "git_copy": "all aggregate tables and probe tensors plus losslessly gzipped row predictions"
+    },
+    "projector_layerwise_representations": {
+      "path": "shape_projector_step50_layerwise_v1",
+      "bytes": 299539778,
+      "complete_in_git": false
+    },
+    "projector_layerwise_analysis": {
+      "path": "shape_projector_step50_layerwise_v1_analysis",
+      "bytes": 40159397,
+      "complete_in_git": false,
+      "git_copy": "all aggregate tables and probe tensors plus losslessly gzipped row predictions"
+    }
+  },
+  "package_verification_sha256": "a84bd7e0f744cdeb0863a25421a33e63abd25233828b0ea393136743abb4dd98",
+  "final_half_scored": false
+}

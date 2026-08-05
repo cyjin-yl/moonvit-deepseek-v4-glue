@@ -98,6 +98,13 @@ def verify_representations(run: Path) -> dict:
     config = json.loads((run / "CONFIG.json").read_text(encoding="utf-8"))
     if summary.get("status") != "valid" or summary["metadata"].get("final_half_scored"):
         raise ValueError("representation run is not valid selection-only output")
+    if adapter := config.get("language_adapter"):
+        directory = Path(adapter["directory"])
+        _check_hash(directory / "adapter_config.json", adapter["config_sha256"])
+        _check_hash(directory / "lora.safetensors", adapter["weights_sha256"])
+    if override := config.get("projector_checkpoint_override"):
+        directory = Path(override["directory"])
+        _check_hash(directory / "projector.safetensors", override["weights_sha256"])
     dataset = config["dataset"]
     classes = [str(value) for value in dataset["classes"]]
     class_index = {answer: index for index, answer in enumerate(classes)}

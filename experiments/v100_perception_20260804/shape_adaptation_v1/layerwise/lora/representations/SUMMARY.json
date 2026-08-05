@@ -1,0 +1,95 @@
+{
+  "status": "valid",
+  "format_version": "layerwise-representations-v1",
+  "metadata": {
+    "started_at_utc": "2026-08-05T00:01:30.250296+00:00",
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "dtype": "bfloat16",
+    "save_dtype": "bfloat16",
+    "final_half_scored": false,
+    "completed_at_utc": "2026-08-05T00:02:04.305520+00:00",
+    "wall_seconds": 42.3900682926178,
+    "peak_gpu_memory_bytes": 3614852096
+  },
+  "selection_manifest_sha256": "1162ad7be105d65f6eb9e742828cdd715a10efe20ff8d9020713d960eff59c46",
+  "train_records": 400,
+  "selection_records": 400,
+  "classes": [
+    "circle",
+    "square",
+    "star",
+    "triangle"
+  ],
+  "checkpoints": {
+    "lora-step100": {
+      "state_sha256": "6f98f4e8d13c1d2be5b921a5ec5b4ae23a16085c346c69d8c42a1a7cba7accd3",
+      "cells": {
+        "train/vision": {
+          "records": 400,
+          "tensor_keys": 59,
+          "tensor_file": "lora-step100__train__vision.safetensors",
+          "tensor_bytes": 59819784,
+          "tensor_sha256": "30537c9984eb77ad5f2ad4f80e0cf1f8438d8022ac9b3b79b575f8fd2140280a",
+          "metadata_file": "lora-step100__train__vision.jsonl",
+          "metadata_bytes": 78440,
+          "metadata_sha256": "44f7d43d804389087ab83c0ff50d91e215c20413a4cf6c7b0e1e097690278da9"
+        },
+        "selection/vision": {
+          "records": 400,
+          "tensor_keys": 59,
+          "tensor_file": "lora-step100__selection__vision.safetensors",
+          "tensor_bytes": 59819784,
+          "tensor_sha256": "d85d0f5b486960f6ef3e8a176e4128903929095cee834d25920d0b5cfa83f10e",
+          "metadata_file": "lora-step100__selection__vision.jsonl",
+          "metadata_bytes": 83192,
+          "metadata_sha256": "92739981d11e22940d57897984ce04df9d0204cacdacd0e07c155244c2ed829b"
+        },
+        "selection/paired_counterfactual_image": {
+          "records": 400,
+          "tensor_keys": 59,
+          "tensor_file": "lora-step100__selection__paired_counterfactual_image.safetensors",
+          "tensor_bytes": 59819784,
+          "tensor_sha256": "39e5a9fb33b59489ec1794298ef1f2405c960371622e6570b7b0e3e1592547ec",
+          "metadata_file": "lora-step100__selection__paired_counterfactual_image.jsonl",
+          "metadata_bytes": 91592,
+          "metadata_sha256": "93b19087dc35e756a977506748d5be8faae534b311982501f616819f128bf1a4"
+        },
+        "selection/shuffled_image": {
+          "records": 400,
+          "tensor_keys": 59,
+          "tensor_file": "lora-step100__selection__shuffled_image.safetensors",
+          "tensor_bytes": 59819784,
+          "tensor_sha256": "09900c3f8fee5b1b44a855c34f0ecb33bfa78466b5f9b026be52b18f688e0835",
+          "metadata_file": "lora-step100__selection__shuffled_image.jsonl",
+          "metadata_bytes": 86392,
+          "metadata_sha256": "e12e306f4da5a08873f0733c9baa0bc7737bb11a656a6cb93e57e58c361898c2"
+        },
+        "selection/patch_permutation": {
+          "records": 400,
+          "tensor_keys": 59,
+          "tensor_file": "lora-step100__selection__patch_permutation.safetensors",
+          "tensor_bytes": 59819784,
+          "tensor_sha256": "7ea6d605490d5ccfdc02c58df91aea8364f37fe670a16d4e7eee8c1abbd0bd05",
+          "metadata_file": "lora-step100__selection__patch_permutation.jsonl",
+          "metadata_bytes": 87592,
+          "metadata_sha256": "c8db732aa9d6f30d466a9f6d16125fa2bac0d18da7cfcaf4e70a4c37b726a909"
+        }
+      }
+    }
+  },
+  "files": {
+    "lora-step100__train__vision.safetensors": "30537c9984eb77ad5f2ad4f80e0cf1f8438d8022ac9b3b79b575f8fd2140280a",
+    "lora-step100__train__vision.jsonl": "44f7d43d804389087ab83c0ff50d91e215c20413a4cf6c7b0e1e097690278da9",
+    "lora-step100__selection__vision.safetensors": "d85d0f5b486960f6ef3e8a176e4128903929095cee834d25920d0b5cfa83f10e",
+    "lora-step100__selection__vision.jsonl": "92739981d11e22940d57897984ce04df9d0204cacdacd0e07c155244c2ed829b",
+    "lora-step100__selection__paired_counterfactual_image.safetensors": "39e5a9fb33b59489ec1794298ef1f2405c960371622e6570b7b0e3e1592547ec",
+    "lora-step100__selection__paired_counterfactual_image.jsonl": "93b19087dc35e756a977506748d5be8faae534b311982501f616819f128bf1a4",
+    "lora-step100__selection__shuffled_image.safetensors": "09900c3f8fee5b1b44a855c34f0ecb33bfa78466b5f9b026be52b18f688e0835",
+    "lora-step100__selection__shuffled_image.jsonl": "e12e306f4da5a08873f0733c9baa0bc7737bb11a656a6cb93e57e58c361898c2",
+    "lora-step100__selection__patch_permutation.safetensors": "7ea6d605490d5ccfdc02c58df91aea8364f37fe670a16d4e7eee8c1abbd0bd05",
+    "lora-step100__selection__patch_permutation.jsonl": "c8db732aa9d6f30d466a9f6d16125fa2bac0d18da7cfcaf4e70a4c37b726a909"
+  }
+}

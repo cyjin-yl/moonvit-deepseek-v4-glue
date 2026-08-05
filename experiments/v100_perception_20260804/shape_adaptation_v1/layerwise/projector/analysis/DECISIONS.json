@@ -1,0 +1,79 @@
+{
+  "checkpoints": {
+    "projector-step50": {
+      "best_assistant": {
+        "checkpoint": "projector-step50",
+        "site": "layer_17_assistant",
+        "condition": "vision",
+        "records": 400,
+        "target_accuracy": 1.0,
+        "target_balanced_accuracy": 1.0,
+        "source_accuracy": 1.0,
+        "random_label_target_accuracy": 0.2849999964237213,
+        "alpha": 1.0,
+        "pair_null_mean": 0.25352124945819376,
+        "pair_null_ci95_low": 0.20999999344348907,
+        "pair_null_ci95_high": 0.30000001192092896,
+        "pair_permutation_p": 0.0004997501249375312,
+        "pair_permutation_samples": 2000
+      },
+      "final_assistant": {
+        "checkpoint": "projector-step50",
+        "site": "layer_24_assistant",
+        "condition": "vision",
+        "records": 400,
+        "target_accuracy": 0.9375,
+        "target_balanced_accuracy": 0.9451754093170166,
+        "source_accuracy": 0.9375,
+        "random_label_target_accuracy": 0.2849999964237213,
+        "alpha": 1.0,
+        "pair_null_mean": 0.24906624926626683,
+        "pair_null_ci95_low": 0.20499999821186066,
+        "pair_null_ci95_high": 0.29249998927116394,
+        "pair_permutation_p": 0.0004997501249375312,
+        "pair_permutation_samples": 2000
+      },
+      "best_projector": {
+        "checkpoint": "projector-step50",
+        "site": "projector_center_mean",
+        "condition": "vision",
+        "records": 400,
+        "target_accuracy": 1.0,
+        "target_balanced_accuracy": 1.0,
+        "source_accuracy": 1.0,
+        "random_label_target_accuracy": 0.4899999797344208,
+        "alpha": 1.0,
+        "pair_null_mean": 0.25301874966919424,
+        "pair_null_ci95_low": 0.20993749350309374,
+        "pair_null_ci95_high": 0.30000001192092896,
+        "pair_permutation_p": 0.0004997501249375312,
+        "pair_permutation_samples": 2000
+      },
+      "best_tower": {
+        "checkpoint": "projector-step50",
+        "site": "tower_center_mean",
+        "condition": "vision",
+        "records": 400,
+        "target_accuracy": 1.0,
+        "target_balanced_accuracy": 1.0,
+        "source_accuracy": 1.0,
+        "random_label_target_accuracy": 0.17749999463558197,
+        "alpha": 1.0,
+        "pair_null_mean": 0.2532087494805455,
+        "pair_null_ci95_low": 0.20999999344348907,
+        "pair_null_ci95_high": 0.2975625142455098,
+        "pair_permutation_p": 0.0004997501249375312,
+        "pair_permutation_samples": 2000
+      }
+    }
+  },
+  "status": "valid",
+  "interpretation_limits": [
+    "probe alpha is fixed before selection scoring",
+    "all probe fitting uses the disjoint synthetic train split",
+    "selection bootstrap resamples complete a/b pairs",
+    "linear recoverability does not by itself establish causal use by the language head",
+    "the single random-training-label probe is an overfit diagnostic; pair-label permutation is the primary association null",
+    "final odd halves remain unscored"
+  ]
+}

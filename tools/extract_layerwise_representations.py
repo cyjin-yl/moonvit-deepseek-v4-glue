@@ -18,6 +18,7 @@ import torch
 from safetensors.torch import load_file, save_file
 
 from moonvit_glue import FeatureCache, PatchMergerProjector, ProjectorConfig
+from moonvit_glue.lora import inject_lora, load_lora_state_dict
 from moonvit_glue.mechanism_probe import (
     last_active_indices,
     masked_token_mean,
@@ -39,6 +40,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--limit-pairs", type=int, default=None)
     parser.add_argument("--checkpoint-ids", nargs="*", default=None)
+    parser.add_argument("--checkpoint-label", default=None)
+    parser.add_argument(
+        "--projector-checkpoint",
+        type=Path,
+        default=None,
+        help="用显式 projector checkpoint 替换筛选后的唯一 checkpoint",
+    )
+    parser.add_argument(
+        "--language-adapter",
+        type=Path,
+        default=None,
+        help="含 adapter_config.json 与 lora.safetensors 的显式顶部 LoRA checkpoint",
+    )
     return parser.parse_args()
 
 
@@ -59,6 +73,29 @@ def git_sha() -> str | None:
 
 def write_json(path: Path, value: Any) -> None:
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def override_projector_checkpoint(
+    config: dict[str, Any], checkpoint_dir: Path, checkpoint_label: str
+) -> None:
+    if len(config["checkpoints"]) != 1:
+        raise ValueError("projector checkpoint override requires exactly one source checkpoint")
+    weights_path = checkpoint_dir / "projector.safetensors"
+    if not weights_path.is_file():
+        raise FileNotFoundError(weights_path)
+    source = dict(config["checkpoints"][0])
+    config["checkpoints"] = [
+        {
+            "id": checkpoint_label,
+            "source_id": source["id"],
+            "kind": "trained",
+            "path": str(checkpoint_dir),
+        }
+    ]
+    config["projector_checkpoint_override"] = {
+        "directory": str(checkpoint_dir),
+        "weights_sha256": file_sha256(weights_path),
+    }
 
 
 def matched_random_state(config: ProjectorConfig, seed: int) -> dict[str, torch.Tensor]:
@@ -289,9 +326,42 @@ def main() -> None:
         config["checkpoints"] = [row for row in config["checkpoints"] if row["id"] in requested]
         if len(config["checkpoints"]) != len(requested):
             raise ValueError("unknown checkpoint in screening override")
+    if args.checkpoint_label is not None and args.projector_checkpoint is None:
+        if len(config["checkpoints"]) != 1:
+            raise ValueError("checkpoint label override requires exactly one source checkpoint")
+        checkpoint = dict(config["checkpoints"][0])
+        checkpoint["source_id"] = checkpoint["id"]
+        checkpoint["id"] = str(args.checkpoint_label)
+        config["checkpoints"] = [checkpoint]
+    if args.projector_checkpoint is not None:
+        if args.checkpoint_label is None:
+            raise ValueError("--projector-checkpoint requires --checkpoint-label")
+        override_projector_checkpoint(
+            config, args.projector_checkpoint, str(args.checkpoint_label)
+        )
+    adapter_config = None
+    if args.language_adapter is not None:
+        adapter_config_path = args.language_adapter / "adapter_config.json"
+        adapter_weights_path = args.language_adapter / "lora.safetensors"
+        adapter_config = json.loads(adapter_config_path.read_text(encoding="utf-8"))
+        config["language_adapter"] = {
+            "directory": str(args.language_adapter),
+            "config_sha256": file_sha256(adapter_config_path),
+            "weights_sha256": file_sha256(adapter_weights_path),
+            "format_version": adapter_config["format_version"],
+            "layer_indices": adapter_config["layer_indices"],
+            "target_modules": adapter_config["target_modules"],
+            "rank": adapter_config["rank"],
+            "alpha": adapter_config["alpha"],
+        }
     config["screening_override"] = {
         "limit_pairs": args.limit_pairs,
         "checkpoint_ids": args.checkpoint_ids,
+        "checkpoint_label": args.checkpoint_label,
+        "projector_checkpoint": (
+            str(args.projector_checkpoint) if args.projector_checkpoint else None
+        ),
+        "language_adapter": str(args.language_adapter) if args.language_adapter else None,
     }
     write_json(args.out / "CONFIG.json", config)
     started = time.time()
@@ -315,6 +385,23 @@ def main() -> None:
         model_path, dtype=dtype, local_files_only=True
     ).to(device).eval()
     language_model.requires_grad_(False)
+    if args.language_adapter is not None:
+        assert adapter_config is not None
+        resolved_modules = inject_lora(
+            language_model,
+            layer_indices=adapter_config["layer_indices"],
+            target_modules=adapter_config["target_modules"],
+            rank=int(adapter_config["rank"]),
+            alpha=float(adapter_config["alpha"]),
+            seed=int(config["seed"]),
+        )
+        if resolved_modules != adapter_config["resolved_modules"]:
+            raise ValueError("representation LoRA module resolution drifted from training")
+        load_lora_state_dict(
+            language_model,
+            load_file(str(args.language_adapter / "lora.safetensors"), device="cpu"),
+        )
+        language_model.eval()
     source = Path(config["projector_config_source"])
     projector_config = ProjectorConfig(
         **json.loads((source / "projector_config.json").read_text(encoding="utf-8"))

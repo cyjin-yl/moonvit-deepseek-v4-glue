@@ -1,0 +1,69 @@
+{
+  "status": "valid",
+  "best_lora_teacher_forced": {
+    "state": "lora-step100",
+    "kind": "lora",
+    "adaptation_step": "100",
+    "adaptation_examples_seen": "800",
+    "condition": "vision",
+    "records": "400",
+    "pairs": "200",
+    "sample_preference_accuracy": "0.8025",
+    "paired_preference_accuracy": "0.605",
+    "mean_correct_margin": "5.876875022315289"
+  },
+  "best_projector_teacher_forced": null,
+  "best_lora_generation": {
+    "state": "lora-step100",
+    "kind": "lora",
+    "adaptation_step": "100",
+    "adaptation_examples_seen": "800",
+    "condition": "vision",
+    "records": "100",
+    "pairs": "50",
+    "accuracy": "0.45",
+    "paired_accuracy": "0.08",
+    "answer_flip_accuracy": "0.08",
+    "prediction_flip_rate": "0.48"
+  },
+  "best_lora_teacher_forced_vs_frozen": {
+    "family": "adaptation_minus_frozen",
+    "metric": "paired_preference",
+    "state_a": "lora-step100",
+    "condition_a": "vision",
+    "state_b": "frozen-step1500",
+    "condition_b": "vision",
+    "pairs": 200,
+    "mean_a": 0.605,
+    "mean_b": 0.13,
+    "mean_gap": 0.475,
+    "ci95_low": 0.405,
+    "ci95_high": 0.545,
+    "bootstrap_samples": 2000,
+    "bootstrap_seed": 20260823
+  },
+  "best_lora_generation_vs_frozen": {
+    "family": "adaptation_minus_frozen",
+    "metric": "generation_paired",
+    "state_a": "lora-step100",
+    "condition_a": "vision",
+    "state_b": "frozen-step1500",
+    "condition_b": "vision",
+    "pairs": 50,
+    "mean_a": 0.08,
+    "mean_b": 0.0,
+    "mean_gap": 0.08,
+    "ci95_low": 0.02,
+    "ci95_high": 0.16,
+    "bootstrap_samples": 2000,
+    "bootstrap_seed": 20260828
+  },
+  "upper_layer_adaptation_teacher_forced_supported": true,
+  "upper_layer_adaptation_generation_supported": true,
+  "interpretation_limits": [
+    "all confidence intervals resample complete a/b pairs",
+    "the diagnostic trains only shape and cannot establish transfer to other tasks",
+    "equal-examples LoRA/projector contrasts share the same frozen data order",
+    "final odd halves remain unscored"
+  ]
+}

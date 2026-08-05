@@ -1,0 +1,32 @@
+{
+  "status": "valid",
+  "source_csv": {
+    "/tmp/shape_adaptation_package5_20260805/evaluation/preference_curve.csv": "c3343003765308cf330982dd0a4226f218cb79a6ab14be0c1e16bfa91c7620cd",
+    "/tmp/shape_adaptation_package5_20260805/evaluation/generation_curve.csv": "4e90bbaadb799e2735030ac2694db6e3c3a377aa88723f3d715a48e18fb59c12",
+    "experiments/v100_perception_20260804/layerwise_mechanisms_v1/analysis/probe_metrics.csv": "64834da7ad8be4fd508feb76847609312d7904050e7ea718c3d70b9341bd5529",
+    "/tmp/shape_adaptation_package5_20260805/layerwise/lora/analysis/probe_metrics.csv": "0a177867be46ab255d3eda25b0e4f5e9294a4adae34b042eb3a3458b0e66378d",
+    "/tmp/shape_adaptation_package5_20260805/layerwise/projector/analysis/probe_metrics.csv": "53a8357fb5c98e51536ce42c46c840adf45adc8481b8f9c2b0650e43430f9d31"
+  },
+  "charts": {
+    "01-paired-preference.svg": {
+      "bytes": 2993,
+      "sha256": "e754bd67ea9699915880fab07a3eed46a81e0c5df0f1fe817a4a67ffe79461b2"
+    },
+    "02-paired-generation.svg": {
+      "bytes": 2991,
+      "sha256": "18e273adf231e32de6e10f4a5291b89acba4619164e35747f69cb7df4baf90d6"
+    },
+    "03-correct-margin.svg": {
+      "bytes": 2981,
+      "sha256": "71ce661662dc1b14329fe84cdd0179ee81ac282d95ab78636906f035f9fe38d9"
+    },
+    "04-vision-shuffle-control.svg": {
+      "bytes": 2078,
+      "sha256": "56625a0ed66dc6d0aaae3971b9c098ed490fdddbfd17e2d982bf312f08b13951"
+    },
+    "05-assistant-layerwise.svg": {
+      "bytes": 7967,
+      "sha256": "a0e50df934181a4c0eb172655b34744d6736bec2b8b3d393a55a740eaf3c40f2"
+    }
+  }
+}

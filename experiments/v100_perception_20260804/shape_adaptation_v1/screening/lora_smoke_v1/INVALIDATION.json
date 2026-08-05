@@ -1,0 +1,58 @@
+{
+  "status": "invalid",
+  "invalidated_at_utc": "2026-08-04T23:41:28.776605+00:00",
+  "reason": "checkpoint MANIFEST examples_seen recorded optimizer step instead of step times true batch size",
+  "impact": "weights and gradients are usable only as a smoke; accounting contract is invalid",
+  "replacement_run": "shape_lora_smoke_v2",
+  "old_results_must_not_be_used": true,
+  "files": {
+    "CONFIG.json": {
+      "bytes": 3119,
+      "sha256": "05d99d4aee8d2e7c91dcb82f96bb866a5d824d4996d47f62996f5da5f2a921a1"
+    },
+    "SUMMARY.json": {
+      "bytes": 4086,
+      "sha256": "a64e3b39cdc62432a7508fb8d5c7f90d3d7086097705e9c26839818be65d04cc"
+    },
+    "checkpoints/step-000000/MANIFEST.json": {
+      "bytes": 630,
+      "sha256": "e93ad1bf0573c234f7022734ea51acd9d7ebb488baf13351b2a85225578f2ef7"
+    },
+    "checkpoints/step-000000/adapter_config.json": {
+      "bytes": 1895,
+      "sha256": "e06fccda889e0e4ec9447a8784fd6819ee6f44062f3000c6a2ae46fc7bef2e83"
+    },
+    "checkpoints/step-000000/lora.safetensors": {
+      "bytes": 1777096,
+      "sha256": "532c8e8c1f03f927b6630ecb993c3ba8cff5c0a0a000f007aeaeac75ef9aaa06"
+    },
+    "checkpoints/step-000000/training_state.pt": {
+      "bytes": 1751,
+      "sha256": "a80df104479d0c3aad33889c5ee2ec2f37fd8606ece0f1e81640e03a780f9752"
+    },
+    "checkpoints/step-000002/MANIFEST.json": {
+      "bytes": 633,
+      "sha256": "879878c16321fc7301d2422f6fa66c6b3aa9d0ad1ab32ac31920e0268babec1a"
+    },
+    "checkpoints/step-000002/adapter_config.json": {
+      "bytes": 1895,
+      "sha256": "85547191bb653426d630ec053f5c1e35fc847056a63cff5a9f24219b0b4bdf2a"
+    },
+    "checkpoints/step-000002/lora.safetensors": {
+      "bytes": 1777096,
+      "sha256": "ec86668d12e1eea59fa0cd4c865c07e2f0e10ccea96124ff2b13806638fc228f"
+    },
+    "checkpoints/step-000002/training_state.pt": {
+      "bytes": 3601121,
+      "sha256": "5f4af3ee24f2c8d51bfd6c03b10b9b34f63e73f5108aa6c6a2a09ae8e5883878"
+    },
+    "train_history.jsonl": {
+      "bytes": 457,
+      "sha256": "0449fc422614cc35ca19de4a265f71c54a8a0934f34764942d77f810c7c105f4"
+    },
+    "training_order.jsonl": {
+      "bytes": 134,
+      "sha256": "c06dd505e4b58584c3cf77632c401d6a91ef294a5ef175d2a318000ebde283d4"
+    }
+  }
+}

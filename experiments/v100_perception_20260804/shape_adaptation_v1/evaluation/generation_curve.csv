@@ -1,0 +1,15 @@
+state,kind,adaptation_step,adaptation_examples_seen,condition,records,pairs,accuracy,paired_accuracy,answer_flip_accuracy,prediction_flip_rate
+frozen-step1500,frozen,0,0,vision,100,50,0.27,0.0,0.0,0.0
+frozen-step1500,frozen,0,0,paired_counterfactual_image,100,50,0.27,0.0,0.0,0.0
+lora-step50,lora,50,400,vision,100,50,0.2,0.0,0.0,0.08
+lora-step50,lora,50,400,paired_counterfactual_image,100,50,0.2,0.0,0.0,0.08
+lora-step100,lora,100,800,vision,100,50,0.45,0.08,0.08,0.48
+lora-step100,lora,100,800,paired_counterfactual_image,100,50,0.45,0.08,0.08,0.48
+lora-step200,lora,200,1600,vision,100,50,0.45,0.08,0.08,0.48
+lora-step200,lora,200,1600,paired_counterfactual_image,100,50,0.45,0.08,0.08,0.48
+projector-step50,projector,50,400,vision,100,50,1.0,1.0,1.0,1.0
+projector-step50,projector,50,400,paired_counterfactual_image,100,50,1.0,1.0,1.0,1.0
+projector-step100,projector,100,800,vision,100,50,0.94,0.88,0.88,0.92
+projector-step100,projector,100,800,paired_counterfactual_image,100,50,0.94,0.88,0.88,0.92
+projector-step200,projector,200,1600,vision,100,50,0.94,0.88,0.88,0.92
+projector-step200,projector,200,1600,paired_counterfactual_image,100,50,0.94,0.88,0.88,0.92

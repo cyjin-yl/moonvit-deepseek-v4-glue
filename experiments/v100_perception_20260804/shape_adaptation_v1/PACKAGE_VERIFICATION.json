@@ -1,0 +1,75 @@
+{
+  "status": "valid",
+  "lora_training": {
+    "status": "valid",
+    "kind": "lora",
+    "steps_verified": 200,
+    "examples_verified": 1600,
+    "checkpoints_verified": 4,
+    "checkpoint_tensors_verified": 288,
+    "final_half_scored": false
+  },
+  "projector_training": {
+    "status": "valid",
+    "kind": "projector",
+    "steps_verified": 200,
+    "examples_verified": 1600,
+    "checkpoints_verified": 4,
+    "checkpoint_tensors_verified": 24,
+    "final_half_scored": false
+  },
+  "equal_training_order_sha256": "993f1b2eb7015c042fcb7d76bbb475fe6aae865cd43be8d194e56aa118476988",
+  "evaluation": {
+    "status": "valid",
+    "states_verified": 7,
+    "preference_rows_verified": 8400,
+    "generation_rows_verified": 1400,
+    "preference_cells_verified": 21,
+    "generation_cells_verified": 14,
+    "final_half_scored": false
+  },
+  "analysis": {
+    "status": "valid",
+    "contrast_rows_verified": 63,
+    "final_half_scored": false
+  },
+  "final_half_scored": false,
+  "layerwise": {
+    "lora": {
+      "representations": {
+        "status": "valid",
+        "representation_files_verified": 10,
+        "representation_rows_verified": 2000,
+        "checkpoints_verified": 1,
+        "tensor_keys_per_cell": 59,
+        "final_half_scored": false
+      },
+      "probes": {
+        "status": "valid",
+        "probe_files_verified": 6,
+        "probe_metric_rows_verified": 224,
+        "probe_prediction_rows_verified": 89600,
+        "vision_pair_permutation_null_verified": true,
+        "final_half_scored": false
+      }
+    },
+    "projector": {
+      "representations": {
+        "status": "valid",
+        "representation_files_verified": 10,
+        "representation_rows_verified": 2000,
+        "checkpoints_verified": 1,
+        "tensor_keys_per_cell": 59,
+        "final_half_scored": false
+      },
+      "probes": {
+        "status": "valid",
+        "probe_files_verified": 6,
+        "probe_metric_rows_verified": 224,
+        "probe_prediction_rows_verified": 89600,
+        "vision_pair_permutation_null_verified": true,
+        "final_half_scored": false
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "status": "valid",
+  "format_version": "layerwise-probe-analysis-v1",
+  "created_at_utc": "2026-08-05T00:04:57.260437+00:00",
+  "source_summary_sha256": "168927c9c25d0d38d9453a22c91cb2e1abc85e670f8e3b0886b3b53e76e47f5e",
+  "checkpoints": [
+    "projector-step50"
+  ],
+  "classes": [
+    "circle",
+    "square",
+    "star",
+    "triangle"
+  ],
+  "metric_rows": 224,
+  "native_rows": 4,
+  "interval_rows": 224,
+  "prediction_rows": 89600,
+  "probe_tensor_count": 448,
+  "files": {
+    "probe_metrics.csv": {
+      "bytes": 31955,
+      "sha256": "53a8357fb5c98e51536ce42c46c840adf45adc8481b8f9c2b0650e43430f9d31"
+    },
+    "native_logit_lens.csv": {
+      "bytes": 367,
+      "sha256": "7325dc16cc91404a879cd71ed1d261402dde8cc67be558faab4c09c525c427f1"
+    },
+    "probe_intervals.csv": {
+      "bytes": 24143,
+      "sha256": "13817506baf82af0a82bfea64c9bd331346d18cf266c82d875c7fe6ca63c5a08"
+    },
+    "probe_predictions.jsonl": {
+      "bytes": 36454490,
+      "sha256": "00744b2d5837378ed79b7f55785ba4ec6781ae39513887b5eb736d7d9b0143e7"
+    },
+    "PROBES.safetensors": {
+      "bytes": 3644112,
+      "sha256": "e14d50414a340ca94f4da7a041bdef282b183db58c4bd68079e297da7c4c2db8"
+    },
+    "DECISIONS.json": {
+      "bytes": 2966,
+      "sha256": "15cf99a5a136c07bcef7b7f51b336951e5a8cd8c4464163b84265c554936c9fe"
+    }
+  },
+  "final_half_scored": false
+}

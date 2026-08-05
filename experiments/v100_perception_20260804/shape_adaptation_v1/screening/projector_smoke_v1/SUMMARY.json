@@ -1,0 +1,74 @@
+{
+  "status": "valid",
+  "format_version": "shape-adaptation-training-v1",
+  "arm": "projector_continuation",
+  "kind": "projector",
+  "metadata": {
+    "completed_at_utc": "2026-08-04T23:50:48.179362+00:00",
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "wall_seconds": 10.589164733886719,
+    "peak_gpu_memory_bytes": 4413048832,
+    "final_half_scored": false
+  },
+  "steps": 2,
+  "batch_size": 8,
+  "examples_seen": 16,
+  "train_records": 400,
+  "train_pairs": 200,
+  "trainable_parameters": 20454272,
+  "resolved_lora_modules": [],
+  "base_projector_sha256": "f9524215b3ccacb341caf2d1e118d2bc0e2c9855f5f4569157bf75ba5e63ddbf",
+  "selection_manifest_sha256": "1162ad7be105d65f6eb9e742828cdd715a10efe20ff8d9020713d960eff59c46",
+  "checkpoints": {
+    "step-000000": {
+      "status": "valid",
+      "arm": "projector_continuation",
+      "kind": "projector",
+      "step": 0,
+      "examples_seen": 0,
+      "weights_tensor_sha256": "ff0b28fd797efbb5dd36aba70f8662dfa90bfb3998353989d81149d43d9fe12c",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817592,
+          "sha256": "2652eef0d32b640839dd0c5e7abe040d639fad5fbffcd7a607f96af6ae40e2a9"
+        },
+        "training_state.pt": {
+          "bytes": 1623,
+          "sha256": "fb62ba87d0d7036ab25847dbdef60a9e134abd748c84ca5cf5ca758841d4bbf2"
+        }
+      }
+    },
+    "step-000002": {
+      "status": "valid",
+      "arm": "projector_continuation",
+      "kind": "projector",
+      "step": 2,
+      "examples_seen": 16,
+      "weights_tensor_sha256": "471e95f974d3c79a1ef8c69ffab62b40847c9a646d23956be46e892e07c40c37",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817592,
+          "sha256": "1be66bc9b4826f714baf7a3f63a1c8f445617dcdbe4e03a9f41727a56f55e2b0"
+        },
+        "training_state.pt": {
+          "bytes": 163640533,
+          "sha256": "754f7e2e10afe9be3a2b87b041a4e59bc440b496fe5bebeac75670c71a2518a1"
+        }
+      }
+    }
+  },
+  "files": {
+    "train_history.jsonl": {
+      "bytes": 461,
+      "sha256": "3c8d743da16c53eaed9a113f3a77de15811d36f15a7289e946b8e6a95e6426eb"
+    },
+    "training_order.jsonl": {
+      "bytes": 410,
+      "sha256": "682b67c72a6de9a3d77be412b5f3c76dfe68364b6976c763f6117ab5f25e3d7c"
+    }
+  },
+  "final_half_scored": false
+}

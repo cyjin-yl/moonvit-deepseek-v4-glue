@@ -1,0 +1,21 @@
+{
+  "status": "valid",
+  "format_version": "shape-adaptation-analysis-v1",
+  "source_summary_sha256": "71abc289add239f42d1bce6f9df94a457c79f34434009ec76c960fe29576f1b4",
+  "preference_rows": 8400,
+  "generation_rows": 1400,
+  "contrast_rows": 63,
+  "bootstrap_samples": 2000,
+  "seed": 20260812,
+  "files": {
+    "adaptation_contrasts.csv": {
+      "bytes": 10265,
+      "sha256": "32d0c2d1c89603875b1d51f4e885ddf7a6bf9bd15dce322d7604fba7b28dc820"
+    },
+    "DECISIONS.json": {
+      "bytes": 2370,
+      "sha256": "3526f373d69a9e9b005b5fe42ae08cd4e7be736a1ddd47ec82f9ac34c9089e06"
+    }
+  },
+  "final_half_scored": false
+}
