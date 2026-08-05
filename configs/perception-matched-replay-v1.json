@@ -1,0 +1,132 @@
+{
+  "run_id": "v100-perception-matched-replay-20260805-v1",
+  "training_format_version": "fixed-budget-matched-replay-v1",
+  "seed": 20260816,
+  "device": "cuda",
+  "language_dtype": "bfloat16",
+  "projector_dtype": "float32",
+  "text_model": "/run/media/ezra/13D010B6FDBC1A06/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+  "placeholder_token_id": 151643,
+  "prompt_template": "User: {image}\n{question}\nAssistant:",
+  "base_projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/checkpoints/step-000050",
+  "projector_config_source": "/run/media/ezra/13D010B6FDBC1A06/data/gate_b/ckpt/checkpoints/step-000500",
+  "dataset": {
+    "tasks": ["color", "coordinate", "count", "ocr", "shape", "spatial"],
+    "train_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/train.jsonl",
+    "selection_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/selection.jsonl",
+    "generation_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/trajectory/synthetic-generation-selection-v1/synthetic_generation_selection.jsonl",
+    "controls": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/controls.jsonl",
+    "train_feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/synthetic-train-256-v1",
+    "selection_feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/synthetic-selection-256-v1",
+    "selection_manifest": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/MANIFEST.json",
+    "generation_selection_manifest": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/trajectory/synthetic-generation-selection-v1/MANIFEST.json",
+    "expected_train_records": 2400,
+    "expected_train_records_per_task": 400,
+    "expected_train_pairs_per_task": 200,
+    "expected_selection_records": 2400,
+    "expected_generation_records": 600,
+    "logical_dataset_sha256": "122ae820381e11e12c7dd9db03a525b801a5ebee5adbef037919185e65cbaa71",
+    "max_image_side": 256
+  },
+  "training": {
+    "initial_step": 50,
+    "steps": 100,
+    "batch_size": 24,
+    "learning_rate": 0.0005,
+    "weight_decay": 0.0,
+    "gradient_clip": 1.0,
+    "order_strategy": "balanced_stratified",
+    "source_training_order": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/training_order.jsonl",
+    "source_training_order_sha256": "a0929326fc8b494f85b82fc504855cd23f1ddfa74348ccc9b364a13ada39f2f5",
+    "checkpoint_steps": [50, 75, 100],
+    "fixed_continuation_steps": 50,
+    "fixed_continuation_examples": 1200
+  },
+  "arms": {
+    "ordinary_continuation": {
+      "kind": "projector",
+      "resume_optimizer": true,
+      "expected_base_projector_sha256": "8dd9321656d2d745303213634e61fe429587a76c149ac00631cc78e2ef0128a8",
+      "expected_optimizer_sha256": "57e9ddbcd4a3b60594aa169c6d4e4b4adf2a5803d22a9da41e4fad4c23ac2f32",
+      "expected_optimizer_step": 50,
+      "exact_reproduction_target": {
+        "projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/checkpoints/step-000100/projector.safetensors",
+        "file_sha256": "05f19079bc6db6757f378c22b05a5cb3ae3e638551513f642bb25dea04ef092d",
+        "tensor_sha256": "7b731cffcb11da833efbd7d99a41ee77cba9eda3dfdb1135989e79adbb921a76"
+      }
+    },
+    "fixed_replay": {
+      "kind": "projector",
+      "resume_optimizer": true,
+      "expected_base_projector_sha256": "8dd9321656d2d745303213634e61fe429587a76c149ac00631cc78e2ef0128a8",
+      "expected_optimizer_sha256": "57e9ddbcd4a3b60594aa169c6d4e4b4adf2a5803d22a9da41e4fad4c23ac2f32",
+      "expected_optimizer_step": 50,
+      "replay_policy": {
+        "tasks": ["count", "shape"],
+        "pairs_per_task_per_window": 10,
+        "window_steps": 25,
+        "history_start_step_exclusive": 0,
+        "history_end_step_inclusive": 50,
+        "history_training_order_sha256": "a0929326fc8b494f85b82fc504855cd23f1ddfa74348ccc9b364a13ada39f2f5",
+        "seed": 20260824
+      }
+    }
+  },
+  "matched_replay": {
+    "exchange_checkpoint_step": 50,
+    "sentinel_step": 75,
+    "endpoint_step": 100,
+    "fixed_training_budget": {
+      "steps_per_arm": 50,
+      "batch_size": 24,
+      "examples_per_arm": 1200,
+      "extra_optimizer_steps_allowed": 0,
+      "extra_training_examples_allowed": 0
+    },
+    "fixed_policy_expected_counts": {
+      "color": 180,
+      "coordinate": 180,
+      "count": 240,
+      "ocr": 180,
+      "shape": 240,
+      "spatial": 180
+    },
+    "trigger_rule": {
+      "metric": "vision paired_preference",
+      "minimum_absolute_drop": 0.10,
+      "paired_ci_requirement": "step75-minus-step50 ci95_high < 0",
+      "maximum_tasks": 2,
+      "ranking": "most negative mean gap, then task name"
+    },
+    "triggered_policy_template": {
+      "pairs_per_task_per_window": 10,
+      "window_steps": 25,
+      "history_start_step_exclusive": 0,
+      "history_end_step_inclusive": 50,
+      "history_training_order_sha256": "a0929326fc8b494f85b82fc504855cd23f1ddfa74348ccc9b364a13ada39f2f5",
+      "seed": 20260825
+    },
+    "recovery_rule": {
+      "metric": "vision paired_preference",
+      "within_exchange_value": 0.05,
+      "action_after_recovery": "return to base distribution at next fixed window"
+    }
+  },
+  "evaluation": {
+    "projector_dtype": "bfloat16",
+    "teacher_forced_records": 2400,
+    "generation_records": 600,
+    "conditions": ["vision", "shuffled_image", "paired_counterfactual_image"],
+    "checkpoint_steps": [50, 75, 100],
+    "generation_max_new_tokens": 8,
+    "bootstrap_seed": 20260823,
+    "bootstrap_samples": 2000
+  },
+  "hard_constraints": {
+    "gpu": "existing Tesla V100-PCIE-32GB only",
+    "rent_new_server": false,
+    "run_full_deepseek_v4": false,
+    "score_final_odd_half": false,
+    "increase_training_budget": false
+  }
+}

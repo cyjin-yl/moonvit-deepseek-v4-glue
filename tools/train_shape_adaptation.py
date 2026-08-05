@@ -20,6 +20,7 @@ from torch.nn import functional as F
 from extract_layerwise_representations import visual_prompt_batch
 from moonvit_glue import FeatureCache, PatchMergerProjector, ProjectorConfig, VisionCausalLM
 from moonvit_glue.lora import freeze_non_lora, inject_lora, lora_state_dict
+from replay_order import transform_replay_batches
 from tools_common import load_records, validate_text_only_backbone_config
 
 
@@ -51,6 +52,35 @@ def git_sha() -> str | None:
 def resolve_projector_config_source(config: dict) -> Path:
     """允许权重断点与不可变 projector 结构定义分开存放。"""
     return Path(config.get("projector_config_source", config["base_projector"]))
+
+
+def validate_fixed_training_budget(
+    training: dict,
+    *,
+    initial_step: int,
+    final_step: int,
+    batch_size: int,
+) -> dict:
+    """在加载模型前拒绝任何预注册步数或 examples 漂移。"""
+
+    actual = {
+        "steps": final_step - initial_step,
+        "examples": (final_step - initial_step) * batch_size,
+    }
+    expected_steps = training.get("fixed_continuation_steps")
+    expected_examples = training.get("fixed_continuation_examples")
+    if (expected_steps is None) != (expected_examples is None):
+        raise ValueError("fixed training budget needs both steps and examples")
+    if expected_steps is not None and (
+        actual["steps"] != int(expected_steps)
+        or actual["examples"] != int(expected_examples)
+    ):
+        raise ValueError(
+            "fixed training budget drifted: "
+            f"actual={actual}, expected={{'steps': {expected_steps}, "
+            f"'examples': {expected_examples}}}"
+        )
+    return actual
 
 
 def maybe_resume_projector_optimizer(
@@ -440,6 +470,12 @@ def run(args: argparse.Namespace) -> None:
     )
     if steps <= initial_step or initial_step < 0 or batch_size <= 0:
         raise ValueError("adaptation final step must exceed a non-negative initial step")
+    fixed_training_budget = validate_fixed_training_budget(
+        training,
+        initial_step=initial_step,
+        final_step=steps,
+        batch_size=batch_size,
+    )
     config["runtime_override"] = {"steps": args.steps, "batch_size": args.batch_size}
     config["resolved_arm"] = args.arm
     args.out.mkdir(parents=True)
@@ -607,6 +643,7 @@ def run(args: argparse.Namespace) -> None:
     cursor = 0
     frozen_order_batches = None
     order_provenance = None
+    replay_provenance = None
     if training.get("source_training_order"):
         frozen_order_batches, order_provenance = read_training_order_window(
             Path(training["source_training_order"]),
@@ -616,6 +653,41 @@ def run(args: argparse.Namespace) -> None:
             batch_size=batch_size,
             expected_sha256=training.get("source_training_order_sha256"),
         )
+    replay_policy = arm.get("replay_policy")
+    if replay_policy is not None:
+        if arm["kind"] != "projector":
+            raise ValueError("matched replay is only supported for projector arms")
+        if frozen_order_batches is None:
+            raise ValueError("matched replay requires a frozen source training order")
+        history_path = Path(
+            replay_policy.get(
+                "history_training_order", training["source_training_order"]
+            )
+        )
+        history_batches, history_provenance = read_training_order_window(
+            history_path,
+            train_records,
+            start_step=int(replay_policy["history_start_step_exclusive"]),
+            end_step=int(replay_policy["history_end_step_inclusive"]),
+            batch_size=batch_size,
+            expected_sha256=replay_policy.get(
+                "history_training_order_sha256",
+                training.get("source_training_order_sha256"),
+            ),
+        )
+        frozen_order_batches, replay_provenance = transform_replay_batches(
+            train_records,
+            source_batches=frozen_order_batches,
+            history_batches=history_batches,
+            tasks=tasks,
+            replay_tasks=[str(task) for task in replay_policy["tasks"]],
+            pairs_per_task_per_window=int(
+                replay_policy["pairs_per_task_per_window"]
+            ),
+            window_batch_count=int(replay_policy["window_steps"]),
+            seed=int(replay_policy["seed"]),
+        )
+        replay_provenance["history_training_order"] = history_provenance
     answer_tokens_seen = 0
     history_path = args.out / "train_history.jsonl"
     order_path = args.out / "training_order.jsonl"
@@ -774,6 +846,7 @@ def run(args: argparse.Namespace) -> None:
         "batch_size": batch_size,
         "examples_seen": steps * batch_size,
         "continuation_examples_seen": (steps - initial_step) * batch_size,
+        "fixed_training_budget": fixed_training_budget,
         "train_records": len(train_records),
         "train_pairs": len({str(record["pair_id"]) for record in train_records}),
         "tasks": tasks,
@@ -791,6 +864,7 @@ def run(args: argparse.Namespace) -> None:
         "optimizer_resume": optimizer_resume,
         "order_strategy": order_strategy,
         "training_order_resume": order_provenance,
+        "replay_policy": replay_provenance,
         "representation_anchor": anchor_provenance,
         "exact_reproduction": exact_reproduction,
         "selection_manifest_sha256": sha256(Path(dataset["selection_manifest"])),
