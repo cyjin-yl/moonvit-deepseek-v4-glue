@@ -17,7 +17,7 @@
 
 = 执行摘要
 
-本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段不训练视觉塔和语言模型，只训练一个 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。当前结论是：V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证。包 3–6 依次定位 shape 内容信号、证明 tower/projector 保留信息、用短程 projector 续训完全恢复 shape，并确认这种 shape-only 恢复不跨任务泛化。包 7 用一轮六任务均衡监督使全部任务的 teacher-forced paired preference 和 vision−shuffle 下界同时转正；自由生成仍只有 shape/spatial 形成 paired 改善。包 8 从该 checkpoint 做严格等顺序对照：额外 projector epoch 把总体 strict preference 从 0.224 提至 0.511、paired generation 从 0.063 提至 0.257，并新解锁 color/coordinate/spatial 生成；顶部 LoRA 只显著强化 shape，且伤害 count/spatial。包 9 进一步证明 projector step 50 与 100 的总体 strict preference 几乎相同，却在 count/shape 与 coordinate/spatial 之间发生大幅能力重排；包 10 验证两端处于平滑相连的权重路径，但线性插值仍沿相同 Pareto 权衡移动，无法无训练地合并互补能力。当前瓶颈已收敛到任务条件抗遗忘、梯度冲突、OCR/count 的生成裂缝和辅助目标设计。正式 0731 大权重的 FP4/FP8 可微 kernel 仍是尚未消除的主要风险。
+本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段不训练视觉塔和语言模型，只训练一个 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。当前结论是：V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证。包 3–6 依次定位 shape 内容信号、证明 tower/projector 保留信息、用短程 projector 续训完全恢复 shape，并确认这种 shape-only 恢复不跨任务泛化。包 7 用一轮六任务均衡监督使全部任务的 teacher-forced paired preference 和 vision−shuffle 下界同时转正；自由生成仍只有 shape/spatial 形成 paired 改善。包 8 从该 checkpoint 做严格等顺序对照：额外 projector epoch 把总体 strict preference 从 0.224 提至 0.511、paired generation 从 0.063 提至 0.257，并新解锁 color/coordinate/spatial 生成；顶部 LoRA 只显著强化 shape，且伤害 count/spatial。包 9 进一步证明 projector step 50 与 100 的总体 strict preference 几乎相同，却在 count/shape 与 coordinate/spatial 之间发生大幅能力重排；包 10 验证两端处于平滑相连的权重路径，但线性插值仍沿相同 Pareto 权衡移动，无法无训练地合并互补能力；包 11 表明完整 projector-output MSE anchoring 也无法保留旧答案边界；包 12 的严格 batch-order 对照显示分层覆盖只带来中期加速，终点在任务间产生 mixed trade-off。当前瓶颈已收敛到遗忘触发 replay、OCR/count 的生成裂缝和决策边界级辅助目标。正式 0731 大权重的 FP4/FP8 可微 kernel 仍是尚未消除的主要风险。
 
 MoonViT-V2 有 401.2M 参数，抽取后的 BF16 权重约 802 MB，相对于约 160 GB 级的 DeepSeek 混合精度权重很小。更大的资源变量是图像分辨率带来的视觉 token 数和冻结 LLM 反向所保留的激活，而不是视觉塔权重。
 
@@ -855,7 +855,78 @@ screen 含 9,000 条 preference 与 6,000 条 generation，零 failure，分析�
 
 下一项执行严格匹配的六任务分层 batch 对全局随机 batch，随后运行预注册遗忘触发式 replay。只有两者仍无法缓解遗忘时，才进入 per-task gradient-conflict 方法。付费 Gate D、完整 DeepSeek-V4 与租卡继续暂缓。
 
+== 分层能力覆盖 batch 对全局随机顺序（包 12，2026-08-05）
+
+=== 唯一处理变量是 batch-order constraint
+
+两臂从同一个 package-7 projector 与 AdamW state 开始，使用同一 seed、学习率、batch size、2,400 条记录和 2,400 examples seen。分层臂 100 个 true batch 都是六任务各 4 条；global arm 对全部记录做一次 seeded random permutation，100 个 batch 均不满足 4×6 分层，单任务最高占 11/24。独立 verifier 确认每条记录恰好一次、六任务各 400 条、step-0 tensor SHA 与 optimizer source SHA 一致。顺序约束是唯一处理变量。
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 10pt,
+    image("../experiments/v100_perception_20260804/batch_stratification_v1/charts/01-summary-trajectories.svg", width: 100%),
+    image("../experiments/v100_perception_20260804/batch_stratification_v1/charts/02-task-preference-delta.svg", width: 100%),
+  ),
+  caption: [左：macro/worst/generation 轨迹；右：各任务 stratified−global strict paired preference。step 50 的分层加速在 step 100 转化为任务交换。],
+)
+
+#table(
+  columns: (0.7fr, 1fr, 1fr, 1fr, 1fr, 1fr),
+  [*step*], [*arm*], [*macro strict*], [*worst*], [*macro gen*], [*vision−shuffle*],
+  [25], [stratified], [0.2017], [0], [0.0367], [0.1292],
+  [25], [global], [0.2408], [0], [0.0133], [0.1708],
+  [50], [stratified], [*0.5117*], [*0.155*], [*0.2333*], [*0.3975*],
+  [50], [global], [0.3892], [0.145], [0.1667], [0.2975],
+  [100], [stratified], [0.5108], [*0.100*], [0.2567], [0.3850],
+  [100], [global], [*0.5308*], [0.055], [*0.3200*], [*0.3975*],
+)
+
+分层在 step 50 更快形成 macro、generation、worst-task 与 image-causal signal；step 25 没有单调领先。到 step 100，global 的 macro strict/generation 反超。终点 stratified−global overall strict paired preference 为 *−0.020 [−0.0442, 0.0025]*，未排除 0，预注册 verdict 为 `mixed_or_underpowered`。
+
+=== 终点不是统一收益，而是 coordinate 对 color/shape 的交换
+
+#table(
+  columns: (1fr, 1fr, 1fr, 1fr),
+  [*任务*], [*stratified*], [*global*], [*stratified−global, 95% CI*],
+  [color], [0.735], [0.825], [−0.090 [−0.165, −0.025]],
+  [coordinate], [0.575], [0.410], [*+0.165 [0.115, 0.220]*],
+  [count], [0.100], [0.055], [+0.045 [0, 0.095]],
+  [OCR], [0.220], [0.215], [+0.005 [−0.050, 0.060]],
+  [shape], [0.435], [0.680], [*−0.245 [−0.315, −0.175]*],
+  [spatial], [1.000], [1.000], [0],
+)
+
+分层的 coordinate/count/shape trajectory AUC 相对 global 为 +0.1156/+0.0619/+0.0706，color 为 −0.0625，OCR 近零，spatial 相同。分层从 step 50 到 100 遗忘 count 0.28、shape 0.30；global 遗忘 count 0.25，shape 在终点达到自身峰值。逐 batch 覆盖没有消除后半程任务干扰。
+
+=== 固定小批次梯度诊断与合同更新
+
+六任务各固定 8 条 complete-pair records，在 frozen 与六个 checkpoint 上测 projector gradient。分层 step 100 的 15 个 task pairs 中 6 个 cosine 为负，最强冲突是 count–shape −0.1704；global step 100 的 15 对全部非负，平均 cosine 为 0.1185。该诊断没有 cosine CI，作为与轨迹一致的描述性机制证据。
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 10pt,
+    image("../experiments/v100_perception_20260804/batch_stratification_v1/charts/03-gradient-conflict.svg", width: 100%),
+    image("../experiments/v100_perception_20260804/batch_stratification_v1/charts/04-batch-imbalance.svg", width: 100%),
+  ),
+  caption: [左：固定任务梯度平均 cosine 与负夹角比例；右：每个 true batch 的单任务最大占用。分层严格控制组成，但终点梯度冲突更多。],
+)
+
+#table(
+  columns: (1.9fr, 1fr, 2.6fr),
+  [*假设*], [*包 12 更新*], [*证据与动作*],
+  [逐 batch 六任务覆盖普遍优于 global random], [未支持], [终点 overall CI 跨 0，coordinate 与 color/shape 显著反向，预注册 verdict mixed。],
+  [分层覆盖提高能力形成速度], [部分支持], [step 50 macro/generation 为 0.512/0.233，对 global 0.389/0.167；step 25 不领先。],
+  [分层覆盖降低任务冲突], [反驳], [分层终点 6/15 个负 cosine pairs，global 为 0；count/shape 仍显著遗忘。],
+  [每 batch 分层应写成 DeepSeek 硬合同], [反驳], [合同改为固定窗口领域覆盖；分层只保留为短校准候选，并由 sentinel 监测后半程交换。],
+)
+
+全包含 50,400 条 preference、8,400 条 generation、735 个 metrics、525 个 paired contrasts、42 个 gradient norms 和 105 个 pairwise cosines；全部文件 hash 与 14 项 matched-order invariant 通过，完整仓库测试 *220/220* 全绿。下一项从已知能力交换 checkpoint 运行 ordinary balanced、fixed replay、forgetting-triggered replay 三臂；在 replay 结果前不增加块状 curriculum。付费 Gate D 继续暂缓。
+
 == Gate C：Vast 只读调研
+
+*本节的 marketplace 价格与 offer 仅保留为 2026-08-02 历史快照，不再是可执行租机方案。* 固定 revision 源码审计发现 Transformers 量化 forward 集成尚无已确认的 autograd 注册，DeepGEMM #372 又给出 SM120/121 的 NVFP4 scale-layout weight-load blocker。当前架构建议已改为先请求单卡 SM100/B200 最小 kernel gate，只下载三个目标模块所需 shard；通过后再单独申请完整模型 Gate D。详见 `docs/dsv4-runtime-source-audit.md`、`docs/gpu-runtime-matrix.md` 与 `docs/deepseek-rental-training-contract.md`。任何付费步骤仍未获授权。
 
 2026-08-02 12:23（UTC+8）用官方 Search Offers API 查询 verified、rentable、可靠度至少 0.98、至少 4 张卡、单卡至少 80 GB、总显存至少 320 GB 的 on-demand offer。市场是动态的，以下价格只用于预算，offer ID 不应写进自动租用脚本。
 
@@ -874,9 +945,11 @@ screen 含 9,000 条 preference 与 6,000 条 generation，零 failure，分析�
 
 当晚第二次查询（增加 RAM ≥500 GB、盘 ≥1.5 TB 过滤，33 个 offer）要点：4×A100 SXM4 降至 \$6.41/h（961 GB RAM、2 TB 盘，Gate D 首选）；4×H100 PCIe \$6.93/h（6392 GB 盘，性价比突出）；8×A100 SXM4 \$10.30/h（11 TB 盘，情景 B 兜底）；4×B200 \$21.25/h。新出现的 4×RTX PRO 6000 96 GB（Blackwell，原生 FP4）\$4.54/h 但总线无 NVLink 且 FP4 kernel 支持未验证，仅作探索。
 
-*架构修正*：A100 为 Ampere，无 FP8/FP4 Tensor Core，0731 的 NVFP4 权重在 Ampere 上没有确认的内核路径，只能解量化至 bf16（568 GB），而 4×A100 的 320 GB 装不下——4×A100 实际上无法加载原生权重，Gate D 首选改为 *4×H100 PCIe*（Hopper FP8 + FP4 专用内核）。8×A100 SXM4（640 GB）仅作为解量化情景 B 的兜底。
+*最新架构修正（2026-08-05）*：A100 无原生目标量化路径，只保留完整 BF16 解量化的高成本容量参考。H100/H200 的 SM90 是 dense FP8 候选，FP4 experts 可能依赖 Triton fallback；B200 的 SM100 与固定 DeepGEMM 支持范围最吻合，成为首个单卡最小 kernel gate 的推荐架构。RTX PRO 6000/GB10 的 SM120/121 受 DeepGEMM #372 `(1,32)` NVFP4 scale-layout blocker 影响，暂不作为默认。所有型号的 weight load、forward 与 DGRAD 仍需真机逐模块验证。
 
-=== 最终账单（含下载时间、网络、存储、装机余量）
+=== 历史账单快照（已撤销，不用于授权）
+
+下表是 2026-08-02 基于旧 H100/固定步数假设的敏感性计算，仅为审计保留。当前训练时长、GPU 数量和美元预算全部保持 `pending`；必须先完成用户单独授权的 SM100 单卡最小 kernel gate，再用 Gate D 实测 step time 与哨兵开销生成乐观/基准/悲观三档新预算。
 
 流量与存储用报价接口的真实计费字段核算：权重下载 160 GB，H100 PCIe 候选流量 \$13.33/TB 约 \$2.13（重传余量加倍 + 数据集/Docker 镜像约 \$1，共约 \$4）；上传仅约 134 MB projector + 800 MB 视觉塔（首次）+ JSON，约 \$0.01。存储按 storage\_total\_cost 约 \$0.001–0.005/h，租期内几分钱——*但实例 stop 后存储继续按 \$/GB/月计费（约 \$0.107/GB/月，2 TB 停一周约 \$53），结束必须 destroy 而不是 stop*。装机与依赖调试按 +1.5 h GPU 时间计余量。
 
@@ -896,7 +969,7 @@ screen 含 9,000 条 preference 与 6,000 条 generation，零 failure，分析�
 
 流量费三档均约 \$4–5。*情景 A 最终账单：\$55（乐观）/ \$75（基准）/ \$110（悲观），按 \$120 预算。*
 
-带宽与耗时已按报价接口的 inet\_down 字段核算：H100 PCIe 候选实测下行 2217 Mbps（约 277 MB/s），理论 160 GB 约 10 分钟；考虑 HF CDN 单连接限速（40–100 MB/s）与断流重传（本地实测 802 MB 在慢代理下耗时 2h46m），基准按 1 h、悲观按 2 h 计，租机筛选条件要求 inet\_down ≥ 1000 Mbps 并用 aria2/hf\_transfer 多连接下载。checkpoint 上行流量每个约 300 MB（projector fp32+bf16+优化器），每 500 步一次，分钟级完成，不影响训练计费。训练日志（train.log）与 history.json 随 checkpoint 一并上传，社区可见完整训练过程。
+带宽与耗时已按报价接口的 inet\_down 字段核算：H100 PCIe 候选实测下行 2217 Mbps（约 277 MB/s），理论 160 GB 约 10 分钟；考虑 HF CDN 单连接限速（40–100 MB/s）与断流重传（本地实测 802 MB 在慢代理下耗时 2h46m），基准按 1 h、悲观按 2 h 计。checkpoint 上行流量每个约 300 MB（projector fp32+bf16+优化器）；正式频率不再固定每 500 步，由实测 save/upload/Tiny/Medium 成本满足 5%/10% 开销上限后自适应确定。
 
 情景 A′（R3 命中，H100 无法跑 FP4 前向）：转 4×B200（\$21.25/h），同排程基准 10 h ≈ \$213；B200 有原生 FP4 Tensor Core，Dgrad 通过率也更高。决策成本为已耗的装机+下载 1.5–2 h（约 \$10–14）。情景 B（FP4 不可反传且 B200 不可用）：8×A100 SXM4 \$10.30/h，权重解量化至 bf16（568 GB）转换 1–2 h 且训练约慢 3 倍，合计 20–30 h ≈ \$210–310（该候选流量 \$1.33/TB，网络几乎免费）。*建议总预算：\$120 起步（情景 A），预留 \$220（情景 A′/B），上限 \$350；预期实际花费 \$75–110。* 决策点在租后第 2–3 小时：Gate D 不通过即 destroy 止损，损失约 \$20。
 
@@ -906,7 +979,7 @@ screen 含 9,000 条 preference 与 6,000 条 generation，零 failure，分析�
 
 #table(
   columns: (2.4fr, 1.9fr, 1.9fr),
-  [*组成（每卡）*], [*情景 A：4×RTX PRO 6000，FP4 权重 TP=4*], [*情景 B：8×A100，bf16 权重 TP=8*],
+  [*组成（每卡）*], [*历史 SM120 4 卡算术（非候选）*], [*历史 8×A100 BF16 算术*],
   [LLM 权重], [160/4 = 40 GB], [568/8 = 71 GB],
   [LLM optimizer + 参数梯度], [0（冻结）], [0（冻结）],
   [MoonViT-V2 权重（bf16/fp32）], [0.8–1.6 GB], [0.8–1.6 GB],
@@ -926,34 +999,36 @@ screen 含 9,000 条 preference 与 6,000 条 generation，零 failure，分析�
 #table(
   columns: (1.9fr, 0.7fr, 3.4fr),
   [*风险*], [*概率*], [*缓解 / 止损*],
-  [R1 NVFP4 权重 Dgrad 不可用（推理内核不支持对输入 embedding 求梯度）], [中–高], [核心风险。Gate D 单 batch backward 判定；失败即退租转情景 B（解量化 bf16）或情景 A′（B200 原生 FP4 内核重试）。],
-  [R2 Transformers 加载原生 0731 大权重失败（quantization config 格式未被 5.x 支持）], [中], [Gate D 第一步即原生加载测试；备选为 vLLM loader 导出 bf16 权重副本（同时解决 R1）。],
-  [R3 FP4 前向内核在目标卡上不可用], [低–中], [主机器 RTX PRO 6000 即 Blackwell（sm_120，原生 NVFP4），此项已从"中"降级；但硬件支持 ≠ 内核带 Dgrad——Gate D 第 0 步用 `tools/gate_d_dgrad.py` 单层 reproducer 单独判定。失败转 4×B200（\$21.25/h）或情景 B。],
+  [R1 Transformers 实际量化 module 无 input DGRAD], [高风险，真机待判], [固定源码只确认 forward dispatch，未发现 autograd 注册；底层 DeepGEMM 有 DGRAD primitive 不能证明集成路径。先用三模式脚本分别测普通 FP8、FP8 expert gate/up、FP4 expert down，任一失败即 destroy。],
+  [R2 Transformers 加载原生 0731 量化权重失败], [中–高], [先做只下载目标 shards 的单卡 weight-load gate；失败不下载完整模型，也不自动切 BF16 或扩卡。],
+  [R3 SM120/121 NVFP4 scale layout 缺失], [公开 blocker], [DeepGEMM #372 在审计日仍 OPEN，可在 forward 前报 `Unknown SF transformation`。RTX PRO 6000/GB10 降级；首个最小 gate 推荐 SM100/B200。],
   [R4 权重下载断流/限速], [高], [本地实测 802 MB 在慢代理下耗时 2h46m；租机标称 2217 Mbps 但 HF CDN 单连接限速 40–100 MB/s，160 GB 理论 27–67 分钟，断流可拖至 2h+。用 aria2/hf\_transfer 多连接 + 断点续传循环（已验证的做法），账单已含 0.5–2h 敏感性。],
-  [R5 marketplace 实例被中断], [中], [checkpoint 流式上传（每 500 步，含 optimizer/RNG，28/28 测试）；中断后换机 `--resume` 精确续训，损失不足 10 分钟训练。],
+  [R5 marketplace 实例被中断], [中], [checkpoint 含 fp32/bf16 projector、optimizer/RNG/examples/data cursor；保存与异步上传频率按实测开销自适应，队列上限为 2。中断后只在新授权内续租恢复。],
   [R6 机器环境与宣传不符（NVLink 拓扑、驱动、盘速）], [低–中], [开机 10 分钟内 `nvidia-smi topo -m` + 盘速快测，不符当场退租换机，损失不足 1h 租金。],
   [R7 情景 B 显存算术（bf16 568 GB vs 8×A100 640 GB）], [低], [冻结 LLM + activation checkpointing 下单 batch 激活很小，72 GB 余量足够；4×H200（564 GB）装不下，明确排除。],
   [R8 Hash-MoE `tid2eid` 在多卡张量并行下的分布行为], [中], [hook 方案已在真实 tiny DeepseekV4 类验证；Gate D 的单 batch backward 在大权重多卡下复验，占位位置路由一致性有断言。],
   [R9 训练数据下载（约 30 GB）经代理再耗 1–2 h], [中], [提前把训练数据镜像到项目 HF 仓库（随 checkpoint 上行通道同路），租机从 HF 直下；计入装机时间。],
   [R10 MoonViT-V2 bf16 与 fp32 参考的特征偏差], [低], [fp32 参考已锚定（eager/sdpa 差 3.1e-05）；Gate D 记录 bf16 实测差（预期约 1e-2 相对），超差则视觉塔回 fp32（仅多约 800 MB 显存）。],
   [R11 租期内时间不够闭环], [低–中], [checkpoint 流式上传保证权重永不丢；benchmark 三组对照在机上跑但数据落盘 JSON 可增量上传；最坏情况先公开 checkpoint + 部分指标。],
-  [R12 多卡分布策略与 PCIe 拓扑（4×RTX PRO 6000 无 NVLink，PCIe 5.0 x16 54.2 GB/s；`device_map="auto"` 朴素模型并行的激活回传走 PCIe）], [中], [训练吞吐的直接风险：3–5 s/步 的估计在 PCIe + 重算下可能偏乐观。多卡路径已定型为单进程 `device_map="auto"`（LLM 冻结，无需权重梯度分片；vLLM/SGLang 推理 TP 不可用于反向训练）。Gate D 实测单步耗时：≤8 s 维持；8–15 s 重算步数保 benchmark；>15 s 验证 transformers 原生 `tp_plan` 或换 NVLink 机型（H100 SXM \$10.75/h）；账单按 5 h 悲观档已可吸收 2 倍减速。],
+  [R12 多卡分布策略与互联拓扑], [中], [不再预设具体卡数或 3–5 s/step。单卡 kernel gate 通过后再按完整权重容量选择拓扑；Gate D 实测 step time、route consistency 与 sentinel 成本后生成预算，vLLM/SGLang 推理 TP 不进入反向训练。],
 )
 
 == Gate D：正式租卡前
 
-分阶段判定（完整版见 `docs/gate-d-runbook.md` §7，2026-08-03 评审修订，各步独立记录不合并）：
+分阶段判定（完整版见 `docs/gate-d-runbook.md`，2026-08-05 固定 revision 重写，各步独立记录不合并）：
 
-0. 配置发现 + 最小 Dgrad reproducer（`tools/gate_d_dgrad.py`：打印量化方案；只取一层真实 quantized linear 权重切片，判定 input.grad 有限非零、weight.grad 为 None）。
-1. `nvidia-smi topo -m` + 盘速快测（不符当场退租）。
-2. 原生 0731 权重加载成功；文本短前向正常。
-3. 单图短序列 forward（placeholder 注入）。
-4. 单 batch backward，projector 梯度有限且非零，LLM/MoonViT 无梯度。
-5. hook × activation checkpointing 数值一致性（开/关梯度检查点 projector 梯度 allclose）+ batch>1 多图位置一致。
-6. 多卡路径定型（`device_map="auto"`）+ 实测单步耗时分档（≤8 / 8–15 / >15 s）。
-7. 20 step 无 OOM/NaN；`--resume` 从流式 checkpoint 恢复一次且轨迹连续。
+0. 固定 revision 与配置发现；模式 A 用 BF16/FP32 frozen Linear 验证 harness，不能计作量化通过。
+1. 模式 B 从 Transformers 实际加载后的模块分别测试普通 FP8Linear、FP8 expert gate/up、FP4 expert down；记录 backend、output `grad_fn`、异常与 `torch.autograd.grad`。
+2. 原生失败时，模式 C 只测试预注册的 input-only DGRAD prototype；V100 reference 状态为 `hardware_pending`，不得用 BF16 替代品冒充量化通过。
+3. `nvidia-smi topo -m` + 盘速快测（不符当场退租）。
+4. 原生 0731 权重加载成功；文本短前向正常。
+5. 单图短序列 forward（placeholder 注入）。
+6. 单 batch backward，projector 梯度有限且非零，LLM/MoonViT 无梯度。
+7. hook × activation checkpointing 数值一致性 + batch>1 多图位置与 Hash-MoE routing 一致。
+8. 20 step 无 OOM/NaN；`--resume` 恢复一次且轨迹连续。
+9. 实测 step、checkpoint save/upload、Tiny/Medium sentinel 成本，形成新的卡数、时长与美元预算。
 
-== 租期闭环排程（2026-08-02 定价）
+== 自适应租期排程（价格与时长待授权）
 
 核心约束：租期一结束就没有机器能跑动 0731 做 benchmark 或回传权重，因此训练、benchmark、上传必须在同一次租期内闭环。交付物只有 projector + 评测 JSON + 报告，与 GLM 社区只发布 projector 一致，不回传 160 GB 主干。checkpoint 发两个精度：fp32 master（约 134 MB，复现/续训用）与 bf16 serving（约 67 MB,0731 激活为 bf16)，租期内由训练产物现场转换。推理侧接入（vLLM/SGLang/llama.cpp/fastllm 补丁点、Hash-MoE 注意事项、验收检查）已写成 `docs/inference-integration.md`（2026-08-03 重写为 MoonViT-V2 版），作为后续给推理引擎提 PR 的合同文档；要点：vLLM 与 SGLang 均已 Day-0 支持 Kimi-K3（含 MoonViT3d 视觉塔）且均有 DeepSeek-V4 文本栈，patch 面只剩 projector 模块、placeholder 扩展与 Hash-MoE 路由检查；placeholder 固定为现有 `<｜image｜>`(id 129279）禁止扩 vocab，合并只替换 embedding 向量、input\_ids 保留 placeholder 供 Hash-MoE 路由。
 
@@ -961,20 +1036,20 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
 
 分辨率也从“写死”改为待证：先跑训练 448/640 × 评测 448/640/1024 的固定子集矩阵，只有在小字 OCR 收益、分布失配、视觉 token 数和吞吐都可接受时才采用训练 640/评测 1024。容量消融按相同 examples seen 比较 Qwen2.5 0.5B/1.5B/3B 纯文本主干；随后才做 projector scratch/warm-start、顶部 LoRA、blank/fixed/shuffle/patch-permutation 与 synthetic minimal-pair 控制。完整协议在仓库 `docs/ablation-protocol.md`。
 
-停训判据不看 loss，看两条 gap：主判据是 benchmark 分数 − blind 分数的 gap 随 checkpoint 的曲线，平台即停；辅助判据是留出集 shuffle\_delta > 0.1。参考锚点：projector-only 的 TextVQA 现实预期 20–30%（blind 约 10–15%，成熟 VLM 60+）；达到 GLM 社区实验同量级（grounding parse 率 >80%、Acc\@50 个位数）即成功。
+停训判据联合使用 macro、worst-task、vision−blind、vision−shuffle、paired generation、历史遗忘与 Pareto 前沿。loss 下降而视觉哨兵不升不能扩预算；连续多个冻结窗口无改善、达到 examples/GPU-hours/美元上限或关键任务显著退化时停止或触发预注册 replay。
 
 #table(
   columns: (2.2fr, 1fr, 3fr),
   [*阶段*], [*时长*], [*说明*],
-  [装机 + 下载权重], [1–1.5 h], [160 GB；好主机 1–2 GB/s],
-  [Gate D 判定], [0.5–1 h], [FP4 Dgrad 失败则当场退租（损失约 \$10），转情景 B],
-  [Stage 1 对齐训练], [待租前实测], [按 examples/token 预算与真实 micro-batch 吞吐反推；禁止用 64 次串行 forward 冒充 global batch 64],
-  [benchmark 全套], [1.5–2 h], [TextVQA 500 / DocVQA 200 / OCRBench 200 / ScreenSpot 200；训练 checkpoint × blind × 随机 projector 三组对照，机上完成],
-  [权重与结果回传], [0.5 h], [projector 约 134 MB + 评测 JSON 上传 HF],
-  [*合计*], [*暂不锁定*], [装机、Gate D、benchmark 与回传有时间盒；训练段待 batching/分辨率/容量消融后重新报价],
+  [单卡最小 kernel gate], [待授权], [只下载三个目标量化模块所需 shard；weight load、forward、DGRAD；独立费用上限],
+  [完整模型 Gate D], [待首次 gate 实测], [全量 hash/load、单图与 batch>1 backward、checkpointing/routing、20 steps],
+  [Stage 1 短校准], [待 Gate D step time], [固定小 examples budget，高频 Tiny，测 loss/能力斜率与 LR],
+  [Stage 2 受控扩展], [自适应], [只有视觉能力上升且 worst-task 可接受才扩大预算],
+  [Stage 3 停止/候选评测], [自适应], [Pareto checkpoint 的 Medium/Full；final half 只对冻结候选一次],
+  [*合计*], [*暂不锁定*], [由实测 examples/s、监控开销、授权时价与存储/流量公式生成三档预算],
 )
 
-若 FP4 Dgrad 不可用（情景 B）：权重解量化至 bf16（568 GB），需 8×A100 SXM（\$10.30/h），同排程时长大约 ×2–3，预算 \$300–500。
+若量化 DGRAD 失败，立即 destroy 并保存失败产物。完整 BF16 解量化、扩卡或更昂贵架构都需要新的用户授权，不能沿用本次 gate 预算自动执行。
 
 = 评测与验收计划
 
@@ -1106,6 +1181,9 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
   [2026-08-05], [V100 包 8 等顺序 endpoint 对照：额外 projector epoch 使总体 strict preference 0.224→0.511、paired generation 0.063→0.257，并解锁 color/coordinate/spatial 生成；top-12 LoRA 只显著强化 shape 且伤害 count/spatial。fp32/bf16 敏感性被显式保留，canonical bf16 base 精确复现包 7。],
   [2026-08-05], [V100 包 9 canonical-bf16 step 25/50/100 轨迹与 step-50 全量确认：projector step 50/100 总体 strict 几乎相同，但 count/shape 与 coordinate/spatial 出现显著反向迁移；OCR 有正 vision−shuffle 内部证据、base-relative 区间仍跨零且 generation 为零。下一项先做同 basin checkpoint 插值，再决定抗遗忘辅助目标。],
   [2026-08-05], [V100 包 10 step-50/100 projector 插值：alpha 0/1 的张量和逐条评测精确复现；alpha=.25 虽提高 macro generation，却显著损失 count，并未改善 worst-task 或保留 shape。线性权重平均无法合并两端能力，下一项转任务条件抗遗忘辅助目标。],
+  [2026-08-05], [V100 包 11 从 step 50 精确恢复 optimizer/order 并测试 count/shape projector-output MSE anchoring：表示距离受控，旧答案边界仍遗忘；中锚定改变 Pareto 路径但未通过 retention 规则。],
+  [2026-08-05], [V100 包 12 严格匹配分层 batch 与 global random：分层在 step 50 加快 macro/generation，step 100 总体差异 CI 跨零且任务显著交换；终点梯度冲突多于 global。正式合同改为固定窗口领域覆盖，下一项进入遗忘触发 replay。],
+  [2026-08-05], [固定 revision 的 DeepSeek 量化 runtime 源码审计与 GPU 矩阵成稿：forward 集成缺少已确认 autograd 证据，SM120/121 受 DeepGEMM #372 weight-load blocker 影响；首个付费建议降为单卡 SM100/B200 最小 kernel gate，仍等待授权。],
 )
 
 = 下一位执行者的最短路径

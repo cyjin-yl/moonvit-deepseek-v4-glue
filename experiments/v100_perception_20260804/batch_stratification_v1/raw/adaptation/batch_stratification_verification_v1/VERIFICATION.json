@@ -1,0 +1,1876 @@
+{
+  "status": "valid",
+  "format_version": "matched-batch-order-verification-v1",
+  "checks": {
+    "both_runs_valid": true,
+    "same_base_projector_sha256": true,
+    "same_initial_projector_tensors": true,
+    "same_restored_optimizer_source": true,
+    "optimizer_restored_in_both": true,
+    "same_seed": true,
+    "same_training_hyperparameters": true,
+    "same_record_set": true,
+    "each_record_used_once": true,
+    "same_task_totals": true,
+    "same_step_count": true,
+    "stratified_every_batch_balanced": true,
+    "global_has_unbalanced_batches": true,
+    "orders_differ": true
+  },
+  "stratified_order": {
+    "steps": 100,
+    "records": 2400,
+    "unique_ids": 2400,
+    "duplicate_records": 0,
+    "balanced_batches": 100,
+    "unbalanced_batches": 0,
+    "max_task_count_in_batch": 4,
+    "task_totals": {
+      "color": 400,
+      "coordinate": 400,
+      "count": 400,
+      "ocr": 400,
+      "shape": 400,
+      "spatial": 400
+    }
+  },
+  "global_order": {
+    "steps": 100,
+    "records": 2400,
+    "unique_ids": 2400,
+    "duplicate_records": 0,
+    "balanced_batches": 0,
+    "unbalanced_batches": 100,
+    "max_task_count_in_batch": 11,
+    "task_totals": {
+      "color": 400,
+      "coordinate": 400,
+      "count": 400,
+      "ocr": 400,
+      "shape": 400,
+      "spatial": 400
+    }
+  },
+  "batch_task_counts": {
+    "stratified": [
+      {
+        "step": 1,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 2,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 3,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 4,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 5,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 6,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 7,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 8,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 9,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 10,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 11,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 12,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 13,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 14,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 15,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 16,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 17,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 18,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 19,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 20,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 21,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 22,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 23,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 24,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 25,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 26,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 27,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 28,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 29,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 30,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 31,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 32,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 33,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 34,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 35,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 36,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 37,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 38,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 39,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 40,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 41,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 42,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 43,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 44,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 45,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 46,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 47,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 48,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 49,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 50,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 51,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 52,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 53,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 54,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 55,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 56,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 57,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 58,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 59,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 60,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 61,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 62,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 63,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 64,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 65,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 66,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 67,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 68,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 69,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 70,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 71,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 72,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 73,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 74,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 75,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 76,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 77,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 78,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 79,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 80,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 81,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 82,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 83,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 84,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 85,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 86,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 87,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 88,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 89,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 90,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 91,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 92,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 93,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 94,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 95,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 96,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 97,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 98,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 99,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 100,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      }
+    ],
+    "global": [
+      {
+        "step": 1,
+        "color": 1,
+        "coordinate": 6,
+        "count": 1,
+        "ocr": 6,
+        "shape": 6,
+        "spatial": 4
+      },
+      {
+        "step": 2,
+        "color": 3,
+        "coordinate": 7,
+        "count": 2,
+        "ocr": 6,
+        "shape": 3,
+        "spatial": 3
+      },
+      {
+        "step": 3,
+        "color": 5,
+        "coordinate": 5,
+        "count": 5,
+        "ocr": 2,
+        "shape": 5,
+        "spatial": 2
+      },
+      {
+        "step": 4,
+        "color": 5,
+        "coordinate": 3,
+        "count": 6,
+        "ocr": 1,
+        "shape": 6,
+        "spatial": 3
+      },
+      {
+        "step": 5,
+        "color": 2,
+        "coordinate": 2,
+        "count": 5,
+        "ocr": 5,
+        "shape": 4,
+        "spatial": 6
+      },
+      {
+        "step": 6,
+        "color": 4,
+        "coordinate": 2,
+        "count": 5,
+        "ocr": 5,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 7,
+        "color": 6,
+        "coordinate": 3,
+        "count": 4,
+        "ocr": 4,
+        "shape": 5,
+        "spatial": 2
+      },
+      {
+        "step": 8,
+        "color": 4,
+        "coordinate": 1,
+        "count": 4,
+        "ocr": 1,
+        "shape": 7,
+        "spatial": 7
+      },
+      {
+        "step": 9,
+        "color": 5,
+        "coordinate": 4,
+        "count": 3,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 10,
+        "color": 5,
+        "coordinate": 4,
+        "count": 2,
+        "ocr": 5,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 11,
+        "color": 5,
+        "coordinate": 6,
+        "count": 5,
+        "ocr": 5,
+        "shape": 2,
+        "spatial": 1
+      },
+      {
+        "step": 12,
+        "color": 1,
+        "coordinate": 2,
+        "count": 6,
+        "ocr": 7,
+        "shape": 2,
+        "spatial": 6
+      },
+      {
+        "step": 13,
+        "color": 4,
+        "coordinate": 4,
+        "count": 3,
+        "ocr": 6,
+        "shape": 4,
+        "spatial": 3
+      },
+      {
+        "step": 14,
+        "color": 1,
+        "coordinate": 8,
+        "count": 4,
+        "ocr": 3,
+        "shape": 2,
+        "spatial": 6
+      },
+      {
+        "step": 15,
+        "color": 6,
+        "coordinate": 8,
+        "count": 2,
+        "ocr": 5,
+        "shape": 2,
+        "spatial": 1
+      },
+      {
+        "step": 16,
+        "color": 5,
+        "coordinate": 4,
+        "count": 2,
+        "ocr": 4,
+        "shape": 1,
+        "spatial": 8
+      },
+      {
+        "step": 17,
+        "color": 4,
+        "coordinate": 4,
+        "count": 6,
+        "ocr": 3,
+        "shape": 3,
+        "spatial": 4
+      },
+      {
+        "step": 18,
+        "color": 6,
+        "coordinate": 4,
+        "count": 3,
+        "ocr": 5,
+        "shape": 4,
+        "spatial": 2
+      },
+      {
+        "step": 19,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 3,
+        "shape": 4,
+        "spatial": 5
+      },
+      {
+        "step": 20,
+        "color": 4,
+        "coordinate": 7,
+        "count": 3,
+        "ocr": 5,
+        "shape": 3,
+        "spatial": 2
+      },
+      {
+        "step": 21,
+        "color": 2,
+        "coordinate": 4,
+        "count": 5,
+        "ocr": 6,
+        "shape": 5,
+        "spatial": 2
+      },
+      {
+        "step": 22,
+        "color": 5,
+        "coordinate": 7,
+        "count": 2,
+        "ocr": 2,
+        "shape": 3,
+        "spatial": 5
+      },
+      {
+        "step": 23,
+        "color": 4,
+        "coordinate": 3,
+        "count": 1,
+        "ocr": 4,
+        "shape": 7,
+        "spatial": 5
+      },
+      {
+        "step": 24,
+        "color": 4,
+        "coordinate": 4,
+        "count": 5,
+        "ocr": 4,
+        "shape": 3,
+        "spatial": 4
+      },
+      {
+        "step": 25,
+        "color": 6,
+        "coordinate": 5,
+        "count": 1,
+        "ocr": 3,
+        "shape": 7,
+        "spatial": 2
+      },
+      {
+        "step": 26,
+        "color": 8,
+        "coordinate": 4,
+        "count": 3,
+        "ocr": 3,
+        "shape": 1,
+        "spatial": 5
+      },
+      {
+        "step": 27,
+        "color": 5,
+        "coordinate": 1,
+        "count": 4,
+        "ocr": 2,
+        "shape": 11,
+        "spatial": 1
+      },
+      {
+        "step": 28,
+        "color": 6,
+        "coordinate": 3,
+        "count": 8,
+        "ocr": 4,
+        "shape": 3,
+        "spatial": 0
+      },
+      {
+        "step": 29,
+        "color": 3,
+        "coordinate": 3,
+        "count": 7,
+        "ocr": 3,
+        "shape": 3,
+        "spatial": 5
+      },
+      {
+        "step": 30,
+        "color": 2,
+        "coordinate": 5,
+        "count": 4,
+        "ocr": 5,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 31,
+        "color": 6,
+        "coordinate": 2,
+        "count": 4,
+        "ocr": 3,
+        "shape": 6,
+        "spatial": 3
+      },
+      {
+        "step": 32,
+        "color": 4,
+        "coordinate": 1,
+        "count": 3,
+        "ocr": 3,
+        "shape": 8,
+        "spatial": 5
+      },
+      {
+        "step": 33,
+        "color": 6,
+        "coordinate": 2,
+        "count": 5,
+        "ocr": 4,
+        "shape": 3,
+        "spatial": 4
+      },
+      {
+        "step": 34,
+        "color": 6,
+        "coordinate": 3,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 3
+      },
+      {
+        "step": 35,
+        "color": 8,
+        "coordinate": 5,
+        "count": 3,
+        "ocr": 3,
+        "shape": 3,
+        "spatial": 2
+      },
+      {
+        "step": 36,
+        "color": 3,
+        "coordinate": 7,
+        "count": 2,
+        "ocr": 7,
+        "shape": 2,
+        "spatial": 3
+      },
+      {
+        "step": 37,
+        "color": 3,
+        "coordinate": 7,
+        "count": 5,
+        "ocr": 1,
+        "shape": 1,
+        "spatial": 7
+      },
+      {
+        "step": 38,
+        "color": 4,
+        "coordinate": 4,
+        "count": 4,
+        "ocr": 5,
+        "shape": 6,
+        "spatial": 1
+      },
+      {
+        "step": 39,
+        "color": 2,
+        "coordinate": 1,
+        "count": 5,
+        "ocr": 7,
+        "shape": 6,
+        "spatial": 3
+      },
+      {
+        "step": 40,
+        "color": 5,
+        "coordinate": 7,
+        "count": 3,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 1
+      },
+      {
+        "step": 41,
+        "color": 4,
+        "coordinate": 2,
+        "count": 4,
+        "ocr": 5,
+        "shape": 2,
+        "spatial": 7
+      },
+      {
+        "step": 42,
+        "color": 2,
+        "coordinate": 8,
+        "count": 5,
+        "ocr": 1,
+        "shape": 5,
+        "spatial": 3
+      },
+      {
+        "step": 43,
+        "color": 3,
+        "coordinate": 5,
+        "count": 3,
+        "ocr": 5,
+        "shape": 2,
+        "spatial": 6
+      },
+      {
+        "step": 44,
+        "color": 2,
+        "coordinate": 7,
+        "count": 5,
+        "ocr": 5,
+        "shape": 1,
+        "spatial": 4
+      },
+      {
+        "step": 45,
+        "color": 5,
+        "coordinate": 3,
+        "count": 4,
+        "ocr": 6,
+        "shape": 2,
+        "spatial": 4
+      },
+      {
+        "step": 46,
+        "color": 2,
+        "coordinate": 1,
+        "count": 3,
+        "ocr": 7,
+        "shape": 6,
+        "spatial": 5
+      },
+      {
+        "step": 47,
+        "color": 2,
+        "coordinate": 2,
+        "count": 3,
+        "ocr": 7,
+        "shape": 4,
+        "spatial": 6
+      },
+      {
+        "step": 48,
+        "color": 5,
+        "coordinate": 3,
+        "count": 4,
+        "ocr": 4,
+        "shape": 3,
+        "spatial": 5
+      },
+      {
+        "step": 49,
+        "color": 1,
+        "coordinate": 2,
+        "count": 7,
+        "ocr": 7,
+        "shape": 4,
+        "spatial": 3
+      },
+      {
+        "step": 50,
+        "color": 5,
+        "coordinate": 3,
+        "count": 4,
+        "ocr": 3,
+        "shape": 5,
+        "spatial": 4
+      },
+      {
+        "step": 51,
+        "color": 4,
+        "coordinate": 5,
+        "count": 2,
+        "ocr": 5,
+        "shape": 3,
+        "spatial": 5
+      },
+      {
+        "step": 52,
+        "color": 3,
+        "coordinate": 3,
+        "count": 3,
+        "ocr": 4,
+        "shape": 7,
+        "spatial": 4
+      },
+      {
+        "step": 53,
+        "color": 3,
+        "coordinate": 4,
+        "count": 5,
+        "ocr": 6,
+        "shape": 6,
+        "spatial": 0
+      },
+      {
+        "step": 54,
+        "color": 3,
+        "coordinate": 6,
+        "count": 1,
+        "ocr": 9,
+        "shape": 3,
+        "spatial": 2
+      },
+      {
+        "step": 55,
+        "color": 3,
+        "coordinate": 3,
+        "count": 2,
+        "ocr": 7,
+        "shape": 5,
+        "spatial": 4
+      },
+      {
+        "step": 56,
+        "color": 3,
+        "coordinate": 8,
+        "count": 2,
+        "ocr": 7,
+        "shape": 2,
+        "spatial": 2
+      },
+      {
+        "step": 57,
+        "color": 5,
+        "coordinate": 2,
+        "count": 8,
+        "ocr": 3,
+        "shape": 3,
+        "spatial": 3
+      },
+      {
+        "step": 58,
+        "color": 4,
+        "coordinate": 4,
+        "count": 2,
+        "ocr": 5,
+        "shape": 4,
+        "spatial": 5
+      },
+      {
+        "step": 59,
+        "color": 6,
+        "coordinate": 4,
+        "count": 3,
+        "ocr": 2,
+        "shape": 5,
+        "spatial": 4
+      },
+      {
+        "step": 60,
+        "color": 5,
+        "coordinate": 5,
+        "count": 3,
+        "ocr": 4,
+        "shape": 2,
+        "spatial": 5
+      },
+      {
+        "step": 61,
+        "color": 4,
+        "coordinate": 6,
+        "count": 2,
+        "ocr": 4,
+        "shape": 3,
+        "spatial": 5
+      },
+      {
+        "step": 62,
+        "color": 3,
+        "coordinate": 6,
+        "count": 3,
+        "ocr": 4,
+        "shape": 3,
+        "spatial": 5
+      },
+      {
+        "step": 63,
+        "color": 2,
+        "coordinate": 8,
+        "count": 7,
+        "ocr": 3,
+        "shape": 1,
+        "spatial": 3
+      },
+      {
+        "step": 64,
+        "color": 3,
+        "coordinate": 2,
+        "count": 6,
+        "ocr": 2,
+        "shape": 5,
+        "spatial": 6
+      },
+      {
+        "step": 65,
+        "color": 6,
+        "coordinate": 2,
+        "count": 2,
+        "ocr": 5,
+        "shape": 3,
+        "spatial": 6
+      },
+      {
+        "step": 66,
+        "color": 4,
+        "coordinate": 5,
+        "count": 3,
+        "ocr": 4,
+        "shape": 2,
+        "spatial": 6
+      },
+      {
+        "step": 67,
+        "color": 5,
+        "coordinate": 1,
+        "count": 6,
+        "ocr": 4,
+        "shape": 3,
+        "spatial": 5
+      },
+      {
+        "step": 68,
+        "color": 3,
+        "coordinate": 1,
+        "count": 6,
+        "ocr": 2,
+        "shape": 10,
+        "spatial": 2
+      },
+      {
+        "step": 69,
+        "color": 6,
+        "coordinate": 3,
+        "count": 3,
+        "ocr": 3,
+        "shape": 3,
+        "spatial": 6
+      },
+      {
+        "step": 70,
+        "color": 3,
+        "coordinate": 3,
+        "count": 4,
+        "ocr": 5,
+        "shape": 3,
+        "spatial": 6
+      },
+      {
+        "step": 71,
+        "color": 2,
+        "coordinate": 8,
+        "count": 4,
+        "ocr": 4,
+        "shape": 4,
+        "spatial": 2
+      },
+      {
+        "step": 72,
+        "color": 0,
+        "coordinate": 5,
+        "count": 6,
+        "ocr": 2,
+        "shape": 2,
+        "spatial": 9
+      },
+      {
+        "step": 73,
+        "color": 4,
+        "coordinate": 3,
+        "count": 4,
+        "ocr": 4,
+        "shape": 3,
+        "spatial": 6
+      },
+      {
+        "step": 74,
+        "color": 4,
+        "coordinate": 4,
+        "count": 1,
+        "ocr": 4,
+        "shape": 6,
+        "spatial": 5
+      },
+      {
+        "step": 75,
+        "color": 6,
+        "coordinate": 2,
+        "count": 4,
+        "ocr": 2,
+        "shape": 5,
+        "spatial": 5
+      },
+      {
+        "step": 76,
+        "color": 4,
+        "coordinate": 4,
+        "count": 3,
+        "ocr": 6,
+        "shape": 2,
+        "spatial": 5
+      },
+      {
+        "step": 77,
+        "color": 4,
+        "coordinate": 3,
+        "count": 3,
+        "ocr": 7,
+        "shape": 2,
+        "spatial": 5
+      },
+      {
+        "step": 78,
+        "color": 2,
+        "coordinate": 2,
+        "count": 9,
+        "ocr": 0,
+        "shape": 6,
+        "spatial": 5
+      },
+      {
+        "step": 79,
+        "color": 9,
+        "coordinate": 4,
+        "count": 3,
+        "ocr": 1,
+        "shape": 1,
+        "spatial": 6
+      },
+      {
+        "step": 80,
+        "color": 3,
+        "coordinate": 3,
+        "count": 4,
+        "ocr": 4,
+        "shape": 6,
+        "spatial": 4
+      },
+      {
+        "step": 81,
+        "color": 3,
+        "coordinate": 3,
+        "count": 5,
+        "ocr": 4,
+        "shape": 6,
+        "spatial": 3
+      },
+      {
+        "step": 82,
+        "color": 3,
+        "coordinate": 6,
+        "count": 1,
+        "ocr": 4,
+        "shape": 8,
+        "spatial": 2
+      },
+      {
+        "step": 83,
+        "color": 3,
+        "coordinate": 5,
+        "count": 5,
+        "ocr": 4,
+        "shape": 3,
+        "spatial": 4
+      },
+      {
+        "step": 84,
+        "color": 4,
+        "coordinate": 6,
+        "count": 5,
+        "ocr": 2,
+        "shape": 2,
+        "spatial": 5
+      },
+      {
+        "step": 85,
+        "color": 8,
+        "coordinate": 1,
+        "count": 2,
+        "ocr": 1,
+        "shape": 6,
+        "spatial": 6
+      },
+      {
+        "step": 86,
+        "color": 3,
+        "coordinate": 5,
+        "count": 4,
+        "ocr": 5,
+        "shape": 4,
+        "spatial": 3
+      },
+      {
+        "step": 87,
+        "color": 4,
+        "coordinate": 4,
+        "count": 6,
+        "ocr": 2,
+        "shape": 3,
+        "spatial": 5
+      },
+      {
+        "step": 88,
+        "color": 6,
+        "coordinate": 2,
+        "count": 10,
+        "ocr": 2,
+        "shape": 2,
+        "spatial": 2
+      },
+      {
+        "step": 89,
+        "color": 4,
+        "coordinate": 3,
+        "count": 3,
+        "ocr": 3,
+        "shape": 4,
+        "spatial": 7
+      },
+      {
+        "step": 90,
+        "color": 0,
+        "coordinate": 5,
+        "count": 4,
+        "ocr": 5,
+        "shape": 6,
+        "spatial": 4
+      },
+      {
+        "step": 91,
+        "color": 3,
+        "coordinate": 7,
+        "count": 5,
+        "ocr": 4,
+        "shape": 3,
+        "spatial": 2
+      },
+      {
+        "step": 92,
+        "color": 1,
+        "coordinate": 6,
+        "count": 4,
+        "ocr": 4,
+        "shape": 6,
+        "spatial": 3
+      },
+      {
+        "step": 93,
+        "color": 4,
+        "coordinate": 1,
+        "count": 5,
+        "ocr": 6,
+        "shape": 3,
+        "spatial": 5
+      },
+      {
+        "step": 94,
+        "color": 2,
+        "coordinate": 3,
+        "count": 5,
+        "ocr": 3,
+        "shape": 7,
+        "spatial": 4
+      },
+      {
+        "step": 95,
+        "color": 2,
+        "coordinate": 3,
+        "count": 9,
+        "ocr": 4,
+        "shape": 5,
+        "spatial": 1
+      },
+      {
+        "step": 96,
+        "color": 5,
+        "coordinate": 5,
+        "count": 4,
+        "ocr": 2,
+        "shape": 4,
+        "spatial": 4
+      },
+      {
+        "step": 97,
+        "color": 7,
+        "coordinate": 4,
+        "count": 2,
+        "ocr": 1,
+        "shape": 4,
+        "spatial": 6
+      },
+      {
+        "step": 98,
+        "color": 7,
+        "coordinate": 5,
+        "count": 3,
+        "ocr": 3,
+        "shape": 3,
+        "spatial": 3
+      },
+      {
+        "step": 99,
+        "color": 4,
+        "coordinate": 4,
+        "count": 2,
+        "ocr": 6,
+        "shape": 6,
+        "spatial": 2
+      },
+      {
+        "step": 100,
+        "color": 8,
+        "coordinate": 1,
+        "count": 7,
+        "ocr": 1,
+        "shape": 3,
+        "spatial": 4
+      }
+    ]
+  },
+  "sources": {
+    "config": {
+      "path": "configs/perception-batch-stratification-v1.json",
+      "sha256": "bd966f6b706124e462f148039218274e693b31a7f57a594aa0706f75d2a3eaa5"
+    },
+    "stratified_summary": {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/SUMMARY.json",
+      "sha256": "adcdee5c6e36e13f6ee052e34a78ec021ebd3290acb14e9d25573468ee446ecc"
+    },
+    "global_summary": {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1/SUMMARY.json",
+      "sha256": "a1b37d1bff839ceda6c55dcda602cb71b9d82dfc663a0fed0a84e59f57163e04"
+    },
+    "stratified_order_sha256": "a0929326fc8b494f85b82fc504855cd23f1ddfa74348ccc9b364a13ada39f2f5",
+    "global_order_sha256": "20f857ee0c2350572ea30b64a7aca3ac2884609714f7f1b6405a43267f7ad16f"
+  }
+}

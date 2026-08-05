@@ -166,6 +166,36 @@ def balanced_epoch_indices(
     return order
 
 
+def global_random_epoch_indices(
+    records: list[dict],
+    *,
+    generator: torch.Generator,
+) -> list[int]:
+    """对全体训练记录做一次统一随机排列，每条记录恰好出现一次。"""
+    return torch.randperm(len(records), generator=generator).tolist()
+
+
+def epoch_indices_for_strategy(
+    records: list[dict],
+    *,
+    strategy: str,
+    tasks: list[str],
+    batch_size: int,
+    generator: torch.Generator,
+) -> list[int]:
+    """把批次构造策略收敛为显式分支，方便做单变量顺序对照。"""
+    if strategy == "balanced_stratified":
+        return balanced_epoch_indices(
+            records,
+            tasks=tasks,
+            batch_size=batch_size,
+            generator=generator,
+        )
+    if strategy == "global_random":
+        return global_random_epoch_indices(records, generator=generator)
+    raise ValueError(f"unsupported adaptation order strategy: {strategy}")
+
+
 def read_training_order_window(
     path: Path,
     records: list[dict],
@@ -547,6 +577,7 @@ def run(args: argparse.Namespace) -> None:
     if configured_tasks is None:
         configured_tasks = [dataset["task"]]
     tasks = [str(task) for task in configured_tasks]
+    order_strategy = str(training.get("order_strategy", "balanced_stratified"))
     cache = FeatureCache(dataset["train_feature_cache"])
     if int(cache.manifest["max_image_side"]) != int(dataset["max_image_side"]):
         raise ValueError("shape adaptation cache resolution mismatch")
@@ -596,8 +627,9 @@ def run(args: argparse.Namespace) -> None:
                 indices = frozen_order_batches[step - initial_step - 1]
             else:
                 if cursor + batch_size > len(order):
-                    order = balanced_epoch_indices(
+                    order = epoch_indices_for_strategy(
                         train_records,
+                        strategy=order_strategy,
                         tasks=tasks,
                         batch_size=batch_size,
                         generator=generator,
@@ -757,6 +789,7 @@ def run(args: argparse.Namespace) -> None:
             projector_config_source / "projector_config.json"
         ),
         "optimizer_resume": optimizer_resume,
+        "order_strategy": order_strategy,
         "training_order_resume": order_provenance,
         "representation_anchor": anchor_provenance,
         "exact_reproduction": exact_reproduction,

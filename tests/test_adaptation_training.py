@@ -9,6 +9,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
 
 from train_shape_adaptation import (
     balanced_epoch_indices,
+    epoch_indices_for_strategy,
+    global_random_epoch_indices,
     maybe_resume_projector_optimizer,
     projector_representation_anchor_loss,
     read_training_order_window,
@@ -67,6 +69,64 @@ def test_balanced_epoch_indices_rejects_nondivisible_batch() -> None:
             records,
             tasks=["color", "shape"],
             batch_size=3,
+            generator=torch.Generator().manual_seed(7),
+        )
+
+
+def test_global_random_epoch_indices_uses_every_record_once() -> None:
+    records = [
+        {"id": f"{task}-{index}", "task": task}
+        for task in ("color", "shape")
+        for index in range(6)
+    ]
+
+    order = global_random_epoch_indices(
+        records,
+        generator=torch.Generator().manual_seed(7),
+    )
+
+    assert sorted(order) == list(range(12))
+    assert order != list(range(12))
+
+
+def test_order_strategy_changes_only_the_batch_assignment() -> None:
+    records = [
+        {"id": f"{task}-{index}", "task": task}
+        for task in ("color", "shape")
+        for index in range(6)
+    ]
+
+    balanced = epoch_indices_for_strategy(
+        records,
+        strategy="balanced_stratified",
+        tasks=["color", "shape"],
+        batch_size=4,
+        generator=torch.Generator().manual_seed(7),
+    )
+    global_random = epoch_indices_for_strategy(
+        records,
+        strategy="global_random",
+        tasks=["color", "shape"],
+        batch_size=4,
+        generator=torch.Generator().manual_seed(7),
+    )
+
+    assert sorted(balanced) == sorted(global_random) == list(range(12))
+    assert balanced != global_random
+    assert all(
+        {records[index]["task"] for index in balanced[start : start + 4]}
+        == {"color", "shape"}
+        for start in range(0, len(balanced), 4)
+    )
+
+
+def test_order_strategy_rejects_an_unknown_value() -> None:
+    with pytest.raises(ValueError, match="unsupported adaptation order strategy"):
+        epoch_indices_for_strategy(
+            [{"id": "one", "task": "shape"}],
+            strategy="curriculum",
+            tasks=["shape"],
+            batch_size=1,
             generator=torch.Generator().manual_seed(7),
         )
 

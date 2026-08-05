@@ -1,0 +1,58 @@
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading weights:   0%|          | 0/290 [00:00<?, ?it/s]Loading weights:  21%|██▏       | 62/290 [00:00<00:00, 538.95it/s]Loading weights:  54%|█████▍    | 156/290 [00:00<00:00, 721.25it/s]Loading weights: 100%|██████████| 290/290 [00:00<00:00, 895.00it/s]
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+completed frozen-base
+completed global-step100
+completed global-step25
+completed global-step50
+completed stratified-step100
+completed stratified-step25
+completed stratified-step50
+{
+  "status": "valid",
+  "format_version": "shape-adaptation-eval-v1",
+  "metadata": {
+    "completed_at_utc": "2026-08-05T07:42:39.925425+00:00",
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "wall_seconds": 2182.1623935699463,
+    "peak_gpu_memory_bytes": 6886173184,
+    "final_half_scored": false
+  },
+  "states": 7,
+  "teacher_forced_records_per_cell": 2400,
+  "generation_records_per_cell": 600,
+  "preference_rows": 50400,
+  "generation_rows": 8400,
+  "sources": {
+    "lora_summary_sha256": "b605c0c8427d3e1f4b0f66dadaa5ace8c90d507e8a6ab2a313212a1d19fc4515",
+    "projector_summary_sha256": "6a4244374d1693ea76c6da763b3475a0d6a9ce13cebaa2af4db2a7016516376e"
+  },
+  "files": {
+    "preference_records.jsonl": {
+      "bytes": 30546974,
+      "sha256": "9a73e0e11c9698d31cac94ae967a8e662a349648f34b94f2eabd62492b663fc4"
+    },
+    "generation_records.jsonl": {
+      "bytes": 3685006,
+      "sha256": "a3871bc6b2257ba5aabf31dc6370767839e7ee2a2c14246aac618d7b9e16b5ee"
+    },
+    "preference_curve.csv": {
+      "bytes": 14973,
+      "sha256": "0fcbf21ed8065081af357c65eb0eee186ad525c9302dc74068ce6a15cfaeca47"
+    },
+    "generation_curve.csv": {
+      "bytes": 9138,
+      "sha256": "4306727ff0ea60dbf61c6635c41b261648dedd4b4316adc9da15d0ad335d2aaa"
+    },
+    "DECISIONS.json": {
+      "bytes": 1217,
+      "sha256": "bc0f865f4ece0108e10ce8bd97f56a21c1ba735992030072ec322e7d31e3fd76"
+    }
+  },
+  "final_half_scored": false
+}

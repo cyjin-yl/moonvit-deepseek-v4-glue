@@ -1,0 +1,111 @@
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading weights:   0%|          | 0/290 [00:00<?, ?it/s]Loading weights:  10%|█         | 29/290 [00:00<00:00, 285.89it/s]Loading weights:  20%|██        | 58/290 [00:00<00:01, 230.42it/s]Loading weights:  28%|██▊       | 82/290 [00:00<00:00, 229.85it/s]Loading weights:  38%|███▊      | 111/290 [00:00<00:00, 214.51it/s]Loading weights:  49%|████▉     | 142/290 [00:00<00:00, 229.80it/s]Loading weights:  57%|█████▋    | 166/290 [00:00<00:00, 220.24it/s]Loading weights:  65%|██████▌   | 189/290 [00:00<00:00, 214.70it/s]Loading weights:  77%|███████▋  | 222/290 [00:00<00:00, 231.41it/s]Loading weights:  86%|████████▌ | 250/290 [00:01<00:00, 234.96it/s]Loading weights:  96%|█████████▌| 277/290 [00:01<00:00, 243.40it/s]Loading weights: 100%|██████████| 290/290 [00:01<00:00, 238.45it/s]
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+{
+  "status": "valid",
+  "format_version": "fixed-task-projector-gradient-diagnostic-v1",
+  "metadata": {
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "wall_seconds": 98.68362331390381,
+    "peak_gpu_memory_bytes": 4487409664,
+    "final_half_scored": false
+  },
+  "records_per_task": 8,
+  "state_summaries": {
+    "frozen-base": {
+      "step": 0,
+      "weights": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_multitask_projector_v1/checkpoints/step-000100/projector.safetensors",
+      "weights_sha256": "98a566eb2c8414f105662b6532734a4246830b7e5a2df56ae3da14ad23737ef3",
+      "mean_gradient_norm": 2.556518276532491,
+      "mean_task_cosine": 0.007489789215226968,
+      "negative_cosine_pairs": 8,
+      "task_pairs": 15,
+      "wall_seconds": 4.02080774307251
+    },
+    "stratified-step25": {
+      "step": 25,
+      "weights": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/checkpoints/step-000025/projector.safetensors",
+      "weights_sha256": "396ae55e14533d975e254b3eecd96fb9de0cd9331f6bd18f9e0597fc869d9b79",
+      "mean_gradient_norm": 1.371577004591624,
+      "mean_task_cosine": 0.06872267487148444,
+      "negative_cosine_pairs": 4,
+      "task_pairs": 15,
+      "wall_seconds": 2.5208165645599365
+    },
+    "stratified-step50": {
+      "step": 50,
+      "weights": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/checkpoints/step-000050/projector.safetensors",
+      "weights_sha256": "8dd9321656d2d745303213634e61fe429587a76c149ac00631cc78e2ef0128a8",
+      "mean_gradient_norm": 1.4371860176324844,
+      "mean_task_cosine": 0.03586886877116437,
+      "negative_cosine_pairs": 6,
+      "task_pairs": 15,
+      "wall_seconds": 2.5404791831970215
+    },
+    "stratified-step100": {
+      "step": 100,
+      "weights": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/checkpoints/step-000100/projector.safetensors",
+      "weights_sha256": "05f19079bc6db6757f378c22b05a5cb3ae3e638551513f642bb25dea04ef092d",
+      "mean_gradient_norm": 0.33191115222871304,
+      "mean_task_cosine": 0.039748311741277575,
+      "negative_cosine_pairs": 6,
+      "task_pairs": 15,
+      "wall_seconds": 2.673569440841675
+    },
+    "global-step25": {
+      "step": 25,
+      "weights": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1/checkpoints/step-000025/projector.safetensors",
+      "weights_sha256": "16a5f0c0e9aca06c0c5f52b227f693845bf37d842b5019eda8d238be141f3038",
+      "mean_gradient_norm": 1.2761217753092449,
+      "mean_task_cosine": 0.0830204977033039,
+      "negative_cosine_pairs": 4,
+      "task_pairs": 15,
+      "wall_seconds": 2.536515951156616
+    },
+    "global-step50": {
+      "step": 50,
+      "weights": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1/checkpoints/step-000050/projector.safetensors",
+      "weights_sha256": "8a973de3f7234e3ec859f04875647be8008d67c028426ce5d701940d7bf3e14e",
+      "mean_gradient_norm": 1.6959622104962666,
+      "mean_task_cosine": 0.056951934657990935,
+      "negative_cosine_pairs": 3,
+      "task_pairs": 15,
+      "wall_seconds": 2.6128313541412354
+    },
+    "global-step100": {
+      "step": 100,
+      "weights": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1/checkpoints/step-000100/projector.safetensors",
+      "weights_sha256": "305f5e0d05aad772514c674caa3bec8ab1bc2eea794ce350a572b5090ba0743c",
+      "mean_gradient_norm": 1.0765982766946156,
+      "mean_task_cosine": 0.11850519410024087,
+      "negative_cosine_pairs": 0,
+      "task_pairs": 15,
+      "wall_seconds": 2.5846376419067383
+    }
+  },
+  "sources": {
+    "config_sha256": "bd966f6b706124e462f148039218274e693b31a7f57a594aa0706f75d2a3eaa5",
+    "projector_index_sha256": "6a4244374d1693ea76c6da763b3475a0d6a9ce13cebaa2af4db2a7016516376e",
+    "selected_records_sha256": "ed9f24f6dc0aba3049f6cbfe70af7eadc1d1dc64d5005c8a0c4e765c5d736b95"
+  },
+  "files": {
+    "gradient_norms.csv": {
+      "bytes": 3010,
+      "sha256": "f5b34b54e28ab8b9c8d214dc77ac86ddc0711838283a873b365a700bb480dfd0"
+    },
+    "gradient_cosines.csv": {
+      "bytes": 6301,
+      "sha256": "cd2b6c429cfe7cd5cd1b750939a5afe5242b960c9c5df8861dfb37bb9a973d72"
+    },
+    "SELECTED_RECORDS.json": {
+      "bytes": 1608,
+      "sha256": "ed9f24f6dc0aba3049f6cbfe70af7eadc1d1dc64d5005c8a0c4e765c5d736b95"
+    }
+  },
+  "final_half_scored": false
+}

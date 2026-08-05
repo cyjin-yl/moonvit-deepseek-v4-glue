@@ -1,0 +1,196 @@
+{
+  "run_id": "v100-perception-batch-stratification-20260805-v1",
+  "training_format_version": "matched-batch-order-ablation-v1",
+  "seed": 20260816,
+  "device": "cuda",
+  "language_dtype": "bfloat16",
+  "projector_dtype": "float32",
+  "text_model": "/run/media/ezra/13D010B6FDBC1A06/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+  "placeholder_token_id": 151643,
+  "prompt_template": "User: {image}\n{question}\nAssistant:",
+  "base_projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_multitask_projector_v1/checkpoints/step-000100",
+  "projector_config_source": "/run/media/ezra/13D010B6FDBC1A06/data/gate_b/ckpt/checkpoints/step-000500",
+  "dataset": {
+    "tasks": [
+      "color",
+      "coordinate",
+      "count",
+      "ocr",
+      "shape",
+      "spatial"
+    ],
+    "train_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/train.jsonl",
+    "selection_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/selection.jsonl",
+    "generation_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/trajectory/synthetic-generation-selection-v1/synthetic_generation_selection.jsonl",
+    "controls": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/controls.jsonl",
+    "train_feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/synthetic-train-256-v1",
+    "selection_feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/synthetic-selection-256-v1",
+    "selection_manifest": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/MANIFEST.json",
+    "generation_selection_manifest": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/trajectory/synthetic-generation-selection-v1/MANIFEST.json",
+    "expected_train_records": 2400,
+    "expected_train_records_per_task": 400,
+    "expected_train_pairs_per_task": 200,
+    "expected_selection_records": 2400,
+    "expected_generation_records": 600,
+    "logical_dataset_sha256": "122ae820381e11e12c7dd9db03a525b801a5ebee5adbef037919185e65cbaa71",
+    "max_image_side": 256
+  },
+  "training": {
+    "steps": 100,
+    "batch_size": 24,
+    "learning_rate": 0.0005,
+    "weight_decay": 0.0,
+    "gradient_clip": 1.0,
+    "order_strategy": "global_random",
+    "checkpoint_steps": [
+      0,
+      25,
+      50,
+      100
+    ],
+    "examples_per_task_at_final": 400
+  },
+  "arms": {
+    "global_random_projector": {
+      "kind": "projector",
+      "resume_optimizer": true,
+      "expected_base_projector_sha256": "98a566eb2c8414f105662b6532734a4246830b7e5a2df56ae3da14ad23737ef3",
+      "expected_optimizer_sha256": "47ceb28f64df2573beae51480e75fe5626d32e6c134f67dc91f35cfc6ba97196",
+      "expected_optimizer_step": 100
+    }
+  },
+  "matched_comparison": {
+    "arm_a": {
+      "name": "balanced_stratified",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1",
+      "training_order_sha256": "a0929326fc8b494f85b82fc504855cd23f1ddfa74348ccc9b364a13ada39f2f5"
+    },
+    "arm_b": {
+      "name": "global_random",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1"
+    },
+    "invariants": [
+      "same 2400 training records exactly once",
+      "same initial projector tensor state",
+      "same restored AdamW state",
+      "same learning rate, batch size, examples seen, and seed",
+      "only per-batch task stratification differs"
+    ]
+  },
+  "evaluation": {
+    "projector_dtype": "bfloat16",
+    "teacher_forced_records": 2400,
+    "generation_records": 600,
+    "conditions": [
+      "vision",
+      "shuffled_image",
+      "paired_counterfactual_image"
+    ],
+    "checkpoint_steps": [
+      25,
+      50,
+      100
+    ],
+    "generation_max_new_tokens": 8,
+    "bootstrap_seed": 20260821,
+    "bootstrap_samples": 2000
+  },
+  "hard_constraints": {
+    "gpu": "existing Tesla V100-PCIE-32GB only",
+    "rent_new_server": false,
+    "run_full_deepseek_v4": false,
+    "score_final_odd_half": false
+  },
+  "evaluation_override": {
+    "limit": null,
+    "limit_per_task": null,
+    "teacher_batch_size": 32,
+    "generation_batch_size": 16,
+    "adaptation_steps": [
+      25,
+      50,
+      100
+    ],
+    "adaptation_kinds": [
+      "projector"
+    ]
+  },
+  "evaluation_states": [
+    {
+      "id": "frozen-base",
+      "kind": "frozen",
+      "adaptation_step": 0,
+      "adaptation_examples_seen": 0,
+      "lora": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_lora_v1/checkpoints/step-000000/lora.safetensors",
+      "lora_sha256": "36ccda7c832f1f58edfbe5ff45880a1a5d67c710d34fad52e15feff88cb6725e",
+      "projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_multitask_projector_v1/checkpoints/step-000100/projector.safetensors",
+      "projector_sha256": "98a566eb2c8414f105662b6532734a4246830b7e5a2df56ae3da14ad23737ef3"
+    },
+    {
+      "id": "global-step100",
+      "kind": "projector",
+      "adaptation_step": 100,
+      "adaptation_examples_seen": 2400,
+      "interpolation_alpha": null,
+      "lora": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_lora_v1/checkpoints/step-000000/lora.safetensors",
+      "lora_sha256": "36ccda7c832f1f58edfbe5ff45880a1a5d67c710d34fad52e15feff88cb6725e",
+      "projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1/checkpoints/step-000100/projector.safetensors",
+      "projector_sha256": "305f5e0d05aad772514c674caa3bec8ab1bc2eea794ce350a572b5090ba0743c"
+    },
+    {
+      "id": "global-step25",
+      "kind": "projector",
+      "adaptation_step": 25,
+      "adaptation_examples_seen": 600,
+      "interpolation_alpha": null,
+      "lora": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_lora_v1/checkpoints/step-000000/lora.safetensors",
+      "lora_sha256": "36ccda7c832f1f58edfbe5ff45880a1a5d67c710d34fad52e15feff88cb6725e",
+      "projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1/checkpoints/step-000025/projector.safetensors",
+      "projector_sha256": "16a5f0c0e9aca06c0c5f52b227f693845bf37d842b5019eda8d238be141f3038"
+    },
+    {
+      "id": "global-step50",
+      "kind": "projector",
+      "adaptation_step": 50,
+      "adaptation_examples_seen": 1200,
+      "interpolation_alpha": null,
+      "lora": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_lora_v1/checkpoints/step-000000/lora.safetensors",
+      "lora_sha256": "36ccda7c832f1f58edfbe5ff45880a1a5d67c710d34fad52e15feff88cb6725e",
+      "projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1/checkpoints/step-000050/projector.safetensors",
+      "projector_sha256": "8a973de3f7234e3ec859f04875647be8008d67c028426ce5d701940d7bf3e14e"
+    },
+    {
+      "id": "stratified-step100",
+      "kind": "projector",
+      "adaptation_step": 100,
+      "adaptation_examples_seen": 2400,
+      "interpolation_alpha": null,
+      "lora": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_lora_v1/checkpoints/step-000000/lora.safetensors",
+      "lora_sha256": "36ccda7c832f1f58edfbe5ff45880a1a5d67c710d34fad52e15feff88cb6725e",
+      "projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/checkpoints/step-000100/projector.safetensors",
+      "projector_sha256": "05f19079bc6db6757f378c22b05a5cb3ae3e638551513f642bb25dea04ef092d"
+    },
+    {
+      "id": "stratified-step25",
+      "kind": "projector",
+      "adaptation_step": 25,
+      "adaptation_examples_seen": 600,
+      "interpolation_alpha": null,
+      "lora": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_lora_v1/checkpoints/step-000000/lora.safetensors",
+      "lora_sha256": "36ccda7c832f1f58edfbe5ff45880a1a5d67c710d34fad52e15feff88cb6725e",
+      "projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/checkpoints/step-000025/projector.safetensors",
+      "projector_sha256": "396ae55e14533d975e254b3eecd96fb9de0cd9331f6bd18f9e0597fc869d9b79"
+    },
+    {
+      "id": "stratified-step50",
+      "kind": "projector",
+      "adaptation_step": 50,
+      "adaptation_examples_seen": 1200,
+      "interpolation_alpha": null,
+      "lora": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_lora_v1/checkpoints/step-000000/lora.safetensors",
+      "lora_sha256": "36ccda7c832f1f58edfbe5ff45880a1a5d67c710d34fad52e15feff88cb6725e",
+      "projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/checkpoints/step-000050/projector.safetensors",
+      "projector_sha256": "8dd9321656d2d745303213634e61fe429587a76c149ac00631cc78e2ef0128a8"
+    }
+  ]
+}

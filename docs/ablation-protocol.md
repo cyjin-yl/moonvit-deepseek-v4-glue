@@ -114,3 +114,9 @@ synthetic 集报告 single accuracy、paired accuracy、answer-flip accuracy、b
 包 10 对同一 projector 训练 basin 的 step 50/100 做了 `alpha=0/.25/.50/.75/1` 线性权重插值。两端 tensor 与原始评测精确复现；所有中间点都未同时保留 count/shape 并获得 coordinate/spatial。最佳折中 `alpha=.25` 仍使 count 相对 step 50 下降 0.16、shape 下降 0.10。当前结果否定的是同一训练 basin 中两个 checkpoint 的简单线性平均，不等于否定所有模型合并方法。正式 DeepSeek 训练不得把 checkpoint averaging 设为默认抗遗忘方案。
 
 包 11 从 step 50 精确恢复权重、optimizer 与数据游标，测试 count/shape-only frozen-step50 projector-output MSE。MSE 随系数增强显著下降，旧任务 paired preference 仍未保住；完整表示距离不能代替答案决策边界或任务级哨兵。`1e-3` 改善 macro preference 与 generation，说明辅助目标可改变 Pareto 路径。后续按顺序执行：严格匹配的分层 batch 对全局随机 batch、固定 replay 对遗忘触发 replay；两者都失败后才引入 per-task gradient-conflict 方法，避免同时堆叠多个机制。
+
+## 9. Batch-order 证据边界（包 12）
+
+包 12 只改变 2,400 条记录的 batch-order constraint：分层臂每个 true batch 六任务各 4 条，全局臂对相同记录做 seeded random permutation；初始化、optimizer state、seed、超参数与 examples seen 均精确匹配。分层在 step 50 的 macro preference/generation 为 0.512/0.233，高于 global 的 0.389/0.167；step 100 的 global macro/generation 反超为 0.531/0.320，对分层 0.511/0.257。终点 overall gap −0.020 的 paired CI `[−0.0442, 0.0025]`，coordinate 分层更好，color/shape 显著偏向 global，预注册判定为 `mixed_or_underpowered`。
+
+逐 batch 分层不能写成 DeepSeek 的硬规则。正式主线采用固定窗口领域覆盖，并用 sentinel/replay 管理任务交换；分层只保留为短校准候选。gradient diagnostic 显示分层终点 6/15 个负 task-pair cosines，global 为 0，当前结果也未支持“分层必然降低干扰”。下一项按既定顺序进入 matched replay，不追加块状 curriculum。

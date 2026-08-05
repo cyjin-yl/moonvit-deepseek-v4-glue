@@ -1,0 +1,28 @@
+{
+  "status": "valid",
+  "package": "batch_stratification_v1",
+  "workstation_root": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation",
+  "runs": {
+    "stratified_training": "balanced_compare_projector_v1",
+    "global_training": "global_random_projector_v1",
+    "verification": "batch_stratification_verification_v1",
+    "index": "batch_stratification_index_v1",
+    "evaluation": "batch_stratification_eval_v1",
+    "analysis": "batch_stratification_analysis_v1",
+    "gradients": "batch_stratification_gradients_v1"
+  },
+  "checkpoint_policy": {
+    "git_contains": [
+      "MANIFEST.json",
+      "projector_config.json"
+    ],
+    "workstation_only": [
+      "projector.safetensors",
+      "training_state.pt"
+    ],
+    "reason": "avoid duplicating 937 MB of content-addressed checkpoint/optimizer payload in Git"
+  },
+  "base_projector_sha256": "98a566eb2c8414f105662b6532734a4246830b7e5a2df56ae3da14ad23737ef3",
+  "optimizer_source_sha256": "47ceb28f64df2573beae51480e75fe5626d32e6c134f67dc91f35cfc6ba97196",
+  "final_half_scored": false
+}

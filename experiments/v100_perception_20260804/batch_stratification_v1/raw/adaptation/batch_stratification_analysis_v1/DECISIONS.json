@@ -1,0 +1,604 @@
+{
+  "status": "valid",
+  "format_version": "matched-batch-order-analysis-v1",
+  "batch_effect": "mixed_or_underpowered",
+  "decision_rule": "endpoint overall paired-preference CI excludes zero, or at least two task CIs agree with no significant task reversal",
+  "steps": [
+    25,
+    50,
+    100
+  ],
+  "state_metrics": {
+    "frozen-base": {
+      "preference": {
+        "color": 0.23,
+        "coordinate": 0.055,
+        "count": 0.115,
+        "ocr": 0.135,
+        "shape": 0.56,
+        "spatial": 0.25
+      },
+      "preference_macro": 0.22416666666666665,
+      "preference_worst_task": 0.055,
+      "generation_macro": 0.06333333333333334,
+      "vision_shuffle_overall": 0.16416666666666666
+    },
+    "global-step100": {
+      "preference": {
+        "color": 0.825,
+        "coordinate": 0.41,
+        "count": 0.055,
+        "ocr": 0.215,
+        "shape": 0.68,
+        "spatial": 1.0
+      },
+      "preference_macro": 0.5308333333333334,
+      "preference_worst_task": 0.055,
+      "generation_macro": 0.32,
+      "vision_shuffle_overall": 0.3975000000000001
+    },
+    "global-step25": {
+      "preference": {
+        "color": 0.29,
+        "coordinate": 0.135,
+        "count": 0.305,
+        "ocr": 0.12,
+        "shape": 0.595,
+        "spatial": 0.0
+      },
+      "preference_macro": 0.24083333333333332,
+      "preference_worst_task": 0.0,
+      "generation_macro": 0.013333333333333334,
+      "vision_shuffle_overall": 0.17083333333333334
+    },
+    "global-step50": {
+      "preference": {
+        "color": 0.675,
+        "coordinate": 0.19,
+        "count": 0.225,
+        "ocr": 0.145,
+        "shape": 0.35,
+        "spatial": 0.75
+      },
+      "preference_macro": 0.38916666666666666,
+      "preference_worst_task": 0.145,
+      "generation_macro": 0.16666666666666666,
+      "vision_shuffle_overall": 0.2975
+    },
+    "stratified-step100": {
+      "preference": {
+        "color": 0.735,
+        "coordinate": 0.575,
+        "count": 0.1,
+        "ocr": 0.22,
+        "shape": 0.435,
+        "spatial": 1.0
+      },
+      "preference_macro": 0.5108333333333334,
+      "preference_worst_task": 0.1,
+      "generation_macro": 0.25666666666666665,
+      "vision_shuffle_overall": 0.385
+    },
+    "stratified-step25": {
+      "preference": {
+        "color": 0.19,
+        "coordinate": 0.095,
+        "count": 0.275,
+        "ocr": 0.105,
+        "shape": 0.545,
+        "spatial": 0.0
+      },
+      "preference_macro": 0.20166666666666666,
+      "preference_worst_task": 0.0,
+      "generation_macro": 0.03666666666666667,
+      "vision_shuffle_overall": 0.12916666666666665
+    },
+    "stratified-step50": {
+      "preference": {
+        "color": 0.635,
+        "coordinate": 0.415,
+        "count": 0.38,
+        "ocr": 0.155,
+        "shape": 0.735,
+        "spatial": 0.75
+      },
+      "preference_macro": 0.5116666666666666,
+      "preference_worst_task": 0.155,
+      "generation_macro": 0.23333333333333336,
+      "vision_shuffle_overall": 0.3975000000000001
+    }
+  },
+  "endpoint_paired_preference_contrasts": [
+    {
+      "family": "stratified_minus_global",
+      "modality": "preference",
+      "metric": "paired_preference",
+      "state_a": "stratified-step100",
+      "condition_a": "vision",
+      "state_b": "global-step100",
+      "condition_b": "vision",
+      "task": "overall",
+      "denominator": 1200,
+      "sum_a": 613.0,
+      "sum_b": 637.0,
+      "mean_a": 0.5108333333333334,
+      "mean_b": 0.5308333333333334,
+      "mean_gap": -0.02,
+      "a_only_better": 90,
+      "b_only_better": 114,
+      "equal": 996,
+      "ci95_low": -0.04416666666666667,
+      "ci95_high": 0.0025,
+      "bootstrap_samples": 2000,
+      "seed": 20261074
+    },
+    {
+      "family": "stratified_minus_global",
+      "modality": "preference",
+      "metric": "paired_preference",
+      "state_a": "stratified-step100",
+      "condition_a": "vision",
+      "state_b": "global-step100",
+      "condition_b": "vision",
+      "task": "color",
+      "denominator": 200,
+      "sum_a": 147.0,
+      "sum_b": 165.0,
+      "mean_a": 0.735,
+      "mean_b": 0.825,
+      "mean_gap": -0.09,
+      "a_only_better": 16,
+      "b_only_better": 34,
+      "equal": 150,
+      "ci95_low": -0.165,
+      "ci95_high": -0.025,
+      "bootstrap_samples": 2000,
+      "seed": 20261083
+    },
+    {
+      "family": "stratified_minus_global",
+      "modality": "preference",
+      "metric": "paired_preference",
+      "state_a": "stratified-step100",
+      "condition_a": "vision",
+      "state_b": "global-step100",
+      "condition_b": "vision",
+      "task": "coordinate",
+      "denominator": 200,
+      "sum_a": 115.0,
+      "sum_b": 82.0,
+      "mean_a": 0.575,
+      "mean_b": 0.41,
+      "mean_gap": 0.165,
+      "a_only_better": 33,
+      "b_only_better": 0,
+      "equal": 167,
+      "ci95_low": 0.115,
+      "ci95_high": 0.22,
+      "bootstrap_samples": 2000,
+      "seed": 20261092
+    },
+    {
+      "family": "stratified_minus_global",
+      "modality": "preference",
+      "metric": "paired_preference",
+      "state_a": "stratified-step100",
+      "condition_a": "vision",
+      "state_b": "global-step100",
+      "condition_b": "vision",
+      "task": "count",
+      "denominator": 200,
+      "sum_a": 20.0,
+      "sum_b": 11.0,
+      "mean_a": 0.1,
+      "mean_b": 0.055,
+      "mean_gap": 0.045,
+      "a_only_better": 16,
+      "b_only_better": 7,
+      "equal": 177,
+      "ci95_low": 0.0,
+      "ci95_high": 0.095,
+      "bootstrap_samples": 2000,
+      "seed": 20261101
+    },
+    {
+      "family": "stratified_minus_global",
+      "modality": "preference",
+      "metric": "paired_preference",
+      "state_a": "stratified-step100",
+      "condition_a": "vision",
+      "state_b": "global-step100",
+      "condition_b": "vision",
+      "task": "ocr",
+      "denominator": 200,
+      "sum_a": 44.0,
+      "sum_b": 43.0,
+      "mean_a": 0.22,
+      "mean_b": 0.215,
+      "mean_gap": 0.005,
+      "a_only_better": 16,
+      "b_only_better": 15,
+      "equal": 169,
+      "ci95_low": -0.05,
+      "ci95_high": 0.06,
+      "bootstrap_samples": 2000,
+      "seed": 20261110
+    },
+    {
+      "family": "stratified_minus_global",
+      "modality": "preference",
+      "metric": "paired_preference",
+      "state_a": "stratified-step100",
+      "condition_a": "vision",
+      "state_b": "global-step100",
+      "condition_b": "vision",
+      "task": "shape",
+      "denominator": 200,
+      "sum_a": 87.0,
+      "sum_b": 136.0,
+      "mean_a": 0.435,
+      "mean_b": 0.68,
+      "mean_gap": -0.245,
+      "a_only_better": 9,
+      "b_only_better": 58,
+      "equal": 133,
+      "ci95_low": -0.315,
+      "ci95_high": -0.175,
+      "bootstrap_samples": 2000,
+      "seed": 20261119
+    },
+    {
+      "family": "stratified_minus_global",
+      "modality": "preference",
+      "metric": "paired_preference",
+      "state_a": "stratified-step100",
+      "condition_a": "vision",
+      "state_b": "global-step100",
+      "condition_b": "vision",
+      "task": "spatial",
+      "denominator": 200,
+      "sum_a": 200.0,
+      "sum_b": 200.0,
+      "mean_a": 1.0,
+      "mean_b": 1.0,
+      "mean_gap": 0.0,
+      "a_only_better": 0,
+      "b_only_better": 0,
+      "equal": 200,
+      "ci95_low": 0.0,
+      "ci95_high": 0.0,
+      "bootstrap_samples": 2000,
+      "seed": 20261128
+    }
+  ],
+  "trajectory": {
+    "color": {
+      "stratified": {
+        "points": [
+          {
+            "step": 0,
+            "value": 0.23
+          },
+          {
+            "step": 25,
+            "value": 0.19
+          },
+          {
+            "step": 50,
+            "value": 0.635
+          },
+          {
+            "step": 100,
+            "value": 0.735
+          }
+        ],
+        "auc": 0.498125,
+        "peak_step": 100,
+        "peak_value": 0.735,
+        "endpoint": 0.735,
+        "forgetting_from_peak": 0.0
+      },
+      "global": {
+        "points": [
+          {
+            "step": 0,
+            "value": 0.23
+          },
+          {
+            "step": 25,
+            "value": 0.29
+          },
+          {
+            "step": 50,
+            "value": 0.675
+          },
+          {
+            "step": 100,
+            "value": 0.825
+          }
+        ],
+        "auc": 0.560625,
+        "peak_step": 100,
+        "peak_value": 0.825,
+        "endpoint": 0.825,
+        "forgetting_from_peak": 0.0
+      },
+      "auc_stratified_minus_global": -0.06250000000000006
+    },
+    "coordinate": {
+      "stratified": {
+        "points": [
+          {
+            "step": 0,
+            "value": 0.055
+          },
+          {
+            "step": 25,
+            "value": 0.095
+          },
+          {
+            "step": 50,
+            "value": 0.415
+          },
+          {
+            "step": 100,
+            "value": 0.575
+          }
+        ],
+        "auc": 0.33,
+        "peak_step": 100,
+        "peak_value": 0.575,
+        "endpoint": 0.575,
+        "forgetting_from_peak": 0.0
+      },
+      "global": {
+        "points": [
+          {
+            "step": 0,
+            "value": 0.055
+          },
+          {
+            "step": 25,
+            "value": 0.135
+          },
+          {
+            "step": 50,
+            "value": 0.19
+          },
+          {
+            "step": 100,
+            "value": 0.41
+          }
+        ],
+        "auc": 0.214375,
+        "peak_step": 100,
+        "peak_value": 0.41,
+        "endpoint": 0.41,
+        "forgetting_from_peak": 0.0
+      },
+      "auc_stratified_minus_global": 0.115625
+    },
+    "count": {
+      "stratified": {
+        "points": [
+          {
+            "step": 0,
+            "value": 0.115
+          },
+          {
+            "step": 25,
+            "value": 0.275
+          },
+          {
+            "step": 50,
+            "value": 0.38
+          },
+          {
+            "step": 100,
+            "value": 0.1
+          }
+        ],
+        "auc": 0.250625,
+        "peak_step": 50,
+        "peak_value": 0.38,
+        "endpoint": 0.1,
+        "forgetting_from_peak": 0.28
+      },
+      "global": {
+        "points": [
+          {
+            "step": 0,
+            "value": 0.115
+          },
+          {
+            "step": 25,
+            "value": 0.305
+          },
+          {
+            "step": 50,
+            "value": 0.225
+          },
+          {
+            "step": 100,
+            "value": 0.055
+          }
+        ],
+        "auc": 0.18875,
+        "peak_step": 25,
+        "peak_value": 0.305,
+        "endpoint": 0.055,
+        "forgetting_from_peak": 0.25
+      },
+      "auc_stratified_minus_global": 0.061874999999999986
+    },
+    "ocr": {
+      "stratified": {
+        "points": [
+          {
+            "step": 0,
+            "value": 0.135
+          },
+          {
+            "step": 25,
+            "value": 0.105
+          },
+          {
+            "step": 50,
+            "value": 0.155
+          },
+          {
+            "step": 100,
+            "value": 0.22
+          }
+        ],
+        "auc": 0.15625,
+        "peak_step": 100,
+        "peak_value": 0.22,
+        "endpoint": 0.22,
+        "forgetting_from_peak": 0.0
+      },
+      "global": {
+        "points": [
+          {
+            "step": 0,
+            "value": 0.135
+          },
+          {
+            "step": 25,
+            "value": 0.12
+          },
+          {
+            "step": 50,
+            "value": 0.145
+          },
+          {
+            "step": 100,
+            "value": 0.215
+          }
+        ],
+        "auc": 0.155,
+        "peak_step": 100,
+        "peak_value": 0.215,
+        "endpoint": 0.215,
+        "forgetting_from_peak": 0.0
+      },
+      "auc_stratified_minus_global": 0.0012500000000000011
+    },
+    "shape": {
+      "stratified": {
+        "points": [
+          {
+            "step": 0,
+            "value": 0.56
+          },
+          {
+            "step": 25,
+            "value": 0.545
+          },
+          {
+            "step": 50,
+            "value": 0.735
+          },
+          {
+            "step": 100,
+            "value": 0.435
+          }
+        ],
+        "auc": 0.590625,
+        "peak_step": 50,
+        "peak_value": 0.735,
+        "endpoint": 0.435,
+        "forgetting_from_peak": 0.3
+      },
+      "global": {
+        "points": [
+          {
+            "step": 0,
+            "value": 0.56
+          },
+          {
+            "step": 25,
+            "value": 0.595
+          },
+          {
+            "step": 50,
+            "value": 0.35
+          },
+          {
+            "step": 100,
+            "value": 0.68
+          }
+        ],
+        "auc": 0.52,
+        "peak_step": 100,
+        "peak_value": 0.68,
+        "endpoint": 0.68,
+        "forgetting_from_peak": 0.0
+      },
+      "auc_stratified_minus_global": 0.07062499999999994
+    },
+    "spatial": {
+      "stratified": {
+        "points": [
+          {
+            "step": 0,
+            "value": 0.25
+          },
+          {
+            "step": 25,
+            "value": 0.0
+          },
+          {
+            "step": 50,
+            "value": 0.75
+          },
+          {
+            "step": 100,
+            "value": 1.0
+          }
+        ],
+        "auc": 0.5625,
+        "peak_step": 100,
+        "peak_value": 1.0,
+        "endpoint": 1.0,
+        "forgetting_from_peak": 0.0
+      },
+      "global": {
+        "points": [
+          {
+            "step": 0,
+            "value": 0.25
+          },
+          {
+            "step": 25,
+            "value": 0.0
+          },
+          {
+            "step": 50,
+            "value": 0.75
+          },
+          {
+            "step": 100,
+            "value": 1.0
+          }
+        ],
+        "auc": 0.5625,
+        "peak_step": 100,
+        "peak_value": 1.0,
+        "endpoint": 1.0,
+        "forgetting_from_peak": 0.0
+      },
+      "auc_stratified_minus_global": 0.0
+    }
+  },
+  "sources": {
+    "preference_records_sha256": "9a73e0e11c9698d31cac94ae967a8e662a349648f34b94f2eabd62492b663fc4",
+    "generation_records_sha256": "a3871bc6b2257ba5aabf31dc6370767839e7ee2a2c14246aac618d7b9e16b5ee",
+    "verification_sha256": "77c01240f5ea2e1ab6e9e15d7d1608d65da4b14074ed22eb0a0a48d3b9f9e2c1"
+  },
+  "bootstrap": {
+    "samples": 2000,
+    "seed": 20260821
+  },
+  "final_half_scored": false
+}

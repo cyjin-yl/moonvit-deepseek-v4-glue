@@ -1,0 +1,34 @@
+{
+  "status": "valid",
+  "format_version": "batch-stratification-package-verification-v1",
+  "matched_training": {
+    "records_per_arm": 2400,
+    "steps_per_arm": 100,
+    "checkpoint_manifests": 8,
+    "all_verification_checks": true,
+    "stratified_balanced_batches": 100,
+    "global_balanced_batches": 0,
+    "global_max_task_count": 11
+  },
+  "evaluation": {
+    "states": 7,
+    "preference_rows": 50400,
+    "generation_rows": 8400,
+    "analysis_metric_rows": 735,
+    "analysis_contrast_rows": 525,
+    "batch_effect": "mixed_or_underpowered",
+    "endpoint_overall_gap": -0.02,
+    "endpoint_overall_ci95": [
+      -0.04416666666666667,
+      0.0025
+    ]
+  },
+  "gradients": {
+    "norm_rows": 42,
+    "cosine_rows": 105,
+    "stratified_endpoint_negative_pairs": 6,
+    "global_endpoint_negative_pairs": 0
+  },
+  "large_checkpoint_weights_in_git": false,
+  "final_half_scored": false
+}

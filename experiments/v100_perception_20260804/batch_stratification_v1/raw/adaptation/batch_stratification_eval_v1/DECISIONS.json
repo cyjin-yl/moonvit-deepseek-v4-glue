@@ -1,0 +1,38 @@
+{
+  "status": "valid",
+  "best_vision_paired_preference": {
+    "state": "global-step100",
+    "kind": "projector",
+    "adaptation_step": 100,
+    "adaptation_examples_seen": 2400,
+    "interpolation_alpha": null,
+    "condition": "vision",
+    "task": "overall",
+    "records": 2400,
+    "pairs": 1200,
+    "sample_preference_accuracy": 0.7520833333333333,
+    "paired_preference_accuracy": 0.5308333333333334,
+    "mean_correct_margin": 2.5009808275550633
+  },
+  "best_vision_paired_generation": {
+    "state": "global-step100",
+    "kind": "projector",
+    "adaptation_step": 100,
+    "adaptation_examples_seen": 2400,
+    "interpolation_alpha": null,
+    "condition": "vision",
+    "task": "overall",
+    "records": 600,
+    "pairs": 300,
+    "accuracy": 0.4066666666666667,
+    "paired_accuracy": 0.32,
+    "answer_flip_accuracy": 0.32,
+    "prediction_flip_rate": 0.7366666666666667
+  },
+  "interpretation_limits": [
+    "all selection records are disjoint from the adaptation train split",
+    "LoRA and projector continuation see equal true-batch examples from the same frozen order",
+    "this synthetic diagnostic does not estimate general benchmark transfer",
+    "final odd halves remain unscored"
+  ]
+}

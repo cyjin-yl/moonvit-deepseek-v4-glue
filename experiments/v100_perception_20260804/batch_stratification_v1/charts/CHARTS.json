@@ -1,0 +1,28 @@
+{
+  "status": "valid",
+  "batch_effect": "mixed_or_underpowered",
+  "source_files": {
+    "experiments\\v100_perception_20260804\\batch_stratification_v1\\raw\\adaptation\\batch_stratification_analysis_v1\\DECISIONS.json": "cbf6d1be5dc306e11bc3336d555d8ce323c87335b984475705a56b80048d3438",
+    "experiments\\v100_perception_20260804\\batch_stratification_v1\\raw\\adaptation\\batch_stratification_gradients_v1\\SUMMARY.json": "587ccf3e9928c74ef458c6ab0524f8f28e99d3f7158183500db81481057dd1ed",
+    "experiments\\v100_perception_20260804\\batch_stratification_v1\\raw\\adaptation\\batch_stratification_verification_v1\\VERIFICATION.json": "77c01240f5ea2e1ab6e9e15d7d1608d65da4b14074ed22eb0a0a48d3b9f9e2c1"
+  },
+  "charts": {
+    "01-summary-trajectories.svg": {
+      "bytes": 4801,
+      "sha256": "65d2f10cd965c68985389f09ce5865c1f282585dfcc2a77e1b4bee050011f892"
+    },
+    "02-task-preference-delta.svg": {
+      "bytes": 4746,
+      "sha256": "b0154b0d5a8198e9bc21862a0e6ef81031f5357d7bccadf67bd00e7b06f6a1df"
+    },
+    "03-gradient-conflict.svg": {
+      "bytes": 3922,
+      "sha256": "5d588660562306de6c996595fb0ecc06d309e02134b31da94766a758d645df40"
+    },
+    "04-batch-imbalance.svg": {
+      "bytes": 16282,
+      "sha256": "b0d6b2d478ddfd302decccef9c411c307a2979ff452ab6050ab017ec7f21fb9d"
+    }
+  },
+  "final_half_scored": false
+}

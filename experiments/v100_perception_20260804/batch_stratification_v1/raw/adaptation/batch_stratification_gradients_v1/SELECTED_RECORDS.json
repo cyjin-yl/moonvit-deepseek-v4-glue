@@ -1,0 +1,65 @@
+{
+  "records_per_task": 8,
+  "tasks": {
+    "color": [
+      "train-color-00000-a",
+      "train-color-00000-b",
+      "train-color-00001-a",
+      "train-color-00001-b",
+      "train-color-00002-a",
+      "train-color-00002-b",
+      "train-color-00003-a",
+      "train-color-00003-b"
+    ],
+    "coordinate": [
+      "train-coordinate-00000-a",
+      "train-coordinate-00000-b",
+      "train-coordinate-00001-a",
+      "train-coordinate-00001-b",
+      "train-coordinate-00002-a",
+      "train-coordinate-00002-b",
+      "train-coordinate-00003-a",
+      "train-coordinate-00003-b"
+    ],
+    "count": [
+      "train-count-00000-a",
+      "train-count-00000-b",
+      "train-count-00001-a",
+      "train-count-00001-b",
+      "train-count-00002-a",
+      "train-count-00002-b",
+      "train-count-00003-a",
+      "train-count-00003-b"
+    ],
+    "ocr": [
+      "train-ocr-00000-a",
+      "train-ocr-00000-b",
+      "train-ocr-00001-a",
+      "train-ocr-00001-b",
+      "train-ocr-00002-a",
+      "train-ocr-00002-b",
+      "train-ocr-00003-a",
+      "train-ocr-00003-b"
+    ],
+    "shape": [
+      "train-shape-00000-a",
+      "train-shape-00000-b",
+      "train-shape-00001-a",
+      "train-shape-00001-b",
+      "train-shape-00002-a",
+      "train-shape-00002-b",
+      "train-shape-00003-a",
+      "train-shape-00003-b"
+    ],
+    "spatial": [
+      "train-spatial-00000-a",
+      "train-spatial-00000-b",
+      "train-spatial-00001-a",
+      "train-spatial-00001-b",
+      "train-spatial-00002-a",
+      "train-spatial-00002-b",
+      "train-spatial-00003-a",
+      "train-spatial-00003-b"
+    ]
+  }
+}

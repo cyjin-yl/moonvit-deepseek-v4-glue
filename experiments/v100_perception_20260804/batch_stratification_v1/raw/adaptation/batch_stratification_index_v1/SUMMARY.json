@@ -1,0 +1,147 @@
+{
+  "status": "valid",
+  "format_version": "projector-comparison-index-v1",
+  "metadata": {
+    "completed_at_utc": "2026-08-05T07:05:39.669430+00:00",
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "host": "doesworkstation",
+    "final_half_scored": false
+  },
+  "source_runs": {
+    "stratified-step25": {
+      "run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1",
+      "summary_sha256": "adcdee5c6e36e13f6ee052e34a78ec021ebd3290acb14e9d25573468ee446ecc",
+      "step": 25
+    },
+    "stratified-step50": {
+      "run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1",
+      "summary_sha256": "adcdee5c6e36e13f6ee052e34a78ec021ebd3290acb14e9d25573468ee446ecc",
+      "step": 50
+    },
+    "stratified-step100": {
+      "run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1",
+      "summary_sha256": "adcdee5c6e36e13f6ee052e34a78ec021ebd3290acb14e9d25573468ee446ecc",
+      "step": 100
+    },
+    "global-step25": {
+      "run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1",
+      "summary_sha256": "a1b37d1bff839ceda6c55dcda602cb71b9d82dfc663a0fed0a84e59f57163e04",
+      "step": 25
+    },
+    "global-step50": {
+      "run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1",
+      "summary_sha256": "a1b37d1bff839ceda6c55dcda602cb71b9d82dfc663a0fed0a84e59f57163e04",
+      "step": 50
+    },
+    "global-step100": {
+      "run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1",
+      "summary_sha256": "a1b37d1bff839ceda6c55dcda602cb71b9d82dfc663a0fed0a84e59f57163e04",
+      "step": 100
+    }
+  },
+  "checkpoints": {
+    "stratified-step25": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 25,
+      "examples_seen": 600,
+      "evaluation_state_id": "stratified-step25",
+      "relative_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/checkpoints/step-000025",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1",
+      "source_summary_sha256": "adcdee5c6e36e13f6ee052e34a78ec021ebd3290acb14e9d25573468ee446ecc",
+      "weights_tensor_sha256": "a64ba178b2d0e6220a367de87e57e4be788fc9f0ca895c56985f85011abc1232",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "396ae55e14533d975e254b3eecd96fb9de0cd9331f6bd18f9e0597fc869d9b79"
+        }
+      }
+    },
+    "stratified-step50": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 50,
+      "examples_seen": 1200,
+      "evaluation_state_id": "stratified-step50",
+      "relative_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/checkpoints/step-000050",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1",
+      "source_summary_sha256": "adcdee5c6e36e13f6ee052e34a78ec021ebd3290acb14e9d25573468ee446ecc",
+      "weights_tensor_sha256": "fd7b07e6fe9f4e9054b9f4e4dcbecf8bbeaf83241c937ec6d5c4d589a017d192",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "8dd9321656d2d745303213634e61fe429587a76c149ac00631cc78e2ef0128a8"
+        }
+      }
+    },
+    "stratified-step100": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 100,
+      "examples_seen": 2400,
+      "evaluation_state_id": "stratified-step100",
+      "relative_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/checkpoints/step-000100",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1",
+      "source_summary_sha256": "adcdee5c6e36e13f6ee052e34a78ec021ebd3290acb14e9d25573468ee446ecc",
+      "weights_tensor_sha256": "7b731cffcb11da833efbd7d99a41ee77cba9eda3dfdb1135989e79adbb921a76",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "05f19079bc6db6757f378c22b05a5cb3ae3e638551513f642bb25dea04ef092d"
+        }
+      }
+    },
+    "global-step25": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 25,
+      "examples_seen": 600,
+      "evaluation_state_id": "global-step25",
+      "relative_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1/checkpoints/step-000025",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1",
+      "source_summary_sha256": "a1b37d1bff839ceda6c55dcda602cb71b9d82dfc663a0fed0a84e59f57163e04",
+      "weights_tensor_sha256": "f7ec3040522b6fc0ccf030c325b4006d6ad9880b7d2b27648caac18b974ce561",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "16a5f0c0e9aca06c0c5f52b227f693845bf37d842b5019eda8d238be141f3038"
+        }
+      }
+    },
+    "global-step50": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 50,
+      "examples_seen": 1200,
+      "evaluation_state_id": "global-step50",
+      "relative_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1/checkpoints/step-000050",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1",
+      "source_summary_sha256": "a1b37d1bff839ceda6c55dcda602cb71b9d82dfc663a0fed0a84e59f57163e04",
+      "weights_tensor_sha256": "55e5a4906c01de6d6acbce814f443bf8f68c54c20ad291d9874b6d10ad6039b9",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "8a973de3f7234e3ec859f04875647be8008d67c028426ce5d701940d7bf3e14e"
+        }
+      }
+    },
+    "global-step100": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 100,
+      "examples_seen": 2400,
+      "evaluation_state_id": "global-step100",
+      "relative_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1/checkpoints/step-000100",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/global_random_projector_v1",
+      "source_summary_sha256": "a1b37d1bff839ceda6c55dcda602cb71b9d82dfc663a0fed0a84e59f57163e04",
+      "weights_tensor_sha256": "ecd586a5d9578e3189cc2ca5f1f1ecc435e4f5c138b222749f08f2aa28c25821",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "305f5e0d05aad772514c674caa3bec8ab1bc2eea794ce350a572b5090ba0743c"
+        }
+      }
+    }
+  },
+  "final_half_scored": false
+}
