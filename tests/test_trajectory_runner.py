@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
 from eval_checkpoint_trajectory import (
     apply_screening_overrides,
     benchmark_summary,
+    checkpoint_training_metrics,
     scoring_record_for_condition,
     visual_prompt_batch,
 )
@@ -92,6 +93,29 @@ def test_generation_screening_override_caps_limit_at_fixed_dataset_size():
     assert [row["expected_records"] for row in screened["datasets"]] == [128, 128]
     assert screened["heldout_shuffle_loss"]["limit"] == 32
     assert screened["heldout_shuffle_loss"]["expected_records"] == 32
+
+
+def test_checkpoint_metrics_support_jsonl_adaptation_history(tmp_path: Path):
+    history = tmp_path / "train_history.jsonl"
+    history.write_text(
+        "".join(
+            f'{{"step": {step}, "loss": {float(step)}}}\n'
+            for step in range(1, 81)
+        ),
+        encoding="utf-8",
+    )
+
+    metrics = checkpoint_training_metrics(
+        {
+            "kind": "trained",
+            "history_path": str(history),
+            "history_max_step": 50,
+        }
+    )
+
+    assert metrics["last_train_loss"] == 50.0
+    assert metrics["mean_last_50_train_loss"] == 25.5
+    assert len(metrics["history_sha256"]) == 64
 
 
 def test_grounding_summary_reports_parse_and_coordinate_collapse_counts():

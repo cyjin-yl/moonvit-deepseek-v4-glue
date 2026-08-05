@@ -1,0 +1,9 @@
+{
+  "status": "invalid",
+  "invalidated_at_utc": "2026-08-05T00:52:14.534287+00:00",
+  "reason": "legacy preference analyzer hardcoded a blind contrast not present in the preregistered teacher-forced transfer matrix",
+  "impact": "analysis aborted before valid summary; raw preference run and independent verification remain valid",
+  "replacement_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/transfer/multitask_transfer_analysis_v1",
+  "old_results_must_not_be_used": true,
+  "files": {}
+}

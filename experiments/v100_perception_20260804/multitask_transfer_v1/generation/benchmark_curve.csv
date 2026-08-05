@@ -1,0 +1,1 @@
+checkpoint,optimizer_steps,examples_seen,condition,benchmark,metric,raw_score_sum,denominator,score,parse_numerator,parse_denominator,parse_rate,most_common_coordinate,collapse_numerator,collapse_denominator,collapse_rate

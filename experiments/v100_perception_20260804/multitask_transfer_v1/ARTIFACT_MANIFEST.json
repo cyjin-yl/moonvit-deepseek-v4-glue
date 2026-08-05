@@ -1,0 +1,123 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-05T01:09:10.558310+00:00",
+  "root": "multitask_transfer_v1",
+  "git_base_sha": "01172f686ec28c63252709d05d19e723cfe3fa54",
+  "files": {
+    "analysis/DECISIONS.json": {
+      "bytes": 14294,
+      "sha256": "07268766899ac6adc86ae6e6a213297a3f598e676fc2fa60e0e118a58162db23"
+    },
+    "analysis/SUMMARY.json": {
+      "bytes": 952,
+      "sha256": "a5ef4338be5fae2094bfc98d3ca9f557ac0b6f65e920eff68dd72421069ddc62"
+    },
+    "analysis/transfer_contrasts.csv": {
+      "bytes": 101900,
+      "sha256": "c90d7fe5cb58080b8878bf237df3b7b53fcc54017a1de9837640d833d70bcb9d"
+    },
+    "analysis/transfer_metrics.csv": {
+      "bytes": 45259,
+      "sha256": "a60832f0bacc683801f667e9971f1703a18193069f248af1d40730d48a9945f3"
+    },
+    "charts/01-paired-preference.svg": {
+      "bytes": 4390,
+      "sha256": "e68281cdac835beac94be6356460d078a3758d22efb500347d811f3e12750bc7"
+    },
+    "charts/02-paired-generation.svg": {
+      "bytes": 4388,
+      "sha256": "01bd09dd415ebe708aad99f0f8880a31184de39d691314467229cad80b1a6378"
+    },
+    "charts/03-vision-minus-shuffle.svg": {
+      "bytes": 3337,
+      "sha256": "b0f230c0c50eab5a073ceb2de36fce7410607bb937314ee79b7b13cb2abc1999"
+    },
+    "charts/CHARTS.json": {
+      "bytes": 861,
+      "sha256": "be9c707e88cc5de22ea352ea8aa878b8afbc66fe41aec72854c3fa641d208e71"
+    },
+    "generation/benchmark_curve.csv": {
+      "bytes": 223,
+      "sha256": "3be0272600b03365501cef2389284574bf28c4f3e977af01165595f2fd5a93df"
+    },
+    "generation/CONFIG.json": {
+      "bytes": 5038,
+      "sha256": "2cc09e4627d30fe4f6ce3caa6601fd5b3e15e5fe6e36525102f7f3631db4abfb"
+    },
+    "generation/failures.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "generation/records.jsonl": {
+      "bytes": 6925851,
+      "sha256": "f85d0b18aa65f9e8d78dde6d9bb103cac12e63a8123b81a69f3ea4398e69a58e"
+    },
+    "generation/shuffle_loss_curve.csv": {
+      "bytes": 1892,
+      "sha256": "86c6c823128acbdac7a6ad108227d18332c687453a9b64ed97cddec1ae9b54b7"
+    },
+    "generation/shuffle_loss_records.jsonl": {
+      "bytes": 68140,
+      "sha256": "2eec712ac6467d8cf8d0007e4e66722c597f3d6f0fe36c455b3e32b04ffb43b1"
+    },
+    "generation/SUMMARY.json": {
+      "bytes": 126140,
+      "sha256": "bcfef8526c99266ee84f546b698dffee5878c172aa5f07f27b105bc197af056a"
+    },
+    "generation/SUMMARY.partial.json": {
+      "bytes": 125118,
+      "sha256": "84a843f9e7e5d21f479e14a7062252ccfa968ed108eb3801c8f14d2c73751482"
+    },
+    "generation/synthetic_curve.csv": {
+      "bytes": 9107,
+      "sha256": "10c76b29512f8d227319d29b403f4a17865851d4f788c9a7fd79083358d106f3"
+    },
+    "generation/VERIFICATION.json": {
+      "bytes": 310,
+      "sha256": "30e07c8b95308e8e059e8305d7e8607d6ce558b00a928877f5c471d697ce736a"
+    },
+    "invalid/legacy_preference_analysis/INVALIDATION.json": {
+      "bytes": 505,
+      "sha256": "95647838e5845667f8909ff7cb2c83c26b9ec647aa377a39ab5a9b9a65934ec9"
+    },
+    "PACKAGE_VERIFICATION.json": {
+      "bytes": 517,
+      "sha256": "b4aa78fa313c12cccb6b9977fffc9478edb14bd964ccf5fac84b28372cb092f3"
+    },
+    "preference/CONFIG.json": {
+      "bytes": 5021,
+      "sha256": "0c743f2f216637801640811420f8f79a778f7a9b5532585aa209f47f597e3c2f"
+    },
+    "preference/failures.jsonl": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "preference/preference_records.jsonl": {
+      "bytes": 24847515,
+      "sha256": "c7e9dd49c36d3054d23885e51d3378fdde7e76e34d572dc4d0732d39c079e203"
+    },
+    "preference/SUMMARY.json": {
+      "bytes": 72857,
+      "sha256": "149ff0d5d09c0129fb68b367e25e56bbd951153e3e19b79b5cc4286601bbf47a"
+    },
+    "preference/SUMMARY.partial.json": {
+      "bytes": 72047,
+      "sha256": "aae7cbb1cefee779fba5ccaefd92a01afb3ea5f0036ed2f7011a3b8602b9cf0f"
+    },
+    "preference/VERIFICATION.json": {
+      "bytes": 125,
+      "sha256": "ef124effb3bbf01c7b004e6e1020642a7656aa8861c8326625b31efe8495f0c3"
+    },
+    "RAW_DATA_LOCATION.json": {
+      "bytes": 617,
+      "sha256": "6d84df79fb196eaf3a726a7e8670dde48fb8f1ba47ef3e23ab3f43ba08b5944b"
+    },
+    "RUN_NOTES.md": {
+      "bytes": 2963,
+      "sha256": "5b9cfd970498432c8a5a027678efb9afe95134c6255016310c57ec5bb6b4a31a"
+    }
+  },
+  "file_count": 28,
+  "total_bytes": 32439367,
+  "final_half_scored": false
+}

@@ -1,0 +1,19 @@
+{
+  "status": "valid",
+  "preference_rows_verified": 28800,
+  "generation_rows_verified": 9000,
+  "preference_cells_verified": 12,
+  "generation_checkpoints_verified": 3,
+  "metric_rows_verified": 567,
+  "contrast_rows_verified": 525,
+  "bootstrap_samples": 2000,
+  "validated_preference_transfer_tasks": [
+    "shape"
+  ],
+  "validated_generation_transfer_tasks": [
+    "shape"
+  ],
+  "broad_non_shape_transfer_supported": false,
+  "shape_specific_supported": true,
+  "final_half_scored": false
+}

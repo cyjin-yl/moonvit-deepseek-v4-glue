@@ -1,0 +1,3809 @@
+{
+  "status": "running",
+  "format_version": "checkpoint-trajectory-v1",
+  "metadata": {
+    "started_at_utc": "2026-08-05T00:50:00.831988+00:00",
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "git_status_porcelain": [
+      " M src/moonvit_glue/__init__.py",
+      " M src/moonvit_glue/mechanism_verification.py",
+      " M tests/test_trajectory_runner.py",
+      " M tools/eval_checkpoint_trajectory.py",
+      " M tools/extract_layerwise_representations.py",
+      " M tools/invalidate_experiment_run.py",
+      "?? configs/perception-multitask-projector-v1.json",
+      "?? configs/perception-multitask-transfer-v1.json",
+      "?? configs/perception-top-lora-shape-v1.json",
+      "?? src/moonvit_glue/adaptation_verification.py",
+      "?? src/moonvit_glue/lora.py",
+      "?? tests/test_adaptation_training.py",
+      "?? tests/test_adaptation_verification.py",
+      "?? tests/test_layerwise_extractor_overrides.py",
+      "?? tests/test_lora.py",
+      "?? tests/test_multitask_transfer_analysis.py",
+      "?? tools/analyze_multitask_transfer.py",
+      "?? tools/analyze_shape_adaptation.py",
+      "?? tools/eval_shape_adaptation.py",
+      "?? tools/plot_shape_adaptation.py",
+      "?? tools/train_shape_adaptation.py",
+      "?? tools/verify_shape_adaptation.py"
+    ],
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "device": "cuda",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "dtype": "bfloat16",
+    "seed": 20260813,
+    "text_model": "/run/media/ezra/13D010B6FDBC1A06/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+    "language_parameters": 494032768,
+    "projector_parameters": 20454272,
+    "eval_batch_size": 64,
+    "actual_batched_forward": true,
+    "prompt_template": "User: {image}\n{question}\nAssistant:",
+    "scorer_version": "repository-metrics-v1-fixed-short-answer",
+    "final_half_scored": false,
+    "config_sha256": "2cc09e4627d30fe4f6ce3caa6601fd5b3e15e5fe6e36525102f7f3631db4abfb"
+  },
+  "checkpoints": {
+    "step-000000": {
+      "id": "step-000000",
+      "kind": "random",
+      "optimizer_steps": 0,
+      "examples_seen": 0,
+      "state_sha256": "ad97177911e2a86d0c70811c788968c638f878d623fa780f3e780004437ed76b",
+      "last_train_loss": null,
+      "mean_last_50_train_loss": null,
+      "effective_epochs": 0.0,
+      "initialization_claim": "matched random initialization control; the exact historical step-0 tensor state was not saved",
+      "source_path": null,
+      "projector_config_sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804",
+      "datasets": {
+        "synthetic": {
+          "kind": "synthetic",
+          "records": 600,
+          "records_manifest_sha256": "5b0136a6edca1abf2ed19c38697f6a7d849ad132efbf25426a08b1b448c1d55d",
+          "conditions": {
+            "vision": {
+              "accuracy": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "paired_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "answer_flip_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "prediction_flip_rate": {
+                "numerator": 147,
+                "denominator": 300,
+                "value": 0.49
+              },
+              "failures": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "samples": 600,
+              "pairs": 300,
+              "by_task": {
+                "color": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 33,
+                    "denominator": 50,
+                    "value": 0.66
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "coordinate": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "count": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 33,
+                    "denominator": 50,
+                    "value": 0.66
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "ocr": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 35,
+                    "denominator": 50,
+                    "value": 0.7
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "shape": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 46,
+                    "denominator": 50,
+                    "value": 0.92
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "spatial": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                }
+              }
+            },
+            "blind": {
+              "accuracy": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "paired_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "answer_flip_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "prediction_flip_rate": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "failures": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "samples": 600,
+              "pairs": 300,
+              "by_task": {
+                "color": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "coordinate": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "count": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "ocr": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "shape": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "spatial": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                }
+              }
+            },
+            "shuffled_image": {
+              "accuracy": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "paired_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "answer_flip_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "prediction_flip_rate": {
+                "numerator": 151,
+                "denominator": 300,
+                "value": 0.5033333333333333
+              },
+              "failures": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "samples": 600,
+              "pairs": 300,
+              "by_task": {
+                "color": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 33,
+                    "denominator": 50,
+                    "value": 0.66
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "coordinate": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "count": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 36,
+                    "denominator": 50,
+                    "value": 0.72
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "ocr": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 37,
+                    "denominator": 50,
+                    "value": 0.74
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "shape": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 45,
+                    "denominator": 50,
+                    "value": 0.9
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "spatial": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                }
+              }
+            },
+            "paired_counterfactual_image": {
+              "accuracy": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "paired_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "answer_flip_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "prediction_flip_rate": {
+                "numerator": 147,
+                "denominator": 300,
+                "value": 0.49
+              },
+              "failures": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "samples": 600,
+              "pairs": 300,
+              "by_task": {
+                "color": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 33,
+                    "denominator": 50,
+                    "value": 0.66
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "coordinate": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "count": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 33,
+                    "denominator": 50,
+                    "value": 0.66
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "ocr": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 35,
+                    "denominator": 50,
+                    "value": 0.7
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "shape": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 46,
+                    "denominator": 50,
+                    "value": 0.92
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "spatial": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                }
+              }
+            },
+            "background_matched_aux": {
+              "accuracy": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "paired_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "answer_flip_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "prediction_flip_rate": {
+                "numerator": 112,
+                "denominator": 300,
+                "value": 0.37333333333333335
+              },
+              "failures": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "samples": 600,
+              "pairs": 300,
+              "by_task": {
+                "color": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 14,
+                    "denominator": 50,
+                    "value": 0.28
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "coordinate": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "count": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 34,
+                    "denominator": 50,
+                    "value": 0.68
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "ocr": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 37,
+                    "denominator": 50,
+                    "value": 0.74
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "shape": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 27,
+                    "denominator": 50,
+                    "value": 0.54
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "spatial": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                }
+              }
+            }
+          },
+          "vision_minus_blind": {
+            "overall": 0.0,
+            "by_task": {
+              "color": 0.0,
+              "coordinate": 0.0,
+              "count": 0.0,
+              "ocr": 0.0,
+              "shape": 0.0,
+              "spatial": 0.0
+            }
+          }
+        }
+      },
+      "shuffle_loss": {
+        "records": 32,
+        "failures": 0,
+        "sum_true_loss": 215.90552806854248,
+        "sum_shuffled_loss": 215.3807723879814,
+        "sum_delta": -0.5247556805610634,
+        "mean_true_loss": 6.7470477521419525,
+        "mean_shuffled_loss": 6.730649137124419,
+        "mean_delta": -0.01639861501753323,
+        "repeat_mean_shuffled_losses": [
+          6.761089712381363,
+          6.640994139015675,
+          6.765699990093708,
+          6.777804605662823,
+          6.68161578476429,
+          6.709688037633896,
+          6.747258320450783,
+          6.795519914478064,
+          6.721600286662579,
+          6.705220580101013
+        ],
+        "repeat_shuffle_deltas": [
+          0.0140419602394104,
+          -0.10605361312627792,
+          0.018652237951755524,
+          0.03075685352087021,
+          -0.06543196737766266,
+          -0.03735971450805664,
+          0.00021056830883026123,
+          0.04847216233611107,
+          -0.025447465479373932,
+          -0.04182717204093933
+        ],
+        "shuffle_delta_std": 0.045247166853335866,
+        "shuffle_repeats": 10,
+        "valid_records": 32,
+        "by_source": {
+          "docvqa_train": {
+            "records": 9,
+            "failures": 0,
+            "sum_true_loss": 34.600074768066406,
+            "sum_shuffled_loss": 35.79330623149872,
+            "sum_delta": 1.193231463432313,
+            "mean_true_loss": 3.8444527520073786,
+            "mean_shuffled_loss": 3.9770340257220798,
+            "mean_delta": 0.13258127371470144,
+            "repeat_mean_shuffled_losses": [
+              3.9289104673597546,
+              4.073722177081638,
+              4.091561317443848,
+              3.9962095154656305,
+              3.937404606077406,
+              3.8984439108106823,
+              3.876505454381307,
+              3.9725486967298718,
+              4.052655935287476,
+              3.9423781765831842
+            ],
+            "repeat_shuffle_deltas": [
+              0.084457715352376,
+              0.22926942507425974,
+              0.24710856543646909,
+              0.15175676345825195,
+              0.09295185407002737,
+              0.05399115880330374,
+              0.03205270237392854,
+              0.1280959447224932,
+              0.20820318328009702,
+              0.09792542457580566
+            ],
+            "shuffle_delta_std": 0.07066921919747608
+          },
+          "showui_desktop": {
+            "records": 3,
+            "failures": 0,
+            "sum_true_loss": 16.79201364517212,
+            "sum_shuffled_loss": 16.516034030914305,
+            "sum_delta": -0.27597961425781303,
+            "mean_true_loss": 5.59733788172404,
+            "mean_shuffled_loss": 5.505344676971435,
+            "mean_delta": -0.09199320475260435,
+            "repeat_mean_shuffled_losses": [
+              5.536763350168864,
+              5.3142266273498535,
+              5.718865076700847,
+              5.492440382639567,
+              5.323012828826904,
+              5.561295350392659,
+              5.375515778859456,
+              5.555827776590983,
+              5.532979647318522,
+              5.642519950866699
+            ],
+            "repeat_shuffle_deltas": [
+              -0.06057453155517578,
+              -0.2831112543741865,
+              0.12152719497680664,
+              -0.10489749908447266,
+              -0.2743250528971357,
+              -0.0360425313313808,
+              -0.22182210286458393,
+              -0.04151010513305664,
+              -0.06435823440551758,
+              0.04518206914265921
+            ],
+            "shuffle_delta_std": 0.12594877451568834
+          },
+          "textvqa_train": {
+            "records": 17,
+            "failures": 0,
+            "sum_true_loss": 150.55455541610718,
+            "sum_shuffled_loss": 149.47642167806626,
+            "sum_delta": -1.078133738040922,
+            "mean_true_loss": 8.85615031859454,
+            "mean_shuffled_loss": 8.792730686945074,
+            "mean_delta": -0.063419631649466,
+            "repeat_mean_shuffled_losses": [
+              8.873290174147662,
+              8.640430212020874,
+              8.714582443237305,
+              8.866608619689941,
+              8.774429938372444,
+              8.782205371295705,
+              8.847526466145235,
+              8.903163958998288,
+              8.76229245522443,
+              8.762777230318855
+            ],
+            "repeat_shuffle_deltas": [
+              0.01713985555312192,
+              -0.21572010657366647,
+              -0.1415678753572358,
+              0.010458301095400913,
+              -0.08172038022209627,
+              -0.07394494729883583,
+              -0.008623852449305858,
+              0.04701364040374756,
+              -0.09385786337011126,
+              -0.09337308827568513
+            ],
+            "shuffle_delta_std": 0.07662756864096157
+          },
+          "train": {
+            "records": 3,
+            "failures": 0,
+            "sum_true_loss": 13.958884239196777,
+            "sum_shuffled_loss": 13.595010447502137,
+            "sum_delta": -0.3638737916946413,
+            "mean_true_loss": 4.652961413065593,
+            "mean_shuffled_loss": 4.531670149167379,
+            "mean_delta": -0.12129126389821376,
+            "repeat_mean_shuffled_losses": [
+              4.512817859649658,
+              4.3394397894541425,
+              4.79128368695577,
+              4.571398019790649,
+              4.413572072982788,
+              4.547548214594523,
+              4.829739967981975,
+              4.56080945332845,
+              4.353131691614787,
+              4.396960735321045
+            ],
+            "repeat_shuffle_deltas": [
+              -0.14014355341593454,
+              -0.3135216236114502,
+              0.13832227389017682,
+              -0.08156339327494333,
+              -0.23938934008280466,
+              -0.10541319847106934,
+              0.17677855491638184,
+              -0.09215195973714252,
+              -0.29982972145080566,
+              -0.2560006777445478
+            ],
+            "shuffle_delta_std": 0.1613077816542812
+          }
+        }
+      }
+    },
+    "step-001500": {
+      "id": "step-001500",
+      "kind": "trained",
+      "optimizer_steps": 1500,
+      "examples_seen": 12000,
+      "state_sha256": "f9524215b3ccacb341caf2d1e118d2bc0e2c9855f5f4569157bf75ba5e63ddbf",
+      "last_train_loss": 4.487633004784584,
+      "mean_last_50_train_loss": 3.118087945021689,
+      "effective_epochs": 0.20281918669506135,
+      "initialization_claim": null,
+      "source_path": "/run/media/ezra/13D010B6FDBC1A06/data/gate_b/ckpt/checkpoints/step-001500",
+      "projector_config_sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804",
+      "datasets": {
+        "synthetic": {
+          "kind": "synthetic",
+          "records": 600,
+          "records_manifest_sha256": "5b0136a6edca1abf2ed19c38697f6a7d849ad132efbf25426a08b1b448c1d55d",
+          "conditions": {
+            "vision": {
+              "accuracy": {
+                "numerator": 81,
+                "denominator": 600,
+                "value": 0.135
+              },
+              "paired_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "answer_flip_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "prediction_flip_rate": {
+                "numerator": 82,
+                "denominator": 300,
+                "value": 0.2733333333333333
+              },
+              "failures": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "samples": 600,
+              "pairs": 300,
+              "by_task": {
+                "color": {
+                  "accuracy": {
+                    "numerator": 22,
+                    "denominator": 100,
+                    "value": 0.22
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 20,
+                    "denominator": 50,
+                    "value": 0.4
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "coordinate": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 26,
+                    "denominator": 50,
+                    "value": 0.52
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "count": {
+                  "accuracy": {
+                    "numerator": 11,
+                    "denominator": 100,
+                    "value": 0.11
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "ocr": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 25,
+                    "denominator": 50,
+                    "value": 0.5
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "shape": {
+                  "accuracy": {
+                    "numerator": 26,
+                    "denominator": 100,
+                    "value": 0.26
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "spatial": {
+                  "accuracy": {
+                    "numerator": 22,
+                    "denominator": 100,
+                    "value": 0.22
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 11,
+                    "denominator": 50,
+                    "value": 0.22
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                }
+              }
+            },
+            "blind": {
+              "accuracy": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "paired_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "answer_flip_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "prediction_flip_rate": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "failures": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "samples": 600,
+              "pairs": 300,
+              "by_task": {
+                "color": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "coordinate": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "count": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "ocr": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "shape": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "spatial": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                }
+              }
+            },
+            "shuffled_image": {
+              "accuracy": {
+                "numerator": 88,
+                "denominator": 600,
+                "value": 0.14666666666666667
+              },
+              "paired_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "answer_flip_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "prediction_flip_rate": {
+                "numerator": 57,
+                "denominator": 300,
+                "value": 0.19
+              },
+              "failures": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "samples": 600,
+              "pairs": 300,
+              "by_task": {
+                "color": {
+                  "accuracy": {
+                    "numerator": 18,
+                    "denominator": 100,
+                    "value": 0.18
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 17,
+                    "denominator": 50,
+                    "value": 0.34
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "coordinate": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 21,
+                    "denominator": 50,
+                    "value": 0.42
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "count": {
+                  "accuracy": {
+                    "numerator": 11,
+                    "denominator": 100,
+                    "value": 0.11
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "ocr": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 19,
+                    "denominator": 50,
+                    "value": 0.38
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "shape": {
+                  "accuracy": {
+                    "numerator": 26,
+                    "denominator": 100,
+                    "value": 0.26
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "spatial": {
+                  "accuracy": {
+                    "numerator": 33,
+                    "denominator": 100,
+                    "value": 0.33
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                }
+              }
+            },
+            "paired_counterfactual_image": {
+              "accuracy": {
+                "numerator": 81,
+                "denominator": 600,
+                "value": 0.135
+              },
+              "paired_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "answer_flip_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "prediction_flip_rate": {
+                "numerator": 82,
+                "denominator": 300,
+                "value": 0.2733333333333333
+              },
+              "failures": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "samples": 600,
+              "pairs": 300,
+              "by_task": {
+                "color": {
+                  "accuracy": {
+                    "numerator": 22,
+                    "denominator": 100,
+                    "value": 0.22
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 20,
+                    "denominator": 50,
+                    "value": 0.4
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "coordinate": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 26,
+                    "denominator": 50,
+                    "value": 0.52
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "count": {
+                  "accuracy": {
+                    "numerator": 11,
+                    "denominator": 100,
+                    "value": 0.11
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "ocr": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 25,
+                    "denominator": 50,
+                    "value": 0.5
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "shape": {
+                  "accuracy": {
+                    "numerator": 26,
+                    "denominator": 100,
+                    "value": 0.26
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "spatial": {
+                  "accuracy": {
+                    "numerator": 22,
+                    "denominator": 100,
+                    "value": 0.22
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 11,
+                    "denominator": 50,
+                    "value": 0.22
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                }
+              }
+            },
+            "background_matched_aux": {
+              "accuracy": {
+                "numerator": 88,
+                "denominator": 600,
+                "value": 0.14666666666666667
+              },
+              "paired_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "answer_flip_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "prediction_flip_rate": {
+                "numerator": 51,
+                "denominator": 300,
+                "value": 0.17
+              },
+              "failures": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "samples": 600,
+              "pairs": 300,
+              "by_task": {
+                "color": {
+                  "accuracy": {
+                    "numerator": 18,
+                    "denominator": 100,
+                    "value": 0.18
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 3,
+                    "denominator": 50,
+                    "value": 0.06
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "coordinate": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 28,
+                    "denominator": 50,
+                    "value": 0.56
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "count": {
+                  "accuracy": {
+                    "numerator": 11,
+                    "denominator": 100,
+                    "value": 0.11
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "ocr": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 20,
+                    "denominator": 50,
+                    "value": 0.4
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "shape": {
+                  "accuracy": {
+                    "numerator": 26,
+                    "denominator": 100,
+                    "value": 0.26
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "spatial": {
+                  "accuracy": {
+                    "numerator": 33,
+                    "denominator": 100,
+                    "value": 0.33
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                }
+              }
+            }
+          },
+          "vision_minus_blind": {
+            "overall": 0.135,
+            "by_task": {
+              "color": 0.22,
+              "coordinate": 0.0,
+              "count": 0.11,
+              "ocr": 0.0,
+              "shape": 0.26,
+              "spatial": 0.22
+            }
+          }
+        }
+      },
+      "shuffle_loss": {
+        "records": 32,
+        "failures": 0,
+        "sum_true_loss": 125.71024143695831,
+        "sum_shuffled_loss": 158.61332992911338,
+        "sum_delta": 32.90308849215507,
+        "mean_true_loss": 3.9284450449049473,
+        "mean_shuffled_loss": 4.956666560284793,
+        "mean_delta": 1.028221515379846,
+        "repeat_mean_shuffled_losses": [
+          4.980282932519913,
+          5.578543696552515,
+          4.866072479635477,
+          4.925600362941623,
+          4.73445326462388,
+          4.614295236766338,
+          4.669519700109959,
+          5.5280229188501835,
+          4.69718324393034,
+          4.9726917669177055
+        ],
+        "repeat_shuffle_deltas": [
+          1.0518378876149654,
+          1.6500986516475677,
+          0.9376274347305298,
+          0.9971553180366755,
+          0.8060082197189331,
+          0.6858501918613911,
+          0.7410746552050114,
+          1.5995778739452362,
+          0.7687381990253925,
+          1.0442467220127583
+        ],
+        "shuffle_delta_std": 0.32242021961218786,
+        "shuffle_repeats": 10,
+        "valid_records": 32,
+        "by_source": {
+          "docvqa_train": {
+            "records": 9,
+            "failures": 0,
+            "sum_true_loss": 26.502468705177307,
+            "sum_shuffled_loss": 30.519111764431,
+            "sum_delta": 4.016643059253693,
+            "mean_true_loss": 2.944718745019701,
+            "mean_shuffled_loss": 3.391012418270111,
+            "mean_delta": 0.4462936732504103,
+            "repeat_mean_shuffled_losses": [
+              3.1539940304226346,
+              3.4582732121149697,
+              3.6251719660229154,
+              3.3034744262695312,
+              3.386251793967353,
+              3.3628924555248685,
+              3.3296760188208685,
+              3.532612019115024,
+              3.2791990174187555,
+              3.4785792430241904
+            ],
+            "repeat_shuffle_deltas": [
+              0.2092752854029336,
+              0.5135544670952688,
+              0.6804532210032144,
+              0.35875568124983026,
+              0.4415330489476519,
+              0.4181737105051675,
+              0.3849572738011675,
+              0.5878932740953231,
+              0.33448027239905453,
+              0.5338604980044894
+            ],
+            "shuffle_delta_std": 0.1296115374982443
+          },
+          "showui_desktop": {
+            "records": 3,
+            "failures": 0,
+            "sum_true_loss": 3.592801570892334,
+            "sum_shuffled_loss": 15.025546407699585,
+            "sum_delta": 11.43274483680725,
+            "mean_true_loss": 1.197600523630778,
+            "mean_shuffled_loss": 5.008515469233195,
+            "mean_delta": 3.8109149456024167,
+            "repeat_mean_shuffled_losses": [
+              5.139976183573405,
+              5.151856422424316,
+              5.080706278483073,
+              5.179893493652344,
+              5.131334145863851,
+              3.726226329803467,
+              5.138196150461833,
+              5.2157355944315595,
+              5.121115684509277,
+              5.200114409128825
+            ],
+            "repeat_shuffle_deltas": [
+              3.942375659942627,
+              3.954255898793538,
+              3.883105754852295,
+              3.9822929700215655,
+              3.9337336222330723,
+              2.5286258061726885,
+              3.9405956268310547,
+              4.018135070800781,
+              3.923515160878499,
+              4.002513885498047
+            ],
+            "shuffle_delta_std": 0.42905787191470773
+          },
+          "textvqa_train": {
+            "records": 17,
+            "failures": 0,
+            "sum_true_loss": 86.53703451156616,
+            "sum_shuffled_loss": 99.6274186193943,
+            "sum_delta": 13.09038410782814,
+            "mean_true_loss": 5.0904137947980095,
+            "mean_shuffled_loss": 5.860436389376136,
+            "mean_delta": 0.7700225945781258,
+            "repeat_mean_shuffled_losses": [
+              5.984961663975435,
+              7.010769240996417,
+              5.568116047803094,
+              5.785695857861462,
+              5.390484662616954,
+              5.422551652964423,
+              5.437253938001745,
+              6.8391898519852585,
+              5.29892879373887,
+              5.866412183817695
+            ],
+            "repeat_shuffle_deltas": [
+              0.8945478691774253,
+              1.9203554461984078,
+              0.4777022530050843,
+              0.6952820630634529,
+              0.30007086781894454,
+              0.33213785816641384,
+              0.34684014320373535,
+              1.748776057187249,
+              0.20851499894086079,
+              0.7759983890196853
+            ],
+            "shuffle_delta_std": 0.574001343930812
+          },
+          "train": {
+            "records": 3,
+            "failures": 0,
+            "sum_true_loss": 9.07793664932251,
+            "sum_shuffled_loss": 13.4412531375885,
+            "sum_delta": 4.3633164882659905,
+            "mean_true_loss": 3.0259788831075034,
+            "mean_shuffled_loss": 4.4804177125295,
+            "mean_delta": 1.4544388294219968,
+            "repeat_mean_shuffled_losses": [
+              4.606276909510295,
+              4.250097672144572,
+              4.395893335342407,
+              4.663810571034749,
+              4.664665540059407,
+              4.67645279566447,
+              3.869880278905233,
+              4.396596988042195,
+              5.11731203397115,
+              4.163191000620524
+            ],
+            "repeat_shuffle_deltas": [
+              1.5802980264027915,
+              1.2241187890370688,
+              1.3699144522349038,
+              1.6378316879272456,
+              1.6386866569519039,
+              1.6504739125569663,
+              0.8439013957977295,
+              1.370618104934692,
+              2.091333150863647,
+              1.137212117513021
+            ],
+            "shuffle_delta_std": 0.3268166489439707
+          }
+        }
+      }
+    },
+    "shape-projector-step50": {
+      "id": "shape-projector-step50",
+      "kind": "trained",
+      "optimizer_steps": 1550,
+      "examples_seen": 12400,
+      "state_sha256": "979151c975d2f4059b73bff3224820653113cb72694cd6c72242448c3c0616fa",
+      "last_train_loss": 0.0004868468677159399,
+      "mean_last_50_train_loss": 0.2653493767481996,
+      "effective_epochs": 0.20281918669506135,
+      "initialization_claim": null,
+      "source_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/shape_projector_continuation_v1/checkpoints/step-000050",
+      "projector_config_sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804",
+      "datasets": {
+        "synthetic": {
+          "kind": "synthetic",
+          "records": 600,
+          "records_manifest_sha256": "5b0136a6edca1abf2ed19c38697f6a7d849ad132efbf25426a08b1b448c1d55d",
+          "conditions": {
+            "vision": {
+              "accuracy": {
+                "numerator": 161,
+                "denominator": 600,
+                "value": 0.2683333333333333
+              },
+              "paired_accuracy": {
+                "numerator": 50,
+                "denominator": 300,
+                "value": 0.16666666666666666
+              },
+              "answer_flip_accuracy": {
+                "numerator": 50,
+                "denominator": 300,
+                "value": 0.16666666666666666
+              },
+              "prediction_flip_rate": {
+                "numerator": 79,
+                "denominator": 300,
+                "value": 0.2633333333333333
+              },
+              "failures": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "samples": 600,
+              "pairs": 300,
+              "by_task": {
+                "color": {
+                  "accuracy": {
+                    "numerator": 17,
+                    "denominator": 100,
+                    "value": 0.17
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "coordinate": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "count": {
+                  "accuracy": {
+                    "numerator": 11,
+                    "denominator": 100,
+                    "value": 0.11
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 8,
+                    "denominator": 50,
+                    "value": 0.16
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "ocr": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 4,
+                    "denominator": 50,
+                    "value": 0.08
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "shape": {
+                  "accuracy": {
+                    "numerator": 100,
+                    "denominator": 100,
+                    "value": 1.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 50,
+                    "denominator": 50,
+                    "value": 1.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 50,
+                    "denominator": 50,
+                    "value": 1.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 50,
+                    "denominator": 50,
+                    "value": 1.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "spatial": {
+                  "accuracy": {
+                    "numerator": 33,
+                    "denominator": 100,
+                    "value": 0.33
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 17,
+                    "denominator": 50,
+                    "value": 0.34
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                }
+              }
+            },
+            "blind": {
+              "accuracy": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "paired_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "answer_flip_accuracy": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "prediction_flip_rate": {
+                "numerator": 0,
+                "denominator": 300,
+                "value": 0.0
+              },
+              "failures": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "samples": 600,
+              "pairs": 300,
+              "by_task": {
+                "color": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "coordinate": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "count": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "ocr": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "shape": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "spatial": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                }
+              }
+            },
+            "shuffled_image": {
+              "accuracy": {
+                "numerator": 73,
+                "denominator": 600,
+                "value": 0.12166666666666667
+              },
+              "paired_accuracy": {
+                "numerator": 1,
+                "denominator": 300,
+                "value": 0.0033333333333333335
+              },
+              "answer_flip_accuracy": {
+                "numerator": 1,
+                "denominator": 300,
+                "value": 0.0033333333333333335
+              },
+              "prediction_flip_rate": {
+                "numerator": 46,
+                "denominator": 300,
+                "value": 0.15333333333333332
+              },
+              "failures": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "samples": 600,
+              "pairs": 300,
+              "by_task": {
+                "color": {
+                  "accuracy": {
+                    "numerator": 17,
+                    "denominator": 100,
+                    "value": 0.17
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "coordinate": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "count": {
+                  "accuracy": {
+                    "numerator": 5,
+                    "denominator": 100,
+                    "value": 0.05
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 7,
+                    "denominator": 50,
+                    "value": 0.14
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "ocr": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 1,
+                    "denominator": 50,
+                    "value": 0.02
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "shape": {
+                  "accuracy": {
+                    "numerator": 18,
+                    "denominator": 100,
+                    "value": 0.18
+                  },
+                  "paired_accuracy": {
+                    "numerator": 1,
+                    "denominator": 50,
+                    "value": 0.02
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 1,
+                    "denominator": 50,
+                    "value": 0.02
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 38,
+                    "denominator": 50,
+                    "value": 0.76
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "spatial": {
+                  "accuracy": {
+                    "numerator": 33,
+                    "denominator": 100,
+                    "value": 0.33
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                }
+              }
+            },
+            "paired_counterfactual_image": {
+              "accuracy": {
+                "numerator": 161,
+                "denominator": 600,
+                "value": 0.2683333333333333
+              },
+              "paired_accuracy": {
+                "numerator": 50,
+                "denominator": 300,
+                "value": 0.16666666666666666
+              },
+              "answer_flip_accuracy": {
+                "numerator": 50,
+                "denominator": 300,
+                "value": 0.16666666666666666
+              },
+              "prediction_flip_rate": {
+                "numerator": 79,
+                "denominator": 300,
+                "value": 0.2633333333333333
+              },
+              "failures": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "samples": 600,
+              "pairs": 300,
+              "by_task": {
+                "color": {
+                  "accuracy": {
+                    "numerator": 17,
+                    "denominator": 100,
+                    "value": 0.17
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "coordinate": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "count": {
+                  "accuracy": {
+                    "numerator": 11,
+                    "denominator": 100,
+                    "value": 0.11
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 8,
+                    "denominator": 50,
+                    "value": 0.16
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "ocr": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 4,
+                    "denominator": 50,
+                    "value": 0.08
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "shape": {
+                  "accuracy": {
+                    "numerator": 100,
+                    "denominator": 100,
+                    "value": 1.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 50,
+                    "denominator": 50,
+                    "value": 1.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 50,
+                    "denominator": 50,
+                    "value": 1.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 50,
+                    "denominator": 50,
+                    "value": 1.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "spatial": {
+                  "accuracy": {
+                    "numerator": 33,
+                    "denominator": 100,
+                    "value": 0.33
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 17,
+                    "denominator": 50,
+                    "value": 0.34
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                }
+              }
+            },
+            "background_matched_aux": {
+              "accuracy": {
+                "numerator": 156,
+                "denominator": 600,
+                "value": 0.26
+              },
+              "paired_accuracy": {
+                "numerator": 45,
+                "denominator": 300,
+                "value": 0.15
+              },
+              "answer_flip_accuracy": {
+                "numerator": 45,
+                "denominator": 300,
+                "value": 0.15
+              },
+              "prediction_flip_rate": {
+                "numerator": 60,
+                "denominator": 300,
+                "value": 0.2
+              },
+              "failures": {
+                "numerator": 0,
+                "denominator": 600,
+                "value": 0.0
+              },
+              "samples": 600,
+              "pairs": 300,
+              "by_task": {
+                "color": {
+                  "accuracy": {
+                    "numerator": 17,
+                    "denominator": 100,
+                    "value": 0.17
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "coordinate": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "count": {
+                  "accuracy": {
+                    "numerator": 11,
+                    "denominator": 100,
+                    "value": 0.11
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 12,
+                    "denominator": 50,
+                    "value": 0.24
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "ocr": {
+                  "accuracy": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "shape": {
+                  "accuracy": {
+                    "numerator": 95,
+                    "denominator": 100,
+                    "value": 0.95
+                  },
+                  "paired_accuracy": {
+                    "numerator": 45,
+                    "denominator": 50,
+                    "value": 0.9
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 45,
+                    "denominator": 50,
+                    "value": 0.9
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 48,
+                    "denominator": 50,
+                    "value": 0.96
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                },
+                "spatial": {
+                  "accuracy": {
+                    "numerator": 33,
+                    "denominator": 100,
+                    "value": 0.33
+                  },
+                  "paired_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "answer_flip_accuracy": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "prediction_flip_rate": {
+                    "numerator": 0,
+                    "denominator": 50,
+                    "value": 0.0
+                  },
+                  "failures": {
+                    "numerator": 0,
+                    "denominator": 100,
+                    "value": 0.0
+                  },
+                  "samples": 100,
+                  "pairs": 50
+                }
+              }
+            }
+          },
+          "vision_minus_blind": {
+            "overall": 0.2683333333333333,
+            "by_task": {
+              "color": 0.17,
+              "coordinate": 0.0,
+              "count": 0.11,
+              "ocr": 0.0,
+              "shape": 1.0,
+              "spatial": 0.33
+            }
+          }
+        }
+      },
+      "shuffle_loss": {
+        "records": 32,
+        "failures": 0,
+        "sum_true_loss": 138.7767847776413,
+        "sum_shuffled_loss": 176.48141535520554,
+        "sum_delta": 37.70463057756424,
+        "mean_true_loss": 4.3367745243012905,
+        "mean_shuffled_loss": 5.515044229850173,
+        "mean_delta": 1.1782697055488824,
+        "repeat_mean_shuffled_losses": [
+          5.371281437575817,
+          6.082729447633028,
+          5.4571958519518375,
+          5.636578597128391,
+          5.277717620134354,
+          5.217922504991293,
+          5.010646995157003,
+          6.166703265160322,
+          5.362729776650667,
+          5.566936802119017
+        ],
+        "repeat_shuffle_deltas": [
+          1.0345069132745266,
+          1.7459549233317375,
+          1.120421327650547,
+          1.2998040728271008,
+          0.9409430958330631,
+          0.8811479806900024,
+          0.6738724708557129,
+          1.8299287408590317,
+          1.0259552523493767,
+          1.2301622778177261
+        ],
+        "shuffle_delta_std": 0.34794038621965195,
+        "shuffle_repeats": 10,
+        "valid_records": 32,
+        "by_source": {
+          "docvqa_train": {
+            "records": 9,
+            "failures": 0,
+            "sum_true_loss": 26.87953293323517,
+            "sum_shuffled_loss": 35.84102476835251,
+            "sum_delta": 8.96149183511734,
+            "mean_true_loss": 2.986614770359463,
+            "mean_shuffled_loss": 3.982336085372501,
+            "mean_delta": 0.9957213150130377,
+            "repeat_mean_shuffled_losses": [
+              3.6810694800482855,
+              4.144321627087063,
+              4.242690602938334,
+              3.660413450664944,
+              4.226948446697659,
+              3.918347120285034,
+              3.9969323211246066,
+              4.130285183588664,
+              3.8159036371443005,
+              4.006448984146118
+            ],
+            "repeat_shuffle_deltas": [
+              0.6944547096888223,
+              1.1577068567275997,
+              1.2560758325788712,
+              0.673798680305481,
+              1.2403336763381954,
+              0.931732349925571,
+              1.0103175507651434,
+              1.1436704132292008,
+              0.8292888667848373,
+              1.019834213786655
+            ],
+            "shuffle_delta_std": 0.20068196560721902
+          },
+          "showui_desktop": {
+            "records": 3,
+            "failures": 0,
+            "sum_true_loss": 4.562128782272339,
+            "sum_shuffled_loss": 16.09443179368973,
+            "sum_delta": 11.532303011417389,
+            "mean_true_loss": 1.5207095940907795,
+            "mean_shuffled_loss": 5.364810597896576,
+            "mean_delta": 3.8441010038057963,
+            "repeat_mean_shuffled_losses": [
+              5.496548175811768,
+              5.503041585286458,
+              5.5769805908203125,
+              5.49951966603597,
+              5.474311192830403,
+              4.014569481213887,
+              5.505682627360026,
+              5.583215554555257,
+              5.4604066212972,
+              5.533830483754476
+            ],
+            "repeat_shuffle_deltas": [
+              3.9758385817209883,
+              3.9823319911956787,
+              4.056270996729533,
+              3.9788100719451904,
+              3.953601598739624,
+              2.493859887123108,
+              3.984973033269247,
+              4.0625059604644775,
+              3.939697027206421,
+              4.013120889663696
+            ],
+            "shuffle_delta_std": 0.4516656576496627
+          },
+          "textvqa_train": {
+            "records": 17,
+            "failures": 0,
+            "sum_true_loss": 97.93134927749634,
+            "sum_shuffled_loss": 108.24981180429458,
+            "sum_delta": 10.318462526798248,
+            "mean_true_loss": 5.760667604558608,
+            "mean_shuffled_loss": 6.367635988487916,
+            "mean_delta": 0.6069683839293087,
+            "repeat_mean_shuffled_losses": [
+              6.163159524693208,
+              7.4323725770501525,
+              6.118732185924754,
+              6.683266471414005,
+              5.718965320026173,
+              6.071741693160114,
+              5.550593439270468,
+              7.569998818285325,
+              5.881821260732763,
+              6.485708594322205
+            ],
+            "repeat_shuffle_deltas": [
+              0.4024919201346,
+              1.6717049724915443,
+              0.35806458136614605,
+              0.922598866855397,
+              -0.04170228453243485,
+              0.3110740886015053,
+              -0.21007416528814016,
+              1.8093312137267166,
+              0.12115365617415463,
+              0.7250409897635963
+            ],
+            "shuffle_delta_std": 0.6487348760275131
+          },
+          "train": {
+            "records": 3,
+            "failures": 0,
+            "sum_true_loss": 9.403773784637451,
+            "sum_shuffled_loss": 16.296146988868713,
+            "sum_delta": 6.892373204231262,
+            "mean_true_loss": 3.134591261545817,
+            "mean_shuffled_loss": 5.432048996289571,
+            "mean_delta": 2.297457734743754,
+            "repeat_mean_shuffled_losses": [
+              5.829341411590576,
+              4.829663038253784,
+              5.232220967610677,
+              5.770901679992676,
+              5.733027935028076,
+              5.481692949930827,
+              4.497058868408203,
+              4.907437086105347,
+              6.9640129407246905,
+              5.0751330852508545
+            ],
+            "repeat_shuffle_deltas": [
+              2.6947501500447593,
+              1.6950717767079673,
+              2.09762970606486,
+              2.636310418446859,
+              2.5984366734822593,
+              2.34710168838501,
+              1.3624676068623862,
+              1.7728458245595298,
+              3.8294216791788735,
+              1.9405418237050376
+            ],
+            "shuffle_delta_std": 0.6627399204691645
+          }
+        }
+      }
+    }
+  },
+  "datasets": {
+    "synthetic": {
+      "data_sha256": "210c9d93c37f6300088c7d2387b3fb1bb752509037d5cdcf421685a94dfed758",
+      "logical_dataset_sha256": "122ae820381e11e12c7dd9db03a525b801a5ebee5adbef037919185e65cbaa71",
+      "authoritative_selection_sha256": "51ce274183bd4b7adc6e7201d9aeed259071d380551bf55f656119d201a936d6",
+      "generation_selection_manifest_sha256": "255a0d9b7146a46e8903208e08d323b651e5e27b19267d56b3e2952b775873a2",
+      "records": 600,
+      "feature_cache_manifest_sha256": "762f02401bb5fa4e2aaca6983a203534568879a39e87ecb584ec7ea89f83a7da",
+      "controls_sha256": "25452a3b0abdfd25ac206650050d2df2a9214204092ec5f79b46a5f014637689",
+      "controls_manifest_sha256": "b5a851bb969b41607fc95299df90ec51cc7a0db6c1e0d560380bed1f7abac71e",
+      "control_cache_manifest_sha256": "687ef54ba9f7db0d55f80311868d97e4fb1ff2b774833623395edba1d7df8258",
+      "background_aux_manifest_sha256": "7220f9c824c7e5c1bc0538caf7966a355c96898d92a8c337fb31eab1cb67e7fa",
+      "background_aux_cache_manifest_sha256": "abec718a2d5de5a4ba8a166e635cca9f8c336b525e64c39926705f4513e71800",
+      "max_image_side": 256,
+      "max_new_tokens": 8,
+      "conditions_by_checkpoint": {
+        "step-000000": [
+          "vision",
+          "blind",
+          "shuffled_image",
+          "paired_counterfactual_image",
+          "background_matched_aux"
+        ],
+        "step-001500": [
+          "vision",
+          "blind",
+          "shuffled_image",
+          "paired_counterfactual_image",
+          "background_matched_aux"
+        ],
+        "shape-projector-step50": [
+          "vision",
+          "blind",
+          "shuffled_image",
+          "paired_counterfactual_image",
+          "background_matched_aux"
+        ]
+      }
+    }
+  },
+  "heldout_shuffle_loss": {
+    "data_sha256": "2ea841f21a2bbe93c0d7d7092aa32e7faddb6d57b607fb3e566e6cb98416884d",
+    "feature_cache_manifest_sha256": "7f2191fcf0858e2b946b02424971fd0c2f65c060ebb0c89abce97b0c280697ed",
+    "records": 32,
+    "shuffle_repeats": 10,
+    "max_image_side": 448
+  },
+  "aliases": [],
+  "failures": 0
+}

@@ -560,6 +560,24 @@ def add_vision_gaps(dataset_summary: dict, dataset_config: dict) -> None:
 def checkpoint_training_metrics(checkpoint: dict) -> dict:
     if checkpoint["kind"] == "random":
         return {"last_train_loss": None, "mean_last_50_train_loss": None}
+    if checkpoint.get("history_path"):
+        history_path = Path(checkpoint["history_path"])
+        history = [
+            json.loads(line)
+            for line in history_path.read_text(encoding="utf-8").splitlines()
+            if line
+        ]
+        if checkpoint.get("history_max_step") is not None:
+            maximum = int(checkpoint["history_max_step"])
+            history = [row for row in history if int(row["step"]) <= maximum]
+        if not history:
+            raise ValueError("adaptation checkpoint history is empty")
+        trailing = [float(row["loss"]) for row in history[-50:]]
+        return {
+            "last_train_loss": float(history[-1]["loss"]),
+            "mean_last_50_train_loss": sum(trailing) / len(trailing),
+            "history_sha256": file_sha256(history_path),
+        }
     history_path = Path(checkpoint["path"]) / "history.json"
     payload = json.loads(history_path.read_text(encoding="utf-8"))
     history = payload["history"]

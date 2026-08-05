@@ -62,6 +62,65 @@ def read_frozen_records(data_path: Path, ids_path: Path) -> list[dict]:
     return records
 
 
+def read_adaptation_records(dataset: dict) -> list[dict]:
+    if dataset.get("train_ids"):
+        return read_frozen_records(
+            Path(dataset["train_data"]), Path(dataset["train_ids"])
+        )
+    tasks = [str(task) for task in dataset["tasks"]]
+    records = [
+        row
+        for row in load_records(Path(dataset["train_data"]))
+        if str(row.get("task")) in tasks
+    ]
+    expected = int(dataset["expected_train_records"])
+    if len(records) != expected:
+        raise ValueError(f"adaptation train denominator mismatch: {len(records)} != {expected}")
+    counts = {
+        task: sum(str(row.get("task")) == task for row in records) for task in tasks
+    }
+    if len(set(counts.values())) != 1:
+        raise ValueError(f"adaptation tasks are not balanced: {counts}")
+    pair_counts = {task: set() for task in tasks}
+    for record in records:
+        pair_counts[str(record["task"])].add(str(record["pair_id"]))
+    if any(len(pair_counts[task]) * 2 != counts[task] for task in tasks):
+        raise ValueError("adaptation task contains incomplete counterfactual pairs")
+    return records
+
+
+def balanced_epoch_indices(
+    records: list[dict],
+    *,
+    tasks: list[str],
+    batch_size: int,
+    generator: torch.Generator,
+) -> list[int]:
+    if batch_size % len(tasks) != 0:
+        raise ValueError("balanced adaptation batch must be divisible by task count")
+    quota = batch_size // len(tasks)
+    grouped = {
+        task: [index for index, row in enumerate(records) if str(row["task"]) == task]
+        for task in tasks
+    }
+    sizes = {task: len(indices) for task, indices in grouped.items()}
+    if not sizes or 0 in sizes.values() or len(set(sizes.values())) != 1:
+        raise ValueError(f"balanced adaptation task sizes drifted: {sizes}")
+    if next(iter(sizes.values())) % quota != 0:
+        raise ValueError("per-task record count must be divisible by per-batch quota")
+    shuffled = {
+        task: [indices[index] for index in torch.randperm(len(indices), generator=generator)]
+        for task, indices in grouped.items()
+    }
+    batches = next(iter(sizes.values())) // quota
+    order: list[int] = []
+    for batch_index in range(batches):
+        start = batch_index * quota
+        for task in tasks:
+            order.extend(shuffled[task][start : start + quota])
+    return order
+
+
 def teacher_forced_batch(
     tokenizer,
     records: list[dict],
@@ -263,9 +322,11 @@ def run(args: argparse.Namespace) -> None:
         weight_decay=float(training["weight_decay"]),
     )
     dataset = config["dataset"]
-    train_records = read_frozen_records(
-        Path(dataset["train_data"]), Path(dataset["train_ids"])
-    )
+    train_records = read_adaptation_records(dataset)
+    configured_tasks = dataset.get("tasks")
+    if configured_tasks is None:
+        configured_tasks = [dataset["task"]]
+    tasks = [str(task) for task in configured_tasks]
     cache = FeatureCache(dataset["train_feature_cache"])
     if int(cache.manifest["max_image_side"]) != int(dataset["max_image_side"]):
         raise ValueError("shape adaptation cache resolution mismatch")
@@ -289,6 +350,7 @@ def run(args: argparse.Namespace) -> None:
     generator = torch.Generator(device="cpu").manual_seed(int(config["seed"]))
     order: list[int] = []
     cursor = 0
+    answer_tokens_seen = 0
     history_path = args.out / "train_history.jsonl"
     order_path = args.out / "training_order.jsonl"
     with history_path.open("w", encoding="utf-8", newline="\n") as history_stream, order_path.open(
@@ -296,7 +358,13 @@ def run(args: argparse.Namespace) -> None:
     ) as order_stream:
         for step in range(1, steps + 1):
             if cursor + batch_size > len(order):
-                order.extend(torch.randperm(len(train_records), generator=generator).tolist())
+                order = balanced_epoch_indices(
+                    train_records,
+                    tasks=tasks,
+                    batch_size=batch_size,
+                    generator=generator,
+                )
+                cursor = 0
             indices = order[cursor : cursor + batch_size]
             cursor += batch_size
             batch = [train_records[index] for index in indices]
@@ -328,6 +396,7 @@ def run(args: argparse.Namespace) -> None:
             if not bool(torch.isfinite(grad_norm)):
                 raise ValueError(f"non-finite adaptation gradient at step {step}")
             optimizer.step()
+            answer_tokens_seen += answer_tokens
             if device.type == "cuda":
                 torch.cuda.synchronize(device)
             row = {
@@ -336,7 +405,11 @@ def run(args: argparse.Namespace) -> None:
                 "gradient_norm_before_clip": float(grad_norm),
                 "batch_size": batch_size,
                 "examples_seen": step * batch_size,
-                "answer_tokens_seen": step * answer_tokens,
+                "answer_tokens_seen": answer_tokens_seen,
+                "task_counts": {
+                    task: sum(str(record["task"]) == task for record in batch)
+                    for task in tasks
+                },
                 "step_wall_seconds": time.time() - step_started,
                 "peak_gpu_memory_bytes": (
                     int(torch.cuda.max_memory_allocated(device)) if device.type == "cuda" else 0
@@ -369,7 +442,9 @@ def run(args: argparse.Namespace) -> None:
                 print(json.dumps(row), flush=True)
     summary = {
         "status": "valid",
-        "format_version": "shape-adaptation-training-v1",
+        "format_version": config.get(
+            "training_format_version", "shape-adaptation-training-v1"
+        ),
         "arm": args.arm,
         "kind": arm["kind"],
         "metadata": {
@@ -389,6 +464,11 @@ def run(args: argparse.Namespace) -> None:
         "examples_seen": steps * batch_size,
         "train_records": len(train_records),
         "train_pairs": len({str(record["pair_id"]) for record in train_records}),
+        "tasks": tasks,
+        "train_records_by_task": {
+            task: sum(str(record["task"]) == task for record in train_records)
+            for task in tasks
+        },
         "trainable_parameters": trainable_parameters,
         "resolved_lora_modules": resolved_modules,
         "base_projector_sha256": base_projector_sha256,

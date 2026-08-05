@@ -1,0 +1,28 @@
+{
+  "status": "valid",
+  "format_version": "multitask-transfer-analysis-v1",
+  "created_at_utc": "2026-08-05T00:54:48.283119+00:00",
+  "preference_summary_sha256": "149ff0d5d09c0129fb68b367e25e56bbd951153e3e19b79b5cc4286601bbf47a",
+  "generation_summary_sha256": "bcfef8526c99266ee84f546b698dffee5878c172aa5f07f27b105bc197af056a",
+  "preference_rows": 28800,
+  "generation_rows": 9000,
+  "metric_rows": 567,
+  "contrast_rows": 525,
+  "bootstrap_samples": 2000,
+  "seed": 20260815,
+  "files": {
+    "transfer_metrics.csv": {
+      "bytes": 45259,
+      "sha256": "a60832f0bacc683801f667e9971f1703a18193069f248af1d40730d48a9945f3"
+    },
+    "transfer_contrasts.csv": {
+      "bytes": 101900,
+      "sha256": "c90d7fe5cb58080b8878bf237df3b7b53fcc54017a1de9837640d833d70bcb9d"
+    },
+    "DECISIONS.json": {
+      "bytes": 14294,
+      "sha256": "07268766899ac6adc86ae6e6a213297a3f598e676fc2fa60e0e118a58162db23"
+    }
+  },
+  "final_half_scored": false
+}

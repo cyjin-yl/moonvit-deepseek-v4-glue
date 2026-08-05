@@ -1,0 +1,55 @@
+{
+  "run_id": "v100-perception-balanced-multitask-projector-20260805-v1",
+  "training_format_version": "balanced-multitask-adaptation-training-v1",
+  "seed": 20260814,
+  "device": "cuda",
+  "language_dtype": "bfloat16",
+  "projector_dtype": "float32",
+  "text_model": "/run/media/ezra/13D010B6FDBC1A06/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+  "placeholder_token_id": 151643,
+  "prompt_template": "User: {image}\n{question}\nAssistant:",
+  "base_projector": "/run/media/ezra/13D010B6FDBC1A06/data/gate_b/ckpt/checkpoints/step-001500",
+  "dataset": {
+    "tasks": ["color", "coordinate", "count", "ocr", "shape", "spatial"],
+    "train_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/train.jsonl",
+    "selection_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/selection.jsonl",
+    "controls": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/controls.jsonl",
+    "train_feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/synthetic-train-256-v1",
+    "selection_feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/synthetic-selection-256-v1",
+    "selection_manifest": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/MANIFEST.json",
+    "expected_train_records": 2400,
+    "expected_train_records_per_task": 400,
+    "expected_train_pairs_per_task": 200,
+    "logical_dataset_sha256": "122ae820381e11e12c7dd9db03a525b801a5ebee5adbef037919185e65cbaa71",
+    "max_image_side": 256
+  },
+  "training": {
+    "steps": 100,
+    "batch_size": 24,
+    "learning_rate": 0.0005,
+    "weight_decay": 0.0,
+    "gradient_clip": 1.0,
+    "checkpoint_steps": [0, 25, 50, 100],
+    "examples_per_task_at_final": 400,
+    "balanced_examples_per_task_per_step": 4
+  },
+  "arms": {
+    "balanced_projector_continuation": {
+      "kind": "projector"
+    }
+  },
+  "evaluation": {
+    "teacher_forced_records": 2400,
+    "generation_records": 600,
+    "conditions": ["vision", "shuffled_image", "paired_counterfactual_image"],
+    "generation_max_new_tokens": 8,
+    "bootstrap_seed": 20260815,
+    "bootstrap_samples": 2000
+  },
+  "hard_constraints": {
+    "gpu": "existing Tesla V100-PCIE-32GB only",
+    "rent_new_server": false,
+    "run_full_deepseek_v4": false,
+    "score_final_odd_half": false
+  }
+}

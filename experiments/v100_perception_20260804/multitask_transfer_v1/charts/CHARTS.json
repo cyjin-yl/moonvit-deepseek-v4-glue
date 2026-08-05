@@ -1,0 +1,21 @@
+{
+  "status": "valid",
+  "source_csv": {
+    "experiments\\v100_perception_20260804\\multitask_transfer_v1\\analysis\\transfer_metrics.csv": "a60832f0bacc683801f667e9971f1703a18193069f248af1d40730d48a9945f3",
+    "experiments\\v100_perception_20260804\\multitask_transfer_v1\\analysis\\transfer_contrasts.csv": "c90d7fe5cb58080b8878bf237df3b7b53fcc54017a1de9837640d833d70bcb9d"
+  },
+  "charts": {
+    "01-paired-preference.svg": {
+      "bytes": 4390,
+      "sha256": "e68281cdac835beac94be6356460d078a3758d22efb500347d811f3e12750bc7"
+    },
+    "02-paired-generation.svg": {
+      "bytes": 4388,
+      "sha256": "01bd09dd415ebe708aad99f0f8880a31184de39d691314467229cad80b1a6378"
+    },
+    "03-vision-minus-shuffle.svg": {
+      "bytes": 3337,
+      "sha256": "b0f230c0c50eab5a073ceb2de36fce7410607bb937314ee79b7b13cb2abc1999"
+    }
+  }
+}

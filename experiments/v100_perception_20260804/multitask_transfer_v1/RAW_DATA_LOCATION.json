@@ -1,0 +1,17 @@
+{
+  "status": "valid",
+  "workstation": "doesworkstation",
+  "data_root": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/transfer",
+  "canonical_runs": {
+    "preference": "multitask_transfer_preference_v1",
+    "generation": "multitask_transfer_generation_v1",
+    "analysis": "multitask_transfer_analysis_v1"
+  },
+  "retained_invalid_runs": {
+    "legacy_preference_analysis": "multitask_transfer_preference_v1_analysis"
+  },
+  "git_package": "experiments/v100_perception_20260804/multitask_transfer_v1",
+  "raw_data_committed_losslessly": true,
+  "final_half_scored": false,
+  "paid_resources_used": false
+}
