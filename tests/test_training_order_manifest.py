@@ -5,7 +5,9 @@ import pytest
 from PIL import Image
 
 from moonvit_glue.training_order import (
+    GROUNDING_ENRICHED_SELECTION_RULE,
     build_training_order_manifest,
+    grounding_enriched_source_indices,
     load_ordered_records,
     verify_training_order_manifest,
 )
@@ -152,3 +154,109 @@ def test_training_order_manifest_preserves_punctuation_only_vqa_target(tmp_path)
         == "vqa_raw_majority_empty_normalization_fallback"
     )
     assert verify_training_order_manifest(manifest)
+
+
+def test_grounding_enriched_order_selects_first_rows_per_route_and_alternates(tmp_path):
+    images = tmp_path / "images"
+    images.mkdir()
+    sources = (
+        "textvqa_train",
+        "showui_desktop",
+        "docvqa_train",
+        "showui_desktop",
+        "train",
+        "showui_desktop",
+    )
+    records = []
+    for index, source in enumerate(sources):
+        image_path = images / f"enriched-{index}.png"
+        Image.new("RGB", (9 + index, 7), (index * 20, 30, 40)).save(image_path)
+        records.append(
+            {
+                "id": f"enriched-{index}",
+                "image": f"images/{image_path.name}",
+                "question": f"question {index}",
+                "answers": (
+                    [f"click(start_box=[{index},{index + 1}])"]
+                    if source == "showui_desktop"
+                    else [f"answer {index}"]
+                ),
+                "source": source,
+            }
+        )
+    data_path = tmp_path / "train_mix.jsonl"
+    data_path.write_text(
+        "".join(json.dumps(row, sort_keys=True) + "\n" for row in records),
+        encoding="utf-8",
+    )
+    contract = {
+        "datasets": {
+            "training_pack": {
+                "records": len(records),
+                "sha256": hashlib.sha256(data_path.read_bytes()).hexdigest(),
+                "order_is_frozen": True,
+            }
+        },
+        "training_budget": {
+            "examples_seen_checkpoints": [4],
+            "optimizer_steps_checkpoints": [2],
+            "micro_batch_size": 1,
+            "gradient_accumulation": 2,
+            "real_global_batch": 2,
+        },
+        "image_preprocessing": {
+            "train_max_image_side": 448,
+            "train_max_visual_tokens": 256,
+        },
+        "vision_tower": {
+            "name": "MoonViT-V2",
+            "extracted_weights_sha256": "a" * 64,
+        },
+    }
+
+    source_indices = grounding_enriched_source_indices(
+        records,
+        grounding_examples=2,
+        short_answer_examples=2,
+    )
+    assert source_indices == [1, 0, 3, 2]
+    manifest = build_training_order_manifest(
+        data_path=data_path,
+        contract=contract,
+        contract_sha256="b" * 64,
+        examples_seen=4,
+        source_indices=source_indices,
+        selection_rule=GROUNDING_ENRICHED_SELECTION_RULE,
+        selection_metadata={
+            "grounding_examples": 2,
+            "short_answer_examples": 2,
+            "within_route_order": "frozen_source_order",
+            "merge_rule": "alternate_grounding_then_short_answer",
+        },
+    )
+
+    assert verify_training_order_manifest(manifest)
+    assert manifest["prompt_route_counts"] == {"grounding": 2, "short_answer": 2}
+    assert [row["source_row_index"] for row in manifest["records"]] == [1, 0, 3, 2]
+    assert load_ordered_records(data_path=data_path, manifest=manifest) == [
+        records[index] for index in source_indices
+    ]
+
+    with pytest.raises(ValueError, match="registered selection"):
+        build_training_order_manifest(
+            data_path=data_path,
+            contract=contract,
+            contract_sha256="b" * 64,
+            examples_seen=4,
+            source_indices=[1, 2, 3, 0],
+            selection_rule=GROUNDING_ENRICHED_SELECTION_RULE,
+            selection_metadata={
+                "grounding_examples": 2,
+                "short_answer_examples": 2,
+                "within_route_order": "frozen_source_order",
+                "merge_rule": "alternate_grounding_then_short_answer",
+            },
+        )
+
+    manifest["records"][0]["source_row_index"] = 3
+    assert not verify_training_order_manifest(manifest)

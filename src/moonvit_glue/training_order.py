@@ -7,7 +7,7 @@ import json
 import re
 from collections import Counter
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, Sequence
 
 from PIL import Image
 
@@ -16,6 +16,10 @@ from .metrics import normalize_answer
 
 
 SCHEMA_VERSION = "qwen3b-training-order-v1"
+PREFIX_SELECTION_RULE = "first_n_rows_preserve_source_order"
+GROUNDING_ENRICHED_SELECTION_RULE = (
+    "first_n_per_route_alternate_grounding_then_short_answer"
+)
 
 # 训练包早于评测合同，部分 click 监督只缺少逗号后的 canonical 空格。
 # 这里仅接受单一、完整、整数动作；自然语言、多个坐标和浮点数仍会被拒绝。
@@ -67,6 +71,87 @@ def _load_jsonl(path: Path) -> list[dict[str, Any]]:
 def _prompt_route(record: dict[str, Any]) -> str:
     source = str(record.get("source") or "")
     return "grounding" if source.startswith("showui") else "short_answer"
+
+
+def grounding_enriched_source_indices(
+    records: Sequence[dict[str, Any]],
+    *,
+    grounding_examples: int,
+    short_answer_examples: int,
+) -> list[int]:
+    """按冻结源顺序取两类首批记录，再以 grounding-first 交替合并。"""
+
+    if grounding_examples <= 0 or short_answer_examples <= 0:
+        raise ValueError("grounding-enriched route counts must be positive")
+    by_route = {"grounding": [], "short_answer": []}
+    for source_index, record in enumerate(records):
+        by_route[_prompt_route(record)].append(source_index)
+    requested = {
+        "grounding": int(grounding_examples),
+        "short_answer": int(short_answer_examples),
+    }
+    for route, count in requested.items():
+        if count > len(by_route[route]):
+            raise ValueError(
+                f"grounding-enriched selection exceeds {route} records: "
+                f"{count} > {len(by_route[route])}"
+            )
+    selected: list[int] = []
+    for offset in range(max(requested.values())):
+        if offset < requested["grounding"]:
+            selected.append(by_route["grounding"][offset])
+        if offset < requested["short_answer"]:
+            selected.append(by_route["short_answer"][offset])
+    return selected
+
+
+def _validated_selection_metadata(
+    *,
+    records: Sequence[dict[str, Any]],
+    selected_indices: Sequence[int],
+    selection_rule: str,
+    selection_metadata: dict[str, Any] | None,
+    reserved_fields: set[str],
+) -> dict[str, Any]:
+    """在读取图片前验证预注册选样规则与其元数据。"""
+
+    metadata = dict(selection_metadata or {})
+    reserved = reserved_fields & set(metadata)
+    if reserved:
+        raise ValueError(f"selection metadata overrides reserved fields: {sorted(reserved)}")
+
+    if selection_rule == PREFIX_SELECTION_RULE:
+        if list(selected_indices) != list(range(len(selected_indices))):
+            raise ValueError("prefix selection requires the exact leading source rows")
+        return metadata
+
+    if selection_rule != GROUNDING_ENRICHED_SELECTION_RULE:
+        raise ValueError(f"unknown training selection rule: {selection_rule}")
+    required_metadata = {
+        "grounding_examples",
+        "short_answer_examples",
+        "within_route_order",
+        "merge_rule",
+    }
+    missing = required_metadata - set(metadata)
+    if missing:
+        raise ValueError(
+            f"grounding-enriched selection metadata is missing: {sorted(missing)}"
+        )
+    if metadata["within_route_order"] != "frozen_source_order":
+        raise ValueError("grounding-enriched selection must preserve route source order")
+    if metadata["merge_rule"] != "alternate_grounding_then_short_answer":
+        raise ValueError("grounding-enriched selection must use the registered merge rule")
+    expected_indices = grounding_enriched_source_indices(
+        records,
+        grounding_examples=int(metadata["grounding_examples"]),
+        short_answer_examples=int(metadata["short_answer_examples"]),
+    )
+    if list(selected_indices) != expected_indices:
+        raise ValueError(
+            "grounding-enriched source indices differ from the registered selection"
+        )
+    return metadata
 
 
 def canonical_training_target(
@@ -126,8 +211,11 @@ def build_training_order_manifest(
     contract_sha256: str,
     examples_seen: int,
     progress: Callable[[int, int], None] | None = None,
+    source_indices: Sequence[int] | None = None,
+    selection_rule: str = PREFIX_SELECTION_RULE,
+    selection_metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """取冻结训练包前 N 行，并绑定每一行与原始图像的 SHA-256。"""
+    """按预注册索引取记录，并绑定每一行与原始图像的 SHA-256。"""
 
     data_path = Path(data_path).resolve()
     training_pack = contract["datasets"]["training_pack"]
@@ -161,11 +249,45 @@ def build_training_order_manifest(
     if optimizer_steps != int(budget["optimizer_steps_checkpoints"][checkpoint_index]):
         raise ValueError("examples-seen and optimizer-step checkpoints disagree")
 
-    selected = records[:examples_seen]
+    if source_indices is None:
+        if selection_rule != PREFIX_SELECTION_RULE:
+            raise ValueError("non-prefix selection requires explicit source indices")
+        selected_indices = list(range(examples_seen))
+    else:
+        selected_indices = [int(value) for value in source_indices]
+    if len(selected_indices) != examples_seen:
+        raise ValueError("source index count differs from examples_seen")
+    if len(selected_indices) != len(set(selected_indices)):
+        raise ValueError("training selection contains duplicate source indices")
+    if any(index < 0 or index >= len(records) for index in selected_indices):
+        raise ValueError("training selection source index is out of range")
+
+    reserved_selection_fields = {
+        "rule",
+        "shuffle",
+        "holdout_removed",
+        "examples_seen",
+        "optimizer_steps",
+        "micro_batch_size",
+        "gradient_accumulation",
+        "real_global_batch",
+        "subset_passes",
+        "effective_epochs_denominator",
+        "effective_epochs",
+    }
+    metadata = _validated_selection_metadata(
+        records=records,
+        selected_indices=selected_indices,
+        selection_rule=selection_rule,
+        selection_metadata=selection_metadata,
+        reserved_fields=reserved_selection_fields,
+    )
+
+    selected = [(source_index, records[source_index]) for source_index in selected_indices]
     seen_ids: set[str] = set()
     image_root = data_path.parent.resolve()
     manifest_records: list[dict[str, Any]] = []
-    for index, record in enumerate(selected):
+    for index, (source_index, record) in enumerate(selected):
         record_id = str(record.get("id") or "")
         if not record_id or record_id in seen_ids:
             raise ValueError(f"training record id is empty or duplicated: {record_id!r}")
@@ -190,7 +312,7 @@ def build_training_order_manifest(
         manifest_records.append(
             {
                 "index": index,
-                "source_row_index": index,
+                "source_row_index": source_index,
                 "id": record_id,
                 "source": str(record.get("source") or "unknown"),
                 "image": relative_image.as_posix(),
@@ -221,6 +343,21 @@ def build_training_order_manifest(
     )
     image_hashes = [row["image_sha256"] for row in manifest_records]
     effective_denominator = int(budget.get("effective_epochs_denominator", expected_total))
+    selection: dict[str, Any] = {
+        "rule": selection_rule,
+        "shuffle": False,
+        "holdout_removed": False,
+        "examples_seen": examples_seen,
+        "optimizer_steps": optimizer_steps,
+        "micro_batch_size": micro_batch,
+        "gradient_accumulation": accumulation,
+        "real_global_batch": global_batch,
+        "subset_passes": 1.0,
+        "effective_epochs_denominator": effective_denominator,
+        "effective_epochs": examples_seen / effective_denominator,
+    }
+    selection.update(metadata)
+
     manifest: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "contract_sha256": str(contract_sha256),
@@ -230,19 +367,7 @@ def build_training_order_manifest(
             "sha256": actual_data_sha256,
             "total_records": len(records),
         },
-        "selection": {
-            "rule": "first_n_rows_preserve_source_order",
-            "shuffle": False,
-            "holdout_removed": False,
-            "examples_seen": examples_seen,
-            "optimizer_steps": optimizer_steps,
-            "micro_batch_size": micro_batch,
-            "gradient_accumulation": accumulation,
-            "real_global_batch": global_batch,
-            "subset_passes": 1.0,
-            "effective_epochs_denominator": effective_denominator,
-            "effective_epochs": examples_seen / effective_denominator,
-        },
+        "selection": selection,
         "feature_cache": {
             "vision_tower": contract["vision_tower"]["name"],
             "moonvit_weights_sha256": contract["vision_tower"][
@@ -285,7 +410,52 @@ def verify_training_order_manifest(manifest: dict[str, Any]) -> bool:
             return False
         if [row["index"] for row in records] != list(range(len(records))):
             return False
-        if [row["source_row_index"] for row in records] != list(range(len(records))):
+        selection = manifest["selection"]
+        if selection.get("shuffle") is not False:
+            return False
+        if selection.get("holdout_removed") is not False:
+            return False
+        source_indices = [int(row["source_row_index"]) for row in records]
+        if len(source_indices) != len(set(source_indices)):
+            return False
+        if any(
+            index < 0 or index >= int(manifest["data"]["total_records"])
+            for index in source_indices
+        ):
+            return False
+        rule = str(selection["rule"])
+        if rule == PREFIX_SELECTION_RULE:
+            if source_indices != list(range(len(records))):
+                return False
+        elif rule == GROUNDING_ENRICHED_SELECTION_RULE:
+            if (
+                selection.get("within_route_order") != "frozen_source_order"
+                or selection.get("merge_rule")
+                != "alternate_grounding_then_short_answer"
+            ):
+                return False
+            grounding = int(selection["grounding_examples"])
+            short_answer = int(selection["short_answer_examples"])
+            if grounding + short_answer != len(records):
+                return False
+            expected_routes = []
+            for offset in range(max(grounding, short_answer)):
+                if offset < grounding:
+                    expected_routes.append("grounding")
+                if offset < short_answer:
+                    expected_routes.append("short_answer")
+            actual_routes = [str(row["prompt_route"]) for row in records]
+            if actual_routes != expected_routes:
+                return False
+            for route in ("grounding", "short_answer"):
+                route_indices = [
+                    source_index
+                    for source_index, actual_route in zip(source_indices, actual_routes)
+                    if actual_route == route
+                ]
+                if route_indices != sorted(route_indices):
+                    return False
+        else:
             return False
         ids = [str(row["id"]) for row in records]
         if len(ids) != len(set(ids)) or len(records) != int(
@@ -313,7 +483,6 @@ def verify_training_order_manifest(manifest: dict[str, Any]) -> bool:
                 return False
             if row["prompt_route"] == "grounding" and parse_click_action(target) is None:
                 return False
-        selection = manifest["selection"]
         if (
             int(selection["micro_batch_size"])
             * int(selection["gradient_accumulation"])

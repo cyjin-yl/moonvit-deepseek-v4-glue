@@ -14,7 +14,10 @@ from PIL import Image
 
 from moonvit_glue.grounding_contract import parse_click_action
 from moonvit_glue.training_order import (
+    GROUNDING_ENRICHED_SELECTION_RULE,
+    PREFIX_SELECTION_RULE,
     canonical_training_target,
+    grounding_enriched_source_indices,
     verify_training_order_manifest,
 )
 
@@ -58,6 +61,37 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def _selection_matches_registered_rule(
+    manifest: dict[str, Any], source_records: list[dict[str, Any]]
+) -> bool:
+    try:
+        selection = manifest["selection"]
+        if selection.get("shuffle") is not False:
+            return False
+        if selection.get("holdout_removed") is not False:
+            return False
+        source_indices = [
+            int(row["source_row_index"]) for row in manifest["records"]
+        ]
+        rule = str(selection.get("rule"))
+        if rule == PREFIX_SELECTION_RULE:
+            return source_indices == list(range(len(source_indices)))
+        if rule != GROUNDING_ENRICHED_SELECTION_RULE:
+            return False
+        if selection.get("within_route_order") != "frozen_source_order":
+            return False
+        if selection.get("merge_rule") != "alternate_grounding_then_short_answer":
+            return False
+        expected = grounding_enriched_source_indices(
+            source_records,
+            grounding_examples=int(selection["grounding_examples"]),
+            short_answer_examples=int(selection["short_answer_examples"]),
+        )
+        return source_indices == expected
+    except (KeyError, TypeError, ValueError):
+        return False
+
+
 def main() -> None:
     args = parse_args()
     if args.out.exists():
@@ -73,14 +107,15 @@ def main() -> None:
     matched_image_bytes = 0
     for offset, entry in enumerate(entries):
         source_index = int(entry["source_row_index"])
-        if source_index >= len(source_records):
+        if source_index < 0 or source_index >= len(source_records):
             record_mismatches.append(f"{offset}:source_row_out_of_range")
+            image_mismatches.append(f"{offset}:source_row_out_of_range")
+            target_mismatches.append(f"{offset}:source_row_out_of_range")
             continue
         record = source_records[source_index]
         record_id = str(entry["id"])
         if (
-            source_index != offset
-            or str(record.get("id")) != record_id
+            str(record.get("id")) != record_id
             or _logical_sha256(record) != str(entry["record_sha256"])
             or hashlib.sha256(
                 str(record.get("question") or "").encode("utf-8")
@@ -153,10 +188,8 @@ def main() -> None:
         "prompt_route_counts": route_counts == manifest["prompt_route_counts"],
         "target_transform_counts": transform_counts
         == manifest["target_transform_counts"],
-        "selection_is_prefix_without_shuffle_or_holdout": (
-            manifest["selection"]["rule"] == "first_n_rows_preserve_source_order"
-            and manifest["selection"]["shuffle"] is False
-            and manifest["selection"]["holdout_removed"] is False
+        "selection_matches_registered_rule": _selection_matches_registered_rule(
+            manifest, source_records
         ),
         "no_training_result_or_final_half": (
             manifest["training_results_exist"] is False
