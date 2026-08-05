@@ -1,0 +1,45 @@
+[1/4000] froze record and image identity
+[100/4000] froze record and image identity
+[200/4000] froze record and image identity
+[300/4000] froze record and image identity
+[400/4000] froze record and image identity
+[500/4000] froze record and image identity
+[600/4000] froze record and image identity
+[700/4000] froze record and image identity
+[800/4000] froze record and image identity
+[900/4000] froze record and image identity
+[1000/4000] froze record and image identity
+[1100/4000] froze record and image identity
+[1200/4000] froze record and image identity
+[1300/4000] froze record and image identity
+[1400/4000] froze record and image identity
+[1500/4000] froze record and image identity
+[1600/4000] froze record and image identity
+[1700/4000] froze record and image identity
+[1800/4000] froze record and image identity
+[1900/4000] froze record and image identity
+[2000/4000] froze record and image identity
+[2100/4000] froze record and image identity
+[2200/4000] froze record and image identity
+[2300/4000] froze record and image identity
+[2400/4000] froze record and image identity
+[2500/4000] froze record and image identity
+Traceback (most recent call last):
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15c-run/src/moonvit_glue/training_order.py", line 166, in build_training_order_manifest
+    target_answer, target_transform = canonical_training_target(record)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15c-run/src/moonvit_glue/training_order.py", line 109, in canonical_training_target
+    raise ValueError("normalized majority answer is empty")
+ValueError: normalized majority answer is empty
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15c-run/tools/freeze_qwen3b_training_order.py", line 79, in <module>
+    main()
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15c-run/tools/freeze_qwen3b_training_order.py", line 41, in main
+    manifest = build_training_order_manifest(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15c-run/src/moonvit_glue/training_order.py", line 168, in build_training_order_manifest
+    raise ValueError(f"invalid training target for {record_id}: {error}") from error
+ValueError: invalid training target for textvqa_train_007898: normalized majority answer is empty

@@ -1,0 +1,14 @@
+{
+  "schema_version": "qwen3b-training-order-failure-v1",
+  "status": "invalid",
+  "attempt": 2,
+  "failed_at_stage": "teacher_target_selection",
+  "record_id": "textvqa_train_007898",
+  "reason": "the majority answer '(' is semantically carried by punctuation and becomes empty under VQA answer normalization",
+  "resolution": "when the normalized majority is empty, use deterministic majority vote over stripped raw answers and record the fallback transform",
+  "manifest_written": false,
+  "training_results_exist": false,
+  "final_half_scored": false,
+  "capability_claim_allowed": false,
+  "paid_resources_used": false
+}

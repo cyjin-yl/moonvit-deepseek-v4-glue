@@ -1,0 +1,68 @@
+[1/4000] froze record and image identity
+[100/4000] froze record and image identity
+[200/4000] froze record and image identity
+[300/4000] froze record and image identity
+[400/4000] froze record and image identity
+[500/4000] froze record and image identity
+[600/4000] froze record and image identity
+[700/4000] froze record and image identity
+[800/4000] froze record and image identity
+[900/4000] froze record and image identity
+[1000/4000] froze record and image identity
+[1100/4000] froze record and image identity
+[1200/4000] froze record and image identity
+[1300/4000] froze record and image identity
+[1400/4000] froze record and image identity
+[1500/4000] froze record and image identity
+[1600/4000] froze record and image identity
+[1700/4000] froze record and image identity
+[1800/4000] froze record and image identity
+[1900/4000] froze record and image identity
+[2000/4000] froze record and image identity
+[2100/4000] froze record and image identity
+[2200/4000] froze record and image identity
+[2300/4000] froze record and image identity
+[2400/4000] froze record and image identity
+[2500/4000] froze record and image identity
+[2600/4000] froze record and image identity
+[2700/4000] froze record and image identity
+[2800/4000] froze record and image identity
+[2900/4000] froze record and image identity
+[3000/4000] froze record and image identity
+[3100/4000] froze record and image identity
+[3200/4000] froze record and image identity
+[3300/4000] froze record and image identity
+[3400/4000] froze record and image identity
+[3500/4000] froze record and image identity
+[3600/4000] froze record and image identity
+[3700/4000] froze record and image identity
+[3800/4000] froze record and image identity
+[3900/4000] froze record and image identity
+[4000/4000] froze record and image identity
+{
+  "status": "frozen",
+  "out": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/training_order_v1_retry2/MANIFEST.json",
+  "manifest_sha256": "ddca738e366f37237354bb011bdff1a00d010bdf256ef9101a6adbf35ab9c2fd",
+  "records_sha256": "61fa7360208b90bb791914c27801cc90d702d579155d798d39ae4e400f7f315e",
+  "examples_seen": 4000,
+  "optimizer_steps": 500,
+  "source_counts": {
+    "docvqa_train": 1160,
+    "showui_desktop": 339,
+    "textvqa_train": 1985,
+    "train": 516
+  },
+  "prompt_route_counts": {
+    "grounding": 339,
+    "short_answer": 3661
+  },
+  "target_transform_counts": {
+    "legacy_click_spacing_to_canonical": 339,
+    "single_answer_passthrough": 1198,
+    "vqa_normalized_majority": 2461,
+    "vqa_raw_majority_empty_normalization_fallback": 2
+  },
+  "unique_image_sha256": 3534,
+  "training_results_exist": false,
+  "final_half_scored": false
+}

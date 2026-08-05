@@ -1,0 +1,14 @@
+{
+  "schema_version": "qwen3b-training-order-failure-v1",
+  "status": "invalid",
+  "attempt": 1,
+  "failed_at_stage": "target_contract_validation",
+  "record_id": "showui_desktop_003814",
+  "reason": "the frozen source answer used the legacy click(start_box=[423,423]) spelling without the canonical post-comma space",
+  "resolution": "retain the raw answers hash and deterministically canonicalize only a complete single integer click action",
+  "manifest_written": false,
+  "training_results_exist": false,
+  "final_half_scored": false,
+  "capability_claim_allowed": false,
+  "paid_resources_used": false
+}

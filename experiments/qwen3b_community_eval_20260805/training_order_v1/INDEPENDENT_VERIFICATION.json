@@ -1,0 +1,51 @@
+{
+  "checked_records": 4000,
+  "checks": {
+    "contract_sha256": true,
+    "data_bytes": true,
+    "data_row_count": true,
+    "data_sha256": true,
+    "image_sha256_bytes_and_dimensions": true,
+    "manifest_internal_verifier": true,
+    "no_training_result_or_final_half": true,
+    "prompt_route_counts": true,
+    "record_id_and_logical_hashes": true,
+    "records_sha256": true,
+    "selection_is_prefix_without_shuffle_or_holdout": true,
+    "source_counts": true,
+    "target_transform_counts": true,
+    "teacher_targets_and_transforms": true
+  },
+  "declared_image_bytes": 1523324154,
+  "final_half_scored": false,
+  "image_mismatches": [],
+  "manifest_file_sha256": "b1c8b18ccf607a2337f0857d0386eca6f7e9a89dabc6b115325562843719c7e7",
+  "manifest_sha256": "ddca738e366f37237354bb011bdff1a00d010bdf256ef9101a6adbf35ab9c2fd",
+  "matched_image_bytes": 1523324154,
+  "matched_images": 4000,
+  "matched_records": 4000,
+  "matched_targets": 4000,
+  "paid_resources_used": false,
+  "prompt_route_counts": {
+    "grounding": 339,
+    "short_answer": 3661
+  },
+  "record_mismatches": [],
+  "records_sha256": "61fa7360208b90bb791914c27801cc90d702d579155d798d39ae4e400f7f315e",
+  "schema_version": "qwen3b-training-order-independent-verification-v1",
+  "source_counts": {
+    "docvqa_train": 1160,
+    "showui_desktop": 339,
+    "textvqa_train": 1985,
+    "train": 516
+  },
+  "status": "valid",
+  "target_mismatches": [],
+  "target_transform_counts": {
+    "legacy_click_spacing_to_canonical": 339,
+    "single_answer_passthrough": 1198,
+    "vqa_normalized_majority": 2461,
+    "vqa_raw_majority_empty_normalization_fallback": 2
+  },
+  "training_results_exist": false
+}

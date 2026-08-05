@@ -1,0 +1,10 @@
+[1/4000] froze record and image identity
+Traceback (most recent call last):
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15c-run/tools/freeze_qwen3b_training_order.py", line 78, in <module>
+    main()
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15c-run/tools/freeze_qwen3b_training_order.py", line 41, in main
+    manifest = build_training_order_manifest(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15c-run/src/moonvit_glue/training_order.py", line 130, in build_training_order_manifest
+    raise ValueError(f"grounding answer violates the strict click format: {record_id}")
+ValueError: grounding answer violates the strict click format: showui_desktop_003814
