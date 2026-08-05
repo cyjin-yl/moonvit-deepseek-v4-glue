@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 
 from eval_qwen3b_screenspot_preference import (
     read_partial,
+    role_labeled_summary_rows,
     score_candidate_pair,
     supervision_batch,
 )
@@ -120,3 +121,15 @@ def test_preference_resume_rows_must_be_exact_condition_prefix(tmp_path):
         read_partial(path, expected_ids=["b", "a"], expected_condition="vision")
     with pytest.raises(ValueError, match="condition differs"):
         read_partial(path, expected_ids=["a", "b"], expected_condition="blind")
+
+
+def test_role_labeled_summary_rows_keep_aliases_as_distinct_conditions():
+    source_row = {"sample_id": "a", "condition": "current_candidate"}
+    rows = role_labeled_summary_rows(
+        {
+            "current_candidate": [source_row],
+            "vision": [dict(source_row)],
+        }
+    )
+    assert [row["condition"] for row in rows] == ["current_candidate", "vision"]
+    assert source_row["condition"] == "current_candidate"

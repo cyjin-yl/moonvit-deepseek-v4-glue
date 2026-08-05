@@ -186,6 +186,18 @@ def read_partial(
     return rows
 
 
+def role_labeled_summary_rows(
+    rows_by_condition: dict[str, list[dict[str, Any]]],
+) -> list[dict[str, Any]]:
+    """按文件角色标记汇总行，避免 alias 复制后重复聚合源 condition。"""
+
+    return [
+        {**row, "condition": condition}
+        for condition, rows in rows_by_condition.items()
+        for row in rows
+    ]
+
+
 def run_condition(
     *,
     name: str,
@@ -606,7 +618,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         for path in sorted(rows_dir.glob("*.jsonl"))
         if ".partial" not in path.name
     }
-    flat_rows = [row for rows in rows_by_condition.values() for row in rows]
+    flat_rows = role_labeled_summary_rows(rows_by_condition)
     preference_summary = summarize_preference_rows(flat_rows)
     comparison_specs = {
         "vision-minus-blind": ("vision", "blind"),
