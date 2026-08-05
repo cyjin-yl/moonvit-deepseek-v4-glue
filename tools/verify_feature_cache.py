@@ -37,16 +37,50 @@ def verify_feature_cache(root: Path, *, expected_count: int | None = None) -> di
         if sha256(path) != str(expected["sha256"]):
             raise ValueError(f"feature shard SHA-256 mismatch: {name}")
 
+    records_by_id = {str(record["id"]): record for record in manifest["records"]}
+    if len(records_by_id) != len(manifest["records"]):
+        raise ValueError("feature cache contains duplicate record IDs")
     values = 0
+    unique_values = 0
+    spans: set[tuple[str, int, int]] = set()
+    aliases = 0
     for record in manifest["records"]:
         if str(record["shard"]) not in known_shards:
             raise ValueError(f"record points outside manifest shards: {record['id']}")
+        span = (str(record["shard"]), int(record["start"]), int(record["end"]))
+        if "alias_of" in record:
+            aliases += 1
+            source = records_by_id.get(str(record["alias_of"]))
+            if source is None or "alias_of" in source:
+                raise ValueError(f"invalid canonical alias source: {record['id']}")
+            comparable = (
+                "image_sha256",
+                "image_width",
+                "image_height",
+                "feature_shape",
+                "dtype",
+                "shard",
+                "start",
+                "end",
+            )
+            if any(record[key] != source[key] for key in comparable):
+                raise ValueError(f"alias differs from source feature identity: {record['id']}")
         feature = cache.get(str(record["id"]))[0]
         if list(feature.shape) != list(record["feature_shape"]):
             raise ValueError(f"feature shape mismatch: {record['id']}")
         if not bool(torch.isfinite(feature).all()):
             raise ValueError(f"non-finite cached feature: {record['id']}")
         values += feature.numel()
+        if span not in spans:
+            unique_values += feature.numel()
+            spans.add(span)
+
+    if "unique_feature_spans" in manifest and len(spans) != int(
+        manifest["unique_feature_spans"]
+    ):
+        raise ValueError("unique feature span count differs from manifest")
+    if "aliased_records" in manifest and aliases != int(manifest["aliased_records"]):
+        raise ValueError("aliased record count differs from manifest")
 
     return {
         "status": "valid",
@@ -55,6 +89,9 @@ def verify_feature_cache(root: Path, *, expected_count: int | None = None) -> di
         "records_verified": len(manifest["records"]),
         "shards_verified": len(known_shards),
         "values_verified": values,
+        "unique_values_verified": unique_values,
+        "unique_feature_spans": len(spans),
+        "aliased_records": aliases,
         "total_shard_bytes": sum(int(row["bytes"]) for row in known_shards.values()),
     }
 
