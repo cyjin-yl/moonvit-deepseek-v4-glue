@@ -97,3 +97,16 @@ def test_training_order_feature_shape_enforces_visual_token_budget():
             record_id="too-many",
             feature_shape=(257, 4, 1024),
         )
+
+
+def test_binding_manifest_metadata_hashes_file_and_records_identity(tmp_path):
+    path = tmp_path / "MANIFEST.json"
+    path.write_text(
+        '{"name":"screenspot_glm50_v1","manifest_sha256":"abc"}\n',
+        encoding="utf-8",
+    )
+    result = cache_moonvit_features.binding_manifest_metadata(path)
+    assert result["binding_manifest"] == str(path.resolve())
+    assert result["binding_manifest_name"] == "screenspot_glm50_v1"
+    assert result["binding_manifest_sha256"] == "abc"
+    assert len(result["binding_manifest_file_sha256"]) == 64

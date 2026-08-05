@@ -169,6 +169,29 @@ def validate_training_order_feature_shape(
         raise ValueError(f"visual token count exceeds training contract: {record_id}")
 
 
+def binding_manifest_metadata(path: Path | None) -> dict[str, str | None]:
+    """记录通用评测 manifest 的文件身份与自声明身份。"""
+
+    if path is None:
+        return {
+            "binding_manifest": None,
+            "binding_manifest_file_sha256": None,
+            "binding_manifest_sha256": None,
+            "binding_manifest_name": None,
+        }
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload.get("manifest_sha256"), str) or not isinstance(
+        payload.get("name"), str
+    ):
+        raise ValueError("binding manifest requires string name and manifest_sha256")
+    return {
+        "binding_manifest": str(path.resolve()),
+        "binding_manifest_file_sha256": sha256_file(path),
+        "binding_manifest_sha256": str(payload["manifest_sha256"]),
+        "binding_manifest_name": str(payload["name"]),
+    }
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data", required=True, type=Path)
@@ -180,6 +203,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--max-image-side", type=int, default=448)
     parser.add_argument("--training-order-manifest", type=Path, default=None)
+    parser.add_argument("--binding-manifest", type=Path, default=None,
+                        help="Bind a general evaluation cache to a frozen manifest")
     parser.add_argument("--ids-manifest", type=Path, default=None)
     parser.add_argument("--record-slice", choices=["even", "odd"], default=None)
     parser.add_argument("--limit", type=int, default=None)
@@ -258,6 +283,7 @@ def main() -> None:
         "training_order_records_sha256": (
             training_order["records_sha256"] if training_order else None
         ),
+        **binding_manifest_metadata(args.binding_manifest),
         "record_slice": args.record_slice,
         "shuffle_seed": args.shuffle_seed,
         "max_image_side": args.max_image_side,
