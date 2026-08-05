@@ -55,6 +55,7 @@ class VisionCausalLM(nn.Module):
         *,
         language_model: nn.Module,
         projector: PatchMergerProjector,
+        receiver_adapter: nn.Module | None = None,
         placeholder_token_id: int,
         backbone_kind: BackboneKind = "auto",
         freeze_language_model: bool = True,
@@ -64,6 +65,7 @@ class VisionCausalLM(nn.Module):
         super().__init__()
         self.language_model = language_model
         self.projector = projector
+        self.receiver_adapter = receiver_adapter
         self.placeholder_token_id = placeholder_token_id
         self.ignore_index = ignore_index
         self.pad_token_id = pad_token_id
@@ -79,6 +81,13 @@ class VisionCausalLM(nn.Module):
         if freeze_language_model:
             self.language_model.requires_grad_(False)
             self.language_model.eval()
+
+    def _receiver_embeddings(self, image_embeddings: Sequence[Tensor]) -> list[Tensor]:
+        """把 canonical projector 输出映射到当前代理主干的接收宽度。"""
+
+        if self.receiver_adapter is None:
+            return list(image_embeddings)
+        return [self.receiver_adapter(item) for item in image_embeddings]
 
     def train(self, mode: bool = True) -> "VisionCausalLM":
         super().train(mode)
@@ -123,6 +132,7 @@ class VisionCausalLM(nn.Module):
             )
         if image_embeddings is None:
             image_embeddings = self.projector(image_feature_groups or [])
+        image_embeddings = self._receiver_embeddings(image_embeddings)
 
         embedding = self.language_model.get_input_embeddings()
         text_embeddings = embedding(input_ids)
@@ -163,6 +173,7 @@ class VisionCausalLM(nn.Module):
             )
         if image_embeddings is None:
             image_embeddings = self.projector(image_feature_groups or [])
+        image_embeddings = self._receiver_embeddings(image_embeddings)
 
         embedding = self.language_model.get_input_embeddings()
         text_embeddings = embedding(input_ids)

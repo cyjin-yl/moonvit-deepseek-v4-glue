@@ -102,11 +102,18 @@ python -m pip install -e ".[large-model]"
 
 证据必须分层解读：原生 Qwen3.5 VLM 使用自己的视觉塔与既有多模态对齐，只能作为“数据/processor/评分器正常”的阳性对照，不能证明本项目的 MoonViT-V2 projector 能接入纯文本 DeepSeek。真正的租前接口实验使用 `Qwen2ForCausalLM`（无 `vision_config`）等纯文本主干；训练器会默认拒绝带原生视觉配置的 `--text-model`。即使纯文本小主干上学出对齐，也仍只证明接口可学习；完整 DeepSeek-V4 权重的可微加载、训练和最终 benchmark 才是目标能力证据。
 
+2026-08-05 起，中间尺度代理固定为纯文本 `Qwen/Qwen2.5-3B-Instruct` revision `aa8e7253…04d1`。完整合同见 [`docs/qwen2.5-3b-community-eval-contract.md`](docs/qwen2.5-3b-community-eval-contract.md)：模型 9 个文件逐 SHA 固定；公开 ScreenSpot 1,272 条与十 strata 各 5 条的 `screenspot_glm50_v1` 已在任何 3B 结果前冻结；严格输出为 `click(start_box=[x, y])`；vision/blind/shuffled/random/step0/previous/current 全部进入统一评分。Qwen 的 2048 hidden width 通过无参数 fixed receiver 读取 canonical 4096 projector，训练参数仍只有 33,564,672-parameter projector。
+
+横向实验还必须加载同一份 exact FP32 step0（SHA-256 `efd942e0…b06b0`）；固定 random-projector control 为 `7bd4aacf…fc44`。两份 134,259,248-byte 权重已在首个 3B 输出前发布到 HF immutable commit `65639da5…a010` 并按 LFS SHA 回查，seed 只承担 provenance，不能替代权重身份。
+
 现有 Gate B 的 `Qwen2.5-0.5B-Instruct` 虽然是纯文本模型，但 0.5B 容量会压低 OCR、推理和格式遵从上限，也不能代表 DeepSeek Hash-MoE 的优化难度。因此其 shuffle/随机/blind 差异只作工程与信号证据，绝对分数和收敛速度都不得外推 0731。尚未完成的中间尺度对照应使用无 `vision_config` 的纯文本约 3B 主干，在相同数据、seen-record 数、分辨率、scratch projector 和 selection 评测下复测；原生 Qwen2.5-VL/Qwen3.5 VLM 不属于该实验。
 
 此外，full-mix Gate B 的 `2000 steps × batch 8` 实际是 `micro_batch_size=1` 下串行累积 8 个样本：共见过 16,000 个样本，只约为 59,198 条 mix 的 **0.27 epoch**。因此它应称为 early-alignment / 接口可学习性运行，而不是充分训练后的能力评测；TextVQA 8.1%、DocVQA 3.9%、OCRBench 0% 不能当作架构上限。训练器现已分别记录 optimizer steps、examples、答案 token、effective epochs、micro batch 与梯度累积，并把固定分层验证、10 组 derangement 及多答案 canonical/random 监督落盘。完整的租前归因顺序见 [`docs/ablation-protocol.md`](docs/ablation-protocol.md)。在真正的多样本 forward 与真实 step-time 基准完成前，不再把“global batch 64”直接换算成租期时长。
 
 - `moonvit_glue.metrics`：纯 Python 指标实现，无 torch 依赖，可在任何机器上验证。
+- `moonvit_glue.grounding_contract` / `grounding_evaluation`：严格 click parser、双分母距离与命中率、官方 click-in-box、paired bootstrap 和七条件评分。
+- `tools/build_screenspot_contract.py`：从 SHA 锁定的三份 parquet 冻结 50/full manifests、图片 SHA、类别与错图 derangement。
+- `tools/score_community_grounding.py`：拒绝顺序/ID 漂移，保存每条件逐条 scores、breakdowns、四个 paired contrasts 与 artifact manifest。
 - `tools/fetch_eval_data.py`：按 pin 的 revision 拉取 TextVQA / DocVQA / OCRBench / ScreenSpot，写 JSONL 与 `MANIFEST.json`（resolved sha + 文件 sha256）。
 - `tools/eval_vlm.py`：生成式评分（`--blind` 输出无图基线）；`--shuffle-loss` 模式给出真图 vs 随机图的 teacher-forced loss 差，是训练前最便宜的信号检验。
 - `tools/eval_stock_vlm.py`：用官方 processor/chat template 跑未修改的小型 VLM 对照组。对本地权重可传 `--weight-manifest` 做加载前逐分片 SHA-256 校验；`--max-image-side` 必须与被比较的 projector 评测保持一致，避免原图分辨率差异或高分辨率 OOM 污染结论。

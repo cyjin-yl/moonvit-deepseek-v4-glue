@@ -1,0 +1,7 @@
+# Package 15A hashes raw bytes; keep its text artifacts stable on Windows/Linux.
+.gitattributes text eol=lf
+configs/deepseek-v4-flash-0731-projector-moonvit-v2.json text eol=lf
+configs/qwen2.5-3b-community-eval-v1.json text eol=lf
+experiments/qwen3b_community_eval_20260805/** text eol=lf
+experiments/qwen3b_community_eval_20260805/**/*.log -whitespace
+experiments/qwen3b_community_eval_20260805/**/*.safetensors binary

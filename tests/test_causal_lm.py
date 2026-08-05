@@ -5,6 +5,7 @@ from transformers.models.deepseek_v4.modeling_deepseek_v4 import DeepseekV4ForCa
 
 from moonvit_glue.model import VisionCausalLM
 from moonvit_glue.projector import PatchMergerProjector, ProjectorConfig
+from moonvit_glue.proxy_receiver import FixedPairwiseReceiverAdapter
 
 
 def test_projector_only_training_reaches_projector_through_a_frozen_text_lm():
@@ -44,6 +45,49 @@ def test_projector_only_training_reaches_projector_through_a_frozen_text_lm():
 
     assert outputs.logits.shape == (1, 6, 32)
     assert any(parameter.grad is not None for parameter in projector.parameters())
+    assert all(parameter.grad is None for parameter in lm.parameters())
+
+
+def test_parameter_free_receiver_adapts_canonical_width_and_keeps_projector_only_gradients():
+    lm = GPT2LMHeadModel(
+        GPT2Config(
+            vocab_size=32,
+            n_embd=4,
+            n_layer=1,
+            n_head=2,
+            n_positions=16,
+            bos_token_id=1,
+            eos_token_id=2,
+        )
+    )
+    projector = PatchMergerProjector(
+        ProjectorConfig(
+            vision_width=3,
+            language_width=8,
+            merge_factor=2,
+            projector_width=6,
+        )
+    )
+    receiver = FixedPairwiseReceiverAdapter(8, 4, seed=20260805)
+    model = VisionCausalLM(
+        language_model=lm,
+        projector=projector,
+        receiver_adapter=receiver,
+        placeholder_token_id=31,
+        backbone_kind="generic",
+        freeze_language_model=True,
+    )
+
+    outputs = model(
+        input_ids=torch.tensor([[1, 31, 7, 8, 2]]),
+        image_feature_groups=[torch.randn(2, 2, 3)],
+        labels=torch.tensor([[1, -100, 7, 8, 2]]),
+    )
+    outputs.loss.backward()
+
+    assert outputs.logits.shape == (1, 6, 32)
+    assert list(receiver.parameters()) == []
+    assert all(parameter.grad is not None for parameter in projector.parameters())
     assert all(parameter.grad is None for parameter in lm.parameters())
 
 

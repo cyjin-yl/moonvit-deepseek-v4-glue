@@ -1,0 +1,24 @@
+{
+  "schema_version": "download-failure-v1",
+  "status": "recovered",
+  "occurred_on": "2026-08-05",
+  "resource": "bevaya/ScreenSpot@0be08781e2e188582f6131625ae1598d443b4d5d",
+  "failed_method": "aria2 multi-connection range download through Hugging Face Xet redirects",
+  "failure": {
+    "kind": "cross-shard range response contamination followed by signed URL 403",
+    "observed_output_bytes": 134512659,
+    "observed_sha256": "0c793b224b2dca4c12419aae5dc1acb6e09dcbd1b88084924418d9ef5ff0e534",
+    "expected_sha256": "ff06d312270eecc9d9ac968a51ceb0bc54f80cfda691ccccb8ebf4b4e5faa8fb",
+    "raw_log": "download.log"
+  },
+  "preservation": {
+    "corrupted_blob_committed_to_git": false,
+    "reason": "the 134.5 MB corrupt blob has no research value in Git",
+    "hdd_location": "/run/media/ezra/13D010B6FDBC1A06/data/eval_contract_v1/screenspot_source_0be08781/failures/aria2_multirange_20260805/"
+  },
+  "recovery": {
+    "method": "huggingface_hub CLI, HF_HUB_DISABLE_XET=1, max_workers=1",
+    "all_three_shards_sha256_verified": true,
+    "full_test_count": 1272
+  }
+}

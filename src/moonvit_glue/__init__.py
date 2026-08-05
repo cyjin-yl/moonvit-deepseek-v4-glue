@@ -34,6 +34,8 @@ _LAZY_EXPORTS = {
     "register_sdpa_attention": "moonvit_v2",
     "PatchMergerProjector": "projector",
     "ProjectorConfig": "projector",
+    "seeded_projector": "projector",
+    "FixedPairwiseReceiverAdapter": "proxy_receiver",
 }
 
 __all__ = sorted(_LAZY_EXPORTS)

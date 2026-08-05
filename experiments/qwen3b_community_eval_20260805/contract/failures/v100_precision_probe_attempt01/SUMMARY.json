@@ -1,0 +1,10 @@
+{
+  "attempt": 1,
+  "error_message": "cannot delete conditional expression",
+  "error_type": "SyntaxError",
+  "model_generation_result_produced": false,
+  "model_training_result_produced": false,
+  "resolution": "Removed the invalid inline del expression and reran the same seeded precision probe successfully.",
+  "stage": "V100 precision capability probe before the Qwen3B contract freeze",
+  "status": "invalid"
+}

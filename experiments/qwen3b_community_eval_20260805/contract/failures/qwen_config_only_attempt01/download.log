@@ -1,0 +1,14 @@
+
+08/05 21:04:04 [[1;32mNOTICE[0m] Downloading 1 item(s)
+
+08/05 21:04:05 [[1;32mNOTICE[0m] CUID#7 - Redirecting to https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-3B-Instruct/aa8e72537993ba99e69dfaafa59ed015b17504d1/config.json?%2FQwen%2FQwen2.5-3B-Instruct%2Fresolve%2Faa8e72537993ba99e69dfaafa59ed015b17504d1%2Fconfig.json=&etag=%2251b83fbd4e2d363b60235b9c8d494046a83c1cbf%22
+
+08/05 21:04:05 [[1;32mNOTICE[0m] Download complete: /run/media/ezra/13D010B6FDBC1A06/models/qwen2.5-3b-instruct-aa8e7253/config.json
+
+Download Results:
+gid   |stat|avg speed  |path/URI
+======+====+===========+=======================================================
+4b5b7d|OK  |   7.9KiB/s|/run/media/ezra/13D010B6FDBC1A06/models/qwen2.5-3b-instruct-aa8e7253/config.json
+
+Status Legend:
+(OK):download completed.

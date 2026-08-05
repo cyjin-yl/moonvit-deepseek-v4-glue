@@ -1,0 +1,24 @@
+{
+  "canonical_width": 4096,
+  "files": [
+    {
+      "bytes": 37072,
+      "path": "proxy_receiver.safetensors",
+      "sha256": "1cecc883394edc51a30c151ff955e92b6abfb9b7bf512f91a7644071551a6d47"
+    },
+    {
+      "bytes": 160,
+      "path": "proxy_receiver_config.json",
+      "sha256": "c09a17bd0aab0a20f1d28f12418a9e705b881d526a008f16e9dc55ab6d6f099c"
+    }
+  ],
+  "permutation_is_valid": true,
+  "receiver_width": 2048,
+  "schema_version": "fixed-pairwise-receiver-artifact-v1",
+  "seed": 20260805,
+  "sign_values": [
+    -1,
+    1
+  ],
+  "trainable_parameter_count": 0
+}

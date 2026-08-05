@@ -1,0 +1,61 @@
+{
+  "comparison_rule": "every horizontal method comparison must load the same exact step0 file; random_projector always uses the separately frozen control file",
+  "config": {
+    "language_width": 4096,
+    "layer_norm_eps": 1e-05,
+    "merge_factor": 4,
+    "projector_width": null,
+    "vision_width": 1024
+  },
+  "config_source": "configs/deepseek-v4-flash-0731-projector-moonvit-v2.json",
+  "config_source_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+  "construction_device": "cpu",
+  "frozen_on": "2026-08-05",
+  "manifest_sha256": "09381f82e3a256acf738da993bf055c59920e94b86f8f2ad40f1a6bc404afcb0",
+  "roles": [
+    {
+      "dtype": "float32",
+      "files": [
+        {
+          "bytes": 134259248,
+          "path": "step0/projector.safetensors",
+          "sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0"
+        },
+        {
+          "bytes": 128,
+          "path": "step0/projector_config.json",
+          "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+        }
+      ],
+      "parameter_count": 33564672,
+      "regenerated_tensor_state_sha256": "06aaffd3a4f3750abe4993ba108b7f06911d19930dc374afbd99c3b8fc5586d1",
+      "role": "step0",
+      "save_restore_tensor_state_sha256": "06aaffd3a4f3750abe4993ba108b7f06911d19930dc374afbd99c3b8fc5586d1",
+      "seed": 20260805,
+      "tensor_state_sha256": "06aaffd3a4f3750abe4993ba108b7f06911d19930dc374afbd99c3b8fc5586d1"
+    },
+    {
+      "dtype": "float32",
+      "files": [
+        {
+          "bytes": 134259248,
+          "path": "random_projector/projector.safetensors",
+          "sha256": "7bd4aacfa7cfbd3ba9e44337d873a66a5b2bbd77636c30c36febc47a07ddfc44"
+        },
+        {
+          "bytes": 128,
+          "path": "random_projector/projector_config.json",
+          "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+        }
+      ],
+      "parameter_count": 33564672,
+      "regenerated_tensor_state_sha256": "612e30191177133618ceb154637144ed431c60676923f92c899e0bf11bd968d5",
+      "role": "random_projector",
+      "save_restore_tensor_state_sha256": "612e30191177133618ceb154637144ed431c60676923f92c899e0bf11bd968d5",
+      "seed": 20260806,
+      "tensor_state_sha256": "612e30191177133618ceb154637144ed431c60676923f92c899e0bf11bd968d5"
+    }
+  ],
+  "schema_version": "canonical-projector-initializations-v1",
+  "torch_version": "2.10.0+cu128"
+}

@@ -1,0 +1,50 @@
+{
+  "all_files_verified": true,
+  "commit_oid": "65639da5988c0fc12d152bc68d3888b35d90a010",
+  "commit_url": "https://huggingface.co/cyjin-yl/DeepSeek-V4-Flash-0731-Vision/commit/65639da5988c0fc12d152bc68d3888b35d90a010",
+  "file_count": 5,
+  "files": [
+    {
+      "bytes": 2444,
+      "matches_local_contract": true,
+      "path": "MANIFEST.json",
+      "sha256": "0e278950088b724c9fcd92d8025ccdcca587b2fc9d144e5f6f17848731ad64b1",
+      "verification_method": "downloaded immutable small file SHA-256"
+    },
+    {
+      "bytes": 134259248,
+      "matches_local_contract": true,
+      "path": "random_projector/projector.safetensors",
+      "sha256": "7bd4aacfa7cfbd3ba9e44337d873a66a5b2bbd77636c30c36febc47a07ddfc44",
+      "verification_method": "HF LFS SHA-256"
+    },
+    {
+      "bytes": 128,
+      "matches_local_contract": true,
+      "path": "random_projector/projector_config.json",
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+      "verification_method": "downloaded immutable small file SHA-256"
+    },
+    {
+      "bytes": 134259248,
+      "matches_local_contract": true,
+      "path": "step0/projector.safetensors",
+      "sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0",
+      "verification_method": "HF LFS SHA-256"
+    },
+    {
+      "bytes": 128,
+      "matches_local_contract": true,
+      "path": "step0/projector_config.json",
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+      "verification_method": "downloaded immutable small file SHA-256"
+    }
+  ],
+  "paid_resource_used": false,
+  "path_in_repo": "contract/qwen2.5-3b-community-eval-v1/projector_initializations_v1",
+  "published_at_utc": "2026-08-05T15:26:18.218997+00:00",
+  "repo_id": "cyjin-yl/DeepSeek-V4-Flash-0731-Vision",
+  "repo_type": "model",
+  "schema_version": "projector-initializations-publication-v1",
+  "source_manifest_sha256": "09381f82e3a256acf738da993bf055c59920e94b86f8f2ad40f1a6bc404afcb0"
+}

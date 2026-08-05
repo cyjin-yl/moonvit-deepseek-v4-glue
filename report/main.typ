@@ -17,7 +17,7 @@
 
 = 执行摘要
 
-本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段冻结视觉塔和语言模型，只训练 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证。包 3–12 依次建立 synthetic paired preference/generation、逐层 probe、activation patching、projector/LoRA 轨迹、任务干扰、checkpoint averaging、anchoring 与 batch-order 证据。包 13 在相同 1,200-example 预算内用 preventive replay 恢复 count/shape，包 14 又把可靠 Tiny sentinel 固定为 25 pairs/task 并测得 V100 teacher-only 中位开销 22.501 秒。这条机制支线已收束为默认保护配方。工程主线现转向纯文本 `Qwen/Qwen2.5-3B-Instruct` 的固定真实视觉合同，用 ScreenSpot、TextVQA、DocVQA、OCRBench、synthetic 与语言保持筛选可迁移方法；0.5B 只保留为容量受限的早期对齐证据。完整 DeepSeek-V4-Flash-0731 尚未完成图像前向、量化 input DGRAD、训练、恢复和生成闭环，Gate D 当前未通过。
+本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段冻结视觉塔和语言模型，只训练 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证。包 3–12 依次建立 synthetic paired preference/generation、逐层 probe、activation patching、projector/LoRA 轨迹、任务干扰、checkpoint averaging、anchoring 与 batch-order 证据。包 13 在相同 1,200-example 预算内用 preventive replay 恢复 count/shape，包 14 又把可靠 Tiny sentinel 固定为 25 pairs/task 并测得 V100 teacher-only 中位开销 22.501 秒。这条机制支线已收束为默认保护配方。包 15A 已在任何 3B 生成结果前冻结纯文本 `Qwen/Qwen2.5-3B-Instruct` 的 9 个文件 SHA、ScreenSpot50/full、严格 click parser、七条件评分、fixed 4096→2048 receiver 和 240 条语言保持集。工程主线用 ScreenSpot、TextVQA、DocVQA、OCRBench、synthetic 与语言保持筛选可迁移方法；0.5B 只保留为容量受限的早期对齐证据。完整 DeepSeek-V4-Flash-0731 尚未完成图像前向、量化 input DGRAD、训练、恢复和生成闭环，Gate D 当前未通过。
 
 MoonViT-V2 有 401.2M 参数，抽取后的 BF16 权重约 802 MB，相对于约 160 GB 级的 DeepSeek 混合精度权重很小。更大的资源变量是图像分辨率带来的视觉 token 数和冻结 LLM 反向所保留的激活，而不是视觉塔权重。
 
@@ -1053,6 +1053,32 @@ Tiny 因此固定为 25 pairs/task，即每个 state 300 records。其 recall Wi
 
 #pagebreak()
 
+== Qwen2.5-3B 社区可比合同冻结（包 15A，2026-08-05）
+
+包 15A 在首个 Qwen2.5-3B 输出产生前冻结模型、数据、生成、评分、预算和迁移边界。代理主干固定为纯文本 `Qwen/Qwen2.5-3B-Instruct` revision `aa8e7253…04d1`：配置是 `Qwen2ForCausalLM`，hidden size 2048、36 层、3,085,938,688 参数，没有 `vision_config`。两份权重 shard 为 3,968,658,944 / 2,203,268,048 bytes，SHA-256 精确等于 HF LFS oid `67347b23…06c2` / `a40d941d…bfc1`；config、index 与四份 tokenizer 文件也逐文件哈希。tokenizer bundle 和 chat template SHA 分别为 `69a5cf59…93c6`、`cd8e9439…527f`。
+
+#table(
+  columns: (1.4fr, 2.1fr, 3fr),
+  [*冻结项*], [*身份/规模*], [*合同动作*],
+  [ScreenSpot GLM50], [50 条，10 个 platform×type strata 各 5 条], [标记为“GLM-format metric-aligned public subset”；不能声称等同社区私有 50 条。],
+  [完整 ScreenSpot], [1,272 条，revision `0be08781…d5d`], [overall、text、icon/widget、Android、iOS、Windows、macOS、Web 全拆分。],
+  [严格生成], [`click(start_box=[x, y])`], [只容许首尾空白；缺 canonical 空格、自然语言、浮点、越界和多坐标均 parse fail。],
+  [因果条件], [vision/blind/shuffled/random/step0/previous/current], [同顺序、同生成配置；四项预注册 paired contrasts，2,000 bootstrap，seed 20260805。],
+  [语言保持], [MMLU-Pro 140 + GSM8K 100], [text-only step0/previous/current；同时报告生成准确率与 teacher-forced answer NLL。],
+)
+
+公共 ScreenSpot 三份 parquet SHA 为 `ff06d312…aa8fb`、`d48b8275…0891a`、`a28a1e9f…74e5b`。Manifest 保存 fractional-xyxy/999-scale bbox、图片 SHA、source row 和类别；50/full manifest hash 为 `9583a75e…632b5` / `e556ac52…3d7cc`，derangement 无 fixed point 或同图像 SHA。
+
+DeepSeek canonical projector 保持 33,564,672 参数与 4096 输出；Qwen 经无参数 fixed signed-pair 4096→2048 readout 接收，4096 维均有梯度路径，37,072-byte buffers SHA 为 `1cecc883…a6d47`，迁移等级为 `transferable_with_runtime_validation`。Exact step0/random 两份 134,259,248-byte FP32 权重 SHA 为 `efd942e0…b06b0` / `7bd4aacf…fc44`，重建与 save/restore 逐位一致；HF commit `65639da5…a010` 经 5/5 远端哈希验证。所有方法加载同一 step0，首个 previous-best alias step0。
+
+官方 Qwen shard 保持逐字节 BF16 provenance；V100 计算精度在首个模型输出前单独实测冻结。目标 Tesla V100-PCIE-32GB 上，固定 4096×4096 GEMM 的 20-iteration 中位耗时为 FP16 0.03176 s、BF16 0.29078 s、FP32 0.21652 s，三组输出均 finite；BF16 为 FP16 的 9.16 倍。因此本地运行固定为 Qwen FP16、projector FP32 master weights，在 embedding splice 处做 FP16 cast，并逐步检查 loss/gradient finite。原始五次 timing 与第一次 probe 语法失败都已保留。
+
+评分同时保存 parsed-only 与 all-sample penalized 距离、Accuracy\@50/100/200 的双分母、click-in-box、点到 bbox L2/L1 和 paired CI。无法解析的 L2 固定惩罚为 999 方形对角线 1412.7993，L1 为 1998。训练比较锁定 4k/8k/16k/32k/64k examples seen、真实 global batch 8、相同初始 projector、记录集合/顺序、分辨率和生成配置；替代 previous-best 或改变 DeepSeek 配方的结论必须三 seed。
+
+失败记录完整保留：aria2 multi-range 生成正确长度但错误 SHA 的 ScreenSpot blob，改用 `HF_HUB_DISABLE_XET=1` 单 worker 后三 shard 全过；两次 JSON boolean 错误和首次 precision-probe 语法错误修复后重跑。仓库测试 262/262；artifact manifest 18 files / 1,967,831 bytes，独立 SHA 18/18；报告关键页完成渲染检查。本包无 Qwen3B 能力分数，只支持“合同已冻结、输入可审计”。未使用付费资源。
+
+#pagebreak()
+
 == 工程主线与 Gate D 真实缺口（2026-08-05）
 
 当前仓库已经有真实 MoonViT-V2 编码、视觉 token 映射、placeholder 展开、loss mask、generic `inputs_embeds` 注入、DeepSeek routing-ID 保留、projector-only 训练、checkpoint 保存恢复和两分支生成实现。小文本主干与真实视觉塔已经跑通；tiny `DeepseekV4ForCausalLM` 只验证专用接口。完整 `deepseek-ai/DeepSeek-V4-Flash-0731` 权重从未完成图像 forward/backward/train/save/resume/generate，因此 Gate D 判定为 *NO-GO*。
@@ -1063,12 +1089,12 @@ Tiny 因此固定为 25 pairs/task，即每个 state 300 records。其 recall Wi
   [MoonViT-V2 真实权重与预处理], [通过], [V100 输出 `[tokens,4,1024]`，可进入 projector。],
   [通用纯文本 glue 闭环], [通过（小主干）], [真实数据训练、保存、恢复和生成均有证据。],
   [Qwen2.5-0.5B 真实数据], [早期对齐证据], [16,000 examples、约 0.27 epoch；低容量混杂绝对 benchmark。],
-  [Qwen2.5-3B 固定真实合同], [待执行], [模型/数据 revision、ScreenSpot manifests、parser 与四条件必须先冻结。],
+  [Qwen2.5-3B 固定真实合同], [已冻结 / baseline 待执行], [9 个模型文件 SHA、ScreenSpot50/full、parser、七条件、4096 receiver 与语言保持集已落盘。],
   [完整 DeepSeek-V4-Flash 闭环], [未通过], [完整权重未加载联跑；真实 FP4/FP8 input DGRAD 仍 `hardware_pending`。],
-  [语言保持与真实视觉显著性], [待执行], [需要 ScreenSpot/TextVQA/DocVQA/OCRBench 的 vision−blind、vision−shuffle 与 paired CI。],
+  [语言保持与真实视觉显著性], [合同已冻结 / 结果待执行], [需要 ScreenSpot/TextVQA/DocVQA/OCRBench 的 vision−blind、vision−shuffle 与 paired CI。],
 )
 
-下一条 V100 路径固定使用纯文本 `Qwen/Qwen2.5-3B-Instruct`。MoonViT-V2 保持最终视觉塔，canonical projector 输出保持 4096；若 Qwen receiver hidden width 不同，适配 readout 必须显式隔离并标记为 Qwen 专用组件，不能改写 DeepSeek 主合同。所有 projector、数据、replay、分辨率、初始化和训练策略从此在固定 ScreenSpot50/full、TextVQA、DocVQA、OCRBench、synthetic 与语言保持合同下比较。详细硬阻塞与最短路径见 `docs/project-status-and-gate-d-gap.md`。付费 Gate D 继续等待明确授权，本地 3B 研究持续推进。
+下一条 V100 路径固定使用纯文本 `Qwen/Qwen2.5-3B-Instruct`。MoonViT-V2 保持最终视觉塔，canonical projector 输出保持 4096；Qwen 使用已冻结的无参数 4096→2048 readout，不能改写 DeepSeek 主合同。所有 projector、数据、replay、分辨率、初始化和训练策略从此在固定 ScreenSpot50/full、TextVQA、DocVQA、OCRBench、synthetic 与语言保持合同下比较。详细合同见 `docs/qwen2.5-3b-community-eval-contract.md`，硬阻塞与最短路径见 `docs/project-status-and-gate-d-gap.md`。付费 Gate D 继续等待明确授权，本地 3B 研究持续推进。
 
 == Gate C：Vast 只读调研
 
@@ -1332,9 +1358,10 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
   [2026-08-05], [V100 包 13 fixed-budget matched replay：ordinary 精确复现历史 step 100；fixed 在同一 1,200-example 预算内重分配 80 个槽位，使 count+shape preference/generation 相对 ordinary 提升 +0.255/+0.120，donor 合并近零。late trigger 识别 count 坍塌并产生 +0.175 收益，仍未完全恢复。正式候选改为 preventive replay，下一项校准 Tiny/Medium sentinel 功效与成本。],
   [2026-08-05], [V100 包 14 sentinel 功效/成本：25 pairs/task 是 Wilson 护栏下最小可靠 Tiny，count recall 0.975、exact 0.935、familywise false trigger 0.040；V100 teacher median 22.501 s，模型常驻时 5%/10% 开销至少间隔 476/226 steps。fixed replay 冻结为默认保护，Tiny 改作稀疏 audit。],
   [2026-08-05], [工程主线回到真实 VLM：容量代理固定切换为纯文本 Qwen/Qwen2.5-3B-Instruct；所有新方法必须在预冻结 ScreenSpot50/full、TextVQA、DocVQA、OCRBench、synthetic、语言保持和四项因果控制下报告。0.5B/synthetic 只保留代理证据，完整 0731 Gate D 仍未通过。],
+  [2026-08-05], [包 15A 在任何 3B 输出前冻结 Qwen2.5-3B revision 与 9 个文件 SHA、1,272 条完整 ScreenSpot 和十 strata 各 5 条的 GLM-format 50、严格 click parser、七条件/paired bootstrap、无参数 4096→2048 receiver、exact step0/random projector、240 条语言保持集及 4k–64k matched-budget 节点。此提交不含能力分数。],
   [2026-08-05], [固定 revision 的 DeepSeek 量化 runtime 源码审计与 GPU 矩阵成稿：forward 集成缺少已确认 autograd 证据，SM120/121 受 DeepGEMM #372 weight-load blocker 影响；首个付费建议降为单卡 SM100/B200 最小 kernel gate，仍等待授权。],
 )
 
 = 下一位执行者的最短路径
 
-先提交并验证 Package 14；随后在任何新模型结果产生前，冻结纯文本 `Qwen/Qwen2.5-3B-Instruct` 的 resolved revision、权重/tokenizer/config SHA、`screenspot_glm50_v1`、完整公共 ScreenSpot manifest、严格 click parser、生成配置、四项因果控制、examples-seen 节点、bootstrap seed 和语言保持集。解决 canonical 4096 projector 与 Qwen receiver width 的显式隔离接口后，先跑最小 ScreenSpot projector-only baseline，再扩到 TextVQA、DocVQA、OCRBench 与 synthetic。正式 0731 仍必须通过完整权重 load、真实 FP4/FP8 input DGRAD、图像 forward/backward、20-step 稳定性和 save/resume/generate Gate D；任何付费动作等待用户明确授权。
+包 15A 作为独立的 pre-result commit/push 边界，确保选样和判定规则先于成绩。随后在 V100 做 Qwen2.5-3B BF16-source→FP16-runtime load、固定 receiver 梯度与 checkpoint round-trip smoke；通过后先跑 4,000 examples 的最小 projector-only ScreenSpot baseline 和七条件，再决定是否扩至 8k/16k。候选才进入完整 1,272 ScreenSpot、TextVQA、DocVQA、OCRBench、synthetic 与 language retention。正式 0731 仍必须通过完整权重 load、真实 FP4/FP8 input DGRAD、图像 forward/backward、20-step 稳定性和 save/resume/generate Gate D；任何付费动作等待用户明确授权。

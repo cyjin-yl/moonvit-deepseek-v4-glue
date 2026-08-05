@@ -1,0 +1,7 @@
+{
+  "canonical_width": 4096,
+  "format_version": "fixed-pairwise-receiver-v1",
+  "receiver_width": 2048,
+  "seed": 20260805,
+  "trainable_parameter_count": 0
+}

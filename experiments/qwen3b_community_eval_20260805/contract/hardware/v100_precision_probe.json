@@ -1,0 +1,65 @@
+{
+  "bf16_over_fp16_median_ratio": 9.155514997553574,
+  "compute_capability": [
+    7,
+    0
+  ],
+  "cuda_runtime": "12.8",
+  "decision": {
+    "language_compute_dtype": "float16",
+    "projector_master_dtype": "float32",
+    "reason": "BF16 is callable and finite in this runtime, but the fixed GEMM probe is 9.16x slower than FP16 on the target V100."
+  },
+  "device_name": "Tesla V100-PCIE-32GB",
+  "dtypes": {
+    "bfloat16": {
+      "finite": true,
+      "median_seconds": 0.29077692376449704,
+      "ok": true,
+      "repeat_seconds": [
+        0.28714315593242645,
+        0.2924218848347664,
+        0.29077692376449704,
+        0.2918380359187722,
+        0.29072877625003457
+      ]
+    },
+    "float16": {
+      "finite": true,
+      "median_seconds": 0.03175975615158677,
+      "ok": true,
+      "repeat_seconds": [
+        0.029082661028951406,
+        0.030857726000249386,
+        0.03217049269005656,
+        0.03206083690747619,
+        0.03175975615158677
+      ]
+    },
+    "float32": {
+      "finite": true,
+      "median_seconds": 0.2165228840894997,
+      "ok": true,
+      "repeat_seconds": [
+        0.21637739893049002,
+        0.2165228840894997,
+        0.216553402133286,
+        0.21643502404913306,
+        0.21691469009965658
+      ]
+    }
+  },
+  "fp32_over_fp16_median_ratio": 6.817523505408963,
+  "host": "doesworkstation",
+  "matrix_shape": [
+    4096,
+    4096
+  ],
+  "repeat_count": 5,
+  "schema_version": "cuda-precision-probe-v1",
+  "seed": 20260805,
+  "timed_iterations_per_repeat": 20,
+  "torch_bf16_supported_flag": true,
+  "torch_version": "2.10.0+cu128",
+  "warmup_iterations": 5
+}

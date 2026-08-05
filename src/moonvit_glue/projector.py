@@ -136,3 +136,18 @@ class PatchMergerProjector(nn.Module):
             if key.startswith(("pre_norm.", "linear_1."))
         }
         self.load_state_dict(trunk, strict=False)
+
+
+def seeded_projector(config: ProjectorConfig, *, seed: int) -> PatchMergerProjector:
+    """Build a CPU projector from an isolated, explicit PyTorch RNG seed.
+
+    The exact weights should still be serialized for long-lived contracts; this
+    helper makes regeneration deterministic without perturbing the caller's CPU
+    RNG stream.
+    """
+
+    if not 0 <= int(seed) < 2**63:
+        raise ValueError("projector seed must be an integer in [0, 2**63)")
+    with torch.random.fork_rng(devices=[]):
+        torch.default_generator.manual_seed(int(seed))
+        return PatchMergerProjector(config)

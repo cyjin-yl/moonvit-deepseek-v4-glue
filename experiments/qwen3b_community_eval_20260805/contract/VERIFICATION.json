@@ -1,0 +1,106 @@
+{
+  "schema_version": "qwen3b-community-contract-verification-v1",
+  "status": "verified",
+  "verified_on": "2026-08-05",
+  "result_boundary": {
+    "qwen3b_generation_results_exist": false,
+    "qwen3b_training_results_exist": false,
+    "contract_frozen_before_results": true
+  },
+  "proxy_model": {
+    "repo": "Qwen/Qwen2.5-3B-Instruct",
+    "resolved_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "required_file_count": 9,
+    "all_file_sizes_match": true,
+    "all_file_sha256_match": true,
+    "architecture": "Qwen2ForCausalLM",
+    "has_vision_config": false,
+    "contract_config_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+    "provenance": "model/PROVENANCE.json"
+  },
+  "screenspot": {
+    "source_shard_count": 3,
+    "all_source_sha256_match_hf_lfs_oid": true,
+    "full_count": 1272,
+    "full_manifest_sha256": "e556ac522e1fb2965a2eb1386a3b8a91ba692fb75384fe3e5f518af0f473d7cc",
+    "glm50_count": 50,
+    "glm50_manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+    "glm50_stratum_count": 10,
+    "glm50_samples_per_stratum": 5,
+    "manifest_self_hashes_valid": true,
+    "derangements_have_no_fixed_points": true,
+    "derangements_have_no_same_image_sha": true
+  },
+  "language_retention": {
+    "manifest_sha256": "c518403a0e5002ec0712534fda65129e2e39ad46a4baf8f40b861599dcd4b6a8",
+    "mmlu_pro_count": 140,
+    "mmlu_pro_categories": 14,
+    "mmlu_pro_per_category": 10,
+    "gsm8k_count": 100,
+    "manifest_self_hash_valid": true
+  },
+  "proxy_receiver": {
+    "canonical_width": 4096,
+    "receiver_width": 2048,
+    "trainable_parameter_count": 0,
+    "buffer_sha256": "1cecc883394edc51a30c151ff955e92b6abfb9b7bf512f91a7644071551a6d47",
+    "permutation_valid": true,
+    "gradient_reaches_all_input_dimensions": true,
+    "save_restore_exact": true
+  },
+  "projector_initializations": {
+    "manifest_sha256": "09381f82e3a256acf738da993bf055c59920e94b86f8f2ad40f1a6bc404afcb0",
+    "step0_seed": 20260805,
+    "step0_weights_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0",
+    "step0_tensor_state_sha256": "06aaffd3a4f3750abe4993ba108b7f06911d19930dc374afbd99c3b8fc5586d1",
+    "random_projector_seed": 20260806,
+    "random_projector_weights_sha256": "7bd4aacfa7cfbd3ba9e44337d873a66a5b2bbd77636c30c36febc47a07ddfc44",
+    "random_projector_tensor_state_sha256": "612e30191177133618ceb154637144ed431c60676923f92c899e0bf11bd968d5",
+    "same_seed_regeneration_exact": true,
+    "save_restore_exact": true,
+    "hf_commit": "65639da5988c0fc12d152bc68d3888b35d90a010",
+    "hf_files_verified": 5,
+    "hf_files_mismatched": 0
+  },
+  "v100_precision": {
+    "device": "Tesla V100-PCIE-32GB",
+    "compute_capability": [7, 0],
+    "all_probe_outputs_finite": true,
+    "bf16_over_fp16_median_ratio": 9.155514997553574,
+    "runtime_language_dtype_frozen_before_model_output": "float16",
+    "projector_master_dtype": "float32"
+  },
+  "scoring": {
+    "strict_parser_tests_pass": true,
+    "parsed_and_all_denominators_tested": true,
+    "bbox_l1_l2_and_click_in_box_tested": true,
+    "paired_bootstrap_deterministic": true,
+    "prediction_id_and_order_drift_rejected": true,
+    "required_conditions": 7
+  },
+  "tests": {
+    "command": "python -m pytest -q",
+    "passed": 262,
+    "failed": 0,
+    "warnings_only": true
+  },
+  "report": {
+    "pages": 50,
+    "compiled": true,
+    "text_checked": true,
+    "render_checked_pages": [38, 39],
+    "layout_issues": 0
+  },
+  "artifact_manifest": {
+    "declared_file_count": 18,
+    "independent_sha256_matches": 18,
+    "independent_sha256_mismatches": 0
+  },
+  "failures_retained": [
+    "failures/screenspot_aria2_multirange_attempt01",
+    "failures/qwen_config_only_attempt01",
+    "failures/language_retention_manifest_attempt01",
+    "failures/v100_precision_probe_attempt01"
+  ],
+  "paid_resources_used": false
+}

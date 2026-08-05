@@ -1,0 +1,119 @@
+
+08/05 21:04:38 [[1;32mNOTICE[0m] Downloading 1 item(s)
+
+08/05 21:04:38 [[1;32mNOTICE[0m] CUID#7 - Redirecting to https://us.aws.cdn.hf.co/xet-bridge-us/6616a35f75f203eb75e90f03/d27634e5a119aa51c2bd46c868db7eb76bd846add7b319781687613ecaeba14f?user_id=public&X-Xet-Cas-Uid=public&response-content-disposition=inline%3B+filename*%3DUTF-8%27%27test-00000-of-00003.parquet%3B+filename%3D%22test-00000-of-00003.parquet%22%3B&Expires=1785938678&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNjYxNmEzNWY3NWYyMDNlYjc1ZTkwZjAzL2QyNzYzNGU1YTExOWFhNTFjMmJkNDZjODY4ZGI3ZWI3NmJkODQ2YWRkN2IzMTk3ODE2ODc2MTNlY2FlYmExNGZcXD91c2VyX2lkPXB1YmxpYyZYLVhldC1DYXMtVWlkPXB1YmxpYyZyZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3dGVzdC0wMDAwMC1vZi0wMDAwMy5wYXJxdWV0JTNCK2ZpbGVuYW1lJTNEJTIydGVzdC0wMDAwMC1vZi0wMDAwMy5wYXJxdWV0JTIyJTNCIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJFcG9jaFRpbWUiOjE3ODU5Mzg2Nzh9fX1dfQ__&Signature=MEUCIQDEWn3a%7EYbake4mBwZG4%7Edjlo8dzy%7EuYfzrews9rWM3cwIgftPimnsAjX5NxMdX33ShuKYRp9rpRGzeq785T1qXE5o_&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F
+[#ed3a9c 0B/0B CN:1 DL:0B]
+
+08/05 21:04:40 [[1;32mNOTICE[0m] CUID#8 - Redirecting to https://us.aws.cdn.hf.co/xet-bridge-us/6616a35f75f203eb75e90f03/6c324eb9670eb8400f5d4d007293815b1602aa47cd70a9c13df4bc099ba096c0?X-Xet-Cas-Uid=public&user_id=public&response-content-disposition=inline%3B+filename*%3DUTF-8%27%27test-00001-of-00003.parquet%3B+filename%3D%22test-00001-of-00003.parquet%22%3B&Expires=1785938680&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNjYxNmEzNWY3NWYyMDNlYjc1ZTkwZjAzLzZjMzI0ZWI5NjcwZWI4NDAwZjVkNGQwMDcyOTM4MTViMTYwMmFhNDdjZDcwYTljMTNkZjRiYzA5OWJhMDk2YzBcXD9YLVhldC1DYXMtVWlkPXB1YmxpYyZ1c2VyX2lkPXB1YmxpYyZyZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3dGVzdC0wMDAwMS1vZi0wMDAwMy5wYXJxdWV0JTNCK2ZpbGVuYW1lJTNEJTIydGVzdC0wMDAwMS1vZi0wMDAwMy5wYXJxdWV0JTIyJTNCIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJFcG9jaFRpbWUiOjE3ODU5Mzg2ODB9LCJCeXRlUmFuZ2UiOnsiRXhwZWN0ZWRIZWFkZXIiOiJieXRlcz02ODE1NzQ0MC0xMDE3MTE4NzEifX19XX0_&Signature=MEQCIFf-Iv0P8LaQ9yKVxucN2zsfBe%7ElsRDEvNWbkumgD6TuAiBPDLlx-o2buqbpy8Acg9kMR8NEPV3-6V2j5NQttyo48w__&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F
+
+08/05 21:04:40 [[1;32mNOTICE[0m] CUID#10 - Redirecting to https://us.aws.cdn.hf.co/xet-bridge-us/6616a35f75f203eb75e90f03/d27634e5a119aa51c2bd46c868db7eb76bd846add7b319781687613ecaeba14f?user_id=public&response-content-disposition=inline%3B+filename*%3DUTF-8%27%27test-00000-of-00003.parquet%3B+filename%3D%22test-00000-of-00003.parquet%22%3B&X-Xet-Cas-Uid=public&Expires=1785938680&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNjYxNmEzNWY3NWYyMDNlYjc1ZTkwZjAzL2QyNzYzNGU1YTExOWFhNTFjMmJkNDZjODY4ZGI3ZWI3NmJkODQ2YWRkN2IzMTk3ODE2ODc2MTNlY2FlYmExNGZcXD91c2VyX2lkPXB1YmxpYyZyZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3dGVzdC0wMDAwMC1vZi0wMDAwMy5wYXJxdWV0JTNCK2ZpbGVuYW1lJTNEJTIydGVzdC0wMDAwMC1vZi0wMDAwMy5wYXJxdWV0JTIyJTNCJlgtWGV0LUNhcy1VaWQ9cHVibGljIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJFcG9jaFRpbWUiOjE3ODU5Mzg2ODB9LCJCeXRlUmFuZ2UiOnsiRXhwZWN0ZWRIZWFkZXIiOiJieXRlcz0xMDE3MTE4NzItMTM0NTEyNjU4In19fV19&Signature=MEYCIQD-thSe0TOi5wkzzWxGLCU50MFdffeVIrR%7E4jR-7PgvyAIhAN3yonwMNGtD-CruRb2LnSYcQLEOrM47GT%7EfP35D5sJK&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F
+
+08/05 21:04:40 [[1;32mNOTICE[0m] CUID#9 - Redirecting to https://us.aws.cdn.hf.co/xet-bridge-us/6616a35f75f203eb75e90f03/822bc7a7ab996de573b90b18f05a72446f5f23f02f7c415d20c89266e6e9b86e?response-content-disposition=inline%3B+filename*%3DUTF-8%27%27test-00002-of-00003.parquet%3B+filename%3D%22test-00002-of-00003.parquet%22%3B&X-Xet-Cas-Uid=public&user_id=public&Expires=1785938680&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNjYxNmEzNWY3NWYyMDNlYjc1ZTkwZjAzLzgyMmJjN2E3YWI5OTZkZTU3M2I5MGIxOGYwNWE3MjQ0NmY1ZjIzZjAyZjdjNDE1ZDIwYzg5MjY2ZTZlOWI4NmVcXD9yZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3dGVzdC0wMDAwMi1vZi0wMDAwMy5wYXJxdWV0JTNCK2ZpbGVuYW1lJTNEJTIydGVzdC0wMDAwMi1vZi0wMDAwMy5wYXJxdWV0JTIyJTNCJlgtWGV0LUNhcy1VaWQ9cHVibGljJnVzZXJfaWQ9cHVibGljIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJFcG9jaFRpbWUiOjE3ODU5Mzg2ODB9LCJCeXRlUmFuZ2UiOnsiRXhwZWN0ZWRIZWFkZXIiOiJieXRlcz0zNDYwMzAwOC02ODE1NzQzOSJ9fX1dfQ__&Signature=MEUCIBGdfc4YHTyEP3rZ9FolYk5VgkdSOVYVxr3roNt59RASAiEAxjd56TmXRUwEsn6Xpi7kQ61I8gq3wMHdDpStxBoSHbc_&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F
+[#ed3a9c 1.4MiB/128MiB(1%) CN:4 DL:3.0MiB ETA:42s]
+
+08/05 21:04:41 [[1;31mERROR[0m] CUID#8 - Download aborted. URI=https://huggingface.co/datasets/bevaya/ScreenSpot/resolve/0be08781e2e188582f6131625ae1598d443b4d5d/data/test-00001-of-00003.parquet
+Exception: [AbstractCommand.cc:351] errorCode=8 URI=https://us.aws.cdn.hf.co/xet-bridge-us/6616a35f75f203eb75e90f03/6c324eb9670eb8400f5d4d007293815b1602aa47cd70a9c13df4bc099ba096c0?X-Xet-Cas-Uid=public&user_id=public&response-content-disposition=inline%3B+filename*%3DUTF-8%27%27test-00001-of-00003.parquet%3B+filename%3D%22test-00001-of-00003.parquet%22%3B&Expires=1785938680&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNjYxNmEzNWY3NWYyMDNlYjc1ZTkwZjAzLzZjMzI0ZWI5NjcwZWI4NDAwZjVkNGQwMDcyOTM4MTViMTYwMmFhNDdjZDcwYTljMTNkZjRiYzA5OWJhMDk2YzBcXD9YLVhldC1DYXMtVWlkPXB1YmxpYyZ1c2VyX2lkPXB1YmxpYyZyZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3dGVzdC0wMDAwMS1vZi0wMDAwMy5wYXJxdWV0JTNCK2ZpbGVuYW1lJTNEJTIydGVzdC0wMDAwMS1vZi0wMDAwMy5wYXJxdWV0JTIyJTNCIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJFcG9jaFRpbWUiOjE3ODU5Mzg2ODB9LCJCeXRlUmFuZ2UiOnsiRXhwZWN0ZWRIZWFkZXIiOiJieXRlcz02ODE1NzQ0MC0xMDE3MTE4NzEifX19XX0_&Signature=MEQCIFf-Iv0P8LaQ9yKVxucN2zsfBe%7ElsRDEvNWbkumgD6TuAiBPDLlx-o2buqbpy8Acg9kMR8NEPV3-6V2j5NQttyo48w__&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F
+  -> [HttpResponse.cc:81] errorCode=8 Invalid range header. Request: 68157440-101711871/134512659, Response: 68157440-101711871/198971508
+
+08/05 21:04:41 [[1;32mNOTICE[0m] CUID#15 - Redirecting to https://us.aws.cdn.hf.co/xet-bridge-us/6616a35f75f203eb75e90f03/822bc7a7ab996de573b90b18f05a72446f5f23f02f7c415d20c89266e6e9b86e?X-Xet-Cas-Uid=public&user_id=public&response-content-disposition=inline%3B+filename*%3DUTF-8%27%27test-00002-of-00003.parquet%3B+filename%3D%22test-00002-of-00003.parquet%22%3B&Expires=1785938681&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNjYxNmEzNWY3NWYyMDNlYjc1ZTkwZjAzLzgyMmJjN2E3YWI5OTZkZTU3M2I5MGIxOGYwNWE3MjQ0NmY1ZjIzZjAyZjdjNDE1ZDIwYzg5MjY2ZTZlOWI4NmVcXD9YLVhldC1DYXMtVWlkPXB1YmxpYyZ1c2VyX2lkPXB1YmxpYyZyZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3dGVzdC0wMDAwMi1vZi0wMDAwMy5wYXJxdWV0JTNCK2ZpbGVuYW1lJTNEJTIydGVzdC0wMDAwMi1vZi0wMDAwMy5wYXJxdWV0JTIyJTNCIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJFcG9jaFRpbWUiOjE3ODU5Mzg2ODF9LCJCeXRlUmFuZ2UiOnsiRXhwZWN0ZWRIZWFkZXIiOiJieXRlcz02ODE1NzQ0MC0xMDE3MTE4NzEifX19XX0_&Signature=MEQCICrQKVWD1HIf2iXDps3fvmA0ERn3Oc4Pn-SyijGlZePMAiB70gaotT0izc8SzjFEB8pG0DpKNTacQOa7vykvNOGmtw__&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F
+[#ed3a9c 14MiB/128MiB(11%) CN:4 DL:9.8MiB ETA:11s]
+
+08/05 21:04:41 [[1;31mERROR[0m] CUID#9 - Download aborted. URI=https://huggingface.co/datasets/bevaya/ScreenSpot/resolve/0be08781e2e188582f6131625ae1598d443b4d5d/data/test-00002-of-00003.parquet
+Exception: [AbstractCommand.cc:351] errorCode=8 URI=https://us.aws.cdn.hf.co/xet-bridge-us/6616a35f75f203eb75e90f03/822bc7a7ab996de573b90b18f05a72446f5f23f02f7c415d20c89266e6e9b86e?response-content-disposition=inline%3B+filename*%3DUTF-8%27%27test-00002-of-00003.parquet%3B+filename%3D%22test-00002-of-00003.parquet%22%3B&X-Xet-Cas-Uid=public&user_id=public&Expires=1785938680&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNjYxNmEzNWY3NWYyMDNlYjc1ZTkwZjAzLzgyMmJjN2E3YWI5OTZkZTU3M2I5MGIxOGYwNWE3MjQ0NmY1ZjIzZjAyZjdjNDE1ZDIwYzg5MjY2ZTZlOWI4NmVcXD9yZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3dGVzdC0wMDAwMi1vZi0wMDAwMy5wYXJxdWV0JTNCK2ZpbGVuYW1lJTNEJTIydGVzdC0wMDAwMi1vZi0wMDAwMy5wYXJxdWV0JTIyJTNCJlgtWGV0LUNhcy1VaWQ9cHVibGljJnVzZXJfaWQ9cHVibGljIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJFcG9jaFRpbWUiOjE3ODU5Mzg2ODB9LCJCeXRlUmFuZ2UiOnsiRXhwZWN0ZWRIZWFkZXIiOiJieXRlcz0zNDYwMzAwOC02ODE1NzQzOSJ9fX1dfQ__&Signature=MEUCIBGdfc4YHTyEP3rZ9FolYk5VgkdSOVYVxr3roNt59RASAiEAxjd56TmXRUwEsn6Xpi7kQ61I8gq3wMHdDpStxBoSHbc_&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F
+  -> [HttpResponse.cc:81] errorCode=8 Invalid range header. Request: 34603008-68157439/134512659, Response: 34603008-68157439/268832649
+
+08/05 21:04:42 [[1;32mNOTICE[0m] CUID#16 - Redirecting to https://us.aws.cdn.hf.co/xet-bridge-us/6616a35f75f203eb75e90f03/d27634e5a119aa51c2bd46c868db7eb76bd846add7b319781687613ecaeba14f?response-content-disposition=inline%3B+filename*%3DUTF-8%27%27test-00000-of-00003.parquet%3B+filename%3D%22test-00000-of-00003.parquet%22%3B&user_id=public&X-Xet-Cas-Uid=public&Expires=1785938682&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNjYxNmEzNWY3NWYyMDNlYjc1ZTkwZjAzL2QyNzYzNGU1YTExOWFhNTFjMmJkNDZjODY4ZGI3ZWI3NmJkODQ2YWRkN2IzMTk3ODE2ODc2MTNlY2FlYmExNGZcXD9yZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3dGVzdC0wMDAwMC1vZi0wMDAwMy5wYXJxdWV0JTNCK2ZpbGVuYW1lJTNEJTIydGVzdC0wMDAwMC1vZi0wMDAwMy5wYXJxdWV0JTIyJTNCJnVzZXJfaWQ9cHVibGljJlgtWGV0LUNhcy1VaWQ9cHVibGljIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJFcG9jaFRpbWUiOjE3ODU5Mzg2ODJ9LCJCeXRlUmFuZ2UiOnsiRXhwZWN0ZWRIZWFkZXIiOiJieXRlcz00MTk0MzA0MC02ODE1NzQzOSJ9fX1dfQ__&Signature=MEUCIGq9Rrlcz35tLidp6G5TVmWTjJSPmDikIERc8gxDY0ocAiEAmOL8PXAQQaSG9Da7-eCDSokF0m6ZdoC2qgBsFuuJZio_&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F
+[#ed3a9c 35MiB/128MiB(27%) CN:4 DL:14MiB ETA:6s]
+
+08/05 21:04:42 [[1;31mERROR[0m] CUID#15 - Download aborted. URI=https://huggingface.co/datasets/bevaya/ScreenSpot/resolve/0be08781e2e188582f6131625ae1598d443b4d5d/data/test-00002-of-00003.parquet
+Exception: [AbstractCommand.cc:351] errorCode=8 URI=https://us.aws.cdn.hf.co/xet-bridge-us/6616a35f75f203eb75e90f03/822bc7a7ab996de573b90b18f05a72446f5f23f02f7c415d20c89266e6e9b86e?X-Xet-Cas-Uid=public&user_id=public&response-content-disposition=inline%3B+filename*%3DUTF-8%27%27test-00002-of-00003.parquet%3B+filename%3D%22test-00002-of-00003.parquet%22%3B&Expires=1785938681&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNjYxNmEzNWY3NWYyMDNlYjc1ZTkwZjAzLzgyMmJjN2E3YWI5OTZkZTU3M2I5MGIxOGYwNWE3MjQ0NmY1ZjIzZjAyZjdjNDE1ZDIwYzg5MjY2ZTZlOWI4NmVcXD9YLVhldC1DYXMtVWlkPXB1YmxpYyZ1c2VyX2lkPXB1YmxpYyZyZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3dGVzdC0wMDAwMi1vZi0wMDAwMy5wYXJxdWV0JTNCK2ZpbGVuYW1lJTNEJTIydGVzdC0wMDAwMi1vZi0wMDAwMy5wYXJxdWV0JTIyJTNCIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJFcG9jaFRpbWUiOjE3ODU5Mzg2ODF9LCJCeXRlUmFuZ2UiOnsiRXhwZWN0ZWRIZWFkZXIiOiJieXRlcz02ODE1NzQ0MC0xMDE3MTE4NzEifX19XX0_&Signature=MEQCICrQKVWD1HIf2iXDps3fvmA0ERn3Oc4Pn-SyijGlZePMAiB70gaotT0izc8SzjFEB8pG0DpKNTacQOa7vykvNOGmtw__&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F
+  -> [HttpResponse.cc:81] errorCode=8 Invalid range header. Request: 68157440-101711871/134512659, Response: 68157440-101711871/268832649
+
+08/05 21:04:43 [[1;32mNOTICE[0m] CUID#17 - Redirecting to https://us.aws.cdn.hf.co/xet-bridge-us/6616a35f75f203eb75e90f03/d27634e5a119aa51c2bd46c868db7eb76bd846add7b319781687613ecaeba14f?user_id=public&X-Xet-Cas-Uid=public&response-content-disposition=inline%3B+filename*%3DUTF-8%27%27test-00000-of-00003.parquet%3B+filename%3D%22test-00000-of-00003.parquet%22%3B&Expires=1785938682&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNjYxNmEzNWY3NWYyMDNlYjc1ZTkwZjAzL2QyNzYzNGU1YTExOWFhNTFjMmJkNDZjODY4ZGI3ZWI3NmJkODQ2YWRkN2IzMTk3ODE2ODc2MTNlY2FlYmExNGZcXD91c2VyX2lkPXB1YmxpYyZYLVhldC1DYXMtVWlkPXB1YmxpYyZyZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3dGVzdC0wMDAwMC1vZi0wMDAwMy5wYXJxdWV0JTNCK2ZpbGVuYW1lJTNEJTIydGVzdC0wMDAwMC1vZi0wMDAwMy5wYXJxdWV0JTIyJTNCIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJFcG9jaFRpbWUiOjE3ODU5Mzg2ODJ9LCJCeXRlUmFuZ2UiOnsiRXhwZWN0ZWRIZWFkZXIiOiJieXRlcz03MzQwMDMyMC0xMDE3MTE4NzEifX19XX0_&Signature=MEUCIQCwruUdAvS8BszBY%7Es3XbXC9b7K9WIPEQSO2-e3xLbsNAIgXO%7EdGgO7TsG%7EcaokY4c0euuGoDIP9fW23nUnaQrfyu8_&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F
+[#ed3a9c 64MiB/128MiB(50%) CN:3 DL:18MiB ETA:3s]
+[#ed3a9c 79MiB/128MiB(62%) CN:3 DL:17MiB ETA:2s]
+[#ed3a9c 91MiB/128MiB(71%) CN:3 DL:16MiB ETA:2s]
+[#ed3a9c 106MiB/128MiB(82%) CN:2 DL:15MiB ETA:1s]
+[#ed3a9c 107MiB/128MiB(83%) CN:2 DL:12MiB ETA:1s]
+[#ed3a9c 107MiB/128MiB(83%) CN:2 DL:11MiB ETA:1s]
+[#ed3a9c 107MiB/128MiB(83%) CN:2 DL:10MiB ETA:2s]
+
+08/05 21:04:50 [[1;31mERROR[0m] CUID#7 - Download aborted. URI=https://huggingface.co/datasets/bevaya/ScreenSpot/resolve/0be08781e2e188582f6131625ae1598d443b4d5d/data/test-00000-of-00003.parquet
+Exception: [AbstractCommand.cc:351] errorCode=22 URI=https://us.aws.cdn.hf.co/xet-bridge-us/6616a35f75f203eb75e90f03/d27634e5a119aa51c2bd46c868db7eb76bd846add7b319781687613ecaeba14f?user_id=public&X-Xet-Cas-Uid=public&response-content-disposition=inline%3B+filename*%3DUTF-8%27%27test-00000-of-00003.parquet%3B+filename%3D%22test-00000-of-00003.parquet%22%3B&Expires=1785938682&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNjYxNmEzNWY3NWYyMDNlYjc1ZTkwZjAzL2QyNzYzNGU1YTExOWFhNTFjMmJkNDZjODY4ZGI3ZWI3NmJkODQ2YWRkN2IzMTk3ODE2ODc2MTNlY2FlYmExNGZcXD91c2VyX2lkPXB1YmxpYyZYLVhldC1DYXMtVWlkPXB1YmxpYyZyZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3dGVzdC0wMDAwMC1vZi0wMDAwMy5wYXJxdWV0JTNCK2ZpbGVuYW1lJTNEJTIydGVzdC0wMDAwMC1vZi0wMDAwMy5wYXJxdWV0JTIyJTNCIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJFcG9jaFRpbWUiOjE3ODU5Mzg2ODJ9LCJCeXRlUmFuZ2UiOnsiRXhwZWN0ZWRIZWFkZXIiOiJieXRlcz03MzQwMDMyMC0xMDE3MTE4NzEifX19XX0_&Signature=MEUCIQCwruUdAvS8BszBY%7Es3XbXC9b7K9WIPEQSO2-e3xLbsNAIgXO%7EdGgO7TsG%7EcaokY4c0euuGoDIP9fW23nUnaQrfyu8_&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F
+  -> [HttpSkipResponseCommand.cc:239] errorCode=22 The response status is not successful. status=403
+[#ed3a9c 107MiB/128MiB(83%) CN:1 DL:8.6MiB ETA:2s]
+[#ed3a9c 107MiB/128MiB(83%) CN:1 DL:3.1MiB ETA:6s]
+[#ed3a9c 107MiB/128MiB(83%) CN:1 DL:2.3MiB ETA:8s]
+[#ed3a9c 107MiB/128MiB(83%) CN:1 DL:408KiB ETA:51s]
+[#ed3a9c 107MiB/128MiB(84%) CN:1 DL:161KiB ETA:2m9s]
+[#ed3a9c 107MiB/128MiB(84%) CN:1 DL:75KiB ETA:4m35s]
+[#ed3a9c 108MiB/128MiB(84%) CN:1 DL:119KiB ETA:2m51s]
+
+08/05 21:04:59 [[1;31mERROR[0m] CUID#18 - Download aborted. URI=https://huggingface.co/datasets/bevaya/ScreenSpot/resolve/0be08781e2e188582f6131625ae1598d443b4d5d/data/test-00000-of-00003.parquet
+Exception: [AbstractCommand.cc:351] errorCode=22 URI=https://us.aws.cdn.hf.co/xet-bridge-us/6616a35f75f203eb75e90f03/d27634e5a119aa51c2bd46c868db7eb76bd846add7b319781687613ecaeba14f?response-content-disposition=inline%3B+filename*%3DUTF-8%27%27test-00000-of-00003.parquet%3B+filename%3D%22test-00000-of-00003.parquet%22%3B&user_id=public&X-Xet-Cas-Uid=public&Expires=1785938682&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNjYxNmEzNWY3NWYyMDNlYjc1ZTkwZjAzL2QyNzYzNGU1YTExOWFhNTFjMmJkNDZjODY4ZGI3ZWI3NmJkODQ2YWRkN2IzMTk3ODE2ODc2MTNlY2FlYmExNGZcXD9yZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3dGVzdC0wMDAwMC1vZi0wMDAwMy5wYXJxdWV0JTNCK2ZpbGVuYW1lJTNEJTIydGVzdC0wMDAwMC1vZi0wMDAwMy5wYXJxdWV0JTIyJTNCJnVzZXJfaWQ9cHVibGljJlgtWGV0LUNhcy1VaWQ9cHVibGljIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJFcG9jaFRpbWUiOjE3ODU5Mzg2ODJ9LCJCeXRlUmFuZ2UiOnsiRXhwZWN0ZWRIZWFkZXIiOiJieXRlcz00MTk0MzA0MC02ODE1NzQzOSJ9fX1dfQ__&Signature=MEUCIGq9Rrlcz35tLidp6G5TVmWTjJSPmDikIERc8gxDY0ocAiEAmOL8PXAQQaSG9Da7-eCDSokF0m6ZdoC2qgBsFuuJZio_&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F
+  -> [HttpSkipResponseCommand.cc:239] errorCode=22 The response status is not successful. status=403
+[#ed3a9c 108MiB/128MiB(84%) CN:1 DL:163KiB ETA:2m3s]
+[#ed3a9c 108MiB/128MiB(84%) CN:1 DL:143KiB ETA:2m20s]
+[#ed3a9c 108MiB/128MiB(84%) CN:1 DL:128KiB ETA:2m37s]
+[#ed3a9c 108MiB/128MiB(84%) CN:1 DL:95KiB ETA:3m31s]
+[#ed3a9c 108MiB/128MiB(84%) CN:1 DL:84KiB ETA:3m57s]
+[#ed3a9c 109MiB/128MiB(85%) CN:1 DL:126KiB ETA:2m35s]
+[#ed3a9c 109MiB/128MiB(85%) CN:1 DL:101KiB ETA:3m13s]
+[#ed3a9c 109MiB/128MiB(85%) CN:1 DL:86KiB ETA:3m44s]
+[#ed3a9c 109MiB/128MiB(85%) CN:1 DL:80KiB ETA:4m2s]
+[#ed3a9c 109MiB/128MiB(85%) CN:1 DL:86KiB ETA:3m44s]
+[#ed3a9c 109MiB/128MiB(85%) CN:1 DL:77KiB ETA:4m10s]
+[#ed3a9c 109MiB/128MiB(85%) CN:1 DL:165KiB ETA:1m53s]
+[#ed3a9c 109MiB/128MiB(85%) CN:1 DL:148KiB ETA:2m6s]
+[#ed3a9c 109MiB/128MiB(85%) CN:1 DL:96KiB ETA:3m14s]
+[#ed3a9c 110MiB/128MiB(86%) CN:1 DL:147KiB ETA:2m1s]
+[#ed3a9c 110MiB/128MiB(86%) CN:1 DL:207KiB ETA:1m27s]
+[#ed3a9c 110MiB/128MiB(86%) CN:1 DL:167KiB ETA:1m47s]
+[#ed3a9c 111MiB/128MiB(86%) CN:1 DL:138KiB ETA:2m6s]
+[#ed3a9c 111MiB/128MiB(86%) CN:1 DL:149KiB ETA:1m56s]
+[#ed3a9c 111MiB/128MiB(86%) CN:1 DL:171KiB ETA:1m39s]
+[#ed3a9c 111MiB/128MiB(87%) CN:1 DL:152KiB ETA:1m51s]
+[#ed3a9c 112MiB/128MiB(87%) CN:1 DL:209KiB ETA:1m18s]
+[#ed3a9c 112MiB/128MiB(87%) CN:1 DL:185KiB ETA:1m28s]
+[#ed3a9c 112MiB/128MiB(87%) CN:1 DL:166KiB ETA:1m38s]
+[#ed3a9c 112MiB/128MiB(87%) CN:1 DL:128KiB ETA:2m7s]
+[#ed3a9c 112MiB/128MiB(87%) CN:1 DL:125KiB ETA:2m9s]
+[#ed3a9c 112MiB/128MiB(87%) CN:1 DL:149KiB ETA:1m48s]
+[#ed3a9c 112MiB/128MiB(87%) CN:1 DL:154KiB ETA:1m43s]
+[#ed3a9c 112MiB/128MiB(87%) CN:1 DL:65KiB ETA:4m3s]
+ *** Download Progress Summary as of Wed Aug  5 21:05:38 2026 *** 
+===============================================================================
+[#ed3a9c 112MiB/128MiB(87%) CN:1 DL:66KiB ETA:3m58s]
+FILE: /run/media/ezra/13D010B6FDBC1A06/data/eval_contract_v1/screenspot_source_0be08781/d27634e5a119aa51c2bd46c868db7eb76bd846add7b319781687613ecaeba14f
+-------------------------------------------------------------------------------
+
+[#ed3a9c 112MiB/128MiB(87%) CN:1 DL:66KiB ETA:3m58s]
+[#ed3a9c 112MiB/128MiB(88%) CN:1 DL:77KiB ETA:3m20s]
+[#ed3a9c 113MiB/128MiB(88%) CN:1 DL:78KiB ETA:3m19s]
+[#ed3a9c 113MiB/128MiB(88%) CN:1 DL:71KiB ETA:3m37s]
+[#ed3a9c 113MiB/128MiB(88%) CN:1 DL:73KiB ETA:3m31s]
+[#ed3a9c 113MiB/128MiB(88%) CN:1 DL:45KiB ETA:5m43s]
+[#ed3a9c 113MiB/128MiB(88%) CN:1 DL:38KiB ETA:6m40s]
+[#ed3a9c 113MiB/128MiB(88%) CN:1 DL:34KiB ETA:7m31s]
+[#ed3a9c 113MiB/128MiB(88%) CN:1 DL:30KiB ETA:8m22s]
+[#ed3a9c 113MiB/128MiB(88%) CN:1 DL:31KiB ETA:8m17s]
+[#ed3a9c 113MiB/128MiB(88%) CN:1 DL:10KiB ETA:24m26s]
+[#ed3a9c 114MiB/128MiB(89%) CN:1 DL:231KiB ETA:59s]
+[#ed3a9c 120MiB/128MiB(94%) CN:1 DL:852KiB ETA:8s]
+
+08/05 21:05:52 [[1;31mERROR[0m] CUID#10 - Download aborted. URI=https://huggingface.co/datasets/bevaya/ScreenSpot/resolve/0be08781e2e188582f6131625ae1598d443b4d5d/data/test-00000-of-00003.parquet
+Exception: [AbstractCommand.cc:351] errorCode=22 URI=https://us.aws.cdn.hf.co/xet-bridge-us/6616a35f75f203eb75e90f03/d27634e5a119aa51c2bd46c868db7eb76bd846add7b319781687613ecaeba14f?user_id=public&response-content-disposition=inline%3B+filename*%3DUTF-8%27%27test-00000-of-00003.parquet%3B+filename%3D%22test-00000-of-00003.parquet%22%3B&X-Xet-Cas-Uid=public&Expires=1785938680&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNjYxNmEzNWY3NWYyMDNlYjc1ZTkwZjAzL2QyNzYzNGU1YTExOWFhNTFjMmJkNDZjODY4ZGI3ZWI3NmJkODQ2YWRkN2IzMTk3ODE2ODc2MTNlY2FlYmExNGZcXD91c2VyX2lkPXB1YmxpYyZyZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3dGVzdC0wMDAwMC1vZi0wMDAwMy5wYXJxdWV0JTNCK2ZpbGVuYW1lJTNEJTIydGVzdC0wMDAwMC1vZi0wMDAwMy5wYXJxdWV0JTIyJTNCJlgtWGV0LUNhcy1VaWQ9cHVibGljIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJFcG9jaFRpbWUiOjE3ODU5Mzg2ODB9LCJCeXRlUmFuZ2UiOnsiRXhwZWN0ZWRIZWFkZXIiOiJieXRlcz0xMDE3MTE4NzItMTM0NTEyNjU4In19fV19&Signature=MEYCIQD-thSe0TOi5wkzzWxGLCU50MFdffeVIrR%7E4jR-7PgvyAIhAN3yonwMNGtD-CruRb2LnSYcQLEOrM47GT%7EfP35D5sJK&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F
+  -> [HttpSkipResponseCommand.cc:239] errorCode=22 The response status is not successful. status=403
+
+08/05 21:05:52 [[1;32mNOTICE[0m] Download GID#ed3a9c02005647fb not complete: /run/media/ezra/13D010B6FDBC1A06/data/eval_contract_v1/screenspot_source_0be08781/d27634e5a119aa51c2bd46c868db7eb76bd846add7b319781687613ecaeba14f
+
+Download Results:
+gid   |stat|avg speed  |path/URI
+======+====+===========+=======================================================
+ed3a9c|ERR |   1.6MiB/s|/run/media/ezra/13D010B6FDBC1A06/data/eval_contract_v1/screenspot_source_0be08781/d27634e5a119aa51c2bd46c868db7eb76bd846add7b319781687613ecaeba14f
+
+Status Legend:
+(ERR):error occurred.
+
+aria2 will resume download if the transfer is restarted.
+If there are any errors, then see the log file. See '-l' option in help/man page for details.

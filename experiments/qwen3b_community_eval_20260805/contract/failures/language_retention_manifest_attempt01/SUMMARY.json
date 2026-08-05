@@ -1,0 +1,21 @@
+{
+  "schema_version": "implementation-failure-v1",
+  "status": "recovered",
+  "occurred_on": "2026-08-05",
+  "command": "tools/build_language_retention_contract.py",
+  "failure": {
+    "exceptions": [
+      "NameError: name 'false' is not defined",
+      "NameError: name 'true' is not defined"
+    ],
+    "cause": "JSON boolean spellings were used twice inside a Python dictionary; the first repair did not scan the whole file",
+    "partial_manifest_written": false,
+    "model_results_generated": false
+  },
+  "fix": "replace both JSON boolean spellings with Python booleans, scan the complete source, and rerun into the still-empty output path",
+  "recovery": {
+    "attempts": 3,
+    "manifest_sha256": "c518403a0e5002ec0712534fda65129e2e39ad46a4baf8f40b861599dcd4b6a8",
+    "selection_count": 240
+  }
+}

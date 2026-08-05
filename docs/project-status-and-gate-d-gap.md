@@ -30,6 +30,7 @@
 |---|---|---|---|
 | 真实视觉塔 | MoonViT-V2 真实权重、真实预处理、V100 forward/backward glue | 视觉编码器接口和 projector 输入合同可运行 | 完整 DeepSeek 能利用这些视觉 token |
 | 真实数据、纯文本小主干 | Qwen2.5-0.5B + MoonViT-V2 + projector-only，真实 59,198-row mix，已见 16,000 examples | 无原生 VLM 能力时可以学到非零图像依赖；训练/save/resume/eval 链路可运行 | 绝对 benchmark 上限、3B 容量、DeepSeek Hash-MoE 收敛 |
+| 3B 代理固定合同 | Qwen2.5-3B 的 9 个文件 SHA、ScreenSpot50/full、严格 parser、七条件、4096→2048 fixed receiver、240 条语言保持集 | 首个 3B 结果将可复现、可归因并与后续改进公平比较 | 3B 已经获得视觉能力；当前仍无 3B 生成或训练成绩 |
 | 原生 VLM 阳性对照 | Qwen3.5-4B 原生视觉模型在五项真实 benchmark 上运行 | 数据、processor 和 scorer 能得到强阳性结果 | MoonViT projector 对纯文本主干的能力 |
 | synthetic 包 3–14 | Qwen2.5-0.5B 上的 paired preference/generation、probe、patching、replay、sentinel | 机制定位、训练干扰、固定预算保护和评测开销 | ScreenSpot/TextVQA/DocVQA/OCRBench 的真实能力 |
 | DeepSeek 结构代理 | tiny `DeepseekV4ForCausalLM`、数学 DGRAD reference、三模式 harness | wrapper、routing 与 gate 工具的接口正确性 | 真实 FP4/FP8 kernel 的 input gradient 或完整 0731 稳定性 |
@@ -65,12 +66,13 @@
 
 ## 6. 当前 V100 上的最短路径
 
-1. 冻结纯文本 `Qwen/Qwen2.5-3B-Instruct` 的 resolved revision、权重/tokenizer/config SHA-256，确认无 `vision_config`。
-2. 固定 ScreenSpot 的 `screenspot_glm50_v1` 和完整公共测试集 manifest，在任何 3B 结果产生前提交。
-3. 固定 `click(start_box=[x, y])` parser、生成配置、vision/blind/shuffled/random-projector/step0/previous-best 条件和 paired bootstrap。
-4. 解决 4096 维可迁移 projector 与 Qwen receiver hidden width 的显式接口；Qwen 专用 readout 必须隔离、标记为不可迁移组件，不能改写 DeepSeek 的 4096 维主合同。
-5. 先跑最小 ScreenSpot 真实数据基线和因果控制，再按 4k/8k/16k/32k/64k examples-seen 节点评测。
-6. 候选进入 TextVQA、DocVQA、OCRBench、synthetic 六任务和语言保持；所有横向比较匹配记录集合、顺序、预算、分辨率和生成配置。
-7. 只把 `directly_transferable` 或 `transferable_with_runtime_validation` 的方法纳入 DeepSeek 候选；最终仍由完整 0731 的同一合同决定成败。
+1. **已完成（Package 15A 独立冻结）**：冻结纯文本 `Qwen/Qwen2.5-3B-Instruct` resolved revision、9 个文件 SHA-256、tokenizer bundle/chat-template SHA，并确认无 `vision_config`。
+2. **已完成（Package 15A 独立冻结）**：固定 `screenspot_glm50_v1`、1,272 条完整公共测试集与 240 条 language-retention manifest，均在任何 3B 输出前生成。
+3. **已完成（Package 15A 独立冻结）**：精确冻结 step0/random-projector 两份 33,564,672-parameter FP32 权重，并在 HF immutable commit `65639da5…a010` 完成 5/5 远端哈希验证。
+4. **已完成（Package 15A 独立冻结）**：固定严格 `click(start_box=[x, y])` parser、七条件、完整 grounding 指标和 2,000 次 paired bootstrap。
+5. **已完成（Package 15A 独立冻结）**：canonical projector 维持 4096；Qwen 使用无参数 fixed signed-pair 4096→2048 readout。readout 丢弃，代理 checkpoint 标为 `transferable_with_runtime_validation`。
+6. 提交并 push Package 15A 后，先跑 Qwen3B BF16-source→FP16-runtime load、receiver 梯度和 checkpoint round-trip，再跑最小 4k ScreenSpot 基线及因果控制。V100 固定 GEMM probe 中 BF16 比 FP16 慢 9.16 倍，运行精度已在首个模型输出前冻结为 FP16。
+7. 根据 4k 真实证据决定扩至 8k/16k/32k/64k；候选进入 TextVQA、DocVQA、OCRBench、synthetic 六任务和语言保持。
+8. 所有横向比较匹配记录集合、顺序、预算、分辨率、exact step0 和生成配置；只把 `directly_transferable` 或 `transferable_with_runtime_validation` 方法纳入 DeepSeek 候选。
 
 在完成以上本地证据后，若剩余阻塞只来自完整权重容量和量化 DGRAD，再提交最小付费 Gate D 的硬件、时价、GPU-hour、存储与止损上限，等待单独授权。

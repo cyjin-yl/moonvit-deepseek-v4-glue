@@ -1,0 +1,21 @@
+{
+  "schema_version": "download-failure-v1",
+  "status": "recovered",
+  "occurred_on": "2026-08-05",
+  "resource": "Qwen/Qwen2.5-3B-Instruct@aa8e72537993ba99e69dfaafa59ed015b17504d1",
+  "failed_method": "initial aria2 invocation containing only config.json",
+  "failure": {
+    "kind": "incomplete download command",
+    "downloaded_files": [
+      "config.json"
+    ],
+    "corrupted_files": false,
+    "raw_log": "download.log"
+  },
+  "recovery": {
+    "method": "huggingface_hub CLI, HF_HUB_DISABLE_XET=1, max_workers=1",
+    "downloaded_file_count": 9,
+    "all_files_sha256_verified": true,
+    "weight_bytes": 6171926992
+  }
+}
