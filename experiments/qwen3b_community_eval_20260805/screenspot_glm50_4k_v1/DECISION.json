@@ -1,0 +1,54 @@
+{
+  "format_version": "qwen3b-grounding-decision-v1",
+  "dataset_name": "screenspot_glm50_v1",
+  "dataset_label": "GLM-format metric-aligned public subset",
+  "sample_count": 50,
+  "current_candidate": "train_4k_v1_formal1/step-000500",
+  "previous_best": "step0",
+  "decision": "reject_current_candidate",
+  "previous_best_after_decision": "step0",
+  "vision": {
+    "parse_rate": 0.96,
+    "accuracy_at_50_all": 0.02,
+    "accuracy_at_100_all": 0.04,
+    "accuracy_at_200_all": 0.16,
+    "click_in_box_all": 0.04,
+    "mean_center_distance_all_penalized": 554.5317116043587,
+    "median_center_distance_all_penalized": 568.3744511300263
+  },
+  "vision_minus_blind": {
+    "click_in_box_all": -0.07999999999999999,
+    "click_in_box_all_ci95": [-0.2, 0.020000000000000004],
+    "mean_center_distance_improvement": -161.93948769916142,
+    "mean_center_distance_improvement_ci95": [-246.69635950689488, -89.23801476100289]
+  },
+  "vision_minus_shuffled": {
+    "click_in_box_all": -0.019999999999999997,
+    "click_in_box_all_ci95": [-0.06000000000000001, 0.0],
+    "accuracy_at_50_all": 0.0,
+    "accuracy_at_50_all_ci95": [0.0, 0.0]
+  },
+  "current_candidate_minus_previous_best": {
+    "click_in_box_all": -0.060000000000000005,
+    "click_in_box_all_ci95": [-0.16, 0.04],
+    "mean_center_distance_improvement": -155.9380256916781,
+    "mean_center_distance_improvement_ci95": [-246.73778344855054, -75.49653441259227]
+  },
+  "real_grounding_improvement_rule_passed": false,
+  "metric_aligned_baseline_rule_passed": false,
+  "visual_ability_established": false,
+  "hypotheses_supported": [
+    "The fixed Qwen2.5-3B training and seven-condition evaluation pipeline is operational.",
+    "The present objective can improve teacher-forced optimization while degrading ScreenSpot grounding."
+  ],
+  "hypotheses_refuted": [
+    "Qwen2.5-0.5B capacity was the sole grounding bottleneck.",
+    "Four thousand projector-only examples are sufficient for causal grounding on the frozen 3B receiver.",
+    "Falling training loss establishes causal image use."
+  ],
+  "method_transfer_label": "transferable_with_runtime_validation",
+  "checkpoint_enters_deepseek_candidate_list": false,
+  "next_experiment": "complete_screenspot_public_test_v1_then_teacher_forced_paired_diagnostic_if_failure_confirms",
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

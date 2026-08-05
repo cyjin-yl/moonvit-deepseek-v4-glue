@@ -1,0 +1,14 @@
+{
+  "format_version": "qwen3b-training-verifier-failure-v1",
+  "status": "invalid",
+  "stage": "independent_verification",
+  "exception_type": "KeyError",
+  "exception_message": "training_order_manifest_sha256",
+  "cause": "The verifier read checkpoint identity from RUN_CONFIG.binding, which contains budget fields; checkpoint identity is stored in each CHECKPOINT_MANIFEST.json.",
+  "accepted_verification_written": false,
+  "training_artifacts_modified": false,
+  "capability_claim_allowed": false,
+  "fixed_by_git_sha": "075f3e5889aa445a9ca748bb8ecfc21ba96abacc",
+  "retry_status": "verified",
+  "paid_resources_used": false
+}

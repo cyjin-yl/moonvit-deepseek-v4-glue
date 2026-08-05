@@ -1,0 +1,47 @@
+{
+  "file_count": 8,
+  "files": [
+    {
+      "bytes": 181248,
+      "path": "SUMMARY.json",
+      "sha256": "a49001b9238265f85079df15a7694efb3e3368ebbd9079bd6ad91795a58dc407"
+    },
+    {
+      "bytes": 30134,
+      "path": "scores/blind.jsonl",
+      "sha256": "e40556e959e112719f021aae85ebef55bd3e08ed95772430624f78eeecf8a7b7"
+    },
+    {
+      "bytes": 30081,
+      "path": "scores/current_candidate.jsonl",
+      "sha256": "3aba93331bbede7f42752139fdeccd8484b8e8229f0d3b4aa3333421be5d08de"
+    },
+    {
+      "bytes": 30157,
+      "path": "scores/previous_best.jsonl",
+      "sha256": "067481b3d4bb8598fd31c17ce5bfa6e50a2c5b154a5eee8b1eeec3e7e3aa484b"
+    },
+    {
+      "bytes": 30009,
+      "path": "scores/random_projector.jsonl",
+      "sha256": "b41ba0b4ce4bfc54f5ae0b594f826186f4881c316b748b21bac2ad1afc557b01"
+    },
+    {
+      "bytes": 29912,
+      "path": "scores/shuffled.jsonl",
+      "sha256": "de81eca7935087ea58ded4c645adbb9fff484e6bb3f5761ba7ca650d3d4e5260"
+    },
+    {
+      "bytes": 30157,
+      "path": "scores/step0.jsonl",
+      "sha256": "067481b3d4bb8598fd31c17ce5bfa6e50a2c5b154a5eee8b1eeec3e7e3aa484b"
+    },
+    {
+      "bytes": 30081,
+      "path": "scores/vision.jsonl",
+      "sha256": "3aba93331bbede7f42752139fdeccd8484b8e8229f0d3b4aa3333421be5d08de"
+    }
+  ],
+  "schema_version": "community-grounding-artifacts-v1",
+  "total_bytes": 391779
+}

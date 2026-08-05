@@ -1,0 +1,106 @@
+{
+  "capability_claim_allowed_before_scoring": false,
+  "condition_aliases": {
+    "previous_best": "step0",
+    "vision": "current_candidate"
+  },
+  "condition_summaries": [
+    {
+      "condition": "blind",
+      "file": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_4k_v1/predictions/blind.jsonl",
+      "file_sha256": "e4f3dc3632043ed5859bd992178697d4fc5af4ea1bf07e519dd2238c5aa42e37",
+      "parse_count": 50,
+      "records": 50,
+      "reused_complete": false,
+      "wall_seconds": 17.476518635172397
+    },
+    {
+      "condition": "current_candidate",
+      "file": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_4k_v1/predictions/current_candidate.jsonl",
+      "file_sha256": "279f0a30717e227924ebfe0fc4ae88bfe7b9c00452aeacf07fb9bc4756c6a77b",
+      "parse_count": 48,
+      "records": 50,
+      "reused_complete": false,
+      "wall_seconds": 23.677197084762156
+    },
+    {
+      "condition": "shuffled",
+      "file": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_4k_v1/predictions/shuffled.jsonl",
+      "file_sha256": "aac35bd6e6b852436154b0628aa26e917de68831ea7fc3bd6da5fc4aad6949ae",
+      "parse_count": 46,
+      "records": 50,
+      "reused_complete": false,
+      "wall_seconds": 21.289410926867276
+    },
+    {
+      "condition": "step0",
+      "file": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_4k_v1/predictions/step0.jsonl",
+      "file_sha256": "c336f4e09f5bb3bf6a6e76e5d25e33a833c40c1b0a6a286c3294ca96409058c1",
+      "parse_count": 50,
+      "records": 50,
+      "reused_complete": false,
+      "wall_seconds": 21.55714152008295
+    },
+    {
+      "condition": "random_projector",
+      "file": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_4k_v1/predictions/random_projector.jsonl",
+      "file_sha256": "34509561de6cf78e3ad3964c4841b5136ff3e2a2f6c1b436e39d25c42ea015dd",
+      "parse_count": 46,
+      "records": 50,
+      "reused_complete": false,
+      "wall_seconds": 21.588039920199662
+    }
+  ],
+  "dataset_name": "screenspot_glm50_v1",
+  "formal_generation_complete": true,
+  "gpu_name": "Tesla V100-PCIE-32GB",
+  "paid_resources_used": false,
+  "peak_gpu_memory_bytes": 7245852672,
+  "prediction_files": {
+    "blind": {
+      "bytes": 18210,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_4k_v1/predictions/blind.jsonl",
+      "sha256": "e4f3dc3632043ed5859bd992178697d4fc5af4ea1bf07e519dd2238c5aa42e37"
+    },
+    "current_candidate": {
+      "bytes": 22485,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_4k_v1/predictions/current_candidate.jsonl",
+      "sha256": "279f0a30717e227924ebfe0fc4ae88bfe7b9c00452aeacf07fb9bc4756c6a77b"
+    },
+    "previous_best": {
+      "bytes": 22510,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_4k_v1/predictions/previous_best.jsonl",
+      "sha256": "c336f4e09f5bb3bf6a6e76e5d25e33a833c40c1b0a6a286c3294ca96409058c1"
+    },
+    "random_projector": {
+      "bytes": 22532,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_4k_v1/predictions/random_projector.jsonl",
+      "sha256": "34509561de6cf78e3ad3964c4841b5136ff3e2a2f6c1b436e39d25c42ea015dd"
+    },
+    "shuffled": {
+      "bytes": 22327,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_4k_v1/predictions/shuffled.jsonl",
+      "sha256": "aac35bd6e6b852436154b0628aa26e917de68831ea7fc3bd6da5fc4aad6949ae"
+    },
+    "step0": {
+      "bytes": 22510,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_4k_v1/predictions/step0.jsonl",
+      "sha256": "c336f4e09f5bb3bf6a6e76e5d25e33a833c40c1b0a6a286c3294ca96409058c1"
+    },
+    "vision": {
+      "bytes": 22485,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_4k_v1/predictions/vision.jsonl",
+      "sha256": "279f0a30717e227924ebfe0fc4ae88bfe7b9c00452aeacf07fb9bc4756c6a77b"
+    }
+  },
+  "qwen_parameter_count": 3085938688,
+  "qwen_runtime_dtypes": [
+    "torch.float16"
+  ],
+  "qwen_trainable_parameter_count": 0,
+  "records": 50,
+  "status": "valid",
+  "total_wall_seconds": 240.29620895907283,
+  "transfer_label": "directly_transferable",
+  "transformers_version": "5.12.1"
+}

@@ -1,0 +1,21 @@
+{
+  "format_version": "remote-artifact-index-v1",
+  "created_at_utc": "2026-08-05T21:07:01.6559609Z",
+  "materialized_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_v1_materialized",
+  "materialized_image_count": 50,
+  "materialized_image_bytes": 54519681,
+  "materialization_manifest_sha256": "a63e9e238213148a4cf316a5e69acc1e16129fad638541badc7af24ebe08a2af",
+  "feature_cache_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_features_1024_v1",
+  "feature_shard_count": 50,
+  "feature_shard_bytes": 627596320,
+  "feature_cache_manifest_sha256": "03f35d8cee962a97996f3250e41c351978f28c0ca9a8fe74d4f8d41c411ae7f3",
+  "feature_records_sha256": "7c11072388d62dd05c73415dac499978a67d5b16d42b7e26f42cb246d4a0b1c2",
+  "evaluation_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_4k_v1",
+  "evaluation_summary_sha256": "9c6200e2c201fb0f17b80e7f113589a2ecb337ab3064c665adafdee804098899",
+  "scoring_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_score_4k_v1",
+  "scoring_summary_sha256": "a49001b9238265f85079df15a7694efb3e3368ebbd9079bd6ad91795a58dc407",
+  "durable_on_local_v100_storage": true,
+  "large_tensor_and_image_payloads_copied_to_git": false,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

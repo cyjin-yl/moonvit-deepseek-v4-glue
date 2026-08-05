@@ -1,0 +1,32 @@
+{
+  "argv": [
+    "tools/train_qwen3b_proxy.py",
+    "--contract",
+    "configs/qwen2.5-3b-community-eval-v1.json",
+    "--model-dir",
+    "/run/media/ezra/13D010B6FDBC1A06/models/qwen2.5-3b-instruct-aa8e7253",
+    "--data",
+    "/run/media/ezra/13D010B6FDBC1A06/data/train_v1/train_mix.jsonl",
+    "--training-order-manifest",
+    "experiments/qwen3b_community_eval_20260805/training_order_v1/MANIFEST.json",
+    "--feature-cache",
+    "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/feature_cache_4k_v1_retry1",
+    "--expected-cache-runner-git-sha",
+    "1e4c4000a88b02761abc5051ea78af9b2c7d4142",
+    "--projector-dir",
+    "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_initializations_v1/step0",
+    "--receiver-dir",
+    "experiments/qwen3b_community_eval_20260805/contract/proxy_receiver",
+    "--out",
+    "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_4k_v1_formal1",
+    "--checkpoint-every",
+    "100"
+  ],
+  "capability_claim_allowed": false,
+  "final_half_scored": false,
+  "formal_result_allowed": true,
+  "git_sha": "97e9c03403b2673e68f2ed7fc421630add8a9d3a",
+  "git_tracked_worktree_clean": true,
+  "paid_resources_used": false,
+  "started_at_utc": "2026-08-05T20:15:00.676851+00:00"
+}

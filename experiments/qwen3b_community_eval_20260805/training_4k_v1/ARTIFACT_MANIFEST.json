@@ -1,0 +1,59 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-05T21:09:18.777006+00:00",
+  "root": "training_4k_v1",
+  "git_base_sha": "b277db3c43d7ee50a41d1be5c6698262b195b111",
+  "files": {
+    "ATTEMPT.json": {
+      "bytes": 1242,
+      "sha256": "b96003e8da7a1b3b21414b534695482e1522892345e09a5863b42e7ebaa893f1"
+    },
+    "CACHE_VERIFICATION.json": {
+      "bytes": 740,
+      "sha256": "74e33e1a372683391a8d6cfce2f2862b6b41c835437bb93329431bc324ed8fd8"
+    },
+    "failures/verifier_attempt01/SUMMARY.json": {
+      "bytes": 631,
+      "sha256": "0af47fee211c12531bea759d5927a8044d2bd22b1b30c6b97665b8b861b0768b"
+    },
+    "INDEPENDENT_VERIFICATION.json": {
+      "bytes": 7294,
+      "sha256": "96c7ff6515634e990d6af58a822512eb17abd056e5774c34f848a4ec4d8a9e74"
+    },
+    "README.md": {
+      "bytes": 2139,
+      "sha256": "6bd1222b9179466f716ebb1a971e55728088f3903ed4bcd02c6141f69039c1e9"
+    },
+    "REMOTE_ARTIFACT_MANIFEST.json": {
+      "bytes": 987,
+      "sha256": "af7b43e790423743800303d25b88443d32dddaefa663c1165d83f432dd6062ce"
+    },
+    "run.log": {
+      "bytes": 13029,
+      "sha256": "f84e7d85d0507e7dc79cc2fee6b33d38fb895aab8fb929164b48196ba9a533c4"
+    },
+    "RUN_CONFIG.json": {
+      "bytes": 7214,
+      "sha256": "344117bbeb1366d11bc8d5038cb5daac1450db55b1c6f8021d6645f889ba083a"
+    },
+    "SUMMARY.json": {
+      "bytes": 3087,
+      "sha256": "dec8f7c745525595b9de706bf79825640d02e558f7b90a9f7f082f8e53c0509e"
+    },
+    "SUPERVISION_RECORDS.jsonl": {
+      "bytes": 2246952,
+      "sha256": "5c54b77577c289738bb9296aded5bcbf5dbecd2333514371dc2eba54520ef3ef"
+    },
+    "SUPERVISION_SUMMARY.json": {
+      "bytes": 451,
+      "sha256": "bea54dd74f341648f873689c4761b5dbe25ac2dfd231db62fae8e02d34d24645"
+    },
+    "TRAINING_HISTORY.jsonl": {
+      "bytes": 298384,
+      "sha256": "3f84401638df5dfa587746ea4ad51fae61ff4809f74baa4a8b4d1ab9930a179f"
+    }
+  },
+  "file_count": 12,
+  "total_bytes": 2582150,
+  "final_half_scored": false
+}

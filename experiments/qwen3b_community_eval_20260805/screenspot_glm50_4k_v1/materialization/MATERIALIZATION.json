@@ -1,0 +1,35 @@
+{
+  "data_file": "screenspot.jsonl",
+  "data_file_bytes": 24205,
+  "data_file_sha256": "b41f9edd7329974f79e707ca23cbdad7734d099a3f0985e0609adc6b9773c424",
+  "dataset_manifest": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15f-eval/experiments/qwen3b_community_eval_20260805/contract/datasets/screenspot_glm50_v1/MANIFEST.json",
+  "dataset_manifest_file_sha256": "b578229e72a59a983623514f259d2f49fc46cb66c0802a622682727d88151543",
+  "dataset_manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+  "dataset_name": "screenspot_glm50_v1",
+  "format_version": "screenspot-materialization-v1",
+  "git_sha": "fbbd81f7dc77c146642b678fe84605f62615f58c",
+  "git_tracked_worktree_clean": true,
+  "image_bytes": 54519681,
+  "paid_resources_used": false,
+  "records": 50,
+  "records_sha256": "24fdab4a84f87ef5baf68e06469fe33b26db05825befc7f25614e5e391351db4",
+  "source_shards": [
+    {
+      "bytes": 134512659,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/eval_contract_v1/screenspot_source_0be08781/data/test-00000-of-00003.parquet",
+      "sha256": "ff06d312270eecc9d9ac968a51ceb0bc54f80cfda691ccccb8ebf4b4e5faa8fb"
+    },
+    {
+      "bytes": 198971508,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/eval_contract_v1/screenspot_source_0be08781/data/test-00001-of-00003.parquet",
+      "sha256": "d48b8275f9dcff56f9c1bfedafbeb018cc200cbb649f8a92299cba0a9130891a"
+    },
+    {
+      "bytes": 268832649,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/eval_contract_v1/screenspot_source_0be08781/data/test-00002-of-00003.parquet",
+      "sha256": "a28a1e9f027003730c1375550bfdd3b212d0c0b5c24b338140309a2af3674e5b"
+    }
+  ],
+  "unique_images": 50,
+  "wall_seconds": 8.88132066000253
+}

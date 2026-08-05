@@ -1,0 +1,201 @@
+{
+  "capability_claim_allowed": false,
+  "checkpoint_total_bytes": 2351006545,
+  "checkpoints": [
+    {
+      "file_count": 5,
+      "files": [
+        {
+          "bytes": 70531,
+          "path": "history.json",
+          "sha256": "c9d9fc02f0e4a7c69bad203a44de8d9a7eccf28ff7066350ae178d79bec5fab1"
+        },
+        {
+          "bytes": 134259248,
+          "path": "projector.safetensors",
+          "sha256": "f63975a8e7cb5c034b64258c17fe66c137409fb3ca3db00551936c0c26203e63"
+        },
+        {
+          "bytes": 67129856,
+          "path": "projector_bf16.safetensors",
+          "sha256": "9ae641266e30c3857ab4aa192bcb805a7a54afdea4aceb5a157a5cf3c7de56b3"
+        },
+        {
+          "bytes": 128,
+          "path": "projector_config.json",
+          "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+        },
+        {
+          "bytes": 268555229,
+          "path": "training_state.pt",
+          "sha256": "3ba990ce2377821f77ed6f504ddf27063fbc608e238368adfead87f581f362dc"
+        }
+      ],
+      "manifest_file_sha256": "17dec7c4bd6371a881a54b7dea4ff922113a9d4550ae2df001da7a6b8dc751d6",
+      "step": 100,
+      "total_bytes": 470014992
+    },
+    {
+      "file_count": 5,
+      "files": [
+        {
+          "bytes": 141516,
+          "path": "history.json",
+          "sha256": "28ee0d41328f161dd2f953cf83c672c7824fe06ed260a1f22ca4db12405e22a3"
+        },
+        {
+          "bytes": 134259248,
+          "path": "projector.safetensors",
+          "sha256": "7d437620adcde77545b6a51e0c325f1b019f72f0ab41bea32dfbf5942739d4bf"
+        },
+        {
+          "bytes": 67129856,
+          "path": "projector_bf16.safetensors",
+          "sha256": "82bb7abfb30da492e605cf56d937a235f66c79f2d212b97fb41acd2378078e6c"
+        },
+        {
+          "bytes": 128,
+          "path": "projector_config.json",
+          "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+        },
+        {
+          "bytes": 268577245,
+          "path": "training_state.pt",
+          "sha256": "b1fe069a27a42aade447737c4da94cdea5d6f22288abf9ec31b2bd94278edb48"
+        }
+      ],
+      "manifest_file_sha256": "7c72782c2c02846a896e6e25c434930f928ace2fad55deed80cf39ceb34343ce",
+      "step": 200,
+      "total_bytes": 470107993
+    },
+    {
+      "file_count": 5,
+      "files": [
+        {
+          "bytes": 212634,
+          "path": "history.json",
+          "sha256": "cc7f5ff6af7cfdcb6e6a714c2d7b73e8e4c0da59380663711a98deb34e411280"
+        },
+        {
+          "bytes": 134259248,
+          "path": "projector.safetensors",
+          "sha256": "83883aa8a4a46cae1187af1de62149ff862542d6c9ff98767d6276af790e9a82"
+        },
+        {
+          "bytes": 67129856,
+          "path": "projector_bf16.safetensors",
+          "sha256": "50c85e1fe30d382948a3d292eb94ab5a1ade53a421eab3844d46855b20bf29a2"
+        },
+        {
+          "bytes": 128,
+          "path": "projector_config.json",
+          "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+        },
+        {
+          "bytes": 268599325,
+          "path": "training_state.pt",
+          "sha256": "001acfaa57eceb76d3a3a87aef6914d3abfb37b0e0a357fb9f4f671fe9dc77e6"
+        }
+      ],
+      "manifest_file_sha256": "b206a8374f12ccff36abf24cb1feb0b042b49d63600f9b40b73b9d1cb97d8417",
+      "step": 300,
+      "total_bytes": 470201191
+    },
+    {
+      "file_count": 5,
+      "files": [
+        {
+          "bytes": 283774,
+          "path": "history.json",
+          "sha256": "64d28f2d2574f8ced07c0552613667d5a027d41dc2687044fa515313114dd99c"
+        },
+        {
+          "bytes": 134259248,
+          "path": "projector.safetensors",
+          "sha256": "967a46474e6356cf5a147f420da05ae76b263ffbc911fa77a468180301ee9008"
+        },
+        {
+          "bytes": 67129856,
+          "path": "projector_bf16.safetensors",
+          "sha256": "c64bc56790ee6b07bf3453fd6aef2ead03575b946d1b42b113d6f729671dd261"
+        },
+        {
+          "bytes": 128,
+          "path": "projector_config.json",
+          "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+        },
+        {
+          "bytes": 268621533,
+          "path": "training_state.pt",
+          "sha256": "260cc7bdc5e2f39b53d99a924043e5d271d6d7f139eedfe9d1ced31d49629560"
+        }
+      ],
+      "manifest_file_sha256": "d74ff5c136ff869eba1fcd6d39f900fadbbbadf73035c798bb42854d9bf09cac",
+      "step": 400,
+      "total_bytes": 470294539
+    },
+    {
+      "file_count": 5,
+      "files": [
+        {
+          "bytes": 354921,
+          "path": "history.json",
+          "sha256": "0523fd7b8f389896cf59a73cb2b0adfc6179edc5c62077d477b80c2c70cdab56"
+        },
+        {
+          "bytes": 134259248,
+          "path": "projector.safetensors",
+          "sha256": "566830f3b6f85f5aa66b13566054022bcffce3660d5b2210fc5ee192834ca89f"
+        },
+        {
+          "bytes": 67129856,
+          "path": "projector_bf16.safetensors",
+          "sha256": "065dc2f676934061cc1dd47c5d8b32f8ae623bdaf6bf7989b32eddf1bea2cbc6"
+        },
+        {
+          "bytes": 128,
+          "path": "projector_config.json",
+          "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+        },
+        {
+          "bytes": 268643677,
+          "path": "training_state.pt",
+          "sha256": "ad6365e045415e3e53a082131fe983f2a40d7900361f6c77dcc5ace6219d8e07"
+        }
+      ],
+      "manifest_file_sha256": "9e875ef7b8673127e12f46b3bcb09e884b55a88fee8c7f653b09bd43617af8d7",
+      "step": 500,
+      "total_bytes": 470387830
+    }
+  ],
+  "contract_file_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+  "feature_cache_manifest_file_sha256": "055f458fb3525dd81d6d381dbd1e628a8a07ed31a42017e956bbe117c62c98b1",
+  "feature_cache_records_sha256": "8d571870d5ebeb14ea4047b9ae73bedee06d429a35245f5746360a01cecefea3",
+  "final_optimizer_parameter_states": 6,
+  "final_projector_changed": true,
+  "final_projector_sha256": "566830f3b6f85f5aa66b13566054022bcffce3660d5b2210fc5ee192834ca89f",
+  "final_training_state_step": 500,
+  "format_version": "qwen3b-fixed-budget-training-verification-v1",
+  "history": {
+    "answer_tokens_seen": 21532,
+    "examples_seen": 4000,
+    "loss_first": 4.6016926020383835,
+    "loss_last": 2.4788947850465775,
+    "loss_mean": 3.0100913101290354,
+    "loss_min": 1.1667939226608723,
+    "optimizer_steps": 500
+  },
+  "paid_resources_used": false,
+  "peak_gpu_memory_bytes": 8979616768,
+  "runner_git_sha": "97e9c03403b2673e68f2ed7fc421630add8a9d3a",
+  "status": "verified",
+  "step0_projector_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0",
+  "supervision_records_file_sha256": "5c54b77577c289738bb9296aded5bcbf5dbecd2333514371dc2eba54520ef3ef",
+  "training_history_file_sha256": "3f84401638df5dfa587746ea4ad51fae61ff4809f74baa4a8b4d1ab9930a179f",
+  "training_order_manifest_file_sha256": "b1c8b18ccf607a2337f0857d0386eca6f7e9a89dabc6b115325562843719c7e7",
+  "transfer_label": "transferable_with_runtime_validation",
+  "verifier_file_sha256": "fd95b1e06a53e453810215c74b26d5e279003613059a0ebdf9da8e451afdd11d",
+  "verifier_git_sha": "075f3e5889aa445a9ca748bb8ecfc21ba96abacc",
+  "verifier_git_tracked_worktree_clean": true,
+  "visual_ability_established": false
+}

@@ -1,0 +1,19 @@
+{
+  "format_version": "remote-artifact-index-v1",
+  "created_at_utc": "2026-08-05T21:07:01.6559609Z",
+  "root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_4k_v1_formal1",
+  "runner_git_sha": "97e9c03403b2673e68f2ed7fc421630add8a9d3a",
+  "verifier_git_sha": "075f3e5889aa445a9ca748bb8ecfc21ba96abacc",
+  "checkpoint_steps": [100, 200, 300, 400, 500],
+  "checkpoint_file_count": 25,
+  "checkpoint_total_bytes": 2351006545,
+  "integrity_index": "INDEPENDENT_VERIFICATION.json#checkpoints",
+  "final_checkpoint": "checkpoints/step-000500",
+  "final_projector_sha256": "566830f3b6f85f5aa66b13566054022bcffce3660d5b2210fc5ee192834ca89f",
+  "training_history_file_sha256": "3f84401638df5dfa587746ea4ad51fae61ff4809f74baa4a8b4d1ab9930a179f",
+  "supervision_records_file_sha256": "5c54b77577c289738bb9296aded5bcbf5dbecd2333514371dc2eba54520ef3ef",
+  "durable_on_local_v100_storage": true,
+  "copied_to_git": false,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

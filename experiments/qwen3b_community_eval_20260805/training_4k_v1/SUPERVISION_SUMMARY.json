@@ -1,0 +1,16 @@
+{
+  "answer_tokens_max": 29,
+  "answer_tokens_min": 2,
+  "answer_tokens_total": 21532,
+  "expanded_sequence_length_max": 311,
+  "expanded_sequence_length_min": 97,
+  "prompt_length_max": 101,
+  "prompt_length_min": 38,
+  "records": 4000,
+  "records_file": "SUPERVISION_RECORDS.jsonl",
+  "records_file_sha256": "5c54b77577c289738bb9296aded5bcbf5dbecd2333514371dc2eba54520ef3ef",
+  "route_counts": {
+    "grounding": 339,
+    "short_answer": 3661
+  }
+}

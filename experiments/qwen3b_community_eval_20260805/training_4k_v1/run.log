@@ -1,0 +1,183 @@
+stage: contract_order_cache_verification
+stage: frozen_file_verification
+stage: tokenizer_config_supervision
+stage: cuda_and_model_load
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading weights:   0%|          | 0/434 [00:00<?, ?it/s]Loading weights:   0%|          | 1/434 [00:21<2:33:01, 21.21s/it]Loading weights:   0%|          | 2/434 [00:21<1:03:48,  8.86s/it]Loading weights:  28%|##8       | 123/434 [00:22<00:29, 10.38it/s]Loading weights:  30%|##9       | 129/434 [00:23<00:29, 10.50it/s]Loading weights:  31%|###1      | 135/434 [00:25<00:36,  8.12it/s]Loading weights:  34%|###3      | 147/434 [00:27<00:35,  8.09it/s]Loading weights:  34%|###4      | 149/434 [00:28<00:42,  6.76it/s]Loading weights:  37%|###6      | 159/434 [00:29<00:37,  7.36it/s]Loading weights:  37%|###7      | 161/434 [00:30<00:40,  6.73it/s]Loading weights:  39%|###9      | 171/434 [00:31<00:37,  7.02it/s]Loading weights:  40%|###9      | 173/434 [00:32<00:50,  5.18it/s]Loading weights:  42%|####2     | 183/434 [00:33<00:37,  6.75it/s]Loading weights:  44%|####4     | 192/434 [00:33<00:25,  9.61it/s]Loading weights:  45%|####5     | 196/434 [00:37<00:56,  4.23it/s]Loading weights:  48%|####7     | 207/434 [00:38<00:41,  5.41it/s]Loading weights:  48%|####8     | 209/434 [00:38<00:42,  5.26it/s]Loading weights:  50%|#####     | 219/434 [00:40<00:37,  5.76it/s]Loading weights:  51%|#####     | 221/434 [00:41<00:40,  5.25it/s]Loading weights:  53%|#####3    | 231/434 [00:42<00:34,  5.86it/s]Loading weights:  55%|#####5    | 239/434 [00:42<00:23,  8.22it/s]Loading weights:  56%|#####5    | 243/434 [00:44<00:35,  5.34it/s]Loading weights:  56%|#####6    | 245/434 [00:45<00:36,  5.13it/s]Loading weights:  59%|#####8    | 255/434 [00:46<00:32,  5.51it/s]Loading weights:  62%|######1   | 267/434 [00:48<00:28,  5.91it/s]Loading weights:  64%|######4   | 279/434 [00:51<00:28,  5.49it/s]Loading weights:  65%|######4   | 280/434 [00:51<00:28,  5.41it/s]Loading weights:  65%|######4   | 281/434 [00:51<00:30,  4.97it/s]Loading weights:  67%|######7   | 291/434 [00:52<00:18,  7.63it/s]Loading weights:  67%|######7   | 292/434 [00:53<00:27,  5.21it/s]Loading weights:  70%|######9   | 303/434 [00:54<00:19,  6.68it/s]Loading weights:  70%|#######   | 304/434 [00:55<00:22,  5.72it/s]Loading weights:  70%|#######   | 305/434 [00:55<00:23,  5.50it/s]Loading weights:  73%|#######2  | 315/434 [00:57<00:22,  5.30it/s]Loading weights:  75%|#######5  | 327/434 [00:59<00:18,  5.64it/s]Loading weights:  76%|#######5  | 328/434 [00:59<00:19,  5.52it/s]Loading weights:  78%|#######8  | 339/434 [01:00<00:12,  7.31it/s]Loading weights:  78%|#######8  | 340/434 [01:00<00:12,  7.32it/s]Loading weights:  81%|########  | 351/434 [01:02<00:12,  6.74it/s]Loading weights:  81%|########1 | 352/434 [01:02<00:12,  6.72it/s]Loading weights:  81%|########1 | 353/434 [01:02<00:11,  6.78it/s]Loading weights:  84%|########3 | 363/434 [01:03<00:08,  8.34it/s]Loading weights:  84%|########3 | 364/434 [01:04<00:11,  5.94it/s]Loading weights:  86%|########6 | 375/434 [01:05<00:07,  7.58it/s]Loading weights:  87%|########6 | 376/434 [01:05<00:07,  7.54it/s]Loading weights:  87%|########6 | 377/434 [01:06<00:09,  5.93it/s]Loading weights:  89%|########9 | 387/434 [01:07<00:06,  7.18it/s]Loading weights:  89%|########9 | 388/434 [01:07<00:07,  6.09it/s]Loading weights:  92%|#########1| 399/434 [01:08<00:04,  7.92it/s]Loading weights:  92%|#########2| 400/434 [01:09<00:04,  7.34it/s]Loading weights:  92%|#########2| 401/434 [01:09<00:04,  6.85it/s]Loading weights:  95%|#########4| 411/434 [01:10<00:02,  7.79it/s]Loading weights:  95%|#########4| 412/434 [01:10<00:03,  7.25it/s]Loading weights:  95%|#########5| 413/434 [01:11<00:03,  5.38it/s]Loading weights:  97%|#########7| 423/434 [01:12<00:01,  7.46it/s]Loading weights: 100%|##########| 434/434 [01:12<00:00,  5.99it/s]
+stage: projector_receiver_optimizer_load
+stage: projector_training
+optimizer_step 1/500 loss=4.601693 examples_seen=8 answer_tokens_seen=62 step_wall=5.578s
+optimizer_step 10/500 loss=9.018153 examples_seen=80 answer_tokens_seen=410 step_wall=0.965s
+optimizer_step 20/500 loss=4.176105 examples_seen=160 answer_tokens_seen=910 step_wall=0.975s
+optimizer_step 30/500 loss=3.001213 examples_seen=240 answer_tokens_seen=1379 step_wall=0.975s
+optimizer_step 40/500 loss=2.222478 examples_seen=320 answer_tokens_seen=1797 step_wall=0.983s
+optimizer_step 50/500 loss=3.718273 examples_seen=400 answer_tokens_seen=2240 step_wall=0.899s
+optimizer_step 60/500 loss=3.375833 examples_seen=480 answer_tokens_seen=2736 step_wall=1.031s
+optimizer_step 70/500 loss=3.083692 examples_seen=560 answer_tokens_seen=3113 step_wall=1.103s
+optimizer_step 80/500 loss=2.911062 examples_seen=640 answer_tokens_seen=3521 step_wall=0.952s
+optimizer_step 90/500 loss=2.676049 examples_seen=720 answer_tokens_seen=3908 step_wall=0.954s
+optimizer_step 100/500 loss=2.917722 examples_seen=800 answer_tokens_seen=4338 step_wall=0.982s
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+checkpoint saved: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_4k_v1_formal1/checkpoints/step-000100 (470014992 bytes)
+optimizer_step 110/500 loss=2.910923 examples_seen=880 answer_tokens_seen=4713 step_wall=1.027s
+optimizer_step 120/500 loss=3.323785 examples_seen=960 answer_tokens_seen=5212 step_wall=1.032s
+optimizer_step 130/500 loss=3.709917 examples_seen=1040 answer_tokens_seen=5636 step_wall=1.000s
+optimizer_step 140/500 loss=3.335796 examples_seen=1120 answer_tokens_seen=6069 step_wall=0.970s
+optimizer_step 150/500 loss=2.737974 examples_seen=1200 answer_tokens_seen=6492 step_wall=0.965s
+optimizer_step 160/500 loss=2.777354 examples_seen=1280 answer_tokens_seen=6988 step_wall=0.974s
+optimizer_step 170/500 loss=3.118202 examples_seen=1360 answer_tokens_seen=7424 step_wall=1.073s
+optimizer_step 180/500 loss=1.704565 examples_seen=1440 answer_tokens_seen=7820 step_wall=1.034s
+optimizer_step 190/500 loss=2.748467 examples_seen=1520 answer_tokens_seen=8220 step_wall=1.019s
+optimizer_step 200/500 loss=2.911908 examples_seen=1600 answer_tokens_seen=8620 step_wall=1.011s
+checkpoint saved: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_4k_v1_formal1/checkpoints/step-000200 (470107993 bytes)
+optimizer_step 210/500 loss=2.631362 examples_seen=1680 answer_tokens_seen=9106 step_wall=0.979s
+optimizer_step 220/500 loss=2.950671 examples_seen=1760 answer_tokens_seen=9567 step_wall=1.003s
+optimizer_step 230/500 loss=3.389078 examples_seen=1840 answer_tokens_seen=10035 step_wall=1.022s
+optimizer_step 240/500 loss=1.747688 examples_seen=1920 answer_tokens_seen=10415 step_wall=1.014s
+optimizer_step 250/500 loss=3.598007 examples_seen=2000 answer_tokens_seen=10769 step_wall=1.025s
+optimizer_step 260/500 loss=3.573301 examples_seen=2080 answer_tokens_seen=11252 step_wall=1.088s
+optimizer_step 270/500 loss=2.530644 examples_seen=2160 answer_tokens_seen=11673 step_wall=0.872s
+optimizer_step 280/500 loss=2.123807 examples_seen=2240 answer_tokens_seen=12112 step_wall=0.973s
+optimizer_step 290/500 loss=2.842978 examples_seen=2320 answer_tokens_seen=12506 step_wall=0.838s
+optimizer_step 300/500 loss=2.058536 examples_seen=2400 answer_tokens_seen=12934 step_wall=0.956s
+checkpoint saved: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_4k_v1_formal1/checkpoints/step-000300 (470201191 bytes)
+optimizer_step 310/500 loss=1.788258 examples_seen=2480 answer_tokens_seen=13356 step_wall=1.018s
+optimizer_step 320/500 loss=2.892217 examples_seen=2560 answer_tokens_seen=13717 step_wall=0.892s
+optimizer_step 330/500 loss=1.586377 examples_seen=2640 answer_tokens_seen=14121 step_wall=0.950s
+optimizer_step 340/500 loss=3.411135 examples_seen=2720 answer_tokens_seen=14557 step_wall=0.981s
+optimizer_step 350/500 loss=2.705049 examples_seen=2800 answer_tokens_seen=15002 step_wall=0.948s
+optimizer_step 360/500 loss=2.113386 examples_seen=2880 answer_tokens_seen=15483 step_wall=1.242s
+optimizer_step 370/500 loss=3.006755 examples_seen=2960 answer_tokens_seen=15892 step_wall=1.000s
+optimizer_step 380/500 loss=3.344272 examples_seen=3040 answer_tokens_seen=16296 step_wall=1.089s
+optimizer_step 390/500 loss=3.662051 examples_seen=3120 answer_tokens_seen=16745 step_wall=1.096s
+optimizer_step 400/500 loss=3.623737 examples_seen=3200 answer_tokens_seen=17204 step_wall=1.032s
+checkpoint saved: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_4k_v1_formal1/checkpoints/step-000400 (470294539 bytes)
+optimizer_step 410/500 loss=1.812031 examples_seen=3280 answer_tokens_seen=17661 step_wall=0.904s
+optimizer_step 420/500 loss=2.228728 examples_seen=3360 answer_tokens_seen=18109 step_wall=1.084s
+optimizer_step 430/500 loss=2.297612 examples_seen=3440 answer_tokens_seen=18529 step_wall=0.998s
+optimizer_step 440/500 loss=2.008046 examples_seen=3520 answer_tokens_seen=18949 step_wall=0.970s
+optimizer_step 450/500 loss=2.168794 examples_seen=3600 answer_tokens_seen=19366 step_wall=1.070s
+optimizer_step 460/500 loss=2.765514 examples_seen=3680 answer_tokens_seen=19834 step_wall=1.011s
+optimizer_step 470/500 loss=3.566808 examples_seen=3760 answer_tokens_seen=20297 step_wall=0.934s
+optimizer_step 480/500 loss=2.538926 examples_seen=3840 answer_tokens_seen=20689 step_wall=0.991s
+optimizer_step 490/500 loss=3.777669 examples_seen=3920 answer_tokens_seen=21092 step_wall=1.035s
+optimizer_step 500/500 loss=2.478895 examples_seen=4000 answer_tokens_seen=21532 step_wall=0.991s
+checkpoint saved: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_4k_v1_formal1/checkpoints/step-000500 (470387830 bytes)
+stage: complete
+{
+  "status": "valid",
+  "formal_training_complete": true,
+  "capability_claim_allowed": false,
+  "evaluation_required_for_capability_claim": true,
+  "visual_ability_established": false,
+  "previous_best": "step0",
+  "final_half_scored": false,
+  "paid_resources_used": false,
+  "runner_git_sha": "97e9c03403b2673e68f2ed7fc421630add8a9d3a",
+  "git_tracked_worktree_clean": true,
+  "optimizer_steps": 500,
+  "examples_seen": 4000,
+  "answer_tokens_seen": 21532,
+  "effective_epochs": 0.06756985033278151,
+  "subset_passes": 1.0,
+  "micro_batch_size": 1,
+  "gradient_accumulation": 8,
+  "real_global_batch": 8,
+  "loss_first": 4.6016926020383835,
+  "loss_last": 2.4788947850465775,
+  "loss_min": 1.1667939226608723,
+  "loss_mean": 3.0100913101290354,
+  "training_wall_seconds": 532.809537940193,
+  "total_wall_seconds": 905.3904932336882,
+  "peak_gpu_memory_bytes": 8979616768,
+  "gpu_name": "Tesla V100-PCIE-32GB",
+  "qwen_parameter_count": 3085938688,
+  "qwen_runtime_dtypes": [
+    "torch.float16"
+  ],
+  "qwen_trainable_parameter_count": 0,
+  "projector_parameter_count": 33564672,
+  "receiver_trainable_parameter_count": 0,
+  "activation_checkpointing": true,
+  "first_gradient": {
+    "step": 1,
+    "gradient_norm_before_clip": 219.99668884277344,
+    "parameter_gradients": [
+      {
+        "name": "pre_norm.weight",
+        "nonzero": 1024,
+        "numel": 1024
+      },
+      {
+        "name": "pre_norm.bias",
+        "nonzero": 1024,
+        "numel": 1024
+      },
+      {
+        "name": "linear_1.weight",
+        "nonzero": 16777216,
+        "numel": 16777216
+      },
+      {
+        "name": "linear_1.bias",
+        "nonzero": 4096,
+        "numel": 4096
+      },
+      {
+        "name": "linear_2.weight",
+        "nonzero": 16777216,
+        "numel": 16777216
+      },
+      {
+        "name": "linear_2.bias",
+        "nonzero": 4096,
+        "numel": 4096
+      }
+    ],
+    "language_parameter_gradient_tensors": 0
+  },
+  "last_gradient": {
+    "step": 500,
+    "gradient_norm_before_clip": 0.3916518986225128,
+    "parameter_gradients": [
+      {
+        "name": "pre_norm.weight",
+        "nonzero": 1024,
+        "numel": 1024
+      },
+      {
+        "name": "pre_norm.bias",
+        "nonzero": 1024,
+        "numel": 1024
+      },
+      {
+        "name": "linear_1.weight",
+        "nonzero": 16777216,
+        "numel": 16777216
+      },
+      {
+        "name": "linear_1.bias",
+        "nonzero": 4096,
+        "numel": 4096
+      },
+      {
+        "name": "linear_2.weight",
+        "nonzero": 16770022,
+        "numel": 16777216
+      },
+      {
+        "name": "linear_2.bias",
+        "nonzero": 4096,
+        "numel": 4096
+      }
+    ],
+    "language_parameter_gradient_tensors": 0
+  },
+  "final_checkpoint": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_4k_v1_formal1/checkpoints/step-000500",
+  "final_checkpoint_file_count": 5,
+  "final_checkpoint_total_bytes": 470387830,
+  "supervision_records_sha256": "5c54b77577c289738bb9296aded5bcbf5dbecd2333514371dc2eba54520ef3ef",
+  "transfer_label": "transferable_with_runtime_validation"
+}
