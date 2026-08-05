@@ -20,6 +20,7 @@ from eval_shape_adaptation import (
     evaluation_projector_dtype,
     filter_adaptation_states,
     read_evaluation_records,
+    select_adaptation_state_ids,
     take_complete_pair_limit_per_task,
 )
 from analyze_adaptation_compare import (
@@ -318,6 +319,25 @@ def test_interpolation_screen_can_keep_only_projector_states() -> None:
         "projector-interp50",
         "projector-interp75",
     ]
+
+
+def test_sentinel_screen_selects_exact_reference_and_current_states() -> None:
+    states = [
+        {"id": "frozen-base", "kind": "frozen", "adaptation_step": 0},
+        {"id": "exchange-step50", "kind": "projector", "adaptation_step": 50},
+        {"id": "ordinary-step75", "kind": "projector", "adaptation_step": 75},
+    ]
+
+    selected = select_adaptation_state_ids(
+        states, ["exchange-step50", "ordinary-step75"]
+    )
+
+    assert [row["id"] for row in selected] == [
+        "exchange-step50",
+        "ordinary-step75",
+    ]
+    with pytest.raises(ValueError, match="absent"):
+        select_adaptation_state_ids(states, ["missing-step"])
 
 
 def test_endpoint_direction_requires_two_task_level_generation_wins() -> None:

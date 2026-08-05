@@ -1,0 +1,81 @@
+{
+  "run_id": "v100-perception-sentinel-power-20260805-v1",
+  "format_version": "sentinel-power-preregistration-v1",
+  "source": {
+    "package_commit": "4df9e666026aa8c0a737c99a054c3d930b0a0211",
+    "package": "experiments/v100_perception_20260804/matched_replay_v1",
+    "preference_records": "raw/adaptation/matched_replay_sentinel_eval_v1/preference_records.jsonl",
+    "preference_records_sha256": "0c3eec4fbce33e98d8a5acd1e9211d942fbaadd2a4665a81f9743c4a0ddf11a8"
+  },
+  "states": {
+    "reference": "exchange-step50",
+    "current": "ordinary-step75"
+  },
+  "condition": "vision",
+  "tasks": [
+    "color",
+    "coordinate",
+    "count",
+    "ocr",
+    "shape",
+    "spatial"
+  ],
+  "target_task": "count",
+  "expected_full_trigger_tasks": [
+    "count"
+  ],
+  "pairs_per_task": [
+    8,
+    16,
+    25,
+    50,
+    100
+  ],
+  "trials": 200,
+  "sampling_seed": 20260826,
+  "bootstrap_samples": 2000,
+  "bootstrap_seed": 20260827,
+  "trigger_rule": {
+    "metric": "vision paired_preference",
+    "minimum_absolute_drop": 0.1,
+    "paired_ci_requirement": "current-minus-reference ci95_high < 0",
+    "maximum_tasks": 2,
+    "ranking": "most negative mean gap, then task name"
+  },
+  "selection_criteria": {
+    "minimum_count_recall": 0.95,
+    "minimum_count_recall_ci95_low": 0.9,
+    "minimum_exact_decision_rate": 0.9,
+    "minimum_exact_decision_ci95_low": 0.85,
+    "maximum_familywise_false_trigger_rate": 0.05,
+    "maximum_familywise_false_trigger_ci95_high": 0.1
+  },
+  "timing_protocol": {
+    "tiny": "smallest candidate passing every preregistered point and Wilson guard",
+    "medium": "next larger registered candidate, or Tiny if Tiny is already the maximum",
+    "states": [
+      "exchange-step50",
+      "ordinary-step75"
+    ],
+    "teacher_conditions": [
+      "vision"
+    ],
+    "generation": false,
+    "teacher_batch_size": 32,
+    "repeats": 3,
+    "reported_time": "median synchronized teacher_forced_seconds; setup and end-to-end wall reported separately",
+    "training_step_seconds_reference": 0.8989665508270264,
+    "overhead_targets": [
+      0.05,
+      0.1
+    ]
+  },
+  "hard_constraints": {
+    "gpu": "existing Tesla V100-PCIE-32GB only",
+    "reuse_existing_rows_for_power": true,
+    "rent_new_server": false,
+    "score_final_odd_half": false,
+    "change_training_examples": false,
+    "change_training_steps": false
+  }
+}

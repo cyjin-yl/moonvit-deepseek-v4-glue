@@ -11,6 +11,7 @@ import platform
 import subprocess
 import time
 import traceback
+from contextlib import nullcontext
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -56,6 +57,23 @@ def parse_args() -> argparse.Namespace:
         nargs="*",
         default=None,
         help="只保留指定适配臂，并始终保留 frozen base",
+    )
+    parser.add_argument(
+        "--state-ids",
+        nargs="*",
+        default=None,
+        help="按给定顺序精确保留 state；用于 reference/current sentinel",
+    )
+    parser.add_argument(
+        "--teacher-conditions",
+        choices=("vision", "paired_counterfactual_image", "shuffled_image"),
+        nargs="+",
+        default=("vision", "paired_counterfactual_image", "shuffled_image"),
+    )
+    parser.add_argument(
+        "--skip-generation",
+        action="store_true",
+        help="只运行 teacher-forced preference，并在摘要中显式记录 generation=0",
     )
     return parser.parse_args()
 
@@ -251,6 +269,22 @@ def filter_adaptation_states(
     return filtered
 
 
+def select_adaptation_state_ids(
+    states: list[dict], requested_state_ids: list[str] | None
+) -> list[dict]:
+    """精确选择 reference/current state，不自动附加 frozen base。"""
+
+    if requested_state_ids is None:
+        return states
+    if not requested_state_ids or len(set(requested_state_ids)) != len(requested_state_ids):
+        raise ValueError("requested adaptation state IDs must be non-empty and unique")
+    by_id = {str(state["id"]): state for state in states}
+    missing = [state_id for state_id in requested_state_ids if state_id not in by_id]
+    if missing:
+        raise ValueError(f"requested adaptation state IDs are absent: {missing}")
+    return [by_id[state_id] for state_id in requested_state_ids]
+
+
 def evaluation_projector_dtype(config: dict) -> str:
     """评测精度独立于 fp32 训练精度，并显式写入 CONFIG。"""
     return str(config.get("evaluation", {}).get("projector_dtype", config["projector_dtype"]))
@@ -271,6 +305,7 @@ def run(args: argparse.Namespace) -> None:
     states = filter_adaptation_states(
         states, args.adaptation_steps, requested_kinds=args.adaptation_kinds
     )
+    states = select_adaptation_state_ids(states, args.state_ids)
     config["evaluation_override"] = {
         "limit": args.limit,
         "limit_per_task": args.limit_per_task,
@@ -278,6 +313,9 @@ def run(args: argparse.Namespace) -> None:
         "generation_batch_size": args.generation_batch_size,
         "adaptation_steps": args.adaptation_steps,
         "adaptation_kinds": args.adaptation_kinds,
+        "state_ids": args.state_ids,
+        "teacher_conditions": list(args.teacher_conditions),
+        "skip_generation": args.skip_generation,
     }
     config["evaluation_states"] = [
         {
@@ -365,21 +403,25 @@ def run(args: argparse.Namespace) -> None:
         ),
         args.limit_per_task,
     )
-    generation = take_complete_pair_limit_per_task(
-        take_complete_pair_limit(
-            read_evaluation_records(
-                generation_data,
-                generation_ids,
-                expected_records=dataset.get("expected_generation_records"),
+    generation = (
+        []
+        if args.skip_generation
+        else take_complete_pair_limit_per_task(
+            take_complete_pair_limit(
+                read_evaluation_records(
+                    generation_data,
+                    generation_ids,
+                    expected_records=dataset.get("expected_generation_records"),
+                ),
+                args.limit,
             ),
-            args.limit,
-        ),
-        args.limit_per_task,
+            args.limit_per_task,
+        )
     )
     pair_details = build_pair_index(selection)
-    generation_pair_details = build_pair_index(generation)
+    generation_pair_details = build_pair_index(generation) if generation else {}
     mates = pair_index(selection)
-    generation_mates = pair_index(generation)
+    generation_mates = pair_index(generation) if generation else {}
     controls = {
         str(row["id"]): row for row in load_records(Path(dataset["controls"]))
     }
@@ -388,20 +430,36 @@ def run(args: argparse.Namespace) -> None:
     raw_generation_path = args.out / "generation_records.jsonl"
     preference_curves = []
     generation_curves = []
+    setup_seconds = time.time() - started
+    state_load_seconds = 0.0
+    teacher_forced_seconds = 0.0
+    generation_seconds = 0.0
+    generation_context = (
+        raw_generation_path.open("w", encoding="utf-8", newline="\n")
+        if not args.skip_generation
+        else nullcontext(None)
+    )
     with raw_preference_path.open(
         "w", encoding="utf-8", newline="\n"
-    ) as preference_stream, raw_generation_path.open(
-        "w", encoding="utf-8", newline="\n"
-    ) as generation_stream, torch.inference_mode():
+    ) as preference_stream, generation_context as generation_stream, torch.inference_mode():
         for state in states:
+            if device.type == "cuda":
+                torch.cuda.synchronize(device)
+            state_load_started = time.perf_counter()
             load_lora_state_dict(
                 language_model, load_file(str(state["lora"]), device="cpu")
             )
             projector.load_state_dict(
                 load_file(str(state["projector"]), device="cpu"), strict=True
             )
+            if device.type == "cuda":
+                torch.cuda.synchronize(device)
+            state_load_seconds += time.perf_counter() - state_load_started
             state_preference_rows = []
-            for condition in ("vision", "paired_counterfactual_image", "shuffled_image"):
+            if device.type == "cuda":
+                torch.cuda.synchronize(device)
+            teacher_started = time.perf_counter()
+            for condition in args.teacher_conditions:
                 condition_rows = []
                 for start in range(0, len(selection), args.teacher_batch_size):
                     batch = selection[start : start + args.teacher_batch_size]
@@ -507,7 +565,15 @@ def run(args: argparse.Namespace) -> None:
                             "mean_correct_margin": summary["mean_correct_margin"],
                         }
                     )
+            if device.type == "cuda":
+                torch.cuda.synchronize(device)
+            teacher_forced_seconds += time.perf_counter() - teacher_started
+            if device.type == "cuda":
+                torch.cuda.synchronize(device)
+            generation_started = time.perf_counter()
             for condition in ("vision", "paired_counterfactual_image"):
+                if args.skip_generation:
+                    break
                 condition_rows = []
                 for start in range(0, len(generation), args.generation_batch_size):
                     batch = generation[start : start + args.generation_batch_size]
@@ -587,11 +653,15 @@ def run(args: argparse.Namespace) -> None:
                             "prediction_flip_rate": summary["prediction_flip_rate"]["value"],
                         }
                     )
+            if device.type == "cuda":
+                torch.cuda.synchronize(device)
+            generation_seconds += time.perf_counter() - generation_started
             print(f"completed {state['id']}", flush=True)
     preference_curve_path = args.out / "preference_curve.csv"
     generation_curve_path = args.out / "generation_curve.csv"
     write_csv(preference_curve_path, preference_curves)
-    write_csv(generation_curve_path, generation_curves)
+    if generation_curves:
+        write_csv(generation_curve_path, generation_curves)
     decisions = {
         "status": "valid",
         "best_vision_paired_preference": max(
@@ -602,13 +672,17 @@ def run(args: argparse.Namespace) -> None:
             ),
             key=lambda row: (float(row["paired_preference_accuracy"]), float(row["mean_correct_margin"])),
         ),
-        "best_vision_paired_generation": max(
-            (
-                row
-                for row in generation_curves
-                if row["condition"] == "vision" and row["task"] == "overall"
-            ),
-            key=lambda row: (float(row["paired_accuracy"]), float(row["accuracy"])),
+        "best_vision_paired_generation": (
+            max(
+                (
+                    row
+                    for row in generation_curves
+                    if row["condition"] == "vision" and row["task"] == "overall"
+                ),
+                key=lambda row: (float(row["paired_accuracy"]), float(row["accuracy"])),
+            )
+            if generation_curves
+            else None
         ),
         "interpretation_limits": [
             "all selection records are disjoint from the adaptation train split",
@@ -631,26 +705,35 @@ def run(args: argparse.Namespace) -> None:
             "torch": torch.__version__,
             "gpu": torch.cuda.get_device_name(device) if device.type == "cuda" else None,
             "wall_seconds": time.time() - started,
+            "setup_seconds": setup_seconds,
+            "state_load_seconds": state_load_seconds,
+            "teacher_forced_seconds": teacher_forced_seconds,
+            "generation_seconds": generation_seconds,
             "peak_gpu_memory_bytes": (
                 int(torch.cuda.max_memory_allocated(device)) if device.type == "cuda" else 0
             ),
             "final_half_scored": False,
         },
         "states": len(states),
+        "teacher_conditions": list(args.teacher_conditions),
+        "generation_skipped": args.skip_generation,
         "teacher_forced_records_per_cell": len(selection),
         "generation_records_per_cell": len(generation),
-        "preference_rows": len(states) * len(selection) * 3,
-        "generation_rows": len(states) * len(generation) * 2,
+        "preference_rows": len(states) * len(selection) * len(args.teacher_conditions),
+        "generation_rows": len(states) * len(generation) * (0 if args.skip_generation else 2),
         "sources": sources,
         "files": {
             path.name: {"bytes": path.stat().st_size, "sha256": sha256(path)}
-            for path in (
+            for path in [
                 raw_preference_path,
-                raw_generation_path,
                 preference_curve_path,
-                generation_curve_path,
                 decisions_path,
-            )
+                *(
+                    [raw_generation_path, generation_curve_path]
+                    if generation_curves
+                    else []
+                ),
+            ]
         },
         "final_half_scored": False,
     }
