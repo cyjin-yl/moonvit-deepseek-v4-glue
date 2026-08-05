@@ -1,0 +1,10 @@
+{
+  "capability_claim_allowed": false,
+  "created_at_utc": "2026-08-05T21:11:26.228329+00:00",
+  "exception": "[Errno 2] No such file or directory: '/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_public_eval_4k_v1/RUN_CONFIG.json'",
+  "exception_type": "FileNotFoundError",
+  "paid_resources_used": false,
+  "stage": "cache_and_frozen_file_verification",
+  "status": "failed",
+  "traceback": "Traceback (most recent call last):\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15i-eval/tools/eval_qwen3b_screenspot.py\", line 658, in main\n    _run(args, stage)\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15i-eval/tools/eval_qwen3b_screenspot.py\", line 428, in _run\n    existing = json.loads(config_path.read_text(encoding=\"utf-8\"))\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ezra/.conda/envs/tsenv/lib/python3.12/pathlib.py\", line 1027, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors) as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ezra/.conda/envs/tsenv/lib/python3.12/pathlib.py\", line 1013, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_public_eval_4k_v1/RUN_CONFIG.json'\n"
+}

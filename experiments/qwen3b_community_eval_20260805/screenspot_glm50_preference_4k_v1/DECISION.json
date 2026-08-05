@@ -1,0 +1,85 @@
+{
+  "format_version": "qwen3b-grounding-preference-decision-v1",
+  "dataset_name": "screenspot_glm50_v1",
+  "dataset_label": "GLM-format metric-aligned public subset",
+  "sample_count": 50,
+  "current_candidate": "train_4k_v1_formal1/step-000500",
+  "decision": "no_content_specific_visual_readout",
+  "previous_best_after_decision": "step0",
+  "vision": {
+    "paired_preference_accuracy": 0.46,
+    "mean_correct_margin": 0.002151705895588076,
+    "median_correct_margin": -0.004794086728777236,
+    "mean_correct_logp": -1.2236226042723044,
+    "mean_correct_token_nll": 1.2236226042723044
+  },
+  "blind": {
+    "paired_preference_accuracy": 0.56,
+    "mean_correct_margin": 0.0011100577958774549,
+    "mean_correct_token_nll": 2.7826127724071124
+  },
+  "shuffled": {
+    "paired_preference_accuracy": 0.52,
+    "mean_correct_margin": 0.009404136147691217,
+    "mean_correct_token_nll": 1.2232943226042248
+  },
+  "step0": {
+    "paired_preference_accuracy": 0.54,
+    "mean_correct_margin": 0.00564761312016636,
+    "mean_correct_token_nll": 2.5076928175762023
+  },
+  "random_projector": {
+    "paired_preference_accuracy": 0.5,
+    "mean_correct_margin": -0.0006968086019103748,
+    "mean_correct_token_nll": 2.4795935364607926
+  },
+  "vision_minus_blind": {
+    "paired_preference_accuracy": -0.10000000000000003,
+    "paired_preference_accuracy_ci95": [-0.22000000000000003, 0.020000000000000018]
+  },
+  "vision_minus_shuffled": {
+    "paired_preference_accuracy": -0.06,
+    "paired_preference_accuracy_ci95": [-0.13999999999999996, 0.0],
+    "mean_correct_margin": -0.007252430252103141,
+    "mean_correct_margin_ci95": [-0.012874255196952114, -0.00185716262885502],
+    "mean_correct_logp": -0.000328281668079633,
+    "mean_correct_logp_ci95": [-0.03752396183136175, 0.039057534388133676]
+  },
+  "trained_minus_random_projector": {
+    "paired_preference_accuracy": -0.03999999999999998,
+    "paired_preference_accuracy_ci95": [-0.2, 0.12000000000000005],
+    "mean_correct_token_nll_improvement": 1.2559709321884882,
+    "mean_correct_token_nll_improvement_ci95": [1.1039765427400776, 1.4091886687261281]
+  },
+  "current_candidate_minus_previous_best": {
+    "paired_preference_accuracy": -0.08000000000000002,
+    "paired_preference_accuracy_ci95": [-0.26, 0.08000000000000002],
+    "mean_correct_token_nll_improvement": 1.284070213303898,
+    "mean_correct_token_nll_improvement_ci95": [1.1371311920422777, 1.438924557388047]
+  },
+  "step0_minus_step0_shuffled": {
+    "paired_preference_accuracy": 0.10000000000000003,
+    "paired_preference_accuracy_ci95": [0.020000000000000018, 0.19999999999999996],
+    "mean_correct_margin_ci95": [-0.0608255148423024, 0.12378614105846403]
+  },
+  "visual_ability_established": false,
+  "generation_only_failure_supported": false,
+  "content_specific_image_use_supported": false,
+  "format_and_coordinate_prior_learning_supported": true,
+  "extend_same_stream_supported": false,
+  "checkpoint_enters_deepseek_candidate_list": false,
+  "hypotheses_supported": [
+    "The trained visual prefix makes coordinate answers much more probable.",
+    "The probability gain is image-agnostic and behaves like a learned coordinate-answer soft prompt.",
+    "The current training objective fails before the greedy-decoding readout boundary."
+  ],
+  "hypotheses_refuted": [
+    "The checkpoint internally prefers the correct coordinate but merely fails to verbalize it.",
+    "More greedy decoding work is the shortest path to grounding.",
+    "Lower teacher-forced NLL proves content-specific image use."
+  ],
+  "method_transfer_label": "directly_transferable",
+  "next_experiment": "matched_4k_grounding_enriched_data_ratio_screen_then_counterfactual_margin_auxiliary_if_needed",
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

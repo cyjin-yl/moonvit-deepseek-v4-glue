@@ -1,0 +1,24 @@
+stage: cache_and_frozen_file_verification
+stage: model_and_supervision_load
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading weights:   0%|          | 0/434 [00:00<?, ?it/s]Loading weights:   0%|          | 1/434 [00:03<24:02,  3.33s/it]Loading weights:  48%|####7     | 207/434 [00:03<00:02, 84.36it/s]Loading weights:  71%|#######1  | 310/434 [00:04<00:01, 102.15it/s]Loading weights:  86%|########5 | 373/434 [00:04<00:00, 117.76it/s]Loading weights:  97%|#########6| 419/434 [00:04<00:00, 117.50it/s]Loading weights: 100%|##########| 434/434 [00:04<00:00, 88.48it/s] 
+stage: teacher_forced_scoring
+blind [1/1] preferred=0
+current_candidate [1/1] preferred=0
+current_candidate_shuffled [1/1] preferred=0
+step0 [1/1] preferred=0
+step0_shuffled [1/1] preferred=0
+random_projector [1/1] preferred=0
+random_projector_shuffled [1/1] preferred=0
+stage: paired_bootstrap
+{
+  "status": "failed",
+  "stage": "paired_bootstrap",
+  "exception_type": "ValueError",
+  "exception": "preference summary contains duplicate sample IDs",
+  "traceback": "Traceback (most recent call last):\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/eval_qwen3b_screenspot_preference.py\", line 688, in main\n    _run(args, stage)\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/eval_qwen3b_screenspot_preference.py\", line 610, in _run\n    preference_summary = summarize_preference_rows(flat_rows)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/src/moonvit_glue/grounding_preference.py\", line 191, in summarize_preference_rows\n    condition: {\"breakdowns\": _breakdowns(condition_rows)}\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/src/moonvit_glue/grounding_preference.py\", line 176, in _breakdowns\n    return {key: _condition_summary(value) for key, value in values.items()}\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/src/moonvit_glue/grounding_preference.py\", line 146, in _condition_summary\n    raise ValueError(\"preference summary contains duplicate sample IDs\")\nValueError: preference summary contains duplicate sample IDs\n",
+  "created_at_utc": "2026-08-05T22:10:22.221403+00:00",
+  "capability_claim_allowed": false,
+  "paid_resources_used": false
+}

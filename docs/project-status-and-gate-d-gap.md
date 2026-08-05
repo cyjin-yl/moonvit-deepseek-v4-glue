@@ -30,7 +30,7 @@
 |---|---|---|---|
 | 真实视觉塔 | MoonViT-V2 真实权重、真实预处理、V100 forward/backward glue | 视觉编码器接口和 projector 输入合同可运行 | 完整 DeepSeek 能利用这些视觉 token |
 | 真实数据、纯文本小主干 | Qwen2.5-0.5B + MoonViT-V2 + projector-only，真实 59,198-row mix，已见 16,000 examples | 无原生 VLM 能力时可以学到非零图像依赖；训练/save/resume/eval 链路可运行 | 绝对 benchmark 上限、3B 容量、DeepSeek Hash-MoE 收敛 |
-| 3B 代理固定合同、formal 4k 训练与 GLM50 | Qwen2.5-3B 的 9 个文件 SHA、ScreenSpot50/full、严格 parser、七条件、4096→2048 fixed receiver、240 条语言保持集；首 4,000 条与 111 个 MoonViT cache shard 已验签；500-step 训练和五个 checkpoint 独立验证；GLM50 七条件已评分 | 3B 路径可在 V100 运行且可恢复；当前目标在 4k 下没有建立 causal grounding，trained vision 相对 blind/step0 的 mean distance 显著恶化；容量切换本身不能修复训练目标 | 3B 或 DeepSeek 已获得视觉能力；4k checkpoint 可进入 DeepSeek 候选；完整 ScreenSpot 与通用视觉/语言保持尚未完成 |
+| 3B 代理固定合同、formal 4k 训练与完整 ScreenSpot | Qwen2.5-3B 的 9 个文件 SHA、ScreenSpot50/full、严格 parser、七条件、4096→2048 fixed receiver、240 条语言保持集；首 4,000 条与 111 个训练 cache shard 已验签；500-step 训练和五个 checkpoint 独立验证；50/1,272 两级七条件评分及 teacher-forced preference 已完成 | 3B 路径可在 V100 运行且可恢复；4k 目标没有建立 causal grounding；训练把坐标 NLL 从 2.51 降到 1.22，但 trained vision/blind/shuffled preference 为 46%/56%/52%，说明收益是 image-agnostic coordinate prior | 3B 或 DeepSeek 已获得视觉能力；4k checkpoint 可进入 DeepSeek 候选；TextVQA/DocVQA/OCRBench 与语言保持尚未完成 |
 | 原生 VLM 阳性对照 | Qwen3.5-4B 原生视觉模型在五项真实 benchmark 上运行 | 数据、processor 和 scorer 能得到强阳性结果 | MoonViT projector 对纯文本主干的能力 |
 | synthetic 包 3–14 | Qwen2.5-0.5B 上的 paired preference/generation、probe、patching、replay、sentinel | 机制定位、训练干扰、固定预算保护和评测开销 | ScreenSpot/TextVQA/DocVQA/OCRBench 的真实能力 |
 | DeepSeek 结构代理 | tiny `DeepseekV4ForCausalLM`、数学 DGRAD reference、三模式 harness | wrapper、routing 与 gate 工具的接口正确性 | 真实 FP4/FP8 kernel 的 input gradient 或完整 0731 稳定性 |
@@ -45,7 +45,11 @@
 - current-minus-step0 click `-0.06 [-0.16, 0.04]`，mean-distance improvement `-155.94 [-246.74, -75.50]`；
 - vision-minus-shuffled click `-0.02 [-0.06, 0]`。
 
-判定为 `reject_current_candidate`；previous-best 保持 step0。结果支持 3B formal pipeline 的工程可行性，反驳 4k projector-only objective 已产生真实 grounding。完整 1,272-row ScreenSpot 已完成图像物化与 feature cache，七条件生成正在本地 V100 运行。
+判定为 `reject_current_candidate`；previous-best 保持 step0。结果支持 3B formal pipeline 的工程可行性，反驳 4k projector-only objective 已产生真实 grounding。
+
+完整 1,272-row public ScreenSpot 的 trained vision parse、Accuracy@50/@100/@200、click、mean distance 为 96.46%、1.73%/4.87%/11.79%、2.67%、565.18。blind click/mean 为 3.07%/395.52，step0 为 3.30%/391.12。vision-minus-blind mean-distance improvement 为 `-169.66 [-185.68, -154.17]`；vision-minus-shuffled click 与 distance CI 均跨零。50 条负结果由完整集复现。
+
+Teacher-forced correct-versus-counterfactual preference 进一步定位：trained vision/blind/shuffled/step0/random 为 46%/56%/52%/54%/50%。vision-minus-shuffled 为 `-0.06 [-0.14, 0]`，mean margin 为 `-0.00725 [-0.01287, -0.00186]`。训练同时把 correct-answer NLL 从 step0 的 2.50769 降到 1.22362，且正确图与 shuffled 图的 correct-answer logp 无差异。当前失败发生在 content-specific readout 形成之前，无法归因于 greedy generation 单独失效。
 
 ## 5. Replay 与 sentinel 的收束结论
 
@@ -86,8 +90,10 @@
 8. **已完成（Package 15D）**：内容寻址 MoonViT cache 强制绑定 Package-15C manifest。4,000/4,000 记录、3,534 unique spans、466 aliases、111 shards 经独立重哈希与逐条 finite/shape/order 校验；完整根为 10,374,552,697 bytes。首个 dirty-run attempt 保留并禁止训练。
 9. **已完成（Package 15E）**：fail-closed cached-feature trainer 完成 500-step/4k formal run；五个 checkpoint、exact order、answer-token count、optimizer 和 RNG 经独立 verifier 通过。
 10. **已完成（Package 15F）**：GLM-format public-50 的七条件与 2,000 paired bootstrap 完成；current candidate 因 vision 弱于 blind/step0 被拒绝。
-11. **正在运行**：完整 1,272-row public ScreenSpot 已完成 1,272/1,272 feature cache，运行七条件生成与相同 paired scoring。
-12. 若 full ScreenSpot 确认失败，先运行 step0/step500 teacher-forced paired preference、correct-vs-shuffled margin 与 projector 信息/梯度诊断，确定信息缺失或自由生成读出失败；不得仅凭 loss 延长到 8k。
-13. 根据诊断在 matched 4k 预算验证至少一个可迁移改进方向，候选再进入 TextVQA、DocVQA、OCRBench、synthetic 六任务和语言保持；所有比较固定顺序、分辨率、exact step0 与生成配置。
+11. **已完成（Package 15G）**：完整 1,272-row public ScreenSpot 七条件生成与 2,000 paired bootstrap；GLM50 的负结果在完整集复现，所有 predictions 和逐行 scores 已保存。
+12. **已完成（Package 15H）**：step0/step500 teacher-forced correct-vs-counterfactual preference；训练显著提高绝对坐标答案概率，却没有正确图相对 blind/shuffled 的选择优势。
+13. **下一项 fixed-budget screen**：冻结 exact step0、500 steps、4,000 examples、分辨率、receiver 与 evaluator，只改变训练 mix，把显式 ShowUI grounding 从 baseline 339/4,000 提高到预注册高占比；先跑单 seed，只有 preference 与 GLM50 因果指标同时转正才扩大到 full/三 seed。
+14. **并行工程缺口**：补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 240-row language-retention evaluator；任何候选替换 previous-best 前必须跑完。
+15. 若 grounding enrichment 仍无 correct-image preference，转向 discard-after-training 的 correct-vs-counterfactual margin auxiliary objective；不得延长同一 baseline stream 或只调 decoding。
 
 在完成以上本地证据后，若剩余阻塞只来自完整权重容量和量化 DGRAD，再提交最小付费 Gate D 的硬件、时价、GPU-hour、存储与止损上限，等待单独授权。

@@ -1,0 +1,13 @@
+{
+  "requested": 1272,
+  "cached": 1272,
+  "failed": 0,
+  "tower_forwards": 606,
+  "reused_by_image_sha256": 666,
+  "unique_image_sha256": 606,
+  "wall_seconds": 387.3490149974823,
+  "peak_gpu_memory_bytes": 2081363968,
+  "manifest": "MANIFEST.json",
+  "records": "cache_records.jsonl",
+  "failures": "failures.jsonl"
+}

@@ -1,0 +1,10 @@
+{
+  "capability_claim_allowed": false,
+  "created_at_utc": "2026-08-05T22:10:22.221403+00:00",
+  "exception": "preference summary contains duplicate sample IDs",
+  "exception_type": "ValueError",
+  "paid_resources_used": false,
+  "stage": "paired_bootstrap",
+  "status": "failed",
+  "traceback": "Traceback (most recent call last):\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/eval_qwen3b_screenspot_preference.py\", line 688, in main\n    _run(args, stage)\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/eval_qwen3b_screenspot_preference.py\", line 610, in _run\n    preference_summary = summarize_preference_rows(flat_rows)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/src/moonvit_glue/grounding_preference.py\", line 191, in summarize_preference_rows\n    condition: {\"breakdowns\": _breakdowns(condition_rows)}\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/src/moonvit_glue/grounding_preference.py\", line 176, in _breakdowns\n    return {key: _condition_summary(value) for key, value in values.items()}\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/src/moonvit_glue/grounding_preference.py\", line 146, in _condition_summary\n    raise ValueError(\"preference summary contains duplicate sample IDs\")\nValueError: preference summary contains duplicate sample IDs\n"
+}

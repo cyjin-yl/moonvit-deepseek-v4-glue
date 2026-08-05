@@ -1,0 +1,19 @@
+{
+  "format_version": "remote-artifact-index-v1",
+  "created_at_utc": "2026-08-05T22:20:00Z",
+  "failed_development_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_preference_4k_dev1",
+  "failed_stage": "paired_bootstrap",
+  "failed_exception": "preference summary contains duplicate sample IDs",
+  "corrected_development_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_preference_4k_dev1_retry1",
+  "formal_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_preference_4k_v1",
+  "formal_runner_git_sha": "6c23722d3245f30061cfa0ff2cb63e7b942a09ba",
+  "formal_run_config_sha256": "d919802dfa32168c027d5792fa498735ad18e7dd83405672e01913176bdc7404",
+  "formal_summary_sha256": "09f2375013269d05f16bcd3547097470ba0ad683e4ff7ab5052a905e57466c80",
+  "formal_preference_rows": 550,
+  "bootstrap_samples": 2000,
+  "bootstrap_seed": 20260805,
+  "all_raw_rows_copied_to_git": true,
+  "durable_on_local_v100_storage": true,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

@@ -1,0 +1,5493 @@
+{
+  "bootstrap": {
+    "samples": 2000,
+    "scope": "overall; category point estimates are reported without category CIs",
+    "seed": 20260805
+  },
+  "comparisons": {
+    "current-candidate-minus-previous-best": {
+      "confidence_level": 0.95,
+      "method": "paired percentile bootstrap; type-7 quantiles",
+      "metrics": {
+        "accuracy_at_100_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.014170597484276732,
+            0.020440251572327046
+          ],
+          "first": 0.04874213836477988,
+          "improvement": 0.0023584905660377423,
+          "raw_first_minus_second": 0.0023584905660377423,
+          "second": 0.046383647798742135
+        },
+        "accuracy_at_100_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.012925603780865652,
+            0.02248327087452549
+          ],
+          "first": 0.05052974735126324,
+          "improvement": 0.004146099552521106,
+          "raw_first_minus_second": 0.004146099552521106,
+          "second": 0.046383647798742135
+        },
+        "accuracy_at_200_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.0400943396226415,
+            0.01572327044025157
+          ],
+          "first": 0.1179245283018868,
+          "improvement": -0.013364779874213834,
+          "raw_first_minus_second": -0.013364779874213834,
+          "second": 0.13128930817610063
+        },
+        "accuracy_at_200_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.03580878787629477,
+            0.02082431179559917
+          ],
+          "first": 0.12224938875305623,
+          "improvement": -0.009039919423044399,
+          "raw_first_minus_second": -0.009039919423044399,
+          "second": 0.13128930817610063
+        },
+        "accuracy_at_50_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.011006289308176102,
+            0.01022012578616352
+          ],
+          "first": 0.01729559748427673,
+          "improvement": -0.0007861635220125784,
+          "raw_first_minus_second": -0.0007861635220125784,
+          "second": 0.018081761006289308
+        },
+        "accuracy_at_50_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.010574605356386553,
+            0.010851003735028234
+          ],
+          "first": 0.017929910350448247,
+          "improvement": -0.00015185065584106053,
+          "raw_first_minus_second": -0.00015185065584106053,
+          "second": 0.018081761006289308
+        },
+        "click_in_box_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.018081761006289308,
+            0.0062893081761006275
+          ],
+          "first": 0.026729559748427674,
+          "improvement": -0.0062893081761006275,
+          "raw_first_minus_second": -0.0062893081761006275,
+          "second": 0.0330188679245283
+        },
+        "click_in_box_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.017249980099988512,
+            0.007325898096441787
+          ],
+          "first": 0.027709861450692746,
+          "improvement": -0.005309006473835556,
+          "raw_first_minus_second": -0.005309006473835556,
+          "second": 0.0330188679245283
+        },
+        "mean_center_distance_all_penalized": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -189.66516475893968,
+            -157.44050861688305
+          ],
+          "first": 565.1814817616176,
+          "improvement": -174.06086813029577,
+          "raw_first_minus_second": 174.06086813029577,
+          "second": 391.1206136313219
+        },
+        "mean_center_distance_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -156.39260582677883,
+            -128.577024724305
+          ],
+          "first": 534.0952519187409,
+          "improvement": -142.97463828741905,
+          "raw_first_minus_second": 142.97463828741905,
+          "second": 391.1206136313219
+        },
+        "median_center_distance_all_penalized": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -178.7436944543626,
+            -127.50076544908659
+          ],
+          "first": 553.4158206846487,
+          "improvement": -151.68956012158742,
+          "raw_first_minus_second": 151.68956012158742,
+          "second": 401.72626056306126
+        },
+        "median_center_distance_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -158.99338891223013,
+            -114.4163549808136
+          ],
+          "first": 539.8743742575762,
+          "improvement": -138.1481136945149,
+          "raw_first_minus_second": 138.1481136945149,
+          "second": 401.72626056306126
+        },
+        "parse_rate": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.045597484276729605,
+            -0.02594339622641506
+          ],
+          "first": 0.964622641509434,
+          "improvement": -0.035377358490566,
+          "raw_first_minus_second": -0.035377358490566,
+          "second": 1.0
+        }
+      },
+      "orientation": "positive_means_first_condition_better",
+      "sample_count": 1272,
+      "schema_version": "paired-grounding-bootstrap-v1",
+      "seed": 20260805
+    },
+    "trained-minus-random-projector": {
+      "confidence_level": 0.95,
+      "method": "paired percentile bootstrap; type-7 quantiles",
+      "metrics": {
+        "accuracy_at_100_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.005503144654088049,
+            0.027515723270440252
+          ],
+          "first": 0.04874213836477988,
+          "improvement": 0.010220125786163527,
+          "raw_first_minus_second": 0.010220125786163527,
+          "second": 0.03852201257861635
+        },
+        "accuracy_at_100_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.007856140885099094,
+            0.026399656920708666
+          ],
+          "first": 0.05052974735126324,
+          "improvement": 0.008756516319720187,
+          "raw_first_minus_second": 0.008756516319720187,
+          "second": 0.041773231031543054
+        },
+        "accuracy_at_200_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.02674921383647798,
+            0.028301886792452824
+          ],
+          "first": 0.1179245283018868,
+          "improvement": 0.0,
+          "raw_first_minus_second": 0.0,
+          "second": 0.1179245283018868
+        },
+        "accuracy_at_200_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.03364304557574682,
+            0.024483818618558667
+          ],
+          "first": 0.12224938875305623,
+          "improvement": -0.005627849098606183,
+          "raw_first_minus_second": -0.005627849098606183,
+          "second": 0.1278772378516624
+        },
+        "accuracy_at_50_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.003930817610062892,
+            0.014937106918238992
+          ],
+          "first": 0.01729559748427673,
+          "improvement": 0.004716981132075471,
+          "raw_first_minus_second": 0.004716981132075471,
+          "second": 0.012578616352201259
+        },
+        "accuracy_at_50_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.005229439288282384,
+            0.014804207007188487
+          ],
+          "first": 0.017929910350448247,
+          "improvement": 0.004289671646270924,
+          "raw_first_minus_second": 0.004289671646270924,
+          "second": 0.013640238704177323
+        },
+        "click_in_box_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.011006289308176102,
+            0.012578616352201259
+          ],
+          "first": 0.026729559748427674,
+          "improvement": 0.0007861635220125784,
+          "raw_first_minus_second": 0.0007861635220125784,
+          "second": 0.025943396226415096
+        },
+        "click_in_box_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.013039514246450166,
+            0.012436129644885817
+          ],
+          "first": 0.027709861450692746,
+          "improvement": -0.00042313087667298147,
+          "raw_first_minus_second": -0.00042313087667298147,
+          "second": 0.028132992327365727
+        },
+        "mean_center_distance_all_penalized": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -112.02574864631174,
+            -67.19848602061441
+          ],
+          "first": 565.1814817616176,
+          "improvement": -90.04492426666195,
+          "raw_first_minus_second": 90.04492426666195,
+          "second": 475.1365574949557
+        },
+        "mean_center_distance_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -152.23965292895474,
+            -123.15189263143515
+          ],
+          "first": 534.0952519187409,
+          "improvement": -138.09647476501357,
+          "raw_first_minus_second": 138.09647476501357,
+          "second": 395.99877715372736
+        },
+        "median_center_distance_all_penalized": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -154.14000920070066,
+            -100.37743648620271
+          ],
+          "first": 553.4158206846487,
+          "improvement": -126.3715243633477,
+          "raw_first_minus_second": 126.3715243633477,
+          "second": 427.044296321301
+        },
+        "median_center_distance_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -151.2296972632246,
+            -107.23414193513194
+          ],
+          "first": 539.8743742575762,
+          "improvement": -131.02340151326314,
+          "raw_first_minus_second": 131.02340151326314,
+          "second": 408.850972744313
+        },
+        "parse_rate": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            0.02437106918238996,
+            0.06053459119496851
+          ],
+          "first": 0.964622641509434,
+          "improvement": 0.04245283018867929,
+          "raw_first_minus_second": 0.04245283018867929,
+          "second": 0.9221698113207547
+        }
+      },
+      "orientation": "positive_means_first_condition_better",
+      "sample_count": 1272,
+      "schema_version": "paired-grounding-bootstrap-v1",
+      "seed": 20260805
+    },
+    "vision-minus-blind": {
+      "confidence_level": 0.95,
+      "method": "paired percentile bootstrap; type-7 quantiles",
+      "metrics": {
+        "accuracy_at_100_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.014150943396226419,
+            0.020440251572327046
+          ],
+          "first": 0.04874213836477988,
+          "improvement": 0.0031446540880503207,
+          "raw_first_minus_second": 0.0031446540880503207,
+          "second": 0.04559748427672956
+        },
+        "accuracy_at_100_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.012832872026052445,
+            0.02248789341329822
+          ],
+          "first": 0.05052974735126324,
+          "improvement": 0.004932263074533684,
+          "raw_first_minus_second": 0.004932263074533684,
+          "second": 0.04559748427672956
+        },
+        "accuracy_at_200_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.059768081761006286,
+            -0.0023584905660377353
+          ],
+          "first": 0.1179245283018868,
+          "improvement": -0.032232704402515716,
+          "raw_first_minus_second": -0.032232704402515716,
+          "second": 0.1501572327044025
+        },
+        "accuracy_at_200_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.05628087037475057,
+            0.0027182623278290564
+          ],
+          "first": 0.12224938875305623,
+          "improvement": -0.02790784395134628,
+          "raw_first_minus_second": -0.02790784395134628,
+          "second": 0.1501572327044025
+        },
+        "accuracy_at_50_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.01179245283018868,
+            0.009433962264150941
+          ],
+          "first": 0.01729559748427673,
+          "improvement": -0.0015723270440251569,
+          "raw_first_minus_second": -0.0015723270440251569,
+          "second": 0.018867924528301886
+        },
+        "accuracy_at_50_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.01134812632473653,
+            0.01012579554124278
+          ],
+          "first": 0.017929910350448247,
+          "improvement": -0.000938014177853639,
+          "raw_first_minus_second": -0.000938014177853639,
+          "second": 0.018867924528301886
+        },
+        "click_in_box_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.01650943396226415,
+            0.007861635220125788
+          ],
+          "first": 0.026729559748427674,
+          "improvement": -0.003930817610062892,
+          "raw_first_minus_second": -0.003930817610062892,
+          "second": 0.030660377358490566
+        },
+        "click_in_box_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.015641731995575267,
+            0.009308351211769055
+          ],
+          "first": 0.027709861450692746,
+          "improvement": -0.0029505159077978203,
+          "raw_first_minus_second": -0.0029505159077978203,
+          "second": 0.030660377358490566
+        },
+        "mean_center_distance_all_penalized": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -185.67552431259801,
+            -154.17474650570574
+          ],
+          "first": 565.1814817616176,
+          "improvement": -169.66140964530803,
+          "raw_first_minus_second": 169.66140964530803,
+          "second": 395.5200721163096
+        },
+        "mean_center_distance_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -151.5066759729157,
+            -124.6613407991004
+          ],
+          "first": 534.0952519187409,
+          "improvement": -138.5751798024313,
+          "raw_first_minus_second": 138.5751798024313,
+          "second": 395.5200721163096
+        },
+        "median_center_distance_all_penalized": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -177.4323857616179,
+            -126.23714182428803
+          ],
+          "first": 553.4158206846487,
+          "improvement": -149.6103780513149,
+          "raw_first_minus_second": 149.6103780513149,
+          "second": 403.80544263333377
+        },
+        "median_center_distance_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -155.9613854848368,
+            -114.38053909110681
+          ],
+          "first": 539.8743742575762,
+          "improvement": -136.0689316242424,
+          "raw_first_minus_second": 136.0689316242424,
+          "second": 403.80544263333377
+        },
+        "parse_rate": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.045597484276729605,
+            -0.02594339622641506
+          ],
+          "first": 0.964622641509434,
+          "improvement": -0.035377358490566,
+          "raw_first_minus_second": -0.035377358490566,
+          "second": 1.0
+        }
+      },
+      "orientation": "positive_means_first_condition_better",
+      "sample_count": 1272,
+      "schema_version": "paired-grounding-bootstrap-v1",
+      "seed": 20260805
+    },
+    "vision-minus-shuffled": {
+      "confidence_level": 0.95,
+      "method": "paired percentile bootstrap; type-7 quantiles",
+      "metrics": {
+        "accuracy_at_100_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.01572327044025157,
+            0.003930817610062892
+          ],
+          "first": 0.04874213836477988,
+          "improvement": -0.005503144654088049,
+          "raw_first_minus_second": -0.005503144654088049,
+          "second": 0.054245283018867926
+        },
+        "accuracy_at_100_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.01564609962735627,
+            0.0042645073206887575
+          ],
+          "first": 0.05052974735126324,
+          "improvement": -0.005567813624346517,
+          "raw_first_minus_second": -0.005567813624346517,
+          "second": 0.05609756097560976
+        },
+        "accuracy_at_200_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.01572327044025157,
+            0.011006289308176098
+          ],
+          "first": 0.1179245283018868,
+          "improvement": -0.0023584905660377353,
+          "raw_first_minus_second": -0.0023584905660377353,
+          "second": 0.12028301886792453
+        },
+        "accuracy_at_200_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.01554546230419428,
+            0.011243935159679015
+          ],
+          "first": 0.12224938875305623,
+          "improvement": -0.002140855149382795,
+          "raw_first_minus_second": -0.002140855149382795,
+          "second": 0.12439024390243902
+        },
+        "accuracy_at_50_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.0023584905660377353,
+            0.008647798742138365
+          ],
+          "first": 0.01729559748427673,
+          "improvement": 0.0031446540880503138,
+          "raw_first_minus_second": 0.0031446540880503138,
+          "second": 0.014150943396226415
+        },
+        "accuracy_at_50_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.002089826491871377,
+            0.009007014024200295
+          ],
+          "first": 0.017929910350448247,
+          "improvement": 0.0032957640089848316,
+          "raw_first_minus_second": 0.0032957640089848316,
+          "second": 0.014634146341463415
+        },
+        "click_in_box_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.007861635220125784,
+            0.0062893081761006275
+          ],
+          "first": 0.026729559748427674,
+          "improvement": -0.0007861635220125784,
+          "raw_first_minus_second": -0.0007861635220125784,
+          "second": 0.027515723270440252
+        },
+        "click_in_box_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.007899771760031258,
+            0.006679832692303978
+          ],
+          "first": 0.027709861450692746,
+          "improvement": -0.0007454231021527813,
+          "raw_first_minus_second": -0.0007454231021527813,
+          "second": 0.028455284552845527
+        },
+        "mean_center_distance_all_penalized": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -12.728059393829238,
+            14.642542437127728
+          ],
+          "first": 565.1814817616176,
+          "improvement": 1.082214555542805,
+          "raw_first_minus_second": -1.082214555542805,
+          "second": 566.2636963171605
+        },
+        "mean_center_distance_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -2.372817235789694,
+            9.22753839833875
+          ],
+          "first": 534.0952519187409,
+          "improvement": 3.2623489474198095,
+          "raw_first_minus_second": -3.2623489474198095,
+          "second": 537.3576008661607
+        },
+        "median_center_distance_all_penalized": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -3.6177301730726326,
+            28.774799009201583
+          ],
+          "first": 553.4158206846487,
+          "improvement": 13.537208043740861,
+          "raw_first_minus_second": -13.537208043740861,
+          "second": 566.9530287283895
+        },
+        "median_center_distance_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.459039289827885,
+            26.077080630651686
+          ],
+          "first": 539.8743742575762,
+          "improvement": 9.981720668457001,
+          "raw_first_minus_second": -9.981720668457001,
+          "second": 549.8560949260332
+        },
+        "parse_rate": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.01650943396226412,
+            0.011006289308176154
+          ],
+          "first": 0.964622641509434,
+          "improvement": -0.002358490566037652,
+          "raw_first_minus_second": -0.002358490566037652,
+          "second": 0.9669811320754716
+        }
+      },
+      "orientation": "positive_means_first_condition_better",
+      "sample_count": 1272,
+      "schema_version": "paired-grounding-bootstrap-v1",
+      "seed": 20260805
+    }
+  },
+  "condition_order": [
+    "vision",
+    "blind",
+    "shuffled",
+    "random_projector",
+    "step0",
+    "previous_best",
+    "current_candidate"
+  ],
+  "conditions": {
+    "blind": {
+      "breakdowns": {
+        "overall": {
+          "accuracy_at_100": {
+            "all_accuracy": 0.04559748427672956,
+            "all_denominator": 1272,
+            "hit_count": 58,
+            "parsed_accuracy": 0.04559748427672956,
+            "parsed_denominator": 1272
+          },
+          "accuracy_at_200": {
+            "all_accuracy": 0.1501572327044025,
+            "all_denominator": 1272,
+            "hit_count": 191,
+            "parsed_accuracy": 0.1501572327044025,
+            "parsed_denominator": 1272
+          },
+          "accuracy_at_50": {
+            "all_accuracy": 0.018867924528301886,
+            "all_denominator": 1272,
+            "hit_count": 24,
+            "parsed_accuracy": 0.018867924528301886,
+            "parsed_denominator": 1272
+          },
+          "center_distance": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 395.5200721163096,
+              "median": 403.80544263333377,
+              "minimum": 2.5274202665881766,
+              "p90": 631.0785829379199
+            },
+            "parsed": {
+              "count": 1272,
+              "mean": 395.5200721163096,
+              "median": 403.80544263333377,
+              "minimum": 2.5274202665881766,
+              "p90": 631.0785829379199
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "click_in_box_accuracy": {
+            "all_accuracy": 0.030660377358490566,
+            "all_denominator": 1272,
+            "hit_count": 39,
+            "parsed_accuracy": 0.030660377358490566,
+            "parsed_denominator": 1272
+          },
+          "parse_count": 1272,
+          "parse_rate": 1.0,
+          "point_to_bbox_l1": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 415.3670612692676,
+              "median": 408.21566406249997,
+              "minimum": 0.0,
+              "p90": 737.2909375000002
+            },
+            "parsed": {
+              "count": 1272,
+              "mean": 415.3670612692676,
+              "median": 408.21566406249997,
+              "minimum": 0.0,
+              "p90": 737.2909375000002
+            },
+            "unparsed_penalty": 1998.0
+          },
+          "point_to_bbox_l2": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 331.7184852193421,
+              "median": 331.14405744097076,
+              "minimum": 0.0,
+              "p90": 586.506278820163
+            },
+            "parsed": {
+              "count": 1272,
+              "mean": 331.7184852193421,
+              "median": 331.14405744097076,
+              "minimum": 0.0,
+              "p90": 586.506278820163
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "total_count": 1272
+        },
+        "platform": {
+          "Android": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.05668016194331984,
+              "all_denominator": 247,
+              "hit_count": 14,
+              "parsed_accuracy": 0.05668016194331984,
+              "parsed_denominator": 247
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.16194331983805668,
+              "all_denominator": 247,
+              "hit_count": 40,
+              "parsed_accuracy": 0.16194331983805668,
+              "parsed_denominator": 247
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.016194331983805668,
+              "all_denominator": 247,
+              "hit_count": 4,
+              "parsed_accuracy": 0.016194331983805668,
+              "parsed_denominator": 247
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 384.3674893479267,
+                "median": 395.6554709676597,
+                "minimum": 8.22713688047062,
+                "p90": 620.7907564538375
+              },
+              "parsed": {
+                "count": 247,
+                "mean": 384.3674893479267,
+                "median": 395.6554709676597,
+                "minimum": 8.22713688047062,
+                "p90": 620.7907564538375
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.048582995951417005,
+              "all_denominator": 247,
+              "hit_count": 12,
+              "parsed_accuracy": 0.048582995951417005,
+              "parsed_denominator": 247
+            },
+            "parse_count": 247,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 371.88168522267205,
+                "median": 370.61875000000003,
+                "minimum": 0.0,
+                "p90": 649.865
+              },
+              "parsed": {
+                "count": 247,
+                "mean": 371.88168522267205,
+                "median": 370.61875000000003,
+                "minimum": 0.0,
+                "p90": 649.865
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 304.05688445436147,
+                "median": 307.7249999999999,
+                "minimum": 0.0,
+                "p90": 559.2667531642091
+              },
+              "parsed": {
+                "count": 247,
+                "mean": 304.05688445436147,
+                "median": 307.7249999999999,
+                "minimum": 0.0,
+                "p90": 559.2667531642091
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 247
+          },
+          "Web": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.011467889908256881,
+              "all_denominator": 436,
+              "hit_count": 5,
+              "parsed_accuracy": 0.011467889908256881,
+              "parsed_denominator": 436
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.0871559633027523,
+              "all_denominator": 436,
+              "hit_count": 38,
+              "parsed_accuracy": 0.0871559633027523,
+              "parsed_denominator": 436
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0022935779816513763,
+              "all_denominator": 436,
+              "hit_count": 1,
+              "parsed_accuracy": 0.0022935779816513763,
+              "parsed_denominator": 436
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 408.0765442433996,
+                "median": 417.3955027958758,
+                "minimum": 49.46469173978904,
+                "p90": 576.7789916653171
+              },
+              "parsed": {
+                "count": 436,
+                "mean": 408.0765442433996,
+                "median": 417.3955027958758,
+                "minimum": 49.46469173978904,
+                "p90": 576.7789916653171
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.0045871559633027525,
+              "all_denominator": 436,
+              "hit_count": 2,
+              "parsed_accuracy": 0.0045871559633027525,
+              "parsed_denominator": 436
+            },
+            "parse_count": 436,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 446.0202067803899,
+                "median": 442.65078125,
+                "minimum": 0.0,
+                "p90": 715.268359375
+              },
+              "parsed": {
+                "count": 436,
+                "mean": 446.0202067803899,
+                "median": 442.65078125,
+                "minimum": 0.0,
+                "p90": 715.268359375
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 352.3795471965242,
+                "median": 358.4883373981294,
+                "minimum": 0.0,
+                "p90": 535.7538436906586
+              },
+              "parsed": {
+                "count": 436,
+                "mean": 352.3795471965242,
+                "median": 358.4883373981294,
+                "minimum": 0.0,
+                "p90": 535.7538436906586
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 436
+          },
+          "Windows": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.030864197530864196,
+              "all_denominator": 162,
+              "hit_count": 5,
+              "parsed_accuracy": 0.030864197530864196,
+              "parsed_denominator": 162
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1419753086419753,
+              "all_denominator": 162,
+              "hit_count": 23,
+              "parsed_accuracy": 0.1419753086419753,
+              "parsed_denominator": 162
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.012345679012345678,
+              "all_denominator": 162,
+              "hit_count": 2,
+              "parsed_accuracy": 0.012345679012345678,
+              "parsed_denominator": 162
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 427.8121191655725,
+                "median": 409.9932880075835,
+                "minimum": 14.208770192758589,
+                "p90": 719.6542691700113
+              },
+              "parsed": {
+                "count": 162,
+                "mean": 427.8121191655725,
+                "median": 409.9932880075835,
+                "minimum": 14.208770192758589,
+                "p90": 719.6542691700113
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.037037037037037035,
+              "all_denominator": 162,
+              "hit_count": 6,
+              "parsed_accuracy": 0.037037037037037035,
+              "parsed_denominator": 162
+            },
+            "parse_count": 162,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 453.7199895280048,
+                "median": 423.534375,
+                "minimum": 0.0,
+                "p90": 856.0600000000001
+              },
+              "parsed": {
+                "count": 162,
+                "mean": 453.7199895280048,
+                "median": 423.534375,
+                "minimum": 0.0,
+                "p90": 856.0600000000001
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 353.0244916060755,
+                "median": 347.57169831265344,
+                "minimum": 0.0,
+                "p90": 652.7810762118365
+              },
+              "parsed": {
+                "count": 162,
+                "mean": 353.0244916060755,
+                "median": 347.57169831265344,
+                "minimum": 0.0,
+                "p90": 652.7810762118365
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 162
+          },
+          "iOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.10196078431372549,
+              "all_denominator": 255,
+              "hit_count": 26,
+              "parsed_accuracy": 0.10196078431372549,
+              "parsed_denominator": 255
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.20784313725490197,
+              "all_denominator": 255,
+              "hit_count": 53,
+              "parsed_accuracy": 0.20784313725490197,
+              "parsed_denominator": 255
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.054901960784313725,
+              "all_denominator": 255,
+              "hit_count": 14,
+              "parsed_accuracy": 0.054901960784313725,
+              "parsed_denominator": 255
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 372.2420652986555,
+                "median": 389.903515941893,
+                "minimum": 9.13815085200514,
+                "p90": 616.8911786462413
+              },
+              "parsed": {
+                "count": 255,
+                "mean": 372.2420652986555,
+                "median": 389.903515941893,
+                "minimum": 9.13815085200514,
+                "p90": 616.8911786462413
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.047058823529411764,
+              "all_denominator": 255,
+              "hit_count": 12,
+              "parsed_accuracy": 0.047058823529411764,
+              "parsed_denominator": 255
+            },
+            "parse_count": 255,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 380.2320701543266,
+                "median": 383.4055596062706,
+                "minimum": 0.0,
+                "p90": 675.5115987480326
+              },
+              "parsed": {
+                "count": 255,
+                "mean": 380.2320701543266,
+                "median": 383.4055596062706,
+                "minimum": 0.0,
+                "p90": 675.5115987480326
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 314.5446012385615,
+                "median": 317.41539314508015,
+                "minimum": 0.0,
+                "p90": 578.946760121582
+              },
+              "parsed": {
+                "count": 255,
+                "mean": 314.5446012385615,
+                "median": 317.41539314508015,
+                "minimum": 0.0,
+                "p90": 578.946760121582
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 255
+          },
+          "macOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.046511627906976744,
+              "all_denominator": 172,
+              "hit_count": 8,
+              "parsed_accuracy": 0.046511627906976744,
+              "parsed_denominator": 172
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.21511627906976744,
+              "all_denominator": 172,
+              "hit_count": 37,
+              "parsed_accuracy": 0.21511627906976744,
+              "parsed_denominator": 172
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.01744186046511628,
+              "all_denominator": 172,
+              "hit_count": 3,
+              "parsed_accuracy": 0.01744186046511628,
+              "parsed_denominator": 172
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 383.80289893549866,
+                "median": 360.00124877237386,
+                "minimum": 2.5274202665881766,
+                "p90": 682.0303121072714
+              },
+              "parsed": {
+                "count": 172,
+                "mean": 383.80289893549866,
+                "median": 360.00124877237386,
+                "minimum": 2.5274202665881766,
+                "p90": 682.0303121072714
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.040697674418604654,
+              "all_denominator": 172,
+              "hit_count": 7,
+              "parsed_accuracy": 0.040697674418604654,
+              "parsed_denominator": 172
+            },
+            "parse_count": 172,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 416.0784845079551,
+                "median": 383.85168877770775,
+                "minimum": 0.0,
+                "p90": 897.6297866507105
+              },
+              "parsed": {
+                "count": 172,
+                "mean": 416.0784845079551,
+                "median": 383.85168877770775,
+                "minimum": 0.0,
+                "p90": 897.6297866507105
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 324.4624372388019,
+                "median": 289.37388046519135,
+                "minimum": 0.0,
+                "p90": 647.9688232201205
+              },
+              "parsed": {
+                "count": 172,
+                "mean": 324.4624372388019,
+                "median": 289.37388046519135,
+                "minimum": 0.0,
+                "p90": 647.9688232201205
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 172
+          }
+        },
+        "target_type": {
+          "icon/widget": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.02608695652173913,
+              "all_denominator": 575,
+              "hit_count": 15,
+              "parsed_accuracy": 0.02608695652173913,
+              "parsed_denominator": 575
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.08521739130434783,
+              "all_denominator": 575,
+              "hit_count": 49,
+              "parsed_accuracy": 0.08521739130434783,
+              "parsed_denominator": 575
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.01391304347826087,
+              "all_denominator": 575,
+              "hit_count": 8,
+              "parsed_accuracy": 0.01391304347826087,
+              "parsed_denominator": 575
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 433.94926444922766,
+                "median": 441.66897567502934,
+                "minimum": 2.5274202665881766,
+                "p90": 653.5644877206091
+              },
+              "parsed": {
+                "count": 575,
+                "mean": 433.94926444922766,
+                "median": 441.66897567502934,
+                "minimum": 2.5274202665881766,
+                "p90": 653.5644877206091
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.022608695652173914,
+              "all_denominator": 575,
+              "hit_count": 13,
+              "parsed_accuracy": 0.022608695652173914,
+              "parsed_denominator": 575
+            },
+            "parse_count": 575,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 488.8859072611093,
+                "median": 484.94804687500005,
+                "minimum": 0.0,
+                "p90": 832.2813174444041
+              },
+              "parsed": {
+                "count": 575,
+                "mean": 488.8859072611093,
+                "median": 484.94804687500005,
+                "minimum": 0.0,
+                "p90": 832.2813174444041
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 380.4801167941001,
+                "median": 385.2173105337859,
+                "minimum": 0.0,
+                "p90": 607.2338227147657
+              },
+              "parsed": {
+                "count": 575,
+                "mean": 380.4801167941001,
+                "median": 385.2173105337859,
+                "minimum": 0.0,
+                "p90": 607.2338227147657
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 575
+          },
+          "text": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.06169296987087518,
+              "all_denominator": 697,
+              "hit_count": 43,
+              "parsed_accuracy": 0.06169296987087518,
+              "parsed_denominator": 697
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.20373027259684362,
+              "all_denominator": 697,
+              "hit_count": 142,
+              "parsed_accuracy": 0.20373027259684362,
+              "parsed_denominator": 697
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.02295552367288379,
+              "all_denominator": 697,
+              "hit_count": 16,
+              "parsed_accuracy": 0.02295552367288379,
+              "parsed_denominator": 697
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 363.8173668201433,
+                "median": 363.99868401715605,
+                "minimum": 10.453561857469069,
+                "p90": 596.1130086250887
+              },
+              "parsed": {
+                "count": 697,
+                "mean": 363.8173668201433,
+                "median": 363.99868401715605,
+                "minimum": 10.453561857469069,
+                "p90": 596.1130086250887
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.03730272596843615,
+              "all_denominator": 697,
+              "hit_count": 26,
+              "parsed_accuracy": 0.03730272596843615,
+              "parsed_denominator": 697
+            },
+            "parse_count": 697,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 354.7166503003881,
+                "median": 341.2007131045887,
+                "minimum": 0.0,
+                "p90": 655.870777091688
+              },
+              "parsed": {
+                "count": 697,
+                "mean": 354.7166503003881,
+                "median": 341.2007131045887,
+                "minimum": 0.0,
+                "p90": 655.870777091688
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 291.4918881526479,
+                "median": 286.3376777251185,
+                "minimum": 0.0,
+                "p90": 538.600283687781
+              },
+              "parsed": {
+                "count": 697,
+                "mean": 291.4918881526479,
+                "median": 286.3376777251185,
+                "minimum": 0.0,
+                "p90": 538.600283687781
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 697
+          }
+        }
+      }
+    },
+    "current_candidate": {
+      "breakdowns": {
+        "overall": {
+          "accuracy_at_100": {
+            "all_accuracy": 0.04874213836477988,
+            "all_denominator": 1272,
+            "hit_count": 62,
+            "parsed_accuracy": 0.05052974735126324,
+            "parsed_denominator": 1227
+          },
+          "accuracy_at_200": {
+            "all_accuracy": 0.1179245283018868,
+            "all_denominator": 1272,
+            "hit_count": 150,
+            "parsed_accuracy": 0.12224938875305623,
+            "parsed_denominator": 1227
+          },
+          "accuracy_at_50": {
+            "all_accuracy": 0.01729559748427673,
+            "all_denominator": 1272,
+            "hit_count": 22,
+            "parsed_accuracy": 0.017929910350448247,
+            "parsed_denominator": 1227
+          },
+          "center_distance": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 565.1814817616176,
+              "median": 553.4158206846487,
+              "minimum": 10.74888368113755,
+              "p90": 873.6612800716576
+            },
+            "parsed": {
+              "count": 1227,
+              "mean": 534.0952519187409,
+              "median": 539.8743742575762,
+              "minimum": 10.74888368113755,
+              "p90": 846.6505437750789
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "click_in_box_accuracy": {
+            "all_accuracy": 0.026729559748427674,
+            "all_denominator": 1272,
+            "hit_count": 34,
+            "parsed_accuracy": 0.027709861450692746,
+            "parsed_denominator": 1227
+          },
+          "parse_count": 1227,
+          "parse_rate": 0.964622641509434,
+          "point_to_bbox_l1": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 589.3267172500416,
+              "median": 526.5273918838864,
+              "minimum": 0.0,
+              "p90": 1077.7782421875002
+            },
+            "parsed": {
+              "count": 1227,
+              "mean": 537.6638829193586,
+              "median": 508.2825,
+              "minimum": 0.0,
+              "p90": 1018.866609551586
+            },
+            "unparsed_penalty": 1998.0
+          },
+          "point_to_bbox_l2": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 479.9574517372338,
+              "median": 455.22448462028456,
+              "minimum": 0.0,
+              "p90": 832.3158903430722
+            },
+            "parsed": {
+              "count": 1227,
+              "mean": 445.74564622109114,
+              "median": 442.765,
+              "minimum": 0.0,
+              "p90": 806.5244495027209
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "total_count": 1272
+        },
+        "platform": {
+          "Android": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.03643724696356275,
+              "all_denominator": 247,
+              "hit_count": 9,
+              "parsed_accuracy": 0.03643724696356275,
+              "parsed_denominator": 247
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.07692307692307693,
+              "all_denominator": 247,
+              "hit_count": 19,
+              "parsed_accuracy": 0.07692307692307693,
+              "parsed_denominator": 247
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.004048582995951417,
+              "all_denominator": 247,
+              "hit_count": 1,
+              "parsed_accuracy": 0.004048582995951417,
+              "parsed_denominator": 247
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 546.4219870863133,
+                "median": 581.0841068761583,
+                "minimum": 10.74888368113755,
+                "p90": 838.9232845852848
+              },
+              "parsed": {
+                "count": 247,
+                "mean": 546.4219870863133,
+                "median": 581.0841068761583,
+                "minimum": 10.74888368113755,
+                "p90": 838.9232845852848
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.02834008097165992,
+              "all_denominator": 247,
+              "hit_count": 7,
+              "parsed_accuracy": 0.02834008097165992,
+              "parsed_denominator": 247
+            },
+            "parse_count": 247,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 512.9375303643725,
+                "median": 484.97249999999997,
+                "minimum": 0.0,
+                "p90": 1004.825
+              },
+              "parsed": {
+                "count": 247,
+                "mean": 512.9375303643725,
+                "median": 484.97249999999997,
+                "minimum": 0.0,
+                "p90": 1004.825
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 424.26787686172077,
+                "median": 404.4266073115894,
+                "minimum": 0.0,
+                "p90": 776.6197132632025
+              },
+              "parsed": {
+                "count": 247,
+                "mean": 424.26787686172077,
+                "median": 404.4266073115894,
+                "minimum": 0.0,
+                "p90": 776.6197132632025
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 247
+          },
+          "Web": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.05045871559633028,
+              "all_denominator": 436,
+              "hit_count": 22,
+              "parsed_accuracy": 0.05092592592592592,
+              "parsed_denominator": 432
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.14220183486238533,
+              "all_denominator": 436,
+              "hit_count": 62,
+              "parsed_accuracy": 0.14351851851851852,
+              "parsed_denominator": 432
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.016055045871559634,
+              "all_denominator": 436,
+              "hit_count": 7,
+              "parsed_accuracy": 0.016203703703703703,
+              "parsed_denominator": 432
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 543.4769958405644,
+                "median": 550.1374420689697,
+                "minimum": 21.479818153108877,
+                "p90": 865.1735188666278
+              },
+              "parsed": {
+                "count": 432,
+                "mean": 535.4277147945445,
+                "median": 543.6254195915573,
+                "minimum": 21.479818153108877,
+                "p90": 856.4986455179742
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.011467889908256881,
+              "all_denominator": 436,
+              "hit_count": 5,
+              "parsed_accuracy": 0.011574074074074073,
+              "parsed_denominator": 432
+            },
+            "parse_count": 432,
+            "parse_rate": 0.9908256880733946,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 591.2204289707569,
+                "median": 573.3396484374999,
+                "minimum": 0.0,
+                "p90": 1074.2169921875
+              },
+              "parsed": {
+                "count": 432,
+                "mean": 578.1946922019675,
+                "median": 571.93125,
+                "minimum": 0.0,
+                "p90": 1052.4196875000002
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 486.66619150747823,
+                "median": 493.7166015625,
+                "minimum": 0.0,
+                "p90": 838.7393286072472
+              },
+              "parsed": {
+                "count": 432,
+                "mean": 478.09088449541116,
+                "median": 491.64882415946914,
+                "minimum": 0.0,
+                "p90": 830.0955507565862
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 436
+          },
+          "Windows": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.07407407407407407,
+              "all_denominator": 162,
+              "hit_count": 12,
+              "parsed_accuracy": 0.07453416149068323,
+              "parsed_denominator": 161
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.16666666666666666,
+              "all_denominator": 162,
+              "hit_count": 27,
+              "parsed_accuracy": 0.16770186335403728,
+              "parsed_denominator": 161
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.043209876543209874,
+              "all_denominator": 162,
+              "hit_count": 7,
+              "parsed_accuracy": 0.043478260869565216,
+              "parsed_denominator": 161
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 504.8995068371543,
+                "median": 490.35621892583765,
+                "minimum": 18.616626748793873,
+                "p90": 875.0266905415003
+              },
+              "parsed": {
+                "count": 161,
+                "mean": 499.2603773839024,
+                "median": 487.9478032072541,
+                "minimum": 18.616626748793873,
+                "p90": 865.8329715928273
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.04938271604938271,
+              "all_denominator": 162,
+              "hit_count": 8,
+              "parsed_accuracy": 0.049689440993788817,
+              "parsed_denominator": 161
+            },
+            "parse_count": 161,
+            "parse_rate": 0.9938271604938271,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 525.4410024446162,
+                "median": 435.8677198399357,
+                "minimum": 0.0,
+                "p90": 1086.925625
+              },
+              "parsed": {
+                "count": 161,
+                "mean": 516.2946732672535,
+                "median": 434.190625,
+                "minimum": 0.0,
+                "p90": 1077.875
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 428.2010102715652,
+                "median": 377.8877906976744,
+                "minimum": 0.0,
+                "p90": 836.1459397240757
+              },
+              "parsed": {
+                "count": 161,
+                "mean": 422.0854926408873,
+                "median": 373.72558139534885,
+                "minimum": 0.0,
+                "p90": 834.3187559929133
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 162
+          },
+          "iOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.03137254901960784,
+              "all_denominator": 255,
+              "hit_count": 8,
+              "parsed_accuracy": 0.031496062992125984,
+              "parsed_denominator": 254
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.09019607843137255,
+              "all_denominator": 255,
+              "hit_count": 23,
+              "parsed_accuracy": 0.09055118110236221,
+              "parsed_denominator": 254
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.011764705882352941,
+              "all_denominator": 255,
+              "hit_count": 3,
+              "parsed_accuracy": 0.011811023622047244,
+              "parsed_denominator": 254
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 549.632516262527,
+                "median": 535.5451807474884,
+                "minimum": 14.081880907142201,
+                "p90": 831.5723215224544
+              },
+              "parsed": {
+                "count": 254,
+                "mean": 546.2342216461956,
+                "median": 535.1077558036122,
+                "minimum": 14.081880907142201,
+                "p90": 831.3014756814371
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.047058823529411764,
+              "all_denominator": 255,
+              "hit_count": 12,
+              "parsed_accuracy": 0.047244094488188976,
+              "parsed_denominator": 254
+            },
+            "parse_count": 254,
+            "parse_rate": 0.996078431372549,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 518.8374296070025,
+                "median": 478.45863993385694,
+                "minimum": 0.0,
+                "p90": 978.9979219832301
+              },
+              "parsed": {
+                "count": 254,
+                "mean": 513.0139549204159,
+                "median": 476.3698230657254,
+                "minimum": 0.0,
+                "p90": 972.6826021051445
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 429.19251663086686,
+                "median": 432.91610169491526,
+                "minimum": 0.0,
+                "p90": 784.050218454942
+              },
+              "parsed": {
+                "count": 254,
+                "mean": 425.32004878763905,
+                "median": 431.896257133245,
+                "minimum": 0.0,
+                "p90": 782.0318133553919
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 255
+          },
+          "macOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.06395348837209303,
+              "all_denominator": 172,
+              "hit_count": 11,
+              "parsed_accuracy": 0.08270676691729323,
+              "parsed_denominator": 133
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.11046511627906977,
+              "all_denominator": 172,
+              "hit_count": 19,
+              "parsed_accuracy": 0.14285714285714285,
+              "parsed_denominator": 133
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.023255813953488372,
+              "all_denominator": 172,
+              "hit_count": 4,
+              "parsed_accuracy": 0.03007518796992481,
+              "parsed_denominator": 133
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 726.9687909849349,
+                "median": 641.8474525443451,
+                "minimum": 13.177847560612845,
+                "p90": 1412.799348810722
+              },
+              "parsed": {
+                "count": 133,
+                "mean": 525.8605822991777,
+                "median": 512.4650613043335,
+                "minimum": 13.177847560612845,
+                "p90": 839.1266332294272
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.011627906976744186,
+              "all_denominator": 172,
+              "hit_count": 2,
+              "parsed_accuracy": 0.015037593984962405,
+              "parsed_denominator": 133
+            },
+            "parse_count": 133,
+            "parse_rate": 0.7732558139534884,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 858.9006997964503,
+                "median": 628.027370325198,
+                "minimum": 0.0,
+                "p90": 1998.0
+              },
+              "parsed": {
+                "count": 133,
+                "mean": 524.8791004886426,
+                "median": 486.61471644357533,
+                "minimum": 0.0,
+                "p90": 893.5195424385174
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 666.9337100162277,
+                "median": 570.4193527039088,
+                "minimum": 0.0,
+                "p90": 1412.799348810722
+              },
+              "parsed": {
+                "count": 133,
+                "mean": 448.2212294674661,
+                "median": 432.5119229459324,
+                "minimum": 0.0,
+                "p90": 810.5030865891331
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 172
+          }
+        },
+        "target_type": {
+          "icon/widget": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.04,
+              "all_denominator": 575,
+              "hit_count": 23,
+              "parsed_accuracy": 0.041666666666666664,
+              "parsed_denominator": 552
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.10608695652173913,
+              "all_denominator": 575,
+              "hit_count": 61,
+              "parsed_accuracy": 0.1105072463768116,
+              "parsed_denominator": 552
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0034782608695652175,
+              "all_denominator": 575,
+              "hit_count": 2,
+              "parsed_accuracy": 0.0036231884057971015,
+              "parsed_denominator": 552
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 624.3281584661452,
+                "median": 646.5790409659154,
+                "minimum": 14.081880907142201,
+                "p90": 913.0845926478551
+              },
+              "parsed": {
+                "count": 552,
+                "mean": 591.4751922017878,
+                "median": 636.2770060192872,
+                "minimum": 14.081880907142201,
+                "p90": 872.9423987795375
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.008695652173913044,
+              "all_denominator": 575,
+              "hit_count": 5,
+              "parsed_accuracy": 0.009057971014492754,
+              "parsed_denominator": 552
+            },
+            "parse_count": 552,
+            "parse_rate": 0.96,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 697.113095921448,
+                "median": 705.577734375,
+                "minimum": 0.0,
+                "p90": 1156.331453125
+              },
+              "parsed": {
+                "count": 552,
+                "mean": 642.909474918175,
+                "median": 677.51640625,
+                "minimum": 0.0,
+                "p90": 1078.054296875
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 565.104344497094,
+                "median": 590.4862528189957,
+                "minimum": 0.0,
+                "p90": 873.4039667543452
+              },
+              "parsed": {
+                "count": 552,
+                "mean": 529.7837193173594,
+                "median": 575.5793529646294,
+                "minimum": 0.0,
+                "p90": 839.6620874467511
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 575
+          },
+          "text": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.05595408895265423,
+              "all_denominator": 697,
+              "hit_count": 39,
+              "parsed_accuracy": 0.057777777777777775,
+              "parsed_denominator": 675
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.12769010043041606,
+              "all_denominator": 697,
+              "hit_count": 89,
+              "parsed_accuracy": 0.13185185185185186,
+              "parsed_denominator": 675
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.028694404591104734,
+              "all_denominator": 697,
+              "hit_count": 20,
+              "parsed_accuracy": 0.02962962962962963,
+              "parsed_denominator": 675
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 516.387594953722,
+                "median": 487.1851168986938,
+                "minimum": 10.74888368113755,
+                "p90": 826.19785274694
+              },
+              "parsed": {
+                "count": 675,
+                "mean": 487.1712118650493,
+                "median": 472.46033216489235,
+                "minimum": 10.74888368113755,
+                "p90": 806.9393372223624
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.04160688665710186,
+              "all_denominator": 697,
+              "hit_count": 29,
+              "parsed_accuracy": 0.04296296296296296,
+              "parsed_denominator": 675
+            },
+            "parse_count": 675,
+            "parse_rate": 0.9684361549497847,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 500.40682092858015,
+                "median": 430.11484375,
+                "minimum": 0.0,
+                "p90": 989.7052343749999
+              },
+              "parsed": {
+                "count": 675,
+                "mean": 451.59637657365977,
+                "median": 411.3376777251185,
+                "minimum": 0.0,
+                "p90": 917.2471379989975
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 409.7143192595873,
+                "median": 375.0988671753755,
+                "minimum": 0.0,
+                "p90": 763.5582424615338
+              },
+              "parsed": {
+                "count": 675,
+                "mean": 377.0211775556984,
+                "median": 352.04999999999995,
+                "minimum": 0.0,
+                "p90": 734.8084627972315
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 697
+          }
+        }
+      }
+    },
+    "previous_best": {
+      "breakdowns": {
+        "overall": {
+          "accuracy_at_100": {
+            "all_accuracy": 0.046383647798742135,
+            "all_denominator": 1272,
+            "hit_count": 59,
+            "parsed_accuracy": 0.046383647798742135,
+            "parsed_denominator": 1272
+          },
+          "accuracy_at_200": {
+            "all_accuracy": 0.13128930817610063,
+            "all_denominator": 1272,
+            "hit_count": 167,
+            "parsed_accuracy": 0.13128930817610063,
+            "parsed_denominator": 1272
+          },
+          "accuracy_at_50": {
+            "all_accuracy": 0.018081761006289308,
+            "all_denominator": 1272,
+            "hit_count": 23,
+            "parsed_accuracy": 0.018081761006289308,
+            "parsed_denominator": 1272
+          },
+          "center_distance": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 391.1206136313219,
+              "median": 401.72626056306126,
+              "minimum": 2.5564981739771544,
+              "p90": 606.4696494988411
+            },
+            "parsed": {
+              "count": 1272,
+              "mean": 391.1206136313219,
+              "median": 401.72626056306126,
+              "minimum": 2.5564981739771544,
+              "p90": 606.4696494988411
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "click_in_box_accuracy": {
+            "all_accuracy": 0.0330188679245283,
+            "all_denominator": 1272,
+            "hit_count": 42,
+            "parsed_accuracy": 0.0330188679245283,
+            "parsed_denominator": 1272
+          },
+          "parse_count": 1272,
+          "parse_rate": 1.0,
+          "point_to_bbox_l1": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 414.21136614879185,
+              "median": 408.06265625,
+              "minimum": 0.0,
+              "p90": 742.2891158536587
+            },
+            "parsed": {
+              "count": 1272,
+              "mean": 414.21136614879185,
+              "median": 408.06265625,
+              "minimum": 0.0,
+              "p90": 742.2891158536587
+            },
+            "unparsed_penalty": 1998.0
+          },
+          "point_to_bbox_l2": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 328.0663185766862,
+              "median": 333.85571359906237,
+              "minimum": 0.0,
+              "p90": 557.3999799419951
+            },
+            "parsed": {
+              "count": 1272,
+              "mean": 328.0663185766862,
+              "median": 333.85571359906237,
+              "minimum": 0.0,
+              "p90": 557.3999799419951
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "total_count": 1272
+        },
+        "platform": {
+          "Android": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.05263157894736842,
+              "all_denominator": 247,
+              "hit_count": 13,
+              "parsed_accuracy": 0.05263157894736842,
+              "parsed_denominator": 247
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.15384615384615385,
+              "all_denominator": 247,
+              "hit_count": 38,
+              "parsed_accuracy": 0.15384615384615385,
+              "parsed_denominator": 247
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.020242914979757085,
+              "all_denominator": 247,
+              "hit_count": 5,
+              "parsed_accuracy": 0.020242914979757085,
+              "parsed_denominator": 247
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 382.5793775920023,
+                "median": 393.02672332856787,
+                "minimum": 8.22713688047062,
+                "p90": 604.4329068217332
+              },
+              "parsed": {
+                "count": 247,
+                "mean": 382.5793775920023,
+                "median": 393.02672332856787,
+                "minimum": 8.22713688047062,
+                "p90": 604.4329068217332
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.048582995951417005,
+              "all_denominator": 247,
+              "hit_count": 12,
+              "parsed_accuracy": 0.048582995951417005,
+              "parsed_denominator": 247
+            },
+            "parse_count": 247,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 376.17196862348175,
+                "median": 360.47249999999997,
+                "minimum": 0.0,
+                "p90": 711.3629999999999
+              },
+              "parsed": {
+                "count": 247,
+                "mean": 376.17196862348175,
+                "median": 360.47249999999997,
+                "minimum": 0.0,
+                "p90": 711.3629999999999
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 303.0374746159706,
+                "median": 300.5060231535509,
+                "minimum": 0.0,
+                "p90": 546.0078202173077
+              },
+              "parsed": {
+                "count": 247,
+                "mean": 303.0374746159706,
+                "median": 300.5060231535509,
+                "minimum": 0.0,
+                "p90": 546.0078202173077
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 247
+          },
+          "Web": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.020642201834862386,
+              "all_denominator": 436,
+              "hit_count": 9,
+              "parsed_accuracy": 0.020642201834862386,
+              "parsed_denominator": 436
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.0779816513761468,
+              "all_denominator": 436,
+              "hit_count": 34,
+              "parsed_accuracy": 0.0779816513761468,
+              "parsed_denominator": 436
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.006880733944954129,
+              "all_denominator": 436,
+              "hit_count": 3,
+              "parsed_accuracy": 0.006880733944954129,
+              "parsed_denominator": 436
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 389.96020527285043,
+                "median": 393.9644002815322,
+                "minimum": 24.561618195446883,
+                "p90": 558.2208781607011
+              },
+              "parsed": {
+                "count": 436,
+                "mean": 389.96020527285043,
+                "median": 393.9644002815322,
+                "minimum": 24.561618195446883,
+                "p90": 558.2208781607011
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.01834862385321101,
+              "all_denominator": 436,
+              "hit_count": 8,
+              "parsed_accuracy": 0.01834862385321101,
+              "parsed_denominator": 436
+            },
+            "parse_count": 436,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 424.9739141341743,
+                "median": 420.185546875,
+                "minimum": 0.0,
+                "p90": 703.0638671875
+              },
+              "parsed": {
+                "count": 436,
+                "mean": 424.9739141341743,
+                "median": 420.185546875,
+                "minimum": 0.0,
+                "p90": 703.0638671875
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 334.61710717522203,
+                "median": 337.56738037327636,
+                "minimum": 0.0,
+                "p90": 516.1341677596645
+              },
+              "parsed": {
+                "count": 436,
+                "mean": 334.61710717522203,
+                "median": 337.56738037327636,
+                "minimum": 0.0,
+                "p90": 516.1341677596645
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 436
+          },
+          "Windows": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.024691358024691357,
+              "all_denominator": 162,
+              "hit_count": 4,
+              "parsed_accuracy": 0.024691358024691357,
+              "parsed_denominator": 162
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.12345679012345678,
+              "all_denominator": 162,
+              "hit_count": 20,
+              "parsed_accuracy": 0.12345679012345678,
+              "parsed_denominator": 162
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 162,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 162
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 435.0224489724363,
+                "median": 449.6317274983279,
+                "minimum": 74.56150789430592,
+                "p90": 673.8723641430062
+              },
+              "parsed": {
+                "count": 162,
+                "mean": 435.0224489724363,
+                "median": 449.6317274983279,
+                "minimum": 74.56150789430592,
+                "p90": 673.8723641430062
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.024691358024691357,
+              "all_denominator": 162,
+              "hit_count": 4,
+              "parsed_accuracy": 0.024691358024691357,
+              "parsed_denominator": 162
+            },
+            "parse_count": 162,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 467.87801992849563,
+                "median": 503.873535949938,
+                "minimum": 0.0,
+                "p90": 836.9190625000001
+              },
+              "parsed": {
+                "count": 162,
+                "mean": 467.87801992849563,
+                "median": 503.873535949938,
+                "minimum": 0.0,
+                "p90": 836.9190625000001
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 362.7315775768263,
+                "median": 387.7090543536484,
+                "minimum": 0.0,
+                "p90": 636.20964654103
+              },
+              "parsed": {
+                "count": 162,
+                "mean": 362.7315775768263,
+                "median": 387.7090543536484,
+                "minimum": 0.0,
+                "p90": 636.20964654103
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 162
+          },
+          "iOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.10588235294117647,
+              "all_denominator": 255,
+              "hit_count": 27,
+              "parsed_accuracy": 0.10588235294117647,
+              "parsed_denominator": 255
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.20784313725490197,
+              "all_denominator": 255,
+              "hit_count": 53,
+              "parsed_accuracy": 0.20784313725490197,
+              "parsed_denominator": 255
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.043137254901960784,
+              "all_denominator": 255,
+              "hit_count": 11,
+              "parsed_accuracy": 0.043137254901960784,
+              "parsed_denominator": 255
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 366.00026806787673,
+                "median": 396.83664580489113,
+                "minimum": 2.5564981739771544,
+                "p90": 594.3236456624163
+              },
+              "parsed": {
+                "count": 255,
+                "mean": 366.00026806787673,
+                "median": 396.83664580489113,
+                "minimum": 2.5564981739771544,
+                "p90": 594.3236456624163
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.047058823529411764,
+              "all_denominator": 255,
+              "hit_count": 12,
+              "parsed_accuracy": 0.047058823529411764,
+              "parsed_denominator": 255
+            },
+            "parse_count": 255,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 377.66686944343485,
+                "median": 397.56398104265406,
+                "minimum": 0.0,
+                "p90": 693.2056361271059
+              },
+              "parsed": {
+                "count": 255,
+                "mean": 377.66686944343485,
+                "median": 397.56398104265406,
+                "minimum": 0.0,
+                "p90": 693.2056361271059
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 307.85540134420495,
+                "median": 324.58272011278785,
+                "minimum": 0.0,
+                "p90": 548.5602936863737
+              },
+              "parsed": {
+                "count": 255,
+                "mean": 307.85540134420495,
+                "median": 324.58272011278785,
+                "minimum": 0.0,
+                "p90": 548.5602936863737
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 255
+          },
+          "macOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.03488372093023256,
+              "all_denominator": 172,
+              "hit_count": 6,
+              "parsed_accuracy": 0.03488372093023256,
+              "parsed_denominator": 172
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.12790697674418605,
+              "all_denominator": 172,
+              "hit_count": 22,
+              "parsed_accuracy": 0.12790697674418605,
+              "parsed_denominator": 172
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.023255813953488372,
+              "all_denominator": 172,
+              "hit_count": 4,
+              "parsed_accuracy": 0.023255813953488372,
+              "parsed_denominator": 172
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 402.22069583727233,
+                "median": 407.06382738931063,
+                "minimum": 11.999756817434069,
+                "p90": 623.2944770823216
+              },
+              "parsed": {
+                "count": 172,
+                "mean": 402.22069583727233,
+                "median": 407.06382738931063,
+                "minimum": 11.999756817434069,
+                "p90": 623.2944770823216
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.03488372093023256,
+              "all_denominator": 172,
+              "hit_count": 6,
+              "parsed_accuracy": 0.03488372093023256,
+              "parsed_denominator": 172
+            },
+            "parse_count": 172,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 445.1887441411111,
+                "median": 415.1505325814537,
+                "minimum": 0.0,
+                "p90": 823.6933120239883
+              },
+              "parsed": {
+                "count": 172,
+                "mean": 445.1887441411111,
+                "median": 415.1505325814537,
+                "minimum": 0.0,
+                "p90": 823.6933120239883
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 344.7174381440995,
+                "median": 346.36230327558155,
+                "minimum": 0.0,
+                "p90": 583.1941973203291
+              },
+              "parsed": {
+                "count": 172,
+                "mean": 344.7174381440995,
+                "median": 346.36230327558155,
+                "minimum": 0.0,
+                "p90": 583.1941973203291
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 172
+          }
+        },
+        "target_type": {
+          "icon/widget": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.02434782608695652,
+              "all_denominator": 575,
+              "hit_count": 14,
+              "parsed_accuracy": 0.02434782608695652,
+              "parsed_denominator": 575
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.08,
+              "all_denominator": 575,
+              "hit_count": 46,
+              "parsed_accuracy": 0.08,
+              "parsed_denominator": 575
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.008695652173913044,
+              "all_denominator": 575,
+              "hit_count": 5,
+              "parsed_accuracy": 0.008695652173913044,
+              "parsed_denominator": 575
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 435.04362380299335,
+                "median": 453.99513627634036,
+                "minimum": 8.22713688047062,
+                "p90": 632.0083603996244
+              },
+              "parsed": {
+                "count": 575,
+                "mean": 435.04362380299335,
+                "median": 453.99513627634036,
+                "minimum": 8.22713688047062,
+                "p90": 632.0083603996244
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.019130434782608695,
+              "all_denominator": 575,
+              "hit_count": 11,
+              "parsed_accuracy": 0.019130434782608695,
+              "parsed_denominator": 575
+            },
+            "parse_count": 575,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 495.45947631626217,
+                "median": 506.2470288005833,
+                "minimum": 0.0,
+                "p90": 810.496901922282
+              },
+              "parsed": {
+                "count": 575,
+                "mean": 495.45947631626217,
+                "median": 506.2470288005833,
+                "minimum": 0.0,
+                "p90": 810.496901922282
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 381.98808714509033,
+                "median": 402.8656428501474,
+                "minimum": 0.0,
+                "p90": 590.0133647953444
+              },
+              "parsed": {
+                "count": 575,
+                "mean": 381.98808714509033,
+                "median": 402.8656428501474,
+                "minimum": 0.0,
+                "p90": 590.0133647953444
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 575
+          },
+          "text": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.06456241032998565,
+              "all_denominator": 697,
+              "hit_count": 45,
+              "parsed_accuracy": 0.06456241032998565,
+              "parsed_denominator": 697
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.17360114777618366,
+              "all_denominator": 697,
+              "hit_count": 121,
+              "parsed_accuracy": 0.17360114777618366,
+              "parsed_denominator": 697
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.02582496413199426,
+              "all_denominator": 697,
+              "hit_count": 18,
+              "parsed_accuracy": 0.02582496413199426,
+              "parsed_denominator": 697
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 354.88570567047384,
+                "median": 360.08226357025023,
+                "minimum": 2.5564981739771544,
+                "p90": 562.3384684217272
+              },
+              "parsed": {
+                "count": 697,
+                "mean": 354.88570567047384,
+                "median": 360.08226357025023,
+                "minimum": 2.5564981739771544,
+                "p90": 562.3384684217272
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.04447632711621234,
+              "all_denominator": 697,
+              "hit_count": 31,
+              "parsed_accuracy": 0.04447632711621234,
+              "parsed_denominator": 697
+            },
+            "parse_count": 697,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 347.1845894683107,
+                "median": 331.11250000000007,
+                "minimum": 0.0,
+                "p90": 651.3071367173259
+              },
+              "parsed": {
+                "count": 697,
+                "mean": 347.1845894683107,
+                "median": 331.11250000000007,
+                "minimum": 0.0,
+                "p90": 651.3071367173259
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 283.5827935740572,
+                "median": 280.7502610445136,
+                "minimum": 0.0,
+                "p90": 504.9740245900347
+              },
+              "parsed": {
+                "count": 697,
+                "mean": 283.5827935740572,
+                "median": 280.7502610445136,
+                "minimum": 0.0,
+                "p90": 504.9740245900347
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 697
+          }
+        }
+      }
+    },
+    "random_projector": {
+      "breakdowns": {
+        "overall": {
+          "accuracy_at_100": {
+            "all_accuracy": 0.03852201257861635,
+            "all_denominator": 1272,
+            "hit_count": 49,
+            "parsed_accuracy": 0.041773231031543054,
+            "parsed_denominator": 1173
+          },
+          "accuracy_at_200": {
+            "all_accuracy": 0.1179245283018868,
+            "all_denominator": 1272,
+            "hit_count": 150,
+            "parsed_accuracy": 0.1278772378516624,
+            "parsed_denominator": 1173
+          },
+          "accuracy_at_50": {
+            "all_accuracy": 0.012578616352201259,
+            "all_denominator": 1272,
+            "hit_count": 16,
+            "parsed_accuracy": 0.013640238704177323,
+            "parsed_denominator": 1173
+          },
+          "center_distance": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 475.1365574949557,
+              "median": 427.044296321301,
+              "minimum": 2.5564981739771544,
+              "p90": 686.2339073771449
+            },
+            "parsed": {
+              "count": 1173,
+              "mean": 395.99877715372736,
+              "median": 408.850972744313,
+              "minimum": 2.5564981739771544,
+              "p90": 605.3990266302455
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "click_in_box_accuracy": {
+            "all_accuracy": 0.025943396226415096,
+            "all_denominator": 1272,
+            "hit_count": 33,
+            "parsed_accuracy": 0.028132992327365727,
+            "parsed_denominator": 1173
+          },
+          "parse_count": 1173,
+          "parse_rate": 0.9221698113207547,
+          "point_to_bbox_l1": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 546.9836506444069,
+              "median": 455.6050484702225,
+              "minimum": 0.0,
+              "p90": 873.9217500000002
+            },
+            "parsed": {
+              "count": 1173,
+              "mean": 424.51935517449755,
+              "median": 422.8950000000001,
+              "minimum": 0.0,
+              "p90": 757.9422500000001
+            },
+            "unparsed_penalty": 1998.0
+          },
+          "point_to_bbox_l2": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 417.3170331497309,
+              "median": 362.3042992452814,
+              "minimum": 0.0,
+              "p90": 634.8821978660924
+            },
+            "parsed": {
+              "count": 1173,
+              "mean": 333.2993441041741,
+              "median": 339.465922680671,
+              "minimum": 0.0,
+              "p90": 555.2595698323464
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "total_count": 1272
+        },
+        "platform": {
+          "Android": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.032388663967611336,
+              "all_denominator": 247,
+              "hit_count": 8,
+              "parsed_accuracy": 0.037914691943127965,
+              "parsed_denominator": 211
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1214574898785425,
+              "all_denominator": 247,
+              "hit_count": 30,
+              "parsed_accuracy": 0.14218009478672985,
+              "parsed_denominator": 211
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.012145748987854251,
+              "all_denominator": 247,
+              "hit_count": 3,
+              "parsed_accuracy": 0.014218009478672985,
+              "parsed_denominator": 211
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 537.5154924942102,
+                "median": 432.3008220936117,
+                "minimum": 12.034846686419606,
+                "p90": 1412.799348810722
+              },
+              "parsed": {
+                "count": 211,
+                "mean": 388.1779625065588,
+                "median": 395.6554709676597,
+                "minimum": 12.034846686419606,
+                "p90": 604.5706813416366
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.02834008097165992,
+              "all_denominator": 247,
+              "hit_count": 7,
+              "parsed_accuracy": 0.03317535545023697,
+              "parsed_denominator": 211
+            },
+            "parse_count": 211,
+            "parse_rate": 0.854251012145749,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 618.1109615384615,
+                "median": 422.8950000000001,
+                "minimum": 0.0,
+                "p90": 1998.0
+              },
+              "parsed": {
+                "count": 211,
+                "mean": 382.67965639810427,
+                "median": 345.70375,
+                "minimum": 0.0,
+                "p90": 748.3075
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 469.2588551055207,
+                "median": 354.9314953291163,
+                "minimum": 0.0,
+                "p90": 1412.799348810722
+              },
+              "parsed": {
+                "count": 211,
+                "mean": 308.27564290937266,
+                "median": 307.7249999999999,
+                "minimum": 0.0,
+                "p90": 542.7697003621794
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 247
+          },
+          "Web": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.020642201834862386,
+              "all_denominator": 436,
+              "hit_count": 9,
+              "parsed_accuracy": 0.021844660194174758,
+              "parsed_denominator": 412
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.08486238532110092,
+              "all_denominator": 436,
+              "hit_count": 37,
+              "parsed_accuracy": 0.08980582524271845,
+              "parsed_denominator": 412
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.009174311926605505,
+              "all_denominator": 436,
+              "hit_count": 4,
+              "parsed_accuracy": 0.009708737864077669,
+              "parsed_denominator": 412
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 448.44464194706615,
+                "median": 415.4270020149843,
+                "minimum": 19.4529204394757,
+                "p90": 620.2330711889352
+              },
+              "parsed": {
+                "count": 412,
+                "mean": 392.268639605494,
+                "median": 405.8149042140641,
+                "minimum": 19.4529204394757,
+                "p90": 564.7955040031817
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.01834862385321101,
+              "all_denominator": 436,
+              "hit_count": 8,
+              "parsed_accuracy": 0.019417475728155338,
+              "parsed_denominator": 412
+            },
+            "parse_count": 412,
+            "parse_rate": 0.944954128440367,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 519.075222190367,
+                "median": 459.51425781250003,
+                "minimum": 0.0,
+                "p90": 795.9697265625
+              },
+              "parsed": {
+                "count": 412,
+                "mean": 432.92426425970876,
+                "median": 443.58808593749995,
+                "minimum": 0.0,
+                "p90": 721.0827343750001
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 395.82328742764645,
+                "median": 360.7253690522209,
+                "minimum": 0.0,
+                "p90": 582.4731948588812
+              },
+              "parsed": {
+                "count": 412,
+                "mean": 336.58196346358375,
+                "median": 347.8115258057106,
+                "minimum": 0.0,
+                "p90": 526.884539623157
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 436
+          },
+          "Windows": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.018518518518518517,
+              "all_denominator": 162,
+              "hit_count": 3,
+              "parsed_accuracy": 0.01948051948051948,
+              "parsed_denominator": 154
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.11728395061728394,
+              "all_denominator": 162,
+              "hit_count": 19,
+              "parsed_accuracy": 0.12337662337662338,
+              "parsed_denominator": 154
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 162,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 154
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 488.25695142201397,
+                "median": 464.3717103556955,
+                "minimum": 70.68814903548189,
+                "p90": 689.4763540045286
+              },
+              "parsed": {
+                "count": 154,
+                "mean": 440.2287749342889,
+                "median": 456.5821758063237,
+                "minimum": 70.68814903548189,
+                "p90": 639.751748713982
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.030864197530864196,
+              "all_denominator": 162,
+              "hit_count": 5,
+              "parsed_accuracy": 0.032467532467532464,
+              "parsed_denominator": 154
+            },
+            "parse_count": 154,
+            "parse_rate": 0.9506172839506173,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 553.5700721557853,
+                "median": 517.8937004209027,
+                "minimum": 0.0,
+                "p90": 881.3765625000001
+              },
+              "parsed": {
+                "count": 154,
+                "mean": 478.5347512288131,
+                "median": 498.21562500000005,
+                "minimum": 0.0,
+                "p90": 817.630625
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 420.16432456114467,
+                "median": 418.90580623399313,
+                "minimum": 0.0,
+                "p90": 636.20964654103
+              },
+              "parsed": {
+                "count": 154,
+                "mean": 368.5988687559718,
+                "median": 391.6186733614481,
+                "minimum": 0.0,
+                "p90": 594.595220429538
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 162
+          },
+          "iOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.09803921568627451,
+              "all_denominator": 255,
+              "hit_count": 25,
+              "parsed_accuracy": 0.10964912280701754,
+              "parsed_denominator": 228
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1843137254901961,
+              "all_denominator": 255,
+              "hit_count": 47,
+              "parsed_accuracy": 0.20614035087719298,
+              "parsed_denominator": 228
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.027450980392156862,
+              "all_denominator": 255,
+              "hit_count": 7,
+              "parsed_accuracy": 0.03070175438596491,
+              "parsed_denominator": 228
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 479.3376979681842,
+                "median": 424.2977169252861,
+                "minimum": 2.5564981739771544,
+                "p90": 1412.799348810722
+              },
+              "parsed": {
+                "count": 228,
+                "mean": 368.79618668419954,
+                "median": 391.78568081712694,
+                "minimum": 2.5564981739771544,
+                "p90": 594.5542647785248
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.03137254901960784,
+              "all_denominator": 255,
+              "hit_count": 8,
+              "parsed_accuracy": 0.03508771929824561,
+              "parsed_denominator": 228
+            },
+            "parse_count": 228,
+            "parse_rate": 0.8941176470588236,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 558.8683492103177,
+                "median": 432.81248449772636,
+                "minimum": 0.0,
+                "p90": 1998.0
+              },
+              "parsed": {
+                "count": 228,
+                "mean": 388.4448642483815,
+                "median": 370.51930368209986,
+                "minimum": 0.0,
+                "p90": 724.023419167841
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 428.0618524357832,
+                "median": 361.20412233478027,
+                "minimum": 0.0,
+                "p90": 1412.799348810722
+              },
+              "parsed": {
+                "count": 228,
+                "mean": 311.44820154927726,
+                "median": 323.42793358315464,
+                "minimum": 0.0,
+                "p90": 549.8622576999846
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 255
+          },
+          "macOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.023255813953488372,
+              "all_denominator": 172,
+              "hit_count": 4,
+              "parsed_accuracy": 0.023809523809523808,
+              "parsed_denominator": 168
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.09883720930232558,
+              "all_denominator": 172,
+              "hit_count": 17,
+              "parsed_accuracy": 0.10119047619047619,
+              "parsed_denominator": 168
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.011627906976744186,
+              "all_denominator": 172,
+              "hit_count": 2,
+              "parsed_accuracy": 0.011904761904761904,
+              "parsed_denominator": 168
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 434.63239236244027,
+                "median": 429.53639676576665,
+                "minimum": 23.755139227183545,
+                "p90": 628.3046091698264
+              },
+              "parsed": {
+                "count": 168,
+                "mean": 411.34270292319553,
+                "median": 424.10526443627157,
+                "minimum": 23.755139227183545,
+                "p90": 624.2476465860427
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.029069767441860465,
+              "all_denominator": 172,
+              "hit_count": 5,
+              "parsed_accuracy": 0.02976190476190476,
+              "parsed_denominator": 168
+            },
+            "parse_count": 168,
+            "parse_rate": 0.9767441860465116,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 491.7628982954501,
+                "median": 448.50700101835866,
+                "minimum": 0.0,
+                "p90": 842.7539226766788
+              },
+              "parsed": {
+                "count": 168,
+                "mean": 455.90011015962745,
+                "median": 442.64573491521026,
+                "minimum": 0.0,
+                "p90": 824.3388632428002
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 378.59873655180286,
+                "median": 356.78560855316925,
+                "minimum": 0.0,
+                "p90": 595.9558973775974
+              },
+              "parsed": {
+                "count": 168,
+                "mean": 353.97491245040004,
+                "median": 353.9474438181951,
+                "minimum": 0.0,
+                "p90": 584.0321088763492
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 172
+          }
+        },
+        "target_type": {
+          "icon/widget": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.020869565217391306,
+              "all_denominator": 575,
+              "hit_count": 12,
+              "parsed_accuracy": 0.022429906542056073,
+              "parsed_denominator": 535
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.0782608695652174,
+              "all_denominator": 575,
+              "hit_count": 45,
+              "parsed_accuracy": 0.08411214953271028,
+              "parsed_denominator": 535
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0052173913043478265,
+              "all_denominator": 575,
+              "hit_count": 3,
+              "parsed_accuracy": 0.005607476635514018,
+              "parsed_denominator": 535
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 509.8283233083974,
+                "median": 470.2546712958708,
+                "minimum": 19.4529204394757,
+                "p90": 684.5314751899341
+              },
+              "parsed": {
+                "count": 535,
+                "mean": 442.3164709343918,
+                "median": 462.5510167627496,
+                "minimum": 19.4529204394757,
+                "p90": 627.333072172482
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.019130434782608695,
+              "all_denominator": 575,
+              "hit_count": 11,
+              "parsed_accuracy": 0.020560747663551402,
+              "parsed_denominator": 535
+            },
+            "parse_count": 535,
+            "parse_rate": 0.9304347826086956,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 611.5843950046401,
+                "median": 552.1117187499999,
+                "minimum": 0.0,
+                "p90": 888.8157031250003
+              },
+              "parsed": {
+                "count": 535,
+                "mean": 507.92715350966,
+                "median": 535.851953125,
+                "minimum": 0.0,
+                "p90": 811.43075
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 460.08318972870455,
+                "median": 430.6073629640948,
+                "minimum": 0.0,
+                "p90": 635.9954809518549
+              },
+              "parsed": {
+                "count": 535,
+                "mean": 388.8520750309836,
+                "median": 416.1983218671118,
+                "minimum": 0.0,
+                "p90": 587.7410110482301
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 575
+          },
+          "text": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.05308464849354376,
+              "all_denominator": 697,
+              "hit_count": 37,
+              "parsed_accuracy": 0.05799373040752351,
+              "parsed_denominator": 638
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.15064562410329985,
+              "all_denominator": 697,
+              "hit_count": 105,
+              "parsed_accuracy": 0.164576802507837,
+              "parsed_denominator": 638
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.018651362984218076,
+              "all_denominator": 697,
+              "hit_count": 13,
+              "parsed_accuracy": 0.02037617554858934,
+              "parsed_denominator": 638
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 446.5170950233217,
+                "median": 379.57942511472356,
+                "minimum": 2.5564981739771544,
+                "p90": 686.3856021645872
+              },
+              "parsed": {
+                "count": 638,
+                "mean": 357.1587047827941,
+                "median": 359.2684866351557,
+                "minimum": 2.5564981739771544,
+                "p90": 565.1859639879797
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.03156384505021521,
+              "all_denominator": 697,
+              "hit_count": 22,
+              "parsed_accuracy": 0.034482758620689655,
+              "parsed_denominator": 638
+            },
+            "parse_count": 638,
+            "parse_rate": 0.9153515064562411,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 493.69035364708395,
+                "median": 356.190019193858,
+                "minimum": 0.0,
+                "p90": 838.2594639893877
+              },
+              "parsed": {
+                "count": 638,
+                "mean": 354.5770791410933,
+                "median": 331.1960604265403,
+                "minimum": 0.0,
+                "p90": 674.0542938557878
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 382.03648790882727,
+                "median": 299.80643452754134,
+                "minimum": 0.0,
+                "p90": 633.4298369804633
+              },
+              "parsed": {
+                "count": 638,
+                "mean": 286.7151575119436,
+                "median": 283.5203518393686,
+                "minimum": 0.0,
+                "p90": 507.2389411521921
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 697
+          }
+        }
+      }
+    },
+    "shuffled": {
+      "breakdowns": {
+        "overall": {
+          "accuracy_at_100": {
+            "all_accuracy": 0.054245283018867926,
+            "all_denominator": 1272,
+            "hit_count": 69,
+            "parsed_accuracy": 0.05609756097560976,
+            "parsed_denominator": 1230
+          },
+          "accuracy_at_200": {
+            "all_accuracy": 0.12028301886792453,
+            "all_denominator": 1272,
+            "hit_count": 153,
+            "parsed_accuracy": 0.12439024390243902,
+            "parsed_denominator": 1230
+          },
+          "accuracy_at_50": {
+            "all_accuracy": 0.014150943396226415,
+            "all_denominator": 1272,
+            "hit_count": 18,
+            "parsed_accuracy": 0.014634146341463415,
+            "parsed_denominator": 1230
+          },
+          "center_distance": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 566.2636963171605,
+              "median": 566.9530287283895,
+              "minimum": 9.698697157994992,
+              "p90": 872.1318745026338
+            },
+            "parsed": {
+              "count": 1230,
+              "mean": 537.3576008661607,
+              "median": 549.8560949260332,
+              "minimum": 9.698697157994992,
+              "p90": 848.4423319522932
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "click_in_box_accuracy": {
+            "all_accuracy": 0.027515723270440252,
+            "all_denominator": 1272,
+            "hit_count": 35,
+            "parsed_accuracy": 0.028455284552845527,
+            "parsed_denominator": 1230
+          },
+          "parse_count": 1230,
+          "parse_rate": 0.9669811320754716,
+          "point_to_bbox_l1": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 588.5225946459966,
+              "median": 533.2080078125,
+              "minimum": 0.0,
+              "p90": 1072.7826562500002
+            },
+            "parsed": {
+              "count": 1230,
+              "mean": 540.3940978778111,
+              "median": 519.1064453125,
+              "minimum": 0.0,
+              "p90": 1003.474703125
+            },
+            "unparsed_penalty": 1998.0
+          },
+          "point_to_bbox_l2": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 481.95818636663927,
+              "median": 467.1892696488975,
+              "minimum": 0.0,
+              "p90": 833.936705115102
+            },
+            "parsed": {
+              "count": 1230,
+              "mean": 450.17336618562183,
+              "median": 451.44152264724494,
+              "minimum": 0.0,
+              "p90": 808.515529490704
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "total_count": 1272
+        },
+        "platform": {
+          "Android": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.06477732793522267,
+              "all_denominator": 247,
+              "hit_count": 16,
+              "parsed_accuracy": 0.06722689075630252,
+              "parsed_denominator": 238
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.11336032388663968,
+              "all_denominator": 247,
+              "hit_count": 28,
+              "parsed_accuracy": 0.11764705882352941,
+              "parsed_denominator": 238
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.008097165991902834,
+              "all_denominator": 247,
+              "hit_count": 2,
+              "parsed_accuracy": 0.008403361344537815,
+              "parsed_denominator": 238
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 589.8449974150401,
+                "median": 617.2173090383666,
+                "minimum": 10.74888368113755,
+                "p90": 860.4676371000141
+              },
+              "parsed": {
+                "count": 238,
+                "mean": 558.7248748832706,
+                "median": 607.0824612341773,
+                "minimum": 10.74888368113755,
+                "p90": 834.5562687854377
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.03643724696356275,
+              "all_denominator": 247,
+              "hit_count": 9,
+              "parsed_accuracy": 0.037815126050420166,
+              "parsed_denominator": 238
+            },
+            "parse_count": 238,
+            "parse_rate": 0.9635627530364372,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 574.2604908906883,
+                "median": 513.615,
+                "minimum": 0.0,
+                "p90": 1044.016
+              },
+              "parsed": {
+                "count": 238,
+                "mean": 520.4216018907563,
+                "median": 504.733125,
+                "minimum": 0.0,
+                "p90": 977.0825
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 473.68732020435334,
+                "median": 478.7993331648056,
+                "minimum": 0.0,
+                "p90": 795.0187768924252
+              },
+              "parsed": {
+                "count": 238,
+                "mean": 438.17468046713776,
+                "median": 442.2893487260241,
+                "minimum": 0.0,
+                "p90": 776.2739836011616
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 247
+          },
+          "Web": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.045871559633027525,
+              "all_denominator": 436,
+              "hit_count": 20,
+              "parsed_accuracy": 0.04739336492890995,
+              "parsed_denominator": 422
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.13302752293577982,
+              "all_denominator": 436,
+              "hit_count": 58,
+              "parsed_accuracy": 0.13744075829383887,
+              "parsed_denominator": 422
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.011467889908256881,
+              "all_denominator": 436,
+              "hit_count": 5,
+              "parsed_accuracy": 0.011848341232227487,
+              "parsed_denominator": 422
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 552.0037394088863,
+                "median": 542.8355106511082,
+                "minimum": 31.07743754935063,
+                "p90": 861.1223178934894
+              },
+              "parsed": {
+                "count": 422,
+                "mean": 523.4465390969771,
+                "median": 531.989004027454,
+                "minimum": 31.07743754935063,
+                "p90": 851.7331927708109
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.009174311926605505,
+              "all_denominator": 436,
+              "hit_count": 4,
+              "parsed_accuracy": 0.009478672985781991,
+              "parsed_denominator": 422
+            },
+            "parse_count": 422,
+            "parse_rate": 0.9678899082568807,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 607.8389782826836,
+                "median": 580.2642578125,
+                "minimum": 0.0,
+                "p90": 1038.066796875
+              },
+              "parsed": {
+                "count": 422,
+                "mean": 561.7198922541469,
+                "median": 570.4869140625,
+                "minimum": 0.0,
+                "p90": 1000.1650000000002
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 495.90134332673597,
+                "median": 496.18733631469246,
+                "minimum": 0.0,
+                "p90": 840.1976166670074
+              },
+              "parsed": {
+                "count": 422,
+                "mean": 465.48292608319144,
+                "median": 486.74621803986156,
+                "minimum": 0.0,
+                "p90": 825.8349321785488
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 436
+          },
+          "Windows": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.07407407407407407,
+              "all_denominator": 162,
+              "hit_count": 12,
+              "parsed_accuracy": 0.07741935483870968,
+              "parsed_denominator": 155
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.19753086419753085,
+              "all_denominator": 162,
+              "hit_count": 32,
+              "parsed_accuracy": 0.2064516129032258,
+              "parsed_denominator": 155
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.024691358024691357,
+              "all_denominator": 162,
+              "hit_count": 4,
+              "parsed_accuracy": 0.025806451612903226,
+              "parsed_denominator": 155
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 545.2038949704666,
+                "median": 528.6234260454243,
+                "minimum": 9.698697157994992,
+                "p90": 952.7434081076659
+              },
+              "parsed": {
+                "count": 155,
+                "mean": 506.02216479703566,
+                "median": 508.1546295006178,
+                "minimum": 9.698697157994992,
+                "p90": 860.9397980653953
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.04938271604938271,
+              "all_denominator": 162,
+              "hit_count": 8,
+              "parsed_accuracy": 0.05161290322580645,
+              "parsed_denominator": 155
+            },
+            "parse_count": 155,
+            "parse_rate": 0.9567901234567902,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 581.600485775093,
+                "median": 492.69824837483975,
+                "minimum": 0.0,
+                "p90": 1178.1293758600782
+              },
+              "parsed": {
+                "count": 155,
+                "mean": 517.6340561004198,
+                "median": 474.15,
+                "minimum": 0.0,
+                "p90": 1073.8518749999998
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 474.5995587424638,
+                "median": 422.17339484421245,
+                "minimum": 0.0,
+                "p90": 875.0633753329993
+              },
+              "parsed": {
+                "count": 155,
+                "mean": 432.2292456426069,
+                "median": 395.0883526553073,
+                "minimum": 0.0,
+                "p90": 826.5133594873569
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 162
+          },
+          "iOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.047058823529411764,
+              "all_denominator": 255,
+              "hit_count": 12,
+              "parsed_accuracy": 0.04838709677419355,
+              "parsed_denominator": 248
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.09019607843137255,
+              "all_denominator": 255,
+              "hit_count": 23,
+              "parsed_accuracy": 0.09274193548387097,
+              "parsed_denominator": 248
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.01568627450980392,
+              "all_denominator": 255,
+              "hit_count": 4,
+              "parsed_accuracy": 0.016129032258064516,
+              "parsed_denominator": 248
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 584.2074137893156,
+                "median": 594.7831872905414,
+                "minimum": 14.081880907142201,
+                "p90": 856.5443084143803
+              },
+              "parsed": {
+                "count": 248,
+                "mean": 560.819738204034,
+                "median": 581.0553500989604,
+                "minimum": 14.081880907142201,
+                "p90": 832.9643601267486
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.050980392156862744,
+              "all_denominator": 255,
+              "hit_count": 13,
+              "parsed_accuracy": 0.05241935483870968,
+              "parsed_denominator": 248
+            },
+            "parse_count": 248,
+            "parse_rate": 0.9725490196078431,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 566.6043332405086,
+                "median": 507.26733503463356,
+                "minimum": 0.0,
+                "p90": 1014.7219941669704
+              },
+              "parsed": {
+                "count": 248,
+                "mean": 526.2020361948778,
+                "median": 504.8427136374946,
+                "minimum": 0.0,
+                "p90": 969.8313233685745
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 470.5443045453143,
+                "median": 454.59360189573465,
+                "minimum": 0.0,
+                "p90": 800.9364764717515
+              },
+              "parsed": {
+                "count": 248,
+                "mean": 443.9483960378229,
+                "median": 449.8369393661999,
+                "minimum": 0.0,
+                "p90": 783.7399991750237
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 255
+          },
+          "macOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.05232558139534884,
+              "all_denominator": 172,
+              "hit_count": 9,
+              "parsed_accuracy": 0.05389221556886228,
+              "parsed_denominator": 167
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.06976744186046512,
+              "all_denominator": 172,
+              "hit_count": 12,
+              "parsed_accuracy": 0.0718562874251497,
+              "parsed_denominator": 167
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.01744186046511628,
+              "all_denominator": 172,
+              "hit_count": 3,
+              "parsed_accuracy": 0.017964071856287425,
+              "parsed_denominator": 167
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 561.7799736636495,
+                "median": 534.538346863933,
+                "minimum": 31.621283059730377,
+                "p90": 884.1326454918749
+              },
+              "parsed": {
+                "count": 167,
+                "mean": 536.3003516532581,
+                "median": 513.7988967498236,
+                "minimum": 31.621283059730377,
+                "p90": 852.0981406199571
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.005813953488372093,
+              "all_denominator": 172,
+              "hit_count": 1,
+              "parsed_accuracy": 0.005988023952095809,
+              "parsed_denominator": 167
+            },
+            "parse_count": 167,
+            "parse_rate": 0.9709302325581395,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 599.0536100962959,
+                "median": 529.7885008609611,
+                "minimum": 0.0,
+                "p90": 1078.7565886780883
+              },
+              "parsed": {
+                "count": 167,
+                "mean": 557.1689876440892,
+                "median": 503.79968454258676,
+                "minimum": 0.0,
+                "p90": 1042.2040752932044
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 482.34379710522506,
+                "median": 433.9357018530277,
+                "minimum": 0.0,
+                "p90": 843.3481500371374
+              },
+              "parsed": {
+                "count": 167,
+                "mean": 454.4858464553599,
+                "median": 432.11295777170955,
+                "minimum": 0.0,
+                "p90": 822.8080265800584
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 172
+          }
+        },
+        "target_type": {
+          "icon/widget": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.04695652173913043,
+              "all_denominator": 575,
+              "hit_count": 27,
+              "parsed_accuracy": 0.04900181488203267,
+              "parsed_denominator": 551
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.10782608695652174,
+              "all_denominator": 575,
+              "hit_count": 62,
+              "parsed_accuracy": 0.11252268602540835,
+              "parsed_denominator": 551
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.006956521739130435,
+              "all_denominator": 575,
+              "hit_count": 4,
+              "parsed_accuracy": 0.007259528130671506,
+              "parsed_denominator": 551
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 626.2609730764367,
+                "median": 656.4725590474887,
+                "minimum": 9.698697157994992,
+                "p90": 934.7699874293803
+              },
+              "parsed": {
+                "count": 551,
+                "mean": 592.0015882894623,
+                "median": 637.8304703846854,
+                "minimum": 9.698697157994992,
+                "p90": 867.5010266086172
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.008695652173913044,
+              "all_denominator": 575,
+              "hit_count": 5,
+              "parsed_accuracy": 0.009074410163339383,
+              "parsed_denominator": 551
+            },
+            "parse_count": 551,
+            "parse_rate": 0.9582608695652174,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 697.0885260019749,
+                "median": 709.8798213634707,
+                "minimum": 0.0,
+                "p90": 1187.3667500000004
+              },
+              "parsed": {
+                "count": 551,
+                "mean": 640.4245053559629,
+                "median": 679.673828125,
+                "minimum": 0.0,
+                "p90": 1063.421875
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 568.4817617465878,
+                "median": 598.6568446548199,
+                "minimum": 0.0,
+                "p90": 885.3653147166825
+              },
+              "parsed": {
+                "count": 551,
+                "mean": 531.7056780995113,
+                "median": 578.4176126460367,
+                "minimum": 0.0,
+                "p90": 839.7704540894946
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 575
+          },
+          "text": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.06025824964131994,
+              "all_denominator": 697,
+              "hit_count": 42,
+              "parsed_accuracy": 0.061855670103092786,
+              "parsed_denominator": 679
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.13055954088952654,
+              "all_denominator": 697,
+              "hit_count": 91,
+              "parsed_accuracy": 0.13402061855670103,
+              "parsed_denominator": 679
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.020086083213773313,
+              "all_denominator": 697,
+              "hit_count": 14,
+              "parsed_accuracy": 0.020618556701030927,
+              "parsed_denominator": 679
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 516.7680949734247,
+                "median": 499.7479013687655,
+                "minimum": 10.74888368113755,
+                "p90": 826.6078481073985
+              },
+              "parsed": {
+                "count": 679,
+                "mean": 493.0146891279588,
+                "median": 492.7646346444212,
+                "minimum": 10.74888368113755,
+                "p90": 811.2449096265691
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.043041606886657105,
+              "all_denominator": 697,
+              "hit_count": 30,
+              "parsed_accuracy": 0.044182621502209134,
+              "parsed_denominator": 679
+            },
+            "parse_count": 679,
+            "parse_rate": 0.9741750358680057,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 498.9595953207634,
+                "median": 436.9375,
+                "minimum": 0.0,
+                "p90": 959.7486326558512
+              },
+              "parsed": {
+                "count": 679,
+                "mean": 459.22067443088673,
+                "median": 429.3343749999999,
+                "minimum": 0.0,
+                "p90": 911.7210858321182
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 410.5793401062799,
+                "median": 389.54164295909845,
+                "minimum": 0.0,
+                "p90": 756.5618787697622
+              },
+              "parsed": {
+                "count": 679,
+                "mean": 384.0109157223624,
+                "median": 374.5,
+                "minimum": 0.0,
+                "p90": 727.5522490176743
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 697
+          }
+        }
+      }
+    },
+    "step0": {
+      "breakdowns": {
+        "overall": {
+          "accuracy_at_100": {
+            "all_accuracy": 0.046383647798742135,
+            "all_denominator": 1272,
+            "hit_count": 59,
+            "parsed_accuracy": 0.046383647798742135,
+            "parsed_denominator": 1272
+          },
+          "accuracy_at_200": {
+            "all_accuracy": 0.13128930817610063,
+            "all_denominator": 1272,
+            "hit_count": 167,
+            "parsed_accuracy": 0.13128930817610063,
+            "parsed_denominator": 1272
+          },
+          "accuracy_at_50": {
+            "all_accuracy": 0.018081761006289308,
+            "all_denominator": 1272,
+            "hit_count": 23,
+            "parsed_accuracy": 0.018081761006289308,
+            "parsed_denominator": 1272
+          },
+          "center_distance": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 391.1206136313219,
+              "median": 401.72626056306126,
+              "minimum": 2.5564981739771544,
+              "p90": 606.4696494988411
+            },
+            "parsed": {
+              "count": 1272,
+              "mean": 391.1206136313219,
+              "median": 401.72626056306126,
+              "minimum": 2.5564981739771544,
+              "p90": 606.4696494988411
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "click_in_box_accuracy": {
+            "all_accuracy": 0.0330188679245283,
+            "all_denominator": 1272,
+            "hit_count": 42,
+            "parsed_accuracy": 0.0330188679245283,
+            "parsed_denominator": 1272
+          },
+          "parse_count": 1272,
+          "parse_rate": 1.0,
+          "point_to_bbox_l1": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 414.21136614879185,
+              "median": 408.06265625,
+              "minimum": 0.0,
+              "p90": 742.2891158536587
+            },
+            "parsed": {
+              "count": 1272,
+              "mean": 414.21136614879185,
+              "median": 408.06265625,
+              "minimum": 0.0,
+              "p90": 742.2891158536587
+            },
+            "unparsed_penalty": 1998.0
+          },
+          "point_to_bbox_l2": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 328.0663185766862,
+              "median": 333.85571359906237,
+              "minimum": 0.0,
+              "p90": 557.3999799419951
+            },
+            "parsed": {
+              "count": 1272,
+              "mean": 328.0663185766862,
+              "median": 333.85571359906237,
+              "minimum": 0.0,
+              "p90": 557.3999799419951
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "total_count": 1272
+        },
+        "platform": {
+          "Android": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.05263157894736842,
+              "all_denominator": 247,
+              "hit_count": 13,
+              "parsed_accuracy": 0.05263157894736842,
+              "parsed_denominator": 247
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.15384615384615385,
+              "all_denominator": 247,
+              "hit_count": 38,
+              "parsed_accuracy": 0.15384615384615385,
+              "parsed_denominator": 247
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.020242914979757085,
+              "all_denominator": 247,
+              "hit_count": 5,
+              "parsed_accuracy": 0.020242914979757085,
+              "parsed_denominator": 247
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 382.5793775920023,
+                "median": 393.02672332856787,
+                "minimum": 8.22713688047062,
+                "p90": 604.4329068217332
+              },
+              "parsed": {
+                "count": 247,
+                "mean": 382.5793775920023,
+                "median": 393.02672332856787,
+                "minimum": 8.22713688047062,
+                "p90": 604.4329068217332
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.048582995951417005,
+              "all_denominator": 247,
+              "hit_count": 12,
+              "parsed_accuracy": 0.048582995951417005,
+              "parsed_denominator": 247
+            },
+            "parse_count": 247,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 376.17196862348175,
+                "median": 360.47249999999997,
+                "minimum": 0.0,
+                "p90": 711.3629999999999
+              },
+              "parsed": {
+                "count": 247,
+                "mean": 376.17196862348175,
+                "median": 360.47249999999997,
+                "minimum": 0.0,
+                "p90": 711.3629999999999
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 303.0374746159706,
+                "median": 300.5060231535509,
+                "minimum": 0.0,
+                "p90": 546.0078202173077
+              },
+              "parsed": {
+                "count": 247,
+                "mean": 303.0374746159706,
+                "median": 300.5060231535509,
+                "minimum": 0.0,
+                "p90": 546.0078202173077
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 247
+          },
+          "Web": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.020642201834862386,
+              "all_denominator": 436,
+              "hit_count": 9,
+              "parsed_accuracy": 0.020642201834862386,
+              "parsed_denominator": 436
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.0779816513761468,
+              "all_denominator": 436,
+              "hit_count": 34,
+              "parsed_accuracy": 0.0779816513761468,
+              "parsed_denominator": 436
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.006880733944954129,
+              "all_denominator": 436,
+              "hit_count": 3,
+              "parsed_accuracy": 0.006880733944954129,
+              "parsed_denominator": 436
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 389.96020527285043,
+                "median": 393.9644002815322,
+                "minimum": 24.561618195446883,
+                "p90": 558.2208781607011
+              },
+              "parsed": {
+                "count": 436,
+                "mean": 389.96020527285043,
+                "median": 393.9644002815322,
+                "minimum": 24.561618195446883,
+                "p90": 558.2208781607011
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.01834862385321101,
+              "all_denominator": 436,
+              "hit_count": 8,
+              "parsed_accuracy": 0.01834862385321101,
+              "parsed_denominator": 436
+            },
+            "parse_count": 436,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 424.9739141341743,
+                "median": 420.185546875,
+                "minimum": 0.0,
+                "p90": 703.0638671875
+              },
+              "parsed": {
+                "count": 436,
+                "mean": 424.9739141341743,
+                "median": 420.185546875,
+                "minimum": 0.0,
+                "p90": 703.0638671875
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 334.61710717522203,
+                "median": 337.56738037327636,
+                "minimum": 0.0,
+                "p90": 516.1341677596645
+              },
+              "parsed": {
+                "count": 436,
+                "mean": 334.61710717522203,
+                "median": 337.56738037327636,
+                "minimum": 0.0,
+                "p90": 516.1341677596645
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 436
+          },
+          "Windows": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.024691358024691357,
+              "all_denominator": 162,
+              "hit_count": 4,
+              "parsed_accuracy": 0.024691358024691357,
+              "parsed_denominator": 162
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.12345679012345678,
+              "all_denominator": 162,
+              "hit_count": 20,
+              "parsed_accuracy": 0.12345679012345678,
+              "parsed_denominator": 162
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 162,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 162
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 435.0224489724363,
+                "median": 449.6317274983279,
+                "minimum": 74.56150789430592,
+                "p90": 673.8723641430062
+              },
+              "parsed": {
+                "count": 162,
+                "mean": 435.0224489724363,
+                "median": 449.6317274983279,
+                "minimum": 74.56150789430592,
+                "p90": 673.8723641430062
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.024691358024691357,
+              "all_denominator": 162,
+              "hit_count": 4,
+              "parsed_accuracy": 0.024691358024691357,
+              "parsed_denominator": 162
+            },
+            "parse_count": 162,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 467.87801992849563,
+                "median": 503.873535949938,
+                "minimum": 0.0,
+                "p90": 836.9190625000001
+              },
+              "parsed": {
+                "count": 162,
+                "mean": 467.87801992849563,
+                "median": 503.873535949938,
+                "minimum": 0.0,
+                "p90": 836.9190625000001
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 362.7315775768263,
+                "median": 387.7090543536484,
+                "minimum": 0.0,
+                "p90": 636.20964654103
+              },
+              "parsed": {
+                "count": 162,
+                "mean": 362.7315775768263,
+                "median": 387.7090543536484,
+                "minimum": 0.0,
+                "p90": 636.20964654103
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 162
+          },
+          "iOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.10588235294117647,
+              "all_denominator": 255,
+              "hit_count": 27,
+              "parsed_accuracy": 0.10588235294117647,
+              "parsed_denominator": 255
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.20784313725490197,
+              "all_denominator": 255,
+              "hit_count": 53,
+              "parsed_accuracy": 0.20784313725490197,
+              "parsed_denominator": 255
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.043137254901960784,
+              "all_denominator": 255,
+              "hit_count": 11,
+              "parsed_accuracy": 0.043137254901960784,
+              "parsed_denominator": 255
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 366.00026806787673,
+                "median": 396.83664580489113,
+                "minimum": 2.5564981739771544,
+                "p90": 594.3236456624163
+              },
+              "parsed": {
+                "count": 255,
+                "mean": 366.00026806787673,
+                "median": 396.83664580489113,
+                "minimum": 2.5564981739771544,
+                "p90": 594.3236456624163
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.047058823529411764,
+              "all_denominator": 255,
+              "hit_count": 12,
+              "parsed_accuracy": 0.047058823529411764,
+              "parsed_denominator": 255
+            },
+            "parse_count": 255,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 377.66686944343485,
+                "median": 397.56398104265406,
+                "minimum": 0.0,
+                "p90": 693.2056361271059
+              },
+              "parsed": {
+                "count": 255,
+                "mean": 377.66686944343485,
+                "median": 397.56398104265406,
+                "minimum": 0.0,
+                "p90": 693.2056361271059
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 307.85540134420495,
+                "median": 324.58272011278785,
+                "minimum": 0.0,
+                "p90": 548.5602936863737
+              },
+              "parsed": {
+                "count": 255,
+                "mean": 307.85540134420495,
+                "median": 324.58272011278785,
+                "minimum": 0.0,
+                "p90": 548.5602936863737
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 255
+          },
+          "macOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.03488372093023256,
+              "all_denominator": 172,
+              "hit_count": 6,
+              "parsed_accuracy": 0.03488372093023256,
+              "parsed_denominator": 172
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.12790697674418605,
+              "all_denominator": 172,
+              "hit_count": 22,
+              "parsed_accuracy": 0.12790697674418605,
+              "parsed_denominator": 172
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.023255813953488372,
+              "all_denominator": 172,
+              "hit_count": 4,
+              "parsed_accuracy": 0.023255813953488372,
+              "parsed_denominator": 172
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 402.22069583727233,
+                "median": 407.06382738931063,
+                "minimum": 11.999756817434069,
+                "p90": 623.2944770823216
+              },
+              "parsed": {
+                "count": 172,
+                "mean": 402.22069583727233,
+                "median": 407.06382738931063,
+                "minimum": 11.999756817434069,
+                "p90": 623.2944770823216
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.03488372093023256,
+              "all_denominator": 172,
+              "hit_count": 6,
+              "parsed_accuracy": 0.03488372093023256,
+              "parsed_denominator": 172
+            },
+            "parse_count": 172,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 445.1887441411111,
+                "median": 415.1505325814537,
+                "minimum": 0.0,
+                "p90": 823.6933120239883
+              },
+              "parsed": {
+                "count": 172,
+                "mean": 445.1887441411111,
+                "median": 415.1505325814537,
+                "minimum": 0.0,
+                "p90": 823.6933120239883
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 344.7174381440995,
+                "median": 346.36230327558155,
+                "minimum": 0.0,
+                "p90": 583.1941973203291
+              },
+              "parsed": {
+                "count": 172,
+                "mean": 344.7174381440995,
+                "median": 346.36230327558155,
+                "minimum": 0.0,
+                "p90": 583.1941973203291
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 172
+          }
+        },
+        "target_type": {
+          "icon/widget": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.02434782608695652,
+              "all_denominator": 575,
+              "hit_count": 14,
+              "parsed_accuracy": 0.02434782608695652,
+              "parsed_denominator": 575
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.08,
+              "all_denominator": 575,
+              "hit_count": 46,
+              "parsed_accuracy": 0.08,
+              "parsed_denominator": 575
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.008695652173913044,
+              "all_denominator": 575,
+              "hit_count": 5,
+              "parsed_accuracy": 0.008695652173913044,
+              "parsed_denominator": 575
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 435.04362380299335,
+                "median": 453.99513627634036,
+                "minimum": 8.22713688047062,
+                "p90": 632.0083603996244
+              },
+              "parsed": {
+                "count": 575,
+                "mean": 435.04362380299335,
+                "median": 453.99513627634036,
+                "minimum": 8.22713688047062,
+                "p90": 632.0083603996244
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.019130434782608695,
+              "all_denominator": 575,
+              "hit_count": 11,
+              "parsed_accuracy": 0.019130434782608695,
+              "parsed_denominator": 575
+            },
+            "parse_count": 575,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 495.45947631626217,
+                "median": 506.2470288005833,
+                "minimum": 0.0,
+                "p90": 810.496901922282
+              },
+              "parsed": {
+                "count": 575,
+                "mean": 495.45947631626217,
+                "median": 506.2470288005833,
+                "minimum": 0.0,
+                "p90": 810.496901922282
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 381.98808714509033,
+                "median": 402.8656428501474,
+                "minimum": 0.0,
+                "p90": 590.0133647953444
+              },
+              "parsed": {
+                "count": 575,
+                "mean": 381.98808714509033,
+                "median": 402.8656428501474,
+                "minimum": 0.0,
+                "p90": 590.0133647953444
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 575
+          },
+          "text": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.06456241032998565,
+              "all_denominator": 697,
+              "hit_count": 45,
+              "parsed_accuracy": 0.06456241032998565,
+              "parsed_denominator": 697
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.17360114777618366,
+              "all_denominator": 697,
+              "hit_count": 121,
+              "parsed_accuracy": 0.17360114777618366,
+              "parsed_denominator": 697
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.02582496413199426,
+              "all_denominator": 697,
+              "hit_count": 18,
+              "parsed_accuracy": 0.02582496413199426,
+              "parsed_denominator": 697
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 354.88570567047384,
+                "median": 360.08226357025023,
+                "minimum": 2.5564981739771544,
+                "p90": 562.3384684217272
+              },
+              "parsed": {
+                "count": 697,
+                "mean": 354.88570567047384,
+                "median": 360.08226357025023,
+                "minimum": 2.5564981739771544,
+                "p90": 562.3384684217272
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.04447632711621234,
+              "all_denominator": 697,
+              "hit_count": 31,
+              "parsed_accuracy": 0.04447632711621234,
+              "parsed_denominator": 697
+            },
+            "parse_count": 697,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 347.1845894683107,
+                "median": 331.11250000000007,
+                "minimum": 0.0,
+                "p90": 651.3071367173259
+              },
+              "parsed": {
+                "count": 697,
+                "mean": 347.1845894683107,
+                "median": 331.11250000000007,
+                "minimum": 0.0,
+                "p90": 651.3071367173259
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 283.5827935740572,
+                "median": 280.7502610445136,
+                "minimum": 0.0,
+                "p90": 504.9740245900347
+              },
+              "parsed": {
+                "count": 697,
+                "mean": 283.5827935740572,
+                "median": 280.7502610445136,
+                "minimum": 0.0,
+                "p90": 504.9740245900347
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 697
+          }
+        }
+      }
+    },
+    "vision": {
+      "breakdowns": {
+        "overall": {
+          "accuracy_at_100": {
+            "all_accuracy": 0.04874213836477988,
+            "all_denominator": 1272,
+            "hit_count": 62,
+            "parsed_accuracy": 0.05052974735126324,
+            "parsed_denominator": 1227
+          },
+          "accuracy_at_200": {
+            "all_accuracy": 0.1179245283018868,
+            "all_denominator": 1272,
+            "hit_count": 150,
+            "parsed_accuracy": 0.12224938875305623,
+            "parsed_denominator": 1227
+          },
+          "accuracy_at_50": {
+            "all_accuracy": 0.01729559748427673,
+            "all_denominator": 1272,
+            "hit_count": 22,
+            "parsed_accuracy": 0.017929910350448247,
+            "parsed_denominator": 1227
+          },
+          "center_distance": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 565.1814817616176,
+              "median": 553.4158206846487,
+              "minimum": 10.74888368113755,
+              "p90": 873.6612800716576
+            },
+            "parsed": {
+              "count": 1227,
+              "mean": 534.0952519187409,
+              "median": 539.8743742575762,
+              "minimum": 10.74888368113755,
+              "p90": 846.6505437750789
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "click_in_box_accuracy": {
+            "all_accuracy": 0.026729559748427674,
+            "all_denominator": 1272,
+            "hit_count": 34,
+            "parsed_accuracy": 0.027709861450692746,
+            "parsed_denominator": 1227
+          },
+          "parse_count": 1227,
+          "parse_rate": 0.964622641509434,
+          "point_to_bbox_l1": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 589.3267172500416,
+              "median": 526.5273918838864,
+              "minimum": 0.0,
+              "p90": 1077.7782421875002
+            },
+            "parsed": {
+              "count": 1227,
+              "mean": 537.6638829193586,
+              "median": 508.2825,
+              "minimum": 0.0,
+              "p90": 1018.866609551586
+            },
+            "unparsed_penalty": 1998.0
+          },
+          "point_to_bbox_l2": {
+            "all_penalized": {
+              "count": 1272,
+              "mean": 479.9574517372338,
+              "median": 455.22448462028456,
+              "minimum": 0.0,
+              "p90": 832.3158903430722
+            },
+            "parsed": {
+              "count": 1227,
+              "mean": 445.74564622109114,
+              "median": 442.765,
+              "minimum": 0.0,
+              "p90": 806.5244495027209
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "total_count": 1272
+        },
+        "platform": {
+          "Android": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.03643724696356275,
+              "all_denominator": 247,
+              "hit_count": 9,
+              "parsed_accuracy": 0.03643724696356275,
+              "parsed_denominator": 247
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.07692307692307693,
+              "all_denominator": 247,
+              "hit_count": 19,
+              "parsed_accuracy": 0.07692307692307693,
+              "parsed_denominator": 247
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.004048582995951417,
+              "all_denominator": 247,
+              "hit_count": 1,
+              "parsed_accuracy": 0.004048582995951417,
+              "parsed_denominator": 247
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 546.4219870863133,
+                "median": 581.0841068761583,
+                "minimum": 10.74888368113755,
+                "p90": 838.9232845852848
+              },
+              "parsed": {
+                "count": 247,
+                "mean": 546.4219870863133,
+                "median": 581.0841068761583,
+                "minimum": 10.74888368113755,
+                "p90": 838.9232845852848
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.02834008097165992,
+              "all_denominator": 247,
+              "hit_count": 7,
+              "parsed_accuracy": 0.02834008097165992,
+              "parsed_denominator": 247
+            },
+            "parse_count": 247,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 512.9375303643725,
+                "median": 484.97249999999997,
+                "minimum": 0.0,
+                "p90": 1004.825
+              },
+              "parsed": {
+                "count": 247,
+                "mean": 512.9375303643725,
+                "median": 484.97249999999997,
+                "minimum": 0.0,
+                "p90": 1004.825
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 247,
+                "mean": 424.26787686172077,
+                "median": 404.4266073115894,
+                "minimum": 0.0,
+                "p90": 776.6197132632025
+              },
+              "parsed": {
+                "count": 247,
+                "mean": 424.26787686172077,
+                "median": 404.4266073115894,
+                "minimum": 0.0,
+                "p90": 776.6197132632025
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 247
+          },
+          "Web": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.05045871559633028,
+              "all_denominator": 436,
+              "hit_count": 22,
+              "parsed_accuracy": 0.05092592592592592,
+              "parsed_denominator": 432
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.14220183486238533,
+              "all_denominator": 436,
+              "hit_count": 62,
+              "parsed_accuracy": 0.14351851851851852,
+              "parsed_denominator": 432
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.016055045871559634,
+              "all_denominator": 436,
+              "hit_count": 7,
+              "parsed_accuracy": 0.016203703703703703,
+              "parsed_denominator": 432
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 543.4769958405644,
+                "median": 550.1374420689697,
+                "minimum": 21.479818153108877,
+                "p90": 865.1735188666278
+              },
+              "parsed": {
+                "count": 432,
+                "mean": 535.4277147945445,
+                "median": 543.6254195915573,
+                "minimum": 21.479818153108877,
+                "p90": 856.4986455179742
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.011467889908256881,
+              "all_denominator": 436,
+              "hit_count": 5,
+              "parsed_accuracy": 0.011574074074074073,
+              "parsed_denominator": 432
+            },
+            "parse_count": 432,
+            "parse_rate": 0.9908256880733946,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 591.2204289707569,
+                "median": 573.3396484374999,
+                "minimum": 0.0,
+                "p90": 1074.2169921875
+              },
+              "parsed": {
+                "count": 432,
+                "mean": 578.1946922019675,
+                "median": 571.93125,
+                "minimum": 0.0,
+                "p90": 1052.4196875000002
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 436,
+                "mean": 486.66619150747823,
+                "median": 493.7166015625,
+                "minimum": 0.0,
+                "p90": 838.7393286072472
+              },
+              "parsed": {
+                "count": 432,
+                "mean": 478.09088449541116,
+                "median": 491.64882415946914,
+                "minimum": 0.0,
+                "p90": 830.0955507565862
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 436
+          },
+          "Windows": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.07407407407407407,
+              "all_denominator": 162,
+              "hit_count": 12,
+              "parsed_accuracy": 0.07453416149068323,
+              "parsed_denominator": 161
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.16666666666666666,
+              "all_denominator": 162,
+              "hit_count": 27,
+              "parsed_accuracy": 0.16770186335403728,
+              "parsed_denominator": 161
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.043209876543209874,
+              "all_denominator": 162,
+              "hit_count": 7,
+              "parsed_accuracy": 0.043478260869565216,
+              "parsed_denominator": 161
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 504.8995068371543,
+                "median": 490.35621892583765,
+                "minimum": 18.616626748793873,
+                "p90": 875.0266905415003
+              },
+              "parsed": {
+                "count": 161,
+                "mean": 499.2603773839024,
+                "median": 487.9478032072541,
+                "minimum": 18.616626748793873,
+                "p90": 865.8329715928273
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.04938271604938271,
+              "all_denominator": 162,
+              "hit_count": 8,
+              "parsed_accuracy": 0.049689440993788817,
+              "parsed_denominator": 161
+            },
+            "parse_count": 161,
+            "parse_rate": 0.9938271604938271,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 525.4410024446162,
+                "median": 435.8677198399357,
+                "minimum": 0.0,
+                "p90": 1086.925625
+              },
+              "parsed": {
+                "count": 161,
+                "mean": 516.2946732672535,
+                "median": 434.190625,
+                "minimum": 0.0,
+                "p90": 1077.875
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 162,
+                "mean": 428.2010102715652,
+                "median": 377.8877906976744,
+                "minimum": 0.0,
+                "p90": 836.1459397240757
+              },
+              "parsed": {
+                "count": 161,
+                "mean": 422.0854926408873,
+                "median": 373.72558139534885,
+                "minimum": 0.0,
+                "p90": 834.3187559929133
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 162
+          },
+          "iOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.03137254901960784,
+              "all_denominator": 255,
+              "hit_count": 8,
+              "parsed_accuracy": 0.031496062992125984,
+              "parsed_denominator": 254
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.09019607843137255,
+              "all_denominator": 255,
+              "hit_count": 23,
+              "parsed_accuracy": 0.09055118110236221,
+              "parsed_denominator": 254
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.011764705882352941,
+              "all_denominator": 255,
+              "hit_count": 3,
+              "parsed_accuracy": 0.011811023622047244,
+              "parsed_denominator": 254
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 549.632516262527,
+                "median": 535.5451807474884,
+                "minimum": 14.081880907142201,
+                "p90": 831.5723215224544
+              },
+              "parsed": {
+                "count": 254,
+                "mean": 546.2342216461956,
+                "median": 535.1077558036122,
+                "minimum": 14.081880907142201,
+                "p90": 831.3014756814371
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.047058823529411764,
+              "all_denominator": 255,
+              "hit_count": 12,
+              "parsed_accuracy": 0.047244094488188976,
+              "parsed_denominator": 254
+            },
+            "parse_count": 254,
+            "parse_rate": 0.996078431372549,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 518.8374296070025,
+                "median": 478.45863993385694,
+                "minimum": 0.0,
+                "p90": 978.9979219832301
+              },
+              "parsed": {
+                "count": 254,
+                "mean": 513.0139549204159,
+                "median": 476.3698230657254,
+                "minimum": 0.0,
+                "p90": 972.6826021051445
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 255,
+                "mean": 429.19251663086686,
+                "median": 432.91610169491526,
+                "minimum": 0.0,
+                "p90": 784.050218454942
+              },
+              "parsed": {
+                "count": 254,
+                "mean": 425.32004878763905,
+                "median": 431.896257133245,
+                "minimum": 0.0,
+                "p90": 782.0318133553919
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 255
+          },
+          "macOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.06395348837209303,
+              "all_denominator": 172,
+              "hit_count": 11,
+              "parsed_accuracy": 0.08270676691729323,
+              "parsed_denominator": 133
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.11046511627906977,
+              "all_denominator": 172,
+              "hit_count": 19,
+              "parsed_accuracy": 0.14285714285714285,
+              "parsed_denominator": 133
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.023255813953488372,
+              "all_denominator": 172,
+              "hit_count": 4,
+              "parsed_accuracy": 0.03007518796992481,
+              "parsed_denominator": 133
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 726.9687909849349,
+                "median": 641.8474525443451,
+                "minimum": 13.177847560612845,
+                "p90": 1412.799348810722
+              },
+              "parsed": {
+                "count": 133,
+                "mean": 525.8605822991777,
+                "median": 512.4650613043335,
+                "minimum": 13.177847560612845,
+                "p90": 839.1266332294272
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.011627906976744186,
+              "all_denominator": 172,
+              "hit_count": 2,
+              "parsed_accuracy": 0.015037593984962405,
+              "parsed_denominator": 133
+            },
+            "parse_count": 133,
+            "parse_rate": 0.7732558139534884,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 858.9006997964503,
+                "median": 628.027370325198,
+                "minimum": 0.0,
+                "p90": 1998.0
+              },
+              "parsed": {
+                "count": 133,
+                "mean": 524.8791004886426,
+                "median": 486.61471644357533,
+                "minimum": 0.0,
+                "p90": 893.5195424385174
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 172,
+                "mean": 666.9337100162277,
+                "median": 570.4193527039088,
+                "minimum": 0.0,
+                "p90": 1412.799348810722
+              },
+              "parsed": {
+                "count": 133,
+                "mean": 448.2212294674661,
+                "median": 432.5119229459324,
+                "minimum": 0.0,
+                "p90": 810.5030865891331
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 172
+          }
+        },
+        "target_type": {
+          "icon/widget": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.04,
+              "all_denominator": 575,
+              "hit_count": 23,
+              "parsed_accuracy": 0.041666666666666664,
+              "parsed_denominator": 552
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.10608695652173913,
+              "all_denominator": 575,
+              "hit_count": 61,
+              "parsed_accuracy": 0.1105072463768116,
+              "parsed_denominator": 552
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0034782608695652175,
+              "all_denominator": 575,
+              "hit_count": 2,
+              "parsed_accuracy": 0.0036231884057971015,
+              "parsed_denominator": 552
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 624.3281584661452,
+                "median": 646.5790409659154,
+                "minimum": 14.081880907142201,
+                "p90": 913.0845926478551
+              },
+              "parsed": {
+                "count": 552,
+                "mean": 591.4751922017878,
+                "median": 636.2770060192872,
+                "minimum": 14.081880907142201,
+                "p90": 872.9423987795375
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.008695652173913044,
+              "all_denominator": 575,
+              "hit_count": 5,
+              "parsed_accuracy": 0.009057971014492754,
+              "parsed_denominator": 552
+            },
+            "parse_count": 552,
+            "parse_rate": 0.96,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 697.113095921448,
+                "median": 705.577734375,
+                "minimum": 0.0,
+                "p90": 1156.331453125
+              },
+              "parsed": {
+                "count": 552,
+                "mean": 642.909474918175,
+                "median": 677.51640625,
+                "minimum": 0.0,
+                "p90": 1078.054296875
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 575,
+                "mean": 565.104344497094,
+                "median": 590.4862528189957,
+                "minimum": 0.0,
+                "p90": 873.4039667543452
+              },
+              "parsed": {
+                "count": 552,
+                "mean": 529.7837193173594,
+                "median": 575.5793529646294,
+                "minimum": 0.0,
+                "p90": 839.6620874467511
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 575
+          },
+          "text": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.05595408895265423,
+              "all_denominator": 697,
+              "hit_count": 39,
+              "parsed_accuracy": 0.057777777777777775,
+              "parsed_denominator": 675
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.12769010043041606,
+              "all_denominator": 697,
+              "hit_count": 89,
+              "parsed_accuracy": 0.13185185185185186,
+              "parsed_denominator": 675
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.028694404591104734,
+              "all_denominator": 697,
+              "hit_count": 20,
+              "parsed_accuracy": 0.02962962962962963,
+              "parsed_denominator": 675
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 516.387594953722,
+                "median": 487.1851168986938,
+                "minimum": 10.74888368113755,
+                "p90": 826.19785274694
+              },
+              "parsed": {
+                "count": 675,
+                "mean": 487.1712118650493,
+                "median": 472.46033216489235,
+                "minimum": 10.74888368113755,
+                "p90": 806.9393372223624
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.04160688665710186,
+              "all_denominator": 697,
+              "hit_count": 29,
+              "parsed_accuracy": 0.04296296296296296,
+              "parsed_denominator": 675
+            },
+            "parse_count": 675,
+            "parse_rate": 0.9684361549497847,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 500.40682092858015,
+                "median": 430.11484375,
+                "minimum": 0.0,
+                "p90": 989.7052343749999
+              },
+              "parsed": {
+                "count": 675,
+                "mean": 451.59637657365977,
+                "median": 411.3376777251185,
+                "minimum": 0.0,
+                "p90": 917.2471379989975
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 697,
+                "mean": 409.7143192595873,
+                "median": 375.0988671753755,
+                "minimum": 0.0,
+                "p90": 763.5582424615338
+              },
+              "parsed": {
+                "count": 675,
+                "mean": 377.0211775556984,
+                "median": 352.04999999999995,
+                "minimum": 0.0,
+                "p90": 734.8084627972315
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 697
+          }
+        }
+      }
+    }
+  },
+  "dataset_manifest_sha256": "e556ac522e1fb2965a2eb1386a3b8a91ba692fb75384fe3e5f518af0f473d7cc",
+  "dataset_name": "screenspot_public_test_v1",
+  "formal_complete": true,
+  "inputs": {
+    "manifest": {
+      "bytes": 1598836,
+      "path": "experiments/qwen3b_community_eval_20260805/contract/datasets/screenspot_public_test_v1/MANIFEST.json",
+      "sha256": "0e2159f2bdf30dca85cb8f448bf1cf4790b8c0a2056ab42273b0f5ba9e57167f"
+    },
+    "predictions": {
+      "blind": {
+        "bytes": 464901,
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_public_eval_4k_v1_retry1/predictions/blind.jsonl",
+        "sha256": "e8b923826162bd25e680746c56a2deda22457ec5b6f613d96a909be94624cca5"
+      },
+      "current_candidate": {
+        "bytes": 572854,
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_public_eval_4k_v1_retry1/predictions/current_candidate.jsonl",
+        "sha256": "7baa64cbbc0aa9762def727b8a7740d052a6919bc682667e96fd117169c11048"
+      },
+      "previous_best": {
+        "bytes": 574395,
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_public_eval_4k_v1_retry1/predictions/previous_best.jsonl",
+        "sha256": "390b0c1ff7fba7595856da39f1a77fec9bf819c25525881ceb7f8b166c0ccfda"
+      },
+      "random_projector": {
+        "bytes": 576263,
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_public_eval_4k_v1_retry1/predictions/random_projector.jsonl",
+        "sha256": "c00e439643bcaf4e7f8251053a734a6905887b2124856ce81d3b8cd56d69a2d7"
+      },
+      "shuffled": {
+        "bytes": 573179,
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_public_eval_4k_v1_retry1/predictions/shuffled.jsonl",
+        "sha256": "c44929cbfd8b196b69e3b65a152b0fa712d2c615982723cd45d48fc5a862c346"
+      },
+      "step0": {
+        "bytes": 574395,
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_public_eval_4k_v1_retry1/predictions/step0.jsonl",
+        "sha256": "390b0c1ff7fba7595856da39f1a77fec9bf819c25525881ceb7f8b166c0ccfda"
+      },
+      "vision": {
+        "bytes": 572854,
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_public_eval_4k_v1_retry1/predictions/vision.jsonl",
+        "sha256": "7baa64cbbc0aa9762def727b8a7740d052a6919bc682667e96fd117169c11048"
+      }
+    }
+  },
+  "sample_count": 1272,
+  "schema_version": "community-grounding-evaluation-v1"
+}

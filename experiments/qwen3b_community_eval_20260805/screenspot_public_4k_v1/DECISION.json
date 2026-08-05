@@ -1,0 +1,81 @@
+{
+  "format_version": "qwen3b-full-grounding-decision-v1",
+  "dataset_name": "screenspot_public_test_v1",
+  "sample_count": 1272,
+  "current_candidate": "train_4k_v1_formal1/step-000500",
+  "previous_best": "step0",
+  "decision": "reject_current_candidate",
+  "previous_best_after_decision": "step0",
+  "vision": {
+    "parse_rate": 0.964622641509434,
+    "accuracy_at_50_all": 0.01729559748427673,
+    "accuracy_at_100_all": 0.04874213836477988,
+    "accuracy_at_200_all": 0.1179245283018868,
+    "click_in_box_all": 0.026729559748427674,
+    "mean_center_distance_all_penalized": 565.1814817616176,
+    "median_center_distance_all_penalized": 553.4158206846487
+  },
+  "blind": {
+    "parse_rate": 1.0,
+    "click_in_box_all": 0.030660377358490566,
+    "mean_center_distance_all_penalized": 395.5200721163096
+  },
+  "shuffled": {
+    "parse_rate": 0.9669811320754716,
+    "click_in_box_all": 0.027515723270440252,
+    "mean_center_distance_all_penalized": 566.2636963171605
+  },
+  "step0": {
+    "parse_rate": 1.0,
+    "click_in_box_all": 0.0330188679245283,
+    "mean_center_distance_all_penalized": 391.1206136313219
+  },
+  "vision_minus_blind": {
+    "click_in_box_all": -0.003930817610062892,
+    "click_in_box_all_ci95": [-0.01650943396226415, 0.007861635220125788],
+    "accuracy_at_200_all": -0.032232704402515716,
+    "accuracy_at_200_all_ci95": [-0.059768081761006286, -0.0023584905660377353],
+    "mean_center_distance_improvement": -169.66140964530803,
+    "mean_center_distance_improvement_ci95": [-185.67552431259801, -154.17474650570574]
+  },
+  "vision_minus_shuffled": {
+    "click_in_box_all": -0.0007861635220125784,
+    "click_in_box_all_ci95": [-0.007861635220125784, 0.0062893081761006275],
+    "mean_center_distance_improvement": 1.082214555542805,
+    "mean_center_distance_improvement_ci95": [-12.728059393829238, 14.642542437127728]
+  },
+  "current_candidate_minus_previous_best": {
+    "parse_rate": -0.035377358490566,
+    "parse_rate_ci95": [-0.045597484276729605, -0.02594339622641506],
+    "click_in_box_all": -0.0062893081761006275,
+    "click_in_box_all_ci95": [-0.018081761006289308, 0.0062893081761006275],
+    "mean_center_distance_improvement": -174.06086813029577,
+    "mean_center_distance_improvement_ci95": [-189.66516475893968, -157.44050861688305]
+  },
+  "community_metric_aligned_reference": {
+    "dataset_is_identical": false,
+    "parse_rate": 0.92,
+    "accuracy_at_50": 0.043,
+    "accuracy_at_100": 0.087,
+    "accuracy_at_200": 0.152,
+    "mean_distance": 563.7,
+    "all_thresholds_and_causal_gates_passed": false
+  },
+  "real_grounding_improvement_rule_passed": false,
+  "visual_ability_established": false,
+  "checkpoint_enters_deepseek_candidate_list": false,
+  "hypotheses_supported": [
+    "The complete public ScreenSpot path is operational and reproducible on one local V100.",
+    "The GLM-format public-50 failure generalizes to the complete 1,272-row public test set.",
+    "The trained projector changes output formatting while destroying the strong step0 text-and-center prior."
+  ],
+  "hypotheses_refuted": [
+    "The negative GLM-format public-50 result was only small-sample noise.",
+    "The trained 4k projector uses the correct image for full-public ScreenSpot grounding.",
+    "Qwen2.5-3B capacity alone repairs the 0.5B grounding failure."
+  ],
+  "method_transfer_label": "transferable_with_runtime_validation",
+  "next_experiment": "teacher_forced_correct_vs_counterfactual_preference_then_matched_4k_grounding_ratio_screen",
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

@@ -9,7 +9,7 @@
   #v(5pt)
   #text(size: 14pt)[训练前架构审计、胶水原型与硬件计划]
   #v(8pt)
-  版本 0.6 · 2026-08-06
+  版本 0.7 · 2026-08-06
 ]
 
 #outline()
@@ -17,7 +17,7 @@
 
 = 执行摘要
 
-本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段冻结视觉塔和语言模型，只训练 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证。包 3–12 依次建立 synthetic paired preference/generation、逐层 probe、activation patching、projector/LoRA 轨迹、任务干扰、checkpoint averaging、anchoring 与 batch-order 证据。包 13 在相同 1,200-example 预算内用 preventive replay 恢复 count/shape，包 14 把可靠 Tiny sentinel 固定为 25 pairs/task 并测得 V100 teacher-only 中位开销 22.501 秒。这条机制支线已收束为默认保护配方。包 15A–15D 冻结纯文本 `Qwen/Qwen2.5-3B-Instruct` 的模型、真实数据、评测、4,000-example 顺序和 MoonViT cache；包 15E 完成 500-step projector-only 训练与独立 checkpoint 验证；包 15F 首次按七条件评测真实 ScreenSpot。trained vision 在 GLM-format public-50 上 parse 96%、click-in-box 4%，blind/step0 分别为 12%/10%，且 vision−blind 与 current−step0 的平均距离显著恶化。首个 3B checkpoint 已拒绝，previous-best 保持 step0；容量切换本身没有解决 grounding。完整 1,272-row ScreenSpot 评测正在 V100 运行，随后用 teacher-forced paired preference 区分信息缺失与生成读出失败。完整 DeepSeek-V4-Flash-0731 尚未完成图像前向、量化 input DGRAD、训练、恢复和生成闭环，Gate D 当前未通过。
+本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段冻结视觉塔和语言模型，只训练 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证。包 3–12 依次建立 synthetic paired preference/generation、逐层 probe、activation patching、projector/LoRA 轨迹、任务干扰、checkpoint averaging、anchoring 与 batch-order 证据。包 13 在相同 1,200-example 预算内用 preventive replay 恢复 count/shape，包 14 把可靠 Tiny sentinel 固定为 25 pairs/task 并测得 V100 teacher-only 中位开销 22.501 秒。这条机制支线已收束为默认保护配方。包 15A–15D 冻结纯文本 `Qwen/Qwen2.5-3B-Instruct` 的模型、真实数据、评测、4,000-example 顺序和 MoonViT cache；包 15E 完成 500-step projector-only 训练与独立 checkpoint 验证；包 15F–15G 在 GLM-format public-50 和完整 1,272-row ScreenSpot 上一致拒绝首个 checkpoint。完整集 trained vision/blind/step0 的 click-in-box 为 2.67%/3.07%/3.30%，vision−blind 平均距离显著恶化 169.66。包 15H 的 paired preference 又显示 trained vision/blind/shuffled 为 46%/56%/52%；训练把坐标答案 NLL 从 2.51 降到 1.22，却没有正确图相对错误图的选择优势。容量切换稳定了真实链路，当前数据/目标仍只学到 image-agnostic coordinate prior。下一项在相同 4,000-example 预算提高显式 grounding 占比；完整 DeepSeek-V4-Flash-0731 尚未完成图像前向、量化 input DGRAD、训练、恢复和生成闭环，Gate D 当前未通过。
 
 MoonViT-V2 有 401.2M 参数，抽取后的 BF16 权重约 802 MB，相对于约 160 GB 级的 DeepSeek 混合精度权重很小。更大的资源变量是图像分辨率带来的视觉 token 数和冻结 LLM 反向所保留的激活，而不是视觉塔权重。
 
@@ -1187,7 +1187,70 @@ clean runner commit `97e9c03…a9d3a` 从 exact step0 加载 33,564,672-paramete
 
 判定为 `reject_current_candidate`，previous-best 保持 exact step0，learned checkpoint 不进入 DeepSeek 候选列表。本结果反驳“0.5B 容量是唯一 grounding 瓶颈”“3B 冻结 receiver 配合 4k projector-only supervision 已足够”与“training loss 下降可证明图像被使用”。它支持更窄的结论：完整 3B train/save/resume/seven-condition eval 链路可运行；当前目标能学习输出格式，同时损伤原有的文本/中心位置先验。
 
-完整公共 ScreenSpot 用同一 revision 的 1,272 条记录继续确认：数据已全部物化，cache 已完成 1,272/1,272、0 failure、606 real forwards 与 666 content-addressed aliases，wall 387.349 s、峰值 2,081,363,968 bytes；七条件生成正在本地 V100 运行。若完整集确认失败，下一项先做 step0/step500 teacher-forced paired preference 与 projector 表示诊断，区分“视觉信息未进入 receiver”和“信息存在但自由生成/坐标目标无法读出”，再决定辅助目标或延长预算。未使用付费资源，也未触碰 final halves。
+完整公共 ScreenSpot 用同一 revision 的 1,272 条记录继续确认：数据已全部物化，cache 已完成 1,272/1,272、0 failure、606 real forwards 与 666 content-addressed aliases，wall 387.349 s、峰值 2,081,363,968 bytes。包 15G/15H 已完成正式生成、评分与 teacher-forced 诊断；结论见下两节。未使用付费资源，也未触碰 final halves。
+
+#pagebreak()
+
+== Qwen2.5-3B 完整公共 ScreenSpot（包 15G，2026-08-06）
+
+完整 public test 固定为 1,272 条、606 张唯一图像，覆盖 Android、iOS、Windows、macOS、Web 与 text/icon-widget。图像物化共 593,342,933 bytes；max-side 1024 cache 由 606 次真实 MoonViT forward 与 666 个内容寻址 alias 组成，feature shards 共 7,609,930,976 bytes。七角色生成保持与包 15F 完全相同的模型、projector、receiver、prompt、parser、顺序和 greedy decoding，wall 2,807.658 s、峰值 7,247,035,392 V100 bytes。
+
+#table(
+  columns: (1.5fr, 0.75fr, 0.75fr, 0.75fr, 0.75fr, 0.85fr, 1fr),
+  [*条件*], [*parse*], [*\@50*], [*\@100*], [*\@200*], [*in-box*], [*mean dist*],
+  [trained vision], [96.46%], [1.73%], [4.87%], [11.79%], [2.67%], [565.18],
+  [blind], [100%], [1.89%], [4.56%], [15.02%], [3.07%], [395.52],
+  [shuffled], [96.70%], [1.42%], [5.42%], [12.03%], [2.75%], [566.26],
+  [step0 / previous], [100%], [1.81%], [4.64%], [13.13%], [3.30%], [391.12],
+  [random projector], [92.22%], [1.26%], [3.85%], [11.79%], [2.59%], [475.14],
+)
+
+trained vision 只达到社区 metric-aligned reference 的 parse≥92%；Accuracy\@50/100/200 低于 4.3%/8.7%/15.2%，mean distance 565.18 也略差于 563.7。该参考来自不同的社区 50 条样本，表内仅比较指标口径。因果判定更明确：
+
+#table(
+  columns: (2.2fr, 1.3fr, 2.8fr),
+  [*paired comparison*], [*point estimate*], [*95% CI / 判定*],
+  [vision−blind click], [−0.0039], [[−0.0165, 0.0079]；无正增益。],
+  [vision−blind Accuracy\@200], [−0.0322], [[−0.0598, −0.0024]；显著恶化。],
+  [vision−blind mean-distance improvement], [−169.66], [[−185.68, −154.17]；显著恶化。],
+  [vision−shuffled click], [−0.0008], [[−0.0079, 0.0063]；无差异。],
+  [vision−shuffled mean-distance improvement], [+1.08], [[−12.73, 14.64]；无差异。],
+  [current−step0 parse], [−0.0354], [[−0.0456, −0.0259]；格式退化。],
+  [current−step0 mean-distance improvement], [−174.06], [[−189.67, −157.44]；显著恶化。],
+)
+
+text/icon-widget 的 trained click 为 4.16%/0.87%，mean distance 为 516.39/624.33；macOS 的 parse 仅 77.33%、mean distance 726.97，是最大失败域。完整集复现并强化包 15F：`current_candidate` 保持拒绝，previous-best 仍是 exact step0。首次 formal 命令在新目录误加 `--resume`，在模型加载与 prediction 前 fail-closed；失败目录、全部正式 predictions、逐行 scores 与两级 SHA manifest 均已保存。
+
+#pagebreak()
+
+== Teacher-forced 坐标偏好诊断（包 15H，2026-08-06）
+
+每条 ScreenSpot 样本构造两段 canonical assistant answer：正确 bbox 中心与 frozen shuffled-image derangement 所指样本的 bbox 中心。两候选在同 prompt 下组成真实 batch 2；评分为包含 `im_end` 的 token-normalized answer log probability，strict preference 只在 correct 大于 counterfactual 时记 1。该指标绕过 greedy decoding，直接测试语言头是否已把图像内容映射成正确坐标偏好。
+
+#table(
+  columns: (1.8fr, 1.1fr, 1.4fr, 1.4fr),
+  [*条件*], [*preference*], [*mean margin*], [*correct NLL*],
+  [trained vision], [46%], [+0.00215], [1.22362],
+  [blind], [56%], [+0.00111], [2.78261],
+  [trained shuffled], [52%], [+0.00940], [1.22329],
+  [step0], [54%], [+0.00565], [2.50769],
+  [random projector], [50%], [−0.00070], [2.47959],
+)
+
+#table(
+  columns: (2.1fr, 1.25fr, 2.8fr),
+  [*paired comparison*], [*point estimate*], [*95% CI / 解释*],
+  [vision−blind preference], [−0.10], [[−0.22, 0.02]；无内部正确偏好。],
+  [vision−shuffled preference], [−0.06], [[−0.14, 0]；错误图不更差。],
+  [vision−shuffled mean margin], [−0.00725], [[−0.01287, −0.00186]；正确图显著更差。],
+  [trained−random preference], [−0.04], [[−0.20, 0.12]；无选择收益。],
+  [current−step0 preference], [−0.08], [[−0.26, 0.08]；无选择收益。],
+  [current−step0 correct-NLL improvement], [+1.2841], [[+1.1371, +1.4389]；绝对坐标概率显著提高。],
+)
+
+训练后的 correct-image/shuffled-image correct logp 为 −1.22362/−1.22329，paired CI `[−0.03752, 0.03906]`。所以 loss 下降对应 image-agnostic coordinate-answer soft prompt；当前证据反驳“模型已在内部选对坐标，只是 greedy generation 说不出来”。step0 的 binary correct−shuffled preference 为 +0.10 `[+0.02,+0.20]`，但 mean-margin/logp CI 跨零，random projector 又是 50%/52%；它只记作初始化敏感性，不能建立能力主张。
+
+下一项不延长同一 baseline stream，也不先调 decoding。baseline 仅有 339/4,000 条显式 click supervision；最短的单变量 screen 在相同 4,000 examples、500 steps、exact step0、分辨率、receiver 与 evaluator 下提高 ShowUI grounding 占比。若 paired preference 仍不转正，再加入训练后丢弃的 correct-vs-counterfactual margin auxiliary target，canonical 4096 projector 与 DeepSeek 迁移边界保持不变。首个 1-row 开发 run 因 alias summary 重复 ID fail-closed；commit `6c23722…09ba` 加入 role labeling 与回归测试后，clean retry/formal run 完成 2,000 bootstrap。无付费资源。
 
 #pagebreak()
 
@@ -1201,12 +1264,12 @@ clean runner commit `97e9c03…a9d3a` 从 exact step0 加载 33,564,672-paramete
   [MoonViT-V2 真实权重与预处理], [通过], [V100 输出 `[tokens,4,1024]`，可进入 projector。],
   [通用纯文本 glue 闭环], [通过（小主干）], [真实数据训练、保存、恢复和生成均有证据。],
   [Qwen2.5-0.5B 真实数据], [早期对齐证据], [16,000 examples、约 0.27 epoch；低容量混杂绝对 benchmark。],
-  [Qwen2.5-3B 固定真实合同], [4k 训练完成 / 首个候选拒绝], [GLM50 vision click 4%，blind 12%，step0 10%；vision−blind 与 current−step0 距离显著恶化。],
+  [Qwen2.5-3B 固定真实合同], [4k 训练完成 / 候选拒绝], [完整 ScreenSpot vision/blind/step0 click 2.67%/3.07%/3.30%；vision−blind 距离显著恶化。],
   [完整 DeepSeek-V4-Flash 闭环], [未通过], [完整权重未加载联跑；真实 FP4/FP8 input DGRAD 仍 `hardware_pending`。],
-  [语言保持与真实视觉显著性], [GLM50 负结果 / 其余待执行], [完整 ScreenSpot 正在运行；TextVQA/DocVQA/OCRBench、synthetic 与 language retention 尚待同 checkpoint。],
+  [语言保持与真实视觉显著性], [ScreenSpot50/full 与 preference 均为负], [trained vision/blind/shuffled preference 46%/56%/52%；TextVQA/DocVQA/OCRBench、synthetic 与 language retention 尚待同 checkpoint。],
 )
 
-下一条 V100 路径固定使用纯文本 `Qwen/Qwen2.5-3B-Instruct`。MoonViT-V2 保持最终视觉塔，canonical projector 输出保持 4096；Qwen 使用已冻结的无参数 4096→2048 readout，不能改写 DeepSeek 主合同。首个 matched-budget baseline 已完成并被因果指标拒绝。现在完成 full ScreenSpot，再用 teacher-forced paired preference 与 projector 信息保留诊断选择辅助目标或预算延长；任何新方法仍需回到 ScreenSpot50/full、TextVQA、DocVQA、OCRBench、synthetic 与语言保持合同。详细合同见 `docs/qwen2.5-3b-community-eval-contract.md`，硬阻塞与最短路径见 `docs/project-status-and-gate-d-gap.md`。付费 Gate D 继续等待明确授权，本地 3B 研究持续推进。
+下一条 V100 路径固定使用纯文本 `Qwen/Qwen2.5-3B-Instruct`。MoonViT-V2 保持最终视觉塔，canonical projector 输出保持 4096；Qwen 使用已冻结的无参数 4096→2048 readout，不能改写 DeepSeek 主合同。首个 matched-budget baseline 已完成并被 generation 与 teacher-forced 因果指标共同拒绝。下一项保持 4,000-example 预算，只提高显式 ShowUI grounding 占比；同时补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 language-retention evaluator。任何候选仍需回到 ScreenSpot50/full、通用视觉、synthetic 与语言保持合同。详细合同见 `docs/qwen2.5-3b-community-eval-contract.md`，硬阻塞与最短路径见 `docs/project-status-and-gate-d-gap.md`。付费 Gate D 继续等待明确授权，本地 3B 研究持续推进。
 
 == Gate C：Vast 只读调研
 
@@ -1476,9 +1539,11 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
   [2026-08-06], [包 15D 将 exact 4k 顺序物化为内容寻址 MoonViT-V2 cache：4,000/4,000、0 failure、3,534 tower forwards、466 aliases；独立 verifier 重哈希 111 shards 并逐条验证 29.218 亿 logical values、Package-15C 顺序和 clean runner provenance。首个 dirty-run attempt 保留且禁止训练。],
   [2026-08-06], [包 15E 完成 fixed-budget Qwen2.5-3B projector-only 训练：500 optimizer steps、4,000 examples、21,532 answer tokens；Qwen/receiver 全冻结，五个 checkpoint 的 optimizer/RNG/顺序/哈希经独立 verifier 复核。loss 下降只记为优化证据。],
   [2026-08-06], [包 15F 完成 GLM-format public-50 七条件评测：trained vision parse/click 为 96%/4%，blind click 12%，step0 10%；vision−blind 与 current−step0 mean distance 均显著恶化。候选拒绝、previous-best 保持 step0；完整 1,272-row ScreenSpot 已缓存并开始生成。],
+  [2026-08-06], [包 15G 完成 1,272-row public ScreenSpot 七条件：trained vision/blind/step0 click 2.67%/3.07%/3.30%；vision−blind mean distance 显著恶化 169.66，vision−shuffled 无差异。GLM50 失败在完整集复现，候选继续拒绝。],
+  [2026-08-06], [包 15H 完成 teacher-forced correct-vs-counterfactual preference：trained vision/blind/shuffled 为 46%/56%/52%；训练把 correct NLL 从 2.51 降到 1.22，但正确图与错误图 logp 无差异。下一项固定 4k 预算提高 grounding 数据占比。],
   [2026-08-05], [固定 revision 的 DeepSeek 量化 runtime 源码审计与 GPU 矩阵成稿：forward 集成缺少已确认 autograd 证据，SM120/121 受 DeepGEMM #372 weight-load blocker 影响；首个付费建议降为单卡 SM100/B200 最小 kernel gate，仍等待授权。],
 )
 
 = 下一位执行者的最短路径
 
-包 15A–15D 的 pre-result contract、3B 工程 smoke、exact 4k order/target 与完整 MoonViT cache 已完成；包 15E/15F 又完成 fixed-budget 训练和首个真实七条件 grounding 判定。当前 checkpoint 被拒绝，previous-best 保持 step0。下一步完成已启动的 1,272-row full ScreenSpot 生成与 paired scoring；若负结果复现，立即运行 step0/step500 teacher-forced paired preference 和 projector 表示诊断，再选择有理论依据的辅助目标或预算延长。任何候选仍需 TextVQA、DocVQA、OCRBench、synthetic 与 language retention。正式 0731 必须通过完整权重 load、真实 FP4/FP8 input DGRAD、图像 forward/backward、20-step 稳定性和 save/resume/generate Gate D；任何付费动作等待用户明确授权。
+包 15A–15D 的 pre-result contract、3B 工程 smoke、exact 4k order/target 与完整 MoonViT cache 已完成；包 15E–15H 又完成 fixed-budget 训练、ScreenSpot50/full 与 teacher-forced preference。当前 checkpoint 被 generation 与内部正确坐标偏好共同拒绝，previous-best 保持 step0。下一步预注册 grounding-enriched 4k：exact step0、500 steps、4,000 examples、分辨率、receiver 和 evaluator 全部不变，只提高 ShowUI click 占比；单 seed 同时改善 preference 与 GLM50 因果指标后才扩大 full/三 seed。并行补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 language retention。若 enrichment 失败，验证 discard-after-training 的 counterfactual-margin auxiliary target。正式 0731 必须通过完整权重 load、真实 FP4/FP8 input DGRAD、图像 forward/backward、20-step 稳定性和 save/resume/generate Gate D；任何付费动作等待用户明确授权。
