@@ -9,6 +9,10 @@ from importlib import import_module
 from typing import Any
 
 _LAZY_EXPORTS = {
+    "ChatPrompt": "chat_contract",
+    "ChatSupervision": "chat_contract",
+    "build_chat_prompt": "chat_contract",
+    "build_chat_supervision": "chat_contract",
     "CheckpointUploader": "checkpointing",
     "load_training_checkpoint": "checkpointing",
     "save_training_checkpoint": "checkpointing",

@@ -1,0 +1,73 @@
+{
+  "file_count": 13,
+  "files": [
+    {
+      "bytes": 1267,
+      "path": "CHECKPOINT.json",
+      "sha256": "772330a6cfba7d8114ea5bd1f7db06b9adb2a01f7b5ab24fd011037e866d3582"
+    },
+    {
+      "bytes": 559,
+      "path": "GENERATIONS.jsonl",
+      "sha256": "5082223d80d923b1fd3990d986dd9d4053fb61afb5349c3a9f1004545b929af3"
+    },
+    {
+      "bytes": 1216,
+      "path": "GRADIENT.json",
+      "sha256": "6d2b717c84dce2982c45e53f3fa09a4e95b51fccc0e246de078bbc2c038441c4"
+    },
+    {
+      "bytes": 5082,
+      "path": "PROMPTS.json",
+      "sha256": "e3e359883fdff92c7ac3edb4ac9b5e9bee8cbef270825edcc906dd17e107f4c3"
+    },
+    {
+      "bytes": 968,
+      "path": "RUN_CONFIG.json",
+      "sha256": "eb6e5aa2e21ca963cd457d05e2fb789a7c38f7020795d19c0b01bd2c9c38f58b"
+    },
+    {
+      "bytes": 5486,
+      "path": "SUMMARY.json",
+      "sha256": "a81974d6931578809db71dd2083c527e7ce09173336a4d5248d7530ee612aee5"
+    },
+    {
+      "bytes": 286113,
+      "path": "input_image.bin",
+      "sha256": "f079f4ea41b82b4f46a22be3f23f5d179bd720f202ac5a273a8f2a1922a44041"
+    },
+    {
+      "bytes": 156,
+      "path": "large_checkpoint/step-000001/history.json",
+      "sha256": "eb7c841d9fd2a7610ec4f0ea37a58204d08317a21faf0e3f97579425b69b2f6a"
+    },
+    {
+      "bytes": 134259248,
+      "path": "large_checkpoint/step-000001/projector.safetensors",
+      "sha256": "7c33b65caae895452747965c399c312de308d81418a2a059e188e1a4352f05e5"
+    },
+    {
+      "bytes": 67129856,
+      "path": "large_checkpoint/step-000001/projector_bf16.safetensors",
+      "sha256": "f4376c903ab9645bc1e65d0f170e6f101edbe39d61947f66adf32f1ae06a8068"
+    },
+    {
+      "bytes": 128,
+      "path": "large_checkpoint/step-000001/projector_config.json",
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    {
+      "bytes": 268533213,
+      "path": "large_checkpoint/step-000001/training_state.pt",
+      "sha256": "94350858ea8119b8c3e12fe17766b56ac42a4eccfe3f6418d7285eaa9c59ab2b"
+    },
+    {
+      "bytes": 9010,
+      "path": "run.log",
+      "sha256": "f0c4757fdad39c69c0f9bdbbfc62e0aa4012d5442cc9f271fcc2532b23bd627d"
+    }
+  ],
+  "final_half_scored": false,
+  "schema_version": "qwen3b-proxy-smoke-artifacts-v1",
+  "total_bytes": 470232302
+}

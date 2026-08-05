@@ -1,0 +1,16 @@
+{
+  "arguments": {
+    "contract": "configs/qwen2.5-3b-community-eval-v1.json",
+    "device": "cuda",
+    "max_image_side": 448,
+    "model_dir": "/run/media/ezra/13D010B6FDBC1A06/models/qwen2.5-3b-instruct-aa8e7253",
+    "moonvit_v2_weights": "/run/media/ezra/13D010B6FDBC1A06/staging/k3/extracted/moonvit_v2.safetensors",
+    "out": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/smoke_v1_retry1",
+    "projector_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_initializations_v1/step0",
+    "receiver_dir": "experiments/qwen3b_community_eval_20260805/contract/proxy_receiver",
+    "screenspot_manifest": "experiments/qwen3b_community_eval_20260805/contract/datasets/screenspot_glm50_v1/MANIFEST.json",
+    "screenspot_source_dir": "/run/media/ezra/13D010B6FDBC1A06/data/eval_contract_v1/screenspot_source_0be08781"
+  },
+  "git_sha": "1d4125ce2589f7adb6ccc4577dedf09629d134f1",
+  "started_at_utc": "2026-08-05T16:58:42.427237+00:00"
+}

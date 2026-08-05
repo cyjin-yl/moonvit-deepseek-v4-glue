@@ -1,0 +1,39 @@
+{
+  "checkpoint_seconds": 5.0588375381194055,
+  "directory": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/smoke_v1_retry1/large_checkpoint/step-000001",
+  "file_count": 5,
+  "files": [
+    {
+      "bytes": 156,
+      "path": "history.json",
+      "sha256": "eb7c841d9fd2a7610ec4f0ea37a58204d08317a21faf0e3f97579425b69b2f6a"
+    },
+    {
+      "bytes": 134259248,
+      "path": "projector.safetensors",
+      "sha256": "7c33b65caae895452747965c399c312de308d81418a2a059e188e1a4352f05e5"
+    },
+    {
+      "bytes": 67129856,
+      "path": "projector_bf16.safetensors",
+      "sha256": "f4376c903ab9645bc1e65d0f170e6f101edbe39d61947f66adf32f1ae06a8068"
+    },
+    {
+      "bytes": 128,
+      "path": "projector_config.json",
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    {
+      "bytes": 268533213,
+      "path": "training_state.pt",
+      "sha256": "94350858ea8119b8c3e12fe17766b56ac42a4eccfe3f6418d7285eaa9c59ab2b"
+    }
+  ],
+  "history_exact": true,
+  "optimizer_exact": true,
+  "projector_exact": true,
+  "python_rng_exact": true,
+  "restored_directory": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/smoke_v1_retry1/large_checkpoint/step-000001",
+  "restored_step": 1,
+  "total_bytes": 469922601
+}

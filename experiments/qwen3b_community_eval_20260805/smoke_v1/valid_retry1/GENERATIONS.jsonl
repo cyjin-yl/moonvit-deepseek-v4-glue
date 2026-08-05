@@ -1,0 +1,2 @@
+{"capability_claim_allowed": false, "condition": "vision_step0", "continuation_token_ids": [3678, 10639, 10194, 5818, 20, 15, 15, 11, 220, 17, 20, 15, 2467, 151645], "parse_result": [500, 250], "prediction": "click(start_box=[500, 250])", "sample_id": "screenspot-0be08781-0472"}
+{"capability_claim_allowed": false, "condition": "blind_step0", "continuation_token_ids": [3678, 10639, 10194, 5818, 20, 15, 15, 11, 220, 17, 20, 15, 2467, 151645], "parse_result": [500, 250], "prediction": "click(start_box=[500, 250])", "sample_id": "screenspot-0be08781-0472"}

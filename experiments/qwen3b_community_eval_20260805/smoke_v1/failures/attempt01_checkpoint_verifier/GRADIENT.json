@@ -1,0 +1,60 @@
+{
+  "backward_seconds": 0.3697182727046311,
+  "canonical_embedding_gradient": {
+    "finite": true,
+    "nonzero": 524236,
+    "numel": 524288,
+    "shape": [
+      128,
+      4096
+    ]
+  },
+  "gradient_norm_before_clip": 141.97592163085938,
+  "language_parameter_gradient_tensors": 0,
+  "loss": 2.1920835971832275,
+  "projector_parameter_gradients": [
+    {
+      "finite": true,
+      "name": "pre_norm.weight",
+      "nonzero": 1024,
+      "numel": 1024,
+      "present": true
+    },
+    {
+      "finite": true,
+      "name": "pre_norm.bias",
+      "nonzero": 1024,
+      "numel": 1024,
+      "present": true
+    },
+    {
+      "finite": true,
+      "name": "linear_1.weight",
+      "nonzero": 16777216,
+      "numel": 16777216,
+      "present": true
+    },
+    {
+      "finite": true,
+      "name": "linear_1.bias",
+      "nonzero": 4096,
+      "numel": 4096,
+      "present": true
+    },
+    {
+      "finite": true,
+      "name": "linear_2.weight",
+      "nonzero": 16777216,
+      "numel": 16777216,
+      "present": true
+    },
+    {
+      "finite": true,
+      "name": "linear_2.bias",
+      "nonzero": 4096,
+      "numel": 4096,
+      "present": true
+    }
+  ],
+  "receiver_trainable_parameter_count": 0
+}

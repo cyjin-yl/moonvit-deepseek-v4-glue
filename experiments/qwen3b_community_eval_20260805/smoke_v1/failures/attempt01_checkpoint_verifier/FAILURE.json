@@ -1,0 +1,11 @@
+{
+  "capability_claim_allowed": false,
+  "error": "Expected all tensors to be on the same device, but got other is on cuda:0, different from other tensors on cpu (when checking argument in method wrapper_CUDA__equal)",
+  "error_type": "RuntimeError",
+  "failed_at_stage": "checkpoint_save_restore",
+  "paid_resources_used": false,
+  "peak_gpu_memory_bytes": 8367393280,
+  "schema_version": "qwen3b-proxy-smoke-failure-v1",
+  "status": "invalid",
+  "traceback": "Traceback (most recent call last):\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15a-run/tools/smoke_qwen3b_proxy.py\", line 676, in main\n    _run(args, stage)\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15a-run/tools/smoke_qwen3b_proxy.py\", line 545, in _run\n    optimizer_exact = _optimizer_states_equal(optimizer, restored_optimizer)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15a-run/tools/smoke_qwen3b_proxy.py\", line 138, in _optimizer_states_equal\n    if not torch.equal(value, other):\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: Expected all tensors to be on the same device, but got other is on cuda:0, different from other tensors on cpu (when checking argument in method wrapper_CUDA__equal)\n"
+}

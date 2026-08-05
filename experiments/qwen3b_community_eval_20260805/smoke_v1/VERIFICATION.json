@@ -1,0 +1,57 @@
+{
+  "capability_claim_allowed": false,
+  "checked_in_evidence": {
+    "failure_manifest_sha256": "d774c67d1a6fafa131d79db94364429d7d14192a5de7343ded21a2408a0ecc83",
+    "failure_record_sha256": "7b9595301a6a55e192d38c3639a124a3e6a6a86147f40e502a55ec3df61faa48",
+    "first_valid_manifest_sha256": "7a46bab6f3fdfa48ea6e79fbfaf845eabaa14c5eccc31609343464a2b8df818b",
+    "first_valid_summary_sha256": "a81974d6931578809db71dd2083c527e7ce09173336a4d5248d7530ee612aee5",
+    "canonical_manifest_sha256": "5e934d78223b759b869ac6d9b6ca888a726b81758e14398883db99104bcb3273",
+    "canonical_summary_sha256": "0c144cafd2257861cc73997e091bc85660e6d70f9a602c7b716dbbba6da4f688"
+  },
+  "checks": {
+    "checkpoint_history_exact": true,
+    "checkpoint_optimizer_exact": true,
+    "checkpoint_projector_exact": true,
+    "checkpoint_python_rng_exact": true,
+    "contract_sha256_matches_preregistered": true,
+    "final_half_unscored": true,
+    "language_parameter_gradient_tensors_zero": true,
+    "model_architecture_is_pure_text": true,
+    "model_files_match_contract_9_of_9": true,
+    "model_revision_matches_contract": true,
+    "moonvit_feature_finite_and_nonzero": true,
+    "moonvit_weights_match_contract": true,
+    "projector_gradients_all_present_finite_nonzero": true,
+    "step0_vision_equals_blind": true
+  },
+  "deepseek_transfer": "transferable_with_runtime_validation",
+  "failure_attempt_remote_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/smoke_v1",
+  "failure_remote_artifact_rehash": {
+    "declared_bytes": 470219506,
+    "declared_files": 12,
+    "matched_bytes": 470219506,
+    "matched_files": 12
+  },
+  "final_half_scored": false,
+  "first_valid_remote_artifact_rehash": {
+    "declared_bytes": 470232302,
+    "declared_files": 13,
+    "matched_bytes": 470232302,
+    "matched_files": 13
+  },
+  "canonical_remote_artifact_rehash": {
+    "declared_bytes": 470235478,
+    "declared_files": 13,
+    "matched_bytes": 470235478,
+    "matched_files": 13
+  },
+  "git_base_sha": "1d4125ce2589f7adb6ccc4577dedf09629d134f1",
+  "interpretation": "This is a real, identity-checked Qwen2.5-3B engineering and gradient smoke. Equal step0 vision/blind generations prohibit a visual-capability claim.",
+  "paid_resources_used": false,
+  "schema_version": "qwen3b-proxy-smoke-package-verification-v1",
+  "status": "valid",
+  "first_valid_retry_remote_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/smoke_v1_retry1",
+  "canonical_retry_remote_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/smoke_v1_retry2",
+  "retry1_retry2_checkpoint_hashes_exact": true,
+  "retry1_retry2_generation_rows_exact": true
+}

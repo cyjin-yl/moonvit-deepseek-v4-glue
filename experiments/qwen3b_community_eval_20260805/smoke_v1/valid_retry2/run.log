@@ -1,0 +1,243 @@
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading weights:   0%|          | 0/434 [00:00<?, ?it/s]Loading weights:   0%|          | 1/434 [00:20<2:29:25, 20.71s/it]Loading weights:   0%|          | 2/434 [00:20<1:01:48,  8.59s/it]Loading weights:  27%|##6       | 117/434 [00:21<00:28, 11.09it/s]Loading weights:  33%|###3      | 144/434 [00:24<00:29,  9.74it/s]Loading weights:  37%|###6      | 159/434 [00:27<00:31,  8.80it/s]Loading weights:  39%|###8      | 169/434 [00:27<00:27,  9.68it/s]Loading weights:  41%|####      | 176/434 [00:29<00:29,  8.79it/s]Loading weights:  42%|####2     | 183/434 [00:30<00:30,  8.23it/s]Loading weights:  43%|####3     | 187/434 [00:30<00:27,  8.96it/s]Loading weights:  45%|####4     | 195/434 [00:31<00:29,  8.24it/s]Loading weights:  48%|####7     | 207/434 [00:32<00:23,  9.74it/s]Loading weights:  48%|####8     | 210/434 [00:33<00:25,  8.73it/s]Loading weights:  50%|#####     | 219/434 [00:34<00:24,  8.61it/s]Loading weights:  51%|#####     | 221/434 [00:35<00:33,  6.39it/s]Loading weights:  53%|#####3    | 231/434 [00:36<00:26,  7.72it/s]Loading weights:  54%|#####3    | 233/434 [00:36<00:26,  7.46it/s]Loading weights:  55%|#####5    | 239/434 [00:36<00:19, 10.12it/s]Loading weights:  56%|#####5    | 243/434 [00:37<00:29,  6.58it/s]Loading weights:  56%|#####6    | 245/434 [00:38<00:33,  5.58it/s]Loading weights:  59%|#####8    | 255/434 [00:39<00:25,  7.13it/s]Loading weights:  59%|#####9    | 257/434 [00:39<00:25,  7.05it/s]Loading weights:  62%|######1   | 267/434 [00:40<00:17,  9.67it/s]Loading weights:  62%|######1   | 269/434 [00:41<00:19,  8.35it/s]Loading weights:  64%|######4   | 279/434 [00:42<00:20,  7.71it/s]Loading weights:  67%|######7   | 291/434 [00:43<00:17,  8.29it/s]Loading weights:  69%|######8   | 299/434 [00:44<00:13, 10.03it/s]Loading weights:  70%|######9   | 303/434 [00:46<00:21,  6.03it/s]Loading weights:  70%|#######   | 304/434 [00:46<00:21,  6.12it/s]Loading weights:  73%|#######2  | 315/434 [00:47<00:15,  7.76it/s]Loading weights:  73%|#######2  | 316/434 [00:47<00:17,  6.65it/s]Loading weights:  73%|#######3  | 317/434 [00:48<00:19,  6.09it/s]Loading weights:  75%|#######5  | 327/434 [00:48<00:12,  8.28it/s]Loading weights:  76%|#######5  | 328/434 [00:49<00:15,  7.00it/s]Loading weights:  78%|#######8  | 339/434 [00:50<00:13,  6.97it/s]Loading weights:  79%|#######8  | 341/434 [00:51<00:14,  6.27it/s]Loading weights:  81%|########  | 351/434 [00:51<00:08,  9.56it/s]Loading weights:  81%|########1 | 353/434 [00:52<00:10,  8.05it/s]Loading weights:  84%|########3 | 363/434 [00:53<00:09,  7.84it/s]Loading weights:  86%|########6 | 375/434 [00:54<00:05, 10.42it/s]Loading weights:  87%|########6 | 377/434 [00:56<00:09,  5.78it/s]Loading weights:  87%|########7 | 378/434 [00:56<00:09,  5.84it/s]Loading weights:  90%|########9 | 389/434 [00:57<00:05,  7.93it/s]Loading weights:  92%|#########1| 399/434 [00:58<00:04,  8.69it/s]Loading weights:  95%|#########4| 411/434 [00:59<00:02,  9.51it/s]Loading weights:  95%|#########5| 413/434 [00:59<00:02,  9.69it/s]Loading weights:  97%|#########7| 423/434 [01:00<00:01,  9.27it/s]Loading weights: 100%|##########| 434/434 [01:00<00:00,  7.16it/s]
+{
+  "checkpoint": {
+    "checkpoint_seconds": 4.347018480766565,
+    "directory": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/smoke_v1_retry2/large_checkpoint/step-000001",
+    "file_count": 5,
+    "files": [
+      {
+        "bytes": 156,
+        "path": "history.json",
+        "sha256": "eb7c841d9fd2a7610ec4f0ea37a58204d08317a21faf0e3f97579425b69b2f6a"
+      },
+      {
+        "bytes": 134259248,
+        "path": "projector.safetensors",
+        "sha256": "7c33b65caae895452747965c399c312de308d81418a2a059e188e1a4352f05e5"
+      },
+      {
+        "bytes": 67129856,
+        "path": "projector_bf16.safetensors",
+        "sha256": "f4376c903ab9645bc1e65d0f170e6f101edbe39d61947f66adf32f1ae06a8068"
+      },
+      {
+        "bytes": 128,
+        "path": "projector_config.json",
+        "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+      },
+      {
+        "bytes": 268533213,
+        "path": "training_state.pt",
+        "sha256": "94350858ea8119b8c3e12fe17766b56ac42a4eccfe3f6418d7285eaa9c59ab2b"
+      }
+    ],
+    "history_exact": true,
+    "optimizer_exact": true,
+    "projector_exact": true,
+    "python_rng_exact": true,
+    "restored_directory": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/smoke_v1_retry2/large_checkpoint/step-000001",
+    "restored_step": 1,
+    "total_bytes": 469922601
+  },
+  "claims": {
+    "checkpoint_round_trip_exact": true,
+    "deepseek_transfer": "transferable_with_runtime_validation",
+    "qwen_parameter_gradients_absent": true,
+    "real_image_gradient_reaches_projector": true,
+    "real_moonvit_image_forward": true,
+    "real_qwen3b_load": true,
+    "reason": "step0 generation is an engineering smoke, not a trained or paired benchmark",
+    "visual_ability_established": false
+  },
+  "completed_at_utc": "2026-08-05T17:43:45.837091+00:00",
+  "contract_path": "configs/qwen2.5-3b-community-eval-v1.json",
+  "contract_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+  "final_half_scored": false,
+  "generation": {
+    "blind_parse": [
+      500,
+      250
+    ],
+    "blind_prediction": "click(start_box=[500, 250])",
+    "blind_seconds": 0.3222711021080613,
+    "do_sample": false,
+    "max_new_tokens": 32,
+    "registered_temperature": 0.0,
+    "runtime_temperature_argument": "omitted because do_sample=false makes it inert",
+    "vision_parse": [
+      500,
+      250
+    ],
+    "vision_prediction": "click(start_box=[500, 250])",
+    "vision_seconds": 1.9760173251852393
+  },
+  "git_sha": "1d4125ce2589f7adb6ccc4577dedf09629d134f1",
+  "gradient": {
+    "backward_seconds": 0.47191320499405265,
+    "canonical_embedding_gradient": {
+      "finite": true,
+      "nonzero": 524236,
+      "numel": 524288,
+      "shape": [
+        128,
+        4096
+      ]
+    },
+    "gradient_norm_before_clip": 141.97592163085938,
+    "language_parameter_gradient_tensors": 0,
+    "loss": 2.1920835971832275,
+    "projector_parameter_gradients": [
+      {
+        "finite": true,
+        "name": "pre_norm.weight",
+        "nonzero": 1024,
+        "numel": 1024,
+        "present": true
+      },
+      {
+        "finite": true,
+        "name": "pre_norm.bias",
+        "nonzero": 1024,
+        "numel": 1024,
+        "present": true
+      },
+      {
+        "finite": true,
+        "name": "linear_1.weight",
+        "nonzero": 16777216,
+        "numel": 16777216,
+        "present": true
+      },
+      {
+        "finite": true,
+        "name": "linear_1.bias",
+        "nonzero": 4096,
+        "numel": 4096,
+        "present": true
+      },
+      {
+        "finite": true,
+        "name": "linear_2.weight",
+        "nonzero": 16777216,
+        "numel": 16777216,
+        "present": true
+      },
+      {
+        "finite": true,
+        "name": "linear_2.bias",
+        "nonzero": 4096,
+        "numel": 4096,
+        "present": true
+      }
+    ],
+    "receiver_trainable_parameter_count": 0
+  },
+  "input": {
+    "dataset": "screenspot_glm50_v1",
+    "image_sha256": "f079f4ea41b82b4f46a22be3f23f5d179bd720f202ac5a273a8f2a1922a44041",
+    "manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+    "max_image_side": 448,
+    "original_size": [
+      1080,
+      2400
+    ],
+    "resized_size": [
+      202,
+      448
+    ],
+    "sample_id": "screenspot-0be08781-0472"
+  },
+  "model": {
+    "architecture": "Qwen2ForCausalLM",
+    "dtypes": [
+      "torch.float16"
+    ],
+    "frozen": true,
+    "load_seconds": 63.47733308840543,
+    "parameter_count": 3085938688,
+    "path": "/run/media/ezra/13D010B6FDBC1A06/models/qwen2.5-3b-instruct-aa8e7253",
+    "repo": "Qwen/Qwen2.5-3B-Instruct",
+    "resolved_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "verified_file_count": 9,
+    "verified_files": [
+      {
+        "bytes": 661,
+        "path": "config.json",
+        "sha256": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b"
+      },
+      {
+        "bytes": 242,
+        "path": "generation_config.json",
+        "sha256": "ea35dfb6fc5051b01114f9b995820d55dab01ed33ee490f6378b442af82c09f9"
+      },
+      {
+        "bytes": 1671839,
+        "path": "merges.txt",
+        "sha256": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3"
+      },
+      {
+        "bytes": 3968658944,
+        "path": "model-00001-of-00002.safetensors",
+        "sha256": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2"
+      },
+      {
+        "bytes": 2203268048,
+        "path": "model-00002-of-00002.safetensors",
+        "sha256": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d"
+      },
+      {
+        "bytes": 35581,
+        "path": "model.safetensors.index.json",
+        "sha256": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56"
+      },
+      {
+        "bytes": 7031645,
+        "path": "tokenizer.json",
+        "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"
+      },
+      {
+        "bytes": 7305,
+        "path": "tokenizer_config.json",
+        "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+      },
+      {
+        "bytes": 2776833,
+        "path": "vocab.json",
+        "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      }
+    ]
+  },
+  "moonvit": {
+    "feature_finite": true,
+    "feature_nonzero": 524288,
+    "feature_numel": 524288,
+    "feature_shape": [
+      128,
+      4,
+      1024
+    ],
+    "forward_seconds_including_load": 42.79151231888682,
+    "weights": "/run/media/ezra/13D010B6FDBC1A06/staging/k3/extracted/moonvit_v2.safetensors",
+    "weights_sha256": "01436a95939965185bb853ddf984e09c00f597b9c2f6708ba302ffbaf75ced24"
+  },
+  "paid_resources_used": false,
+  "runtime": {
+    "compute_capability": [
+      7,
+      0
+    ],
+    "cuda_runtime": "12.8",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "host": "doesworkstation",
+    "peak_gpu_memory_bytes": 8367393280,
+    "pid": 1585025,
+    "python": "3.12.11",
+    "torch": "2.10.0+cu128",
+    "transformers": "5.12.1",
+    "wall_seconds": 174.47631342103705
+  },
+  "schema_version": "qwen3b-proxy-smoke-v1",
+  "status": "valid"
+}

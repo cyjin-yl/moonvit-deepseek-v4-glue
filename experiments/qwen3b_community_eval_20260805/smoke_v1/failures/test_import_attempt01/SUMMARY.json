@@ -1,0 +1,12 @@
+{
+  "capability_claim_allowed": false,
+  "error": "ModuleNotFoundError: No module named 'smoke_qwen3b_proxy'",
+  "error_type": "ModuleNotFoundError",
+  "evidence_source": "captured focused-test console output; no standalone log was retained",
+  "failed_at_stage": "focused_regression_test_collection",
+  "fix": "prepend the repository tools directory to sys.path in the focused helper regression test",
+  "paid_resources_used": false,
+  "root_cause": "the test imported a repository tool as a top-level module without exposing tools/ on the import path",
+  "schema_version": "qwen3b-proxy-smoke-test-failure-v1",
+  "status": "invalid"
+}

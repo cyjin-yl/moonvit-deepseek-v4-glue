@@ -1,0 +1,13 @@
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading weights:   0%|          | 0/434 [00:00<?, ?it/s]Loading weights:   0%|          | 1/434 [00:00<03:11,  2.26it/s]Loading weights:  31%|###1      | 135/434 [00:00<00:00, 314.96it/s]Loading weights:  47%|####6     | 202/434 [00:00<00:00, 301.81it/s]Loading weights:  58%|#####8    | 252/434 [00:00<00:00, 286.48it/s]Loading weights:  67%|######7   | 292/434 [00:01<00:00, 286.86it/s]Loading weights:  79%|#######8  | 341/434 [00:01<00:00, 325.26it/s]Loading weights:  89%|########9 | 388/434 [00:01<00:00, 354.44it/s]Loading weights:  99%|#########9| 430/434 [00:01<00:00, 342.80it/s]Loading weights: 100%|##########| 434/434 [00:01<00:00, 294.60it/s]
+Traceback (most recent call last):
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15a-run/tools/smoke_qwen3b_proxy.py", line 676, in main
+    _run(args, stage)
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15a-run/tools/smoke_qwen3b_proxy.py", line 545, in _run
+    optimizer_exact = _optimizer_states_equal(optimizer, restored_optimizer)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15a-run/tools/smoke_qwen3b_proxy.py", line 138, in _optimizer_states_equal
+    if not torch.equal(value, other):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Expected all tensors to be on the same device, but got other is on cuda:0, different from other tensors on cpu (when checking argument in method wrapper_CUDA__equal)

@@ -18,9 +18,9 @@
 | 视觉 token 映射 | 已验证 | 4096 维配置已实现，未同完整主干联跑 | `PatchMergerProjector` 支持保存、恢复和视觉侧 trunk warm-start |
 | placeholder 展开、位置与 loss mask | 已验证 | DeepSeek 专用分支已有实现，完整权重未验证 | `expand_image_placeholders` 生成扩展 embedding、routing IDs、attention mask、position IDs 和 labels |
 | 插入冻结语言模型 | 已验证 | tiny DeepSeek 类通过，完整权重未验证 | 通用分支走 `inputs_embeds`；DeepSeek 分支保留 placeholder routing IDs 并覆盖 embedding lookup |
-| projector-only 训练与反向 | 已验证 | 未验证 | 小文本主干和真实 MoonViT-V2 上已训练；完整 0731 的量化 input DGRAD 仍为 `hardware_pending` |
-| checkpoint 保存与精确恢复 | 已验证 | 未验证 | projector fp32/bf16、optimizer、RNG、step、history 均有可恢复格式；包 11 control 精确复现 |
-| 自回归生成 | 已验证 | tiny DeepSeek 类通过，完整权重未验证 | 通用与 DeepSeek wrapper 均有 generation 测试，尚无完整 0731 真实图像生成 |
+| projector-only 训练与反向 | 已验证（含 3B smoke） | 未验证 | Qwen2.5-3B 真图像 backward 中 projector 六个参数张量均为 finite/nonzero，语言主干梯度张量为 0；完整 0731 的量化 input DGRAD 仍为 `hardware_pending` |
+| checkpoint 保存与精确恢复 | 已验证（含 3B smoke） | 未验证 | 3B 一步 AdamW 后的 projector、optimizer、Python RNG、step、history 均精确恢复；同时保存 fp32 master 与 bf16 serving 权重 |
+| 自回归生成 | 已验证（含 3B smoke） | tiny DeepSeek 类通过，完整权重未验证 | 3B step0 vision/blind 均可生成严格 click 格式，但输出相同，尚不能证明视觉能力；完整 0731 未运行 |
 
 结论：仓库具备一条经过小模型验证的通用多模态 glue pipeline，也具备 DeepSeek 专用的代码路径。完整 DeepSeek-V4-Flash-0731 的加载、图像前向、反向、训练、保存恢复和生成尚未形成真实闭环，因此当前不能声称已经具备真实 DeepSeek 端到端多模态链路。
 
@@ -30,7 +30,7 @@
 |---|---|---|---|
 | 真实视觉塔 | MoonViT-V2 真实权重、真实预处理、V100 forward/backward glue | 视觉编码器接口和 projector 输入合同可运行 | 完整 DeepSeek 能利用这些视觉 token |
 | 真实数据、纯文本小主干 | Qwen2.5-0.5B + MoonViT-V2 + projector-only，真实 59,198-row mix，已见 16,000 examples | 无原生 VLM 能力时可以学到非零图像依赖；训练/save/resume/eval 链路可运行 | 绝对 benchmark 上限、3B 容量、DeepSeek Hash-MoE 收敛 |
-| 3B 代理固定合同 | Qwen2.5-3B 的 9 个文件 SHA、ScreenSpot50/full、严格 parser、七条件、4096→2048 fixed receiver、240 条语言保持集 | 首个 3B 结果将可复现、可归因并与后续改进公平比较 | 3B 已经获得视觉能力；当前仍无 3B 生成或训练成绩 |
+| 3B 代理固定合同与工程 smoke | Qwen2.5-3B 的 9 个文件 SHA、ScreenSpot50/full、严格 parser、七条件、4096→2048 fixed receiver、240 条语言保持集；真图像 load/generate/backward/一步 AdamW/save-resume 已通过 | 3B 路径可在 V100 运行，真实图像梯度到达 exact 4096 projector，冻结语言主干无梯度，checkpoint 可精确恢复 | 3B 已经获得视觉能力；step0 vision 与 blind 都输出中心点，4k grounding 尚未运行 |
 | 原生 VLM 阳性对照 | Qwen3.5-4B 原生视觉模型在五项真实 benchmark 上运行 | 数据、processor 和 scorer 能得到强阳性结果 | MoonViT projector 对纯文本主干的能力 |
 | synthetic 包 3–14 | Qwen2.5-0.5B 上的 paired preference/generation、probe、patching、replay、sentinel | 机制定位、训练干扰、固定预算保护和评测开销 | ScreenSpot/TextVQA/DocVQA/OCRBench 的真实能力 |
 | DeepSeek 结构代理 | tiny `DeepseekV4ForCausalLM`、数学 DGRAD reference、三模式 harness | wrapper、routing 与 gate 工具的接口正确性 | 真实 FP4/FP8 kernel 的 input gradient 或完整 0731 稳定性 |
@@ -71,8 +71,9 @@
 3. **已完成（Package 15A 独立冻结）**：精确冻结 step0/random-projector 两份 33,564,672-parameter FP32 权重，并在 HF immutable commit `65639da5…a010` 完成 5/5 远端哈希验证。
 4. **已完成（Package 15A 独立冻结）**：固定严格 `click(start_box=[x, y])` parser、七条件、完整 grounding 指标和 2,000 次 paired bootstrap。
 5. **已完成（Package 15A 独立冻结）**：canonical projector 维持 4096；Qwen 使用无参数 fixed signed-pair 4096→2048 readout。readout 丢弃，代理 checkpoint 标为 `transferable_with_runtime_validation`。
-6. 提交并 push Package 15A 后，先跑 Qwen3B BF16-source→FP16-runtime load、receiver 梯度和 checkpoint round-trip，再跑最小 4k ScreenSpot 基线及因果控制。V100 固定 GEMM probe 中 BF16 比 FP16 慢 9.16 倍，运行精度已在首个模型输出前冻结为 FP16。
-7. 根据 4k 真实证据决定扩至 8k/16k/32k/64k；候选进入 TextVQA、DocVQA、OCRBench、synthetic 六任务和语言保持。
-8. 所有横向比较匹配记录集合、顺序、预算、分辨率、exact step0 和生成配置；只把 `directly_transferable` 或 `transferable_with_runtime_validation` 方法纳入 DeepSeek 候选。
+6. **已完成（Package 15B）**：9/9 Qwen 文件与 MoonViT 权重先通过运行内 SHA，随后完成 Qwen3B BF16-source→FP16-runtime load、真 ScreenSpot 图像 MoonViT forward、receiver/projector 梯度、一步 AdamW 和 checkpoint round-trip。峰值显存 8,367,393,280 bytes，含约 7 GB 输入哈希的 wall time 174.476 s；step0 vision=blind，因此只算工程闭环。
+7. 为冻结的 4,000-record 顺序建立内容寻址 MoonViT feature cache，运行最小 projector-only 4k baseline 与 step0/random/vision/blind/shuffled 条件。
+8. 根据 4k 真实证据决定扩至 8k/16k/32k/64k；候选进入完整 ScreenSpot、TextVQA、DocVQA、OCRBench、synthetic 六任务和语言保持。
+9. 所有横向比较匹配记录集合、顺序、预算、分辨率、exact step0 和生成配置；只把 `directly_transferable` 或 `transferable_with_runtime_validation` 方法纳入 DeepSeek 候选。
 
 在完成以上本地证据后，若剩余阻塞只来自完整权重容量和量化 DGRAD，再提交最小付费 Gate D 的硬件、时价、GPU-hour、存储与止损上限，等待单独授权。
