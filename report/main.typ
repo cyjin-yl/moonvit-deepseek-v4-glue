@@ -17,7 +17,7 @@
 
 = 执行摘要
 
-本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段冻结视觉塔和语言模型，只训练 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证。包 3–12 依次建立 synthetic paired preference/generation、逐层 probe、activation patching、projector/LoRA 轨迹、任务干扰、checkpoint averaging、anchoring 与 batch-order 证据。包 13 在相同 1,200-example 预算内用 preventive replay 恢复 count/shape，包 14 把可靠 Tiny sentinel 固定为 25 pairs/task 并测得 V100 teacher-only 中位开销 22.501 秒。这条机制支线已收束为默认保护配方。包 15A–15D 冻结纯文本 `Qwen/Qwen2.5-3B-Instruct` 的模型、真实数据、评测、4,000-example 顺序和 MoonViT cache；包 15E 完成 500-step projector-only 训练与独立 checkpoint 验证；包 15F–15G 在 GLM-format public-50 和完整 1,272-row ScreenSpot 上一致拒绝首个 checkpoint。完整集 trained vision/blind/step0 的 click-in-box 为 2.67%/3.07%/3.30%，vision−blind 平均距离显著恶化 169.66。包 15H 的 paired preference 又显示 trained vision/blind/shuffled 为 46%/56%/52%；训练把坐标答案 NLL 从 2.51 降到 1.22，却没有正确图相对错误图的选择优势。容量切换稳定了真实链路，当前数据/目标仍只学到 image-agnostic coordinate prior。下一项在相同 4,000-example 预算提高显式 grounding 占比；完整 DeepSeek-V4-Flash-0731 尚未完成图像前向、量化 input DGRAD、训练、恢复和生成闭环，Gate D 当前未通过。
+本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段冻结视觉塔和语言模型，只训练 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证。包 3–12 依次建立 synthetic paired preference/generation、逐层 probe、activation patching、projector/LoRA 轨迹、任务干扰、checkpoint averaging、anchoring 与 batch-order 证据。包 13 在相同 1,200-example 预算内用 preventive replay 恢复 count/shape，包 14 把可靠 Tiny sentinel 固定为 25 pairs/task 并测得 V100 teacher-only 中位开销 22.501 秒。这条机制支线已收束为默认保护配方。包 15A–15D 冻结纯文本 `Qwen/Qwen2.5-3B-Instruct` 的模型、真实数据、评测、4,000-example 顺序和 MoonViT cache；包 15E 完成 500-step projector-only 训练与独立 checkpoint 验证；包 15F–15G 在 GLM-format public-50 和完整 1,272-row ScreenSpot 上一致拒绝首个 checkpoint。完整集 trained vision/blind/step0 的 click-in-box 为 2.67%/3.07%/3.30%，vision−blind 平均距离显著恶化 169.66。包 15H 的 paired preference 又显示 trained vision/blind/shuffled 为 46%/56%/52%；训练把坐标答案 NLL 从 2.51 降到 1.22，却没有正确图相对错误图的选择优势。容量切换稳定了真实链路，当前数据/目标仍只学到 image-agnostic coordinate prior。包 15I 已在结果产生前冻结 2,000-grounding/2,000-short-answer 严格交替顺序；下一项按相同 4,000-example/500-step 预算完成 cache、训练与因果筛选。完整 DeepSeek-V4-Flash-0731 尚未完成图像前向、量化 input DGRAD、训练、恢复和生成闭环，Gate D 当前未通过。
 
 MoonViT-V2 有 401.2M 参数，抽取后的 BF16 权重约 802 MB，相对于约 160 GB 级的 DeepSeek 混合精度权重很小。更大的资源变量是图像分辨率带来的视觉 token 数和冻结 LLM 反向所保留的激活，而不是视觉塔权重。
 
@@ -1254,6 +1254,26 @@ text/icon-widget 的 trained click 为 4.16%/0.87%，mean distance 为 516.39/62
 
 #pagebreak()
 
+== Grounding-enriched 训练前合同（包 15I，2026-08-06）
+
+包 15I 在任何新 checkpoint、loss 或能力分数产生前固定下一轮单变量 treatment。模型仍为纯文本 Qwen2.5-3B，projector 从 exact step0 开始，训练量仍为 4,000 examples / 500 optimizer steps，micro batch 1、accumulation 8、real global batch 8；分辨率、MoonViT、无参数 receiver、prompt、generation 和 evaluator 均不变。唯一实验变量是训练 mix 与由此显式声明的 order。
+
+#table(
+  columns: (2.2fr, 1.2fr, 2.8fr),
+  [*字段*], [*值*], [*冻结规则*],
+  [grounding], [2,000], [冻结源 pack 中前 2,000 条 `showui*` 记录。],
+  [short answer], [2,000], [冻结源 pack 中前 2,000 条非 `showui*` 记录。],
+  [merge], [4,000], [grounding-first 严格交替；每个 global batch 为 4/4。],
+  [来源], [2,000 / 1,080 / 649 / 271], [ShowUI / TextVQA / DocVQA / OCRBench-derived。],
+  [有效 epoch], [0.06756985], [仍以完整 59,198-row pack 为分母。],
+)
+
+Manifest 自哈希为 `d632ecc2…0bf1`，ordered-record hash 为 `f3c3dec1…15ab`。独立 verifier 从 59,198 条源记录重建 exact first-N-per-route selection，并再次读取 4,000 个 record、canonical target、图片字节和尺寸；4,000/4,000 全部匹配，覆盖 1,255,969,179 encoded-image bytes，无 mismatch。4,000 个路径对应 2,013 个 unique image hashes，反映同一 GUI screenshot 上存在多条指令。V100 完整仓库套件 317/317 通过。
+
+这份证据只建立训练前数据身份与横向公平性，不建立视觉能力；previous-best 继续保持 exact step0。迁移标签为 `directly_transferable`，因为 source indices、targets、image identity、batch order 与 examples-seen accounting 均可直接复用于 DeepSeek。下一步先构建绑定该 manifest 的内容寻址 MoonViT cache，再运行 exact 500-step screen；只有 GLM50 与 teacher-forced correct-image preference 同时改善，才进入完整 ScreenSpot 和三 seed。无付费资源，未评 final half。
+
+#pagebreak()
+
 == 工程主线与 Gate D 真实缺口（2026-08-06）
 
 当前仓库已经有真实 MoonViT-V2 编码、视觉 token 映射、placeholder 展开、loss mask、generic `inputs_embeds` 注入、DeepSeek routing-ID 保留、projector-only 训练、checkpoint 保存恢复和两分支生成实现。小文本主干与真实视觉塔已经跑通；tiny `DeepseekV4ForCausalLM` 只验证专用接口。完整 `deepseek-ai/DeepSeek-V4-Flash-0731` 权重从未完成图像 forward/backward/train/save/resume/generate，因此 Gate D 判定为 *NO-GO*。
@@ -1269,7 +1289,7 @@ text/icon-widget 的 trained click 为 4.16%/0.87%，mean distance 为 516.39/62
   [语言保持与真实视觉显著性], [ScreenSpot50/full 与 preference 均为负], [trained vision/blind/shuffled preference 46%/56%/52%；TextVQA/DocVQA/OCRBench、synthetic 与 language retention 尚待同 checkpoint。],
 )
 
-下一条 V100 路径固定使用纯文本 `Qwen/Qwen2.5-3B-Instruct`。MoonViT-V2 保持最终视觉塔，canonical projector 输出保持 4096；Qwen 使用已冻结的无参数 4096→2048 readout，不能改写 DeepSeek 主合同。首个 matched-budget baseline 已完成并被 generation 与 teacher-forced 因果指标共同拒绝。下一项保持 4,000-example 预算，只提高显式 ShowUI grounding 占比；同时补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 language-retention evaluator。任何候选仍需回到 ScreenSpot50/full、通用视觉、synthetic 与语言保持合同。详细合同见 `docs/qwen2.5-3b-community-eval-contract.md`，硬阻塞与最短路径见 `docs/project-status-and-gate-d-gap.md`。付费 Gate D 继续等待明确授权，本地 3B 研究持续推进。
+下一条 V100 路径固定使用纯文本 `Qwen/Qwen2.5-3B-Instruct`。MoonViT-V2 保持最终视觉塔，canonical projector 输出保持 4096；Qwen 使用已冻结的无参数 4096→2048 readout，不能改写 DeepSeek 主合同。首个 matched-budget baseline 已完成并被 generation 与 teacher-forced 因果指标共同拒绝。2,000-grounding/2,000-short-answer 的新顺序已在结果前冻结；下一项构建绑定 cache 并运行相同 4,000-example/500-step 预算。同时补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 language-retention evaluator。任何候选仍需回到 ScreenSpot50/full、通用视觉、synthetic 与语言保持合同。详细合同见 `docs/qwen2.5-3b-community-eval-contract.md`，硬阻塞与最短路径见 `docs/project-status-and-gate-d-gap.md`。付费 Gate D 继续等待明确授权，本地 3B 研究持续推进。
 
 == Gate C：Vast 只读调研
 
@@ -1541,9 +1561,10 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
   [2026-08-06], [包 15F 完成 GLM-format public-50 七条件评测：trained vision parse/click 为 96%/4%，blind click 12%，step0 10%；vision−blind 与 current−step0 mean distance 均显著恶化。候选拒绝、previous-best 保持 step0；完整 1,272-row ScreenSpot 已缓存并开始生成。],
   [2026-08-06], [包 15G 完成 1,272-row public ScreenSpot 七条件：trained vision/blind/step0 click 2.67%/3.07%/3.30%；vision−blind mean distance 显著恶化 169.66，vision−shuffled 无差异。GLM50 失败在完整集复现，候选继续拒绝。],
   [2026-08-06], [包 15H 完成 teacher-forced correct-vs-counterfactual preference：trained vision/blind/shuffled 为 46%/56%/52%；训练把 correct NLL 从 2.51 降到 1.22，但正确图与错误图 logp 无差异。下一项固定 4k 预算提高 grounding 数据占比。],
+  [2026-08-06], [包 15I 在任何新结果前冻结 2,000-grounding/2,000-short-answer exact order：每个 global batch 为 4/4；4,000 条 records/targets/images 与 1,255,969,179 image bytes 经独立复核。下一步绑定 cache 后跑 exact 500-step screen。],
   [2026-08-05], [固定 revision 的 DeepSeek 量化 runtime 源码审计与 GPU 矩阵成稿：forward 集成缺少已确认 autograd 证据，SM120/121 受 DeepGEMM #372 weight-load blocker 影响；首个付费建议降为单卡 SM100/B200 最小 kernel gate，仍等待授权。],
 )
 
 = 下一位执行者的最短路径
 
-包 15A–15D 的 pre-result contract、3B 工程 smoke、exact 4k order/target 与完整 MoonViT cache 已完成；包 15E–15H 又完成 fixed-budget 训练、ScreenSpot50/full 与 teacher-forced preference。当前 checkpoint 被 generation 与内部正确坐标偏好共同拒绝，previous-best 保持 step0。下一步预注册 grounding-enriched 4k：exact step0、500 steps、4,000 examples、分辨率、receiver 和 evaluator 全部不变，只提高 ShowUI click 占比；单 seed 同时改善 preference 与 GLM50 因果指标后才扩大 full/三 seed。并行补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 language retention。若 enrichment 失败，验证 discard-after-training 的 counterfactual-margin auxiliary target。正式 0731 必须通过完整权重 load、真实 FP4/FP8 input DGRAD、图像 forward/backward、20-step 稳定性和 save/resume/generate Gate D；任何付费动作等待用户明确授权。
+包 15A–15D 的 pre-result contract、3B 工程 smoke、首轮 exact 4k order/target 与完整 MoonViT cache 已完成；包 15E–15H 又完成 fixed-budget 训练、ScreenSpot50/full 与 teacher-forced preference。当前 checkpoint 被 generation 与内部正确坐标偏好共同拒绝，previous-best 保持 step0。包 15I 已冻结 grounding-enriched 4k exact order：2,000 ShowUI 与 2,000 short-answer 严格交替，其余训练和评测条件保持一致。下一步构建绑定 cache 并跑 exact 500-step 单 seed；preference 与 GLM50 因果指标同时改善后才扩大 full/三 seed。并行补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 language retention。若 enrichment 失败，验证 discard-after-training 的 counterfactual-margin auxiliary target。正式 0731 必须通过完整权重 load、真实 FP4/FP8 input DGRAD、图像 forward/backward、20-step 稳定性和 save/resume/generate Gate D；任何付费动作等待用户明确授权。

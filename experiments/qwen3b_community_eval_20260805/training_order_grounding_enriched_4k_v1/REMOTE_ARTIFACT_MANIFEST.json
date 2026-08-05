@@ -1,0 +1,37 @@
+{
+  "format_version": "qwen3b-grounding-enriched-order-remote-v1",
+  "created_at_utc": "2026-08-05T23:03:06.0130968Z",
+  "runner_git_sha": "c43c161a084b9446d35da12ad667d2fe42e4f3a7",
+  "root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/training_order_grounding_enriched_4k_v1",
+  "contract": {
+    "path": "configs/qwen2.5-3b-community-eval-v1.json",
+    "sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7"
+  },
+  "training_data": {
+    "path": "/run/media/ezra/13D010B6FDBC1A06/data/train_v1/train_mix.jsonl",
+    "bytes": 14210913,
+    "records": 59198,
+    "sha256": "5727a504824592907e8d5dfd681640de4e3caea7d32832f70292f8773b72f10a"
+  },
+  "files": {
+    "MANIFEST.json": {
+      "bytes": 3485253,
+      "sha256": "640b36840d96e765e694d888f4db801b216b16081d52c963c34d4e0bfa93d5ee"
+    },
+    "INDEPENDENT_VERIFICATION.json": {
+      "bytes": 1602,
+      "sha256": "95dc78c7a71d1559e2fc6a870aad9b4f29c349b3d19750575d3c381f86e9565a"
+    },
+    "run.log": {
+      "bytes": 2700,
+      "sha256": "ab9aaad51868012c813b9b68610fe979521c1481dc45ce5ce745c98e5ad9cb32"
+    },
+    "verify.log": {
+      "bytes": 3025,
+      "sha256": "2e89c61470defb1dbe17496286a668f89a87b20fd54f9ebde533507a3d83fa4d"
+    }
+  },
+  "training_results_exist": false,
+  "final_half_scored": false,
+  "paid_resources_used": false
+}

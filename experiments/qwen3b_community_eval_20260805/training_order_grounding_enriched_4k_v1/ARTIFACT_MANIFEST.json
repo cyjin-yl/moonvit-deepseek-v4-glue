@@ -1,0 +1,35 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-05T23:06:59.058828+00:00",
+  "root": "training_order_grounding_enriched_4k_v1",
+  "git_base_sha": "c43c161a084b9446d35da12ad667d2fe42e4f3a7",
+  "files": {
+    "INDEPENDENT_VERIFICATION.json": {
+      "bytes": 1602,
+      "sha256": "95dc78c7a71d1559e2fc6a870aad9b4f29c349b3d19750575d3c381f86e9565a"
+    },
+    "MANIFEST.json": {
+      "bytes": 3485253,
+      "sha256": "640b36840d96e765e694d888f4db801b216b16081d52c963c34d4e0bfa93d5ee"
+    },
+    "README.md": {
+      "bytes": 2266,
+      "sha256": "008840cebcfb4383513ed52e5e27b0cad0297f070ba81ed8ad28cf33a7d462db"
+    },
+    "REMOTE_ARTIFACT_MANIFEST.json": {
+      "bytes": 1340,
+      "sha256": "78845ef6676ae69df80eb650214f0f2ae93a50bd5e147b711145e8fe87386b9d"
+    },
+    "run.log": {
+      "bytes": 2700,
+      "sha256": "ab9aaad51868012c813b9b68610fe979521c1481dc45ce5ce745c98e5ad9cb32"
+    },
+    "verify.log": {
+      "bytes": 3025,
+      "sha256": "2e89c61470defb1dbe17496286a668f89a87b20fd54f9ebde533507a3d83fa4d"
+    }
+  },
+  "file_count": 6,
+  "total_bytes": 3496186,
+  "final_half_scored": false
+}

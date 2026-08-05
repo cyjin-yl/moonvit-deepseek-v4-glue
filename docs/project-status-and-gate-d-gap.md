@@ -30,7 +30,7 @@
 |---|---|---|---|
 | 真实视觉塔 | MoonViT-V2 真实权重、真实预处理、V100 forward/backward glue | 视觉编码器接口和 projector 输入合同可运行 | 完整 DeepSeek 能利用这些视觉 token |
 | 真实数据、纯文本小主干 | Qwen2.5-0.5B + MoonViT-V2 + projector-only，真实 59,198-row mix，已见 16,000 examples | 无原生 VLM 能力时可以学到非零图像依赖；训练/save/resume/eval 链路可运行 | 绝对 benchmark 上限、3B 容量、DeepSeek Hash-MoE 收敛 |
-| 3B 代理固定合同、formal 4k 训练与完整 ScreenSpot | Qwen2.5-3B 的 9 个文件 SHA、ScreenSpot50/full、严格 parser、七条件、4096→2048 fixed receiver、240 条语言保持集；首 4,000 条与 111 个训练 cache shard 已验签；500-step 训练和五个 checkpoint 独立验证；50/1,272 两级七条件评分及 teacher-forced preference 已完成 | 3B 路径可在 V100 运行且可恢复；4k 目标没有建立 causal grounding；训练把坐标 NLL 从 2.51 降到 1.22，但 trained vision/blind/shuffled preference 为 46%/56%/52%，说明收益是 image-agnostic coordinate prior | 3B 或 DeepSeek 已获得视觉能力；4k checkpoint 可进入 DeepSeek 候选；TextVQA/DocVQA/OCRBench 与语言保持尚未完成 |
+| 3B 代理固定合同、formal 4k 训练与完整 ScreenSpot | Qwen2.5-3B 的 9 个文件 SHA、ScreenSpot50/full、严格 parser、七条件、4096→2048 fixed receiver、240 条语言保持集；首 4,000 条与 111 个训练 cache shard 已验签；500-step 训练和五个 checkpoint 独立验证；50/1,272 两级七条件评分及 teacher-forced preference 已完成；下一轮 2,000-grounding/2,000-short-answer 顺序已在训练前冻结 | 3B 路径可在 V100 运行且可恢复；首个 4k 目标没有建立 causal grounding；训练把坐标 NLL 从 2.51 降到 1.22，但 trained vision/blind/shuffled preference 为 46%/56%/52%，说明收益是 image-agnostic coordinate prior；下一轮只改变 grounding 占比 | 3B 或 DeepSeek 已获得视觉能力；任一 4k checkpoint 可进入 DeepSeek 候选；TextVQA/DocVQA/OCRBench 与语言保持尚未完成 |
 | 原生 VLM 阳性对照 | Qwen3.5-4B 原生视觉模型在五项真实 benchmark 上运行 | 数据、processor 和 scorer 能得到强阳性结果 | MoonViT projector 对纯文本主干的能力 |
 | synthetic 包 3–14 | Qwen2.5-0.5B 上的 paired preference/generation、probe、patching、replay、sentinel | 机制定位、训练干扰、固定预算保护和评测开销 | ScreenSpot/TextVQA/DocVQA/OCRBench 的真实能力 |
 | DeepSeek 结构代理 | tiny `DeepseekV4ForCausalLM`、数学 DGRAD reference、三模式 harness | wrapper、routing 与 gate 工具的接口正确性 | 真实 FP4/FP8 kernel 的 input gradient 或完整 0731 稳定性 |
@@ -92,8 +92,9 @@ Teacher-forced correct-versus-counterfactual preference 进一步定位：traine
 10. **已完成（Package 15F）**：GLM-format public-50 的七条件与 2,000 paired bootstrap 完成；current candidate 因 vision 弱于 blind/step0 被拒绝。
 11. **已完成（Package 15G）**：完整 1,272-row public ScreenSpot 七条件生成与 2,000 paired bootstrap；GLM50 的负结果在完整集复现，所有 predictions 和逐行 scores 已保存。
 12. **已完成（Package 15H）**：step0/step500 teacher-forced correct-vs-counterfactual preference；训练显著提高绝对坐标答案概率，却没有正确图相对 blind/shuffled 的选择优势。
-13. **下一项 fixed-budget screen**：冻结 exact step0、500 steps、4,000 examples、分辨率、receiver 与 evaluator，只改变训练 mix，把显式 ShowUI grounding 从 baseline 339/4,000 提高到预注册高占比；先跑单 seed，只有 preference 与 GLM50 因果指标同时转正才扩大到 full/三 seed。
-14. **并行工程缺口**：补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 240-row language-retention evaluator；任何候选替换 previous-best 前必须跑完。
-15. 若 grounding enrichment 仍无 correct-image preference，转向 discard-after-training 的 correct-vs-counterfactual margin auxiliary objective；不得延长同一 baseline stream 或只调 decoding。
+13. **已完成（Package 15I，训练前）**：exact step0、500 steps、4,000 examples、分辨率、receiver 与 evaluator 全部固定；从冻结源 pack 分别取前 2,000 ShowUI grounding 与前 2,000 short-answer，按 grounding-first 严格交替。Manifest `d632ecc2…0bf1` 与 order `f3c3dec1…15ab` 已独立匹配 4,000 records/targets/images 和 1,255,969,179 image bytes。
+14. **当前 fixed-budget screen**：构建并独立验证绑定 Package-15I 的 MoonViT cache，随后从 exact step0 运行 500 steps。先跑单 seed；只有 preference 与 GLM50 因果指标同时改善才扩大到 full/三 seed。
+15. **并行工程缺口**：补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 240-row language-retention evaluator；任何候选替换 previous-best 前必须跑完。
+16. 若 grounding enrichment 仍无 correct-image preference，转向 discard-after-training 的 correct-vs-counterfactual margin auxiliary objective；不得延长同一 baseline stream 或只调 decoding。
 
 在完成以上本地证据后，若剩余阻塞只来自完整权重容量和量化 DGRAD，再提交最小付费 Gate D 的硬件、时价、GPU-hour、存储与止损上限，等待单独授权。
