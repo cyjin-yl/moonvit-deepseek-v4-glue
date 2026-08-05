@@ -1,0 +1,142 @@
+{
+  "status": "valid",
+  "format_version": "balanced-multitask-adaptation-training-v2",
+  "arm": "lora_top12",
+  "kind": "lora",
+  "metadata": {
+    "completed_at_utc": "2026-08-05T02:40:06.789783+00:00",
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "wall_seconds": 29.758724212646484,
+    "peak_gpu_memory_bytes": 9729263616,
+    "final_half_scored": false
+  },
+  "steps": 1,
+  "batch_size": 24,
+  "examples_seen": 24,
+  "train_records": 2400,
+  "train_pairs": 1200,
+  "tasks": [
+    "color",
+    "coordinate",
+    "count",
+    "ocr",
+    "shape",
+    "spatial"
+  ],
+  "train_records_by_task": {
+    "color": 400,
+    "coordinate": 400,
+    "count": 400,
+    "ocr": 400,
+    "shape": 400,
+    "spatial": 400
+  },
+  "trainable_parameters": 442368,
+  "resolved_lora_modules": [
+    "model.layers.12.self_attn.q_proj",
+    "model.layers.12.self_attn.v_proj",
+    "model.layers.12.self_attn.o_proj",
+    "model.layers.13.self_attn.q_proj",
+    "model.layers.13.self_attn.v_proj",
+    "model.layers.13.self_attn.o_proj",
+    "model.layers.14.self_attn.q_proj",
+    "model.layers.14.self_attn.v_proj",
+    "model.layers.14.self_attn.o_proj",
+    "model.layers.15.self_attn.q_proj",
+    "model.layers.15.self_attn.v_proj",
+    "model.layers.15.self_attn.o_proj",
+    "model.layers.16.self_attn.q_proj",
+    "model.layers.16.self_attn.v_proj",
+    "model.layers.16.self_attn.o_proj",
+    "model.layers.17.self_attn.q_proj",
+    "model.layers.17.self_attn.v_proj",
+    "model.layers.17.self_attn.o_proj",
+    "model.layers.18.self_attn.q_proj",
+    "model.layers.18.self_attn.v_proj",
+    "model.layers.18.self_attn.o_proj",
+    "model.layers.19.self_attn.q_proj",
+    "model.layers.19.self_attn.v_proj",
+    "model.layers.19.self_attn.o_proj",
+    "model.layers.20.self_attn.q_proj",
+    "model.layers.20.self_attn.v_proj",
+    "model.layers.20.self_attn.o_proj",
+    "model.layers.21.self_attn.q_proj",
+    "model.layers.21.self_attn.v_proj",
+    "model.layers.21.self_attn.o_proj",
+    "model.layers.22.self_attn.q_proj",
+    "model.layers.22.self_attn.v_proj",
+    "model.layers.22.self_attn.o_proj",
+    "model.layers.23.self_attn.q_proj",
+    "model.layers.23.self_attn.v_proj",
+    "model.layers.23.self_attn.o_proj"
+  ],
+  "base_projector_sha256": "98a566eb2c8414f105662b6532734a4246830b7e5a2df56ae3da14ad23737ef3",
+  "projector_config_source": "/run/media/ezra/13D010B6FDBC1A06/data/gate_b/ckpt/checkpoints/step-000500",
+  "projector_config_sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804",
+  "optimizer_resume": {
+    "restored": false,
+    "source": null,
+    "source_step": null
+  },
+  "selection_manifest_sha256": "b5a851bb969b41607fc95299df90ec51cc7a0db6c1e0d560380bed1f7abac71e",
+  "checkpoints": {
+    "step-000000": {
+      "status": "valid",
+      "arm": "lora_top12",
+      "kind": "lora",
+      "step": 0,
+      "examples_seen": 0,
+      "weights_tensor_sha256": "f5126ac028eb8037800fdeee2ecb4555e8102ef3a1cec00b73e368b79974b0a6",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1895,
+          "sha256": "c1f1d9f68a1339d3f06c44db191368a5bad807c1c92f2345f0cf91a8d0c020fb"
+        },
+        "lora.safetensors": {
+          "bytes": 1777096,
+          "sha256": "36ccda7c832f1f58edfbe5ff45880a1a5d67c710d34fad52e15feff88cb6725e"
+        },
+        "training_state.pt": {
+          "bytes": 1751,
+          "sha256": "a80df104479d0c3aad33889c5ee2ec2f37fd8606ece0f1e81640e03a780f9752"
+        }
+      }
+    },
+    "step-000001": {
+      "status": "valid",
+      "arm": "lora_top12",
+      "kind": "lora",
+      "step": 1,
+      "examples_seen": 24,
+      "weights_tensor_sha256": "e05e30f2b6a637046830a567593588901193a68c5d92729330ac754a49cc0f07",
+      "files": {
+        "adapter_config.json": {
+          "bytes": 1895,
+          "sha256": "030ec8ee18c23f9f084da3ae203e2629053c376c4dd17e9287820525f701a6e7"
+        },
+        "lora.safetensors": {
+          "bytes": 1777096,
+          "sha256": "673241cce33e577a03ba3ce428247b5ab33a27b34fe86049896fb91fcd1b9c3a"
+        },
+        "training_state.pt": {
+          "bytes": 3601121,
+          "sha256": "2c5af091937a630842b6b6937e4066a2c65e62f8a57f115fbaab636516993a1b"
+        }
+      }
+    }
+  },
+  "files": {
+    "train_history.jsonl": {
+      "bytes": 325,
+      "sha256": "0882aead736c9d3e5935d2670ea7037b964fd1ac0bce7604f397e4eff1db9291"
+    },
+    "training_order.jsonl": {
+      "bytes": 593,
+      "sha256": "a4ca65d51010b6ea49a98ab248da39ac167ad12ad521cdaf38fd62b7193bc9f9"
+    }
+  },
+  "final_half_scored": false
+}

@@ -1,0 +1,28 @@
+{
+  "status": "valid",
+  "source_files": {
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_eval_v2/preference_curve.csv": "1fb4125a60514d290626339a59946640fa6430fa3c193c5ec11c507c2a3e6726",
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_eval_v2/generation_curve.csv": "28e2546868527bde453352f6fe848d09d1db163ec100bcd85b213605170c02f7",
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_analysis_v2/adaptation_contrasts.csv": "ea44a05fdc5bb38b1599e8cfe2df117057ad98164621a0ed7b256ebb56f57de8",
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_lora_v1/train_history.jsonl": "704db2b8bc437927ffa61a2ed4c750c7a709a3291fd82dd72a10c4de372f4771",
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/train_history.jsonl": "12a968f2ba2daf4c6c7e8f783288d1485c92cf05f93e16ae97755ad9aaf1bfd6"
+  },
+  "charts": {
+    "00-training-loss.svg": {
+      "bytes": 16274,
+      "sha256": "e9e7900f7389bc51ac096e64aca67a11ba4fc73dc26c3986794c0c0cf9ab8248"
+    },
+    "01-endpoint-paired-preference.svg": {
+      "bytes": 4327,
+      "sha256": "bf206b70c16a6f377982b2899d9ba66ff0aa402fe63e502470a99b0cf1aa4b97"
+    },
+    "02-endpoint-paired-generation.svg": {
+      "bytes": 4323,
+      "sha256": "0334268a7faca60d51cd1143f9c9ea0a87c0e9e9164cb4a5c5a6570da23191b0"
+    },
+    "03-lora-minus-projector.svg": {
+      "bytes": 3273,
+      "sha256": "625959ec42d17ae7d137a1af71d71b7c346c03c392d79f5f5dcf910903d00f57"
+    }
+  }
+}

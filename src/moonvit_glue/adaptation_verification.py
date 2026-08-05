@@ -208,18 +208,32 @@ def verify_analysis(run: Path, evaluation: Path) -> dict:
     summary = json.loads((run / "SUMMARY.json").read_text(encoding="utf-8"))
     if summary.get("status") != "valid" or summary.get("final_half_scored"):
         raise ValueError("adaptation analysis is not valid")
-    if summary["source_summary_sha256"] != sha256(evaluation / "SUMMARY.json"):
+    source_field, count_field, delta_field = analysis_contract_fields(summary)
+    if summary[source_field] != sha256(evaluation / "SUMMARY.json"):
         raise ValueError("adaptation analysis source hash mismatch")
     for name, entry in summary["files"].items():
         _check_file(run / name, entry)
     with (run / "adaptation_contrasts.csv").open(encoding="utf-8", newline="") as stream:
         rows = list(csv.DictReader(stream))
-    if len(rows) != int(summary["contrast_rows"]):
+    if len(rows) != int(summary[count_field]):
         raise ValueError("adaptation contrast row denominator mismatch")
-    if any(not all(math.isfinite(float(row[field])) for field in ("mean_gap", "ci95_low", "ci95_high")) for row in rows):
+    if any(
+        not all(
+            math.isfinite(float(row[field]))
+            for field in (delta_field, "ci95_low", "ci95_high")
+        )
+        for row in rows
+    ):
         raise ValueError("adaptation contrast contains non-finite values")
     return {
         "status": "valid",
         "contrast_rows_verified": len(rows),
         "final_half_scored": False,
     }
+
+
+def analysis_contract_fields(summary: dict) -> tuple[str, str, str]:
+    """按显式格式版本选择分析字段，拒绝静默猜测。"""
+    if summary.get("format_version") == "balanced-adaptation-comparison-analysis-v1":
+        return "eval_summary_sha256", "contrasts", "mean_gap"
+    return "source_summary_sha256", "contrast_rows", "mean_gap"

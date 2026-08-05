@@ -3,9 +3,16 @@
 import pytest
 
 from moonvit_glue.adaptation_verification import (
+    analysis_contract_fields,
     expected_lora_state_keys,
     validate_balanced_task_history,
 )
+
+
+def test_balanced_comparison_analysis_uses_its_explicit_contract():
+    assert analysis_contract_fields(
+        {"format_version": "balanced-adaptation-comparison-analysis-v1"}
+    ) == ("eval_summary_sha256", "contrasts", "mean_gap")
 
 
 def test_expected_lora_state_keys_expands_only_a_and_b():

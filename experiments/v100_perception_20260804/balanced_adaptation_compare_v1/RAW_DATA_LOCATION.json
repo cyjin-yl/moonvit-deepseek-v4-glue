@@ -1,0 +1,32 @@
+{
+  "status": "valid",
+  "workstation": "doesworkstation",
+  "data_root": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1",
+  "canonical_runs": {
+    "projector_training": "adaptation/balanced_compare_projector_v1",
+    "lora_training": "adaptation/balanced_compare_lora_v1",
+    "bf16_evaluation": "adaptation/balanced_compare_eval_v2",
+    "bf16_analysis": "adaptation/balanced_compare_analysis_v2",
+    "bf16_charts": "adaptation/balanced_compare_charts_v2",
+    "verification": "adaptation/balanced_compare_verification_v2.json"
+  },
+  "diagnostic_runs": {
+    "fp32_evaluation": "adaptation/balanced_compare_eval_v1",
+    "fp32_analysis": "adaptation/balanced_compare_analysis_v1",
+    "screening_evaluation": "adaptation/balanced_compare_eval_smoke_v1",
+    "screening_analysis": "adaptation/balanced_compare_analysis_smoke_v1"
+  },
+  "retained_failures": {
+    "projector_pre_sync_smoke": "adaptation/balanced_compare_projector_smoke_v1",
+    "lora_pre_sync_smoke": "adaptation/balanced_compare_lora_smoke_v1"
+  },
+  "large_checkpoints_retained_on_workstation": {
+    "projector": "four self-contained projector/optimizer checkpoints; exact file bytes and SHA-256 are embedded in raw/adaptation/balanced_compare_projector_v1/SUMMARY.json",
+    "lora": "four explicit LoRA/optimizer checkpoints; exact file bytes and SHA-256 are embedded in raw/adaptation/balanced_compare_lora_v1/SUMMARY.json"
+  },
+  "git_package": "experiments/v100_perception_20260804/balanced_adaptation_compare_v1",
+  "evaluation_raw_data_committed_losslessly": true,
+  "large_checkpoints_committed": false,
+  "final_half_scored": false,
+  "paid_resources_used": false
+}

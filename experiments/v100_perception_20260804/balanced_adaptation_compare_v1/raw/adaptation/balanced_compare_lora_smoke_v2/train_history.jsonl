@@ -1,0 +1,1 @@
+{"step": 1, "loss": 1.2214956283569336, "gradient_norm_before_clip": 2.0834860801696777, "batch_size": 24, "examples_seen": 24, "answer_tokens_seen": 65, "task_counts": {"color": 4, "coordinate": 4, "count": 4, "ocr": 4, "shape": 4, "spatial": 4}, "step_wall_seconds": 0.908473014831543, "peak_gpu_memory_bytes": 9729263616}

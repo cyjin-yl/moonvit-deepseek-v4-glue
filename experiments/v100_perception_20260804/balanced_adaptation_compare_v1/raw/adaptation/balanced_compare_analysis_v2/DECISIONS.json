@@ -1,0 +1,58 @@
+{
+  "status": "valid",
+  "frozen_state": "frozen-base",
+  "lora_state": "lora-step100",
+  "projector_state": "projector-step100",
+  "tasks": {
+    "color": {
+      "preference_lora_minus_projector": -0.405,
+      "preference_lora_minus_projector_ci95_low": -0.475,
+      "preference_lora_minus_projector_ci95_high": -0.33,
+      "generation_lora_minus_projector": -0.16,
+      "generation_lora_minus_projector_ci95_low": -0.28,
+      "generation_lora_minus_projector_ci95_high": -0.06
+    },
+    "coordinate": {
+      "preference_lora_minus_projector": -0.48,
+      "preference_lora_minus_projector_ci95_low": -0.555,
+      "preference_lora_minus_projector_ci95_high": -0.4,
+      "generation_lora_minus_projector": -0.24,
+      "generation_lora_minus_projector_ci95_low": -0.36,
+      "generation_lora_minus_projector_ci95_high": -0.12
+    },
+    "count": {
+      "preference_lora_minus_projector": -0.1,
+      "preference_lora_minus_projector_ci95_low": -0.145,
+      "preference_lora_minus_projector_ci95_high": -0.06,
+      "generation_lora_minus_projector": -0.02,
+      "generation_lora_minus_projector_ci95_low": -0.06,
+      "generation_lora_minus_projector_ci95_high": 0.0
+    },
+    "ocr": {
+      "preference_lora_minus_projector": -0.045,
+      "preference_lora_minus_projector_ci95_low": -0.09,
+      "preference_lora_minus_projector_ci95_high": -0.005,
+      "generation_lora_minus_projector": 0.0,
+      "generation_lora_minus_projector_ci95_low": 0.0,
+      "generation_lora_minus_projector_ci95_high": 0.0
+    },
+    "shape": {
+      "preference_lora_minus_projector": 0.445,
+      "preference_lora_minus_projector_ci95_low": 0.375,
+      "preference_lora_minus_projector_ci95_high": 0.51,
+      "generation_lora_minus_projector": 0.36,
+      "generation_lora_minus_projector_ci95_low": 0.22,
+      "generation_lora_minus_projector_ci95_high": 0.5
+    },
+    "spatial": {
+      "preference_lora_minus_projector": -1.0,
+      "preference_lora_minus_projector_ci95_low": -1.0,
+      "preference_lora_minus_projector_ci95_high": -1.0,
+      "generation_lora_minus_projector": -1.0,
+      "generation_lora_minus_projector_ci95_low": -1.0,
+      "generation_lora_minus_projector_ci95_high": -1.0
+    }
+  },
+  "selected_direction": "additional_projector_training_supported",
+  "decision_rule": "at least two task-level paired-generation confidence intervals must exclude zero in the same arm direction"
+}

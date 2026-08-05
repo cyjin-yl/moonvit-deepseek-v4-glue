@@ -1,0 +1,53 @@
+{
+  "status": "valid",
+  "lora_training": {
+    "status": "valid",
+    "kind": "lora",
+    "steps_verified": 100,
+    "examples_verified": 2400,
+    "checkpoints_verified": 4,
+    "checkpoint_tensors_verified": 288,
+    "task_examples_verified": {
+      "color": 400,
+      "coordinate": 400,
+      "count": 400,
+      "ocr": 400,
+      "shape": 400,
+      "spatial": 400
+    },
+    "final_half_scored": false
+  },
+  "projector_training": {
+    "status": "valid",
+    "kind": "projector",
+    "steps_verified": 100,
+    "examples_verified": 2400,
+    "checkpoints_verified": 4,
+    "checkpoint_tensors_verified": 24,
+    "task_examples_verified": {
+      "color": 400,
+      "coordinate": 400,
+      "count": 400,
+      "ocr": 400,
+      "shape": 400,
+      "spatial": 400
+    },
+    "final_half_scored": false
+  },
+  "equal_training_order_sha256": "a0929326fc8b494f85b82fc504855cd23f1ddfa74348ccc9b364a13ada39f2f5",
+  "evaluation": {
+    "status": "valid",
+    "states_verified": 3,
+    "preference_rows_verified": 21600,
+    "generation_rows_verified": 3600,
+    "preference_cells_verified": 9,
+    "generation_cells_verified": 6,
+    "final_half_scored": false
+  },
+  "analysis": {
+    "status": "valid",
+    "contrast_rows_verified": 189,
+    "final_half_scored": false
+  },
+  "final_half_scored": false
+}

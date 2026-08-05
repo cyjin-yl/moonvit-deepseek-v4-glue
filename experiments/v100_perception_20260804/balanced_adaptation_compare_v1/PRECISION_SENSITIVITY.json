@@ -1,0 +1,25 @@
+{
+  "status": "valid",
+  "question": "Does projector evaluation precision change the package-7 baseline and package-8 endpoint conclusions?",
+  "fp32_diagnostic_run": "raw/adaptation/balanced_compare_eval_v1",
+  "bf16_canonical_run": "raw/adaptation/balanced_compare_eval_v2",
+  "bf16_matches_package7_baseline": true,
+  "baseline_strict_paired_preference": {
+    "color": {"fp32": 0.245, "bf16": 0.23},
+    "coordinate": {"fp32": 0.055, "bf16": 0.055},
+    "count": {"fp32": 0.12, "bf16": 0.115},
+    "ocr": {"fp32": 0.145, "bf16": 0.135},
+    "shape": {"fp32": 0.59, "bf16": 0.56},
+    "spatial": {"fp32": 0.0, "bf16": 0.25}
+  },
+  "baseline_paired_generation": {
+    "color": {"fp32": 0.0, "bf16": 0.0},
+    "coordinate": {"fp32": 0.0, "bf16": 0.0},
+    "count": {"fp32": 0.0, "bf16": 0.0},
+    "ocr": {"fp32": 0.0, "bf16": 0.0},
+    "shape": {"fp32": 0.18, "bf16": 0.16},
+    "spatial": {"fp32": 0.0, "bf16": 0.22}
+  },
+  "decision": "Use bf16 v2 for every cross-package claim; retain fp32 v1 as a threshold-sensitivity diagnostic.",
+  "final_half_scored": false
+}

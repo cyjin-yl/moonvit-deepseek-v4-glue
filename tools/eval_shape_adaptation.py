@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""在冻结 shape selection 上比较 frozen、顶部 LoRA 与 projector continuation。"""
+"""在冻结 synthetic selection 上比较顶部 LoRA 与 projector continuation。"""
 
 from __future__ import annotations
 
@@ -35,8 +35,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--projector-run", type=Path)
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument(
+        "--limit-per-task",
+        type=int,
+        default=None,
+        help="每项任务保留相同数量、且不拆 counterfactual pair",
+    )
     parser.add_argument("--teacher-batch-size", type=int, default=32)
     parser.add_argument("--generation-batch-size", type=int, default=16)
+    parser.add_argument(
+        "--adaptation-steps",
+        type=int,
+        nargs="*",
+        default=None,
+        help="只评估这些相对步数，并始终保留 frozen base",
+    )
     return parser.parse_args()
 
 
@@ -67,6 +80,26 @@ def read_frozen_records(data_path: Path, ids_path: Path) -> list[dict]:
     return [by_id[sample_id] for sample_id in ids]
 
 
+def read_evaluation_records(
+    data_path: Path,
+    ids_path: Path | None = None,
+    *,
+    expected_records: int | None = None,
+) -> list[dict]:
+    """读取完整 manifest，或按冻结 ID 子集保持历史 shape 协议兼容。"""
+    records = (
+        read_frozen_records(data_path, ids_path)
+        if ids_path is not None
+        else load_records(data_path)
+    )
+    if expected_records is not None and len(records) != int(expected_records):
+        raise ValueError(
+            f"adaptation evaluation denominator mismatch: "
+            f"{len(records)} != {expected_records}"
+        )
+    return records
+
+
 def take_complete_pair_limit(records: list[dict], limit: int | None) -> list[dict]:
     if limit is None:
         return records
@@ -86,6 +119,19 @@ def take_complete_pair_limit(records: list[dict], limit: int | None) -> list[dic
     return selected
 
 
+def take_complete_pair_limit_per_task(
+    records: list[dict], limit_per_task: int | None
+) -> list[dict]:
+    if limit_per_task is None:
+        return records
+    tasks = sorted({str(record["task"]) for record in records})
+    selected = []
+    for task in tasks:
+        task_records = [record for record in records if str(record["task"]) == task]
+        selected.extend(take_complete_pair_limit(task_records, limit_per_task))
+    return selected
+
+
 def checkpoint_states(
     *, config: dict, lora_run: Path | None, projector_run: Path | None
 ) -> tuple[list[dict], dict]:
@@ -96,7 +142,7 @@ def checkpoint_states(
         raise ValueError("LoRA adaptation run is not valid")
     states = [
         {
-            "id": "frozen-step1500",
+            "id": "frozen-base",
             "kind": "frozen",
             "adaptation_step": 0,
             "adaptation_examples_seen": 0,
@@ -151,6 +197,28 @@ def checkpoint_states(
     return states, sources
 
 
+def filter_adaptation_states(
+    states: list[dict], requested_steps: list[int] | None
+) -> list[dict]:
+    if requested_steps is None:
+        return states
+    requested = {int(step) for step in requested_steps}
+    filtered = [
+        state
+        for state in states
+        if state["kind"] == "frozen" or int(state["adaptation_step"]) in requested
+    ]
+    kinds = {str(state["kind"]) for state in filtered}
+    if requested and not {"frozen", "lora", "projector"} <= kinds:
+        raise ValueError("requested endpoint is absent from one adaptation arm")
+    return filtered
+
+
+def evaluation_projector_dtype(config: dict) -> str:
+    """评测精度独立于 fp32 训练精度，并显式写入 CONFIG。"""
+    return str(config.get("evaluation", {}).get("projector_dtype", config["projector_dtype"]))
+
+
 def write_csv(path: Path, rows: list[dict]) -> None:
     with path.open("w", encoding="utf-8", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
@@ -163,10 +231,13 @@ def run(args: argparse.Namespace) -> None:
     states, sources = checkpoint_states(
         config=config, lora_run=args.lora_run, projector_run=args.projector_run
     )
+    states = filter_adaptation_states(states, args.adaptation_steps)
     config["evaluation_override"] = {
         "limit": args.limit,
+        "limit_per_task": args.limit_per_task,
         "teacher_batch_size": args.teacher_batch_size,
         "generation_batch_size": args.generation_batch_size,
+        "adaptation_steps": args.adaptation_steps,
     }
     config["evaluation_states"] = [
         {
@@ -185,7 +256,7 @@ def run(args: argparse.Namespace) -> None:
     started = time.time()
     device = torch.device(config["device"])
     language_dtype = getattr(torch, config["language_dtype"])
-    projector_dtype = getattr(torch, config["projector_dtype"])
+    projector_dtype = getattr(torch, evaluation_projector_dtype(config))
     if device.type == "cuda":
         torch.cuda.reset_peak_memory_stats(device)
     from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
@@ -217,7 +288,9 @@ def run(args: argparse.Namespace) -> None:
     )
     if resolved != adapter_config["resolved_modules"]:
         raise ValueError("resolved LoRA modules drifted from training")
-    projector_source = Path(config["base_projector"])
+    projector_source = Path(
+        config.get("projector_config_source", config["base_projector"])
+    )
     projector_config = ProjectorConfig(
         **json.loads((projector_source / "projector_config.json").read_text(encoding="utf-8"))
     )
@@ -234,13 +307,34 @@ def run(args: argparse.Namespace) -> None:
         pad_token_id=int(tokenizer.pad_token_id),
     ).eval()
     dataset = config["dataset"]
-    selection = take_complete_pair_limit(
-        read_frozen_records(Path(dataset["selection_data"]), Path(dataset["selection_ids"])),
-        args.limit,
+    selection_ids = (
+        Path(dataset["selection_ids"]) if dataset.get("selection_ids") else None
     )
-    generation = take_complete_pair_limit(
-        read_frozen_records(Path(dataset["selection_data"]), Path(dataset["patching_ids"])),
-        args.limit,
+    generation_ids = (
+        Path(dataset["patching_ids"]) if dataset.get("patching_ids") else None
+    )
+    generation_data = Path(dataset.get("generation_data", dataset["selection_data"]))
+    selection = take_complete_pair_limit_per_task(
+        take_complete_pair_limit(
+            read_evaluation_records(
+                Path(dataset["selection_data"]),
+                selection_ids,
+                expected_records=dataset.get("expected_selection_records"),
+            ),
+            args.limit,
+        ),
+        args.limit_per_task,
+    )
+    generation = take_complete_pair_limit_per_task(
+        take_complete_pair_limit(
+            read_evaluation_records(
+                generation_data,
+                generation_ids,
+                expected_records=dataset.get("expected_generation_records"),
+            ),
+            args.limit,
+        ),
+        args.limit_per_task,
     )
     pair_details = build_pair_index(selection)
     generation_pair_details = build_pair_index(generation)
@@ -324,7 +418,7 @@ def run(args: argparse.Namespace) -> None:
                             "id": str(record["id"]),
                             "pair_id": str(record["pair_id"]),
                             "pair_variant": str(record["pair_variant"]),
-                            "task": "shape",
+                            "task": str(record["task"]),
                             "visual_source_id": source_id,
                             "correct_answer": pair_details[str(record["id"])]["correct_answer"],
                             "counterfactual_answer": pair_details[str(record["id"])][
@@ -344,25 +438,33 @@ def run(args: argparse.Namespace) -> None:
                         condition_rows.append(row)
                 preference_stream.flush()
                 state_preference_rows.extend(condition_rows)
-                summary = summarize_preference_rows(condition_rows)
-                preference_curves.append(
-                    {
-                        "state": state["id"],
-                        "kind": state["kind"],
-                        "adaptation_step": state["adaptation_step"],
-                        "adaptation_examples_seen": state["adaptation_examples_seen"],
-                        "condition": condition,
-                        "records": summary["samples"],
-                        "pairs": summary["pairs"],
-                        "sample_preference_accuracy": summary[
-                            "sample_preference_accuracy"
-                        ]["value"],
-                        "paired_preference_accuracy": summary[
-                            "paired_preference_accuracy"
-                        ]["value"],
-                        "mean_correct_margin": summary["mean_correct_margin"],
-                    }
-                )
+                tasks = sorted({str(row["task"]) for row in condition_rows})
+                for task in ["overall", *tasks]:
+                    rows = (
+                        condition_rows
+                        if task == "overall"
+                        else [row for row in condition_rows if row["task"] == task]
+                    )
+                    summary = summarize_preference_rows(rows)
+                    preference_curves.append(
+                        {
+                            "state": state["id"],
+                            "kind": state["kind"],
+                            "adaptation_step": state["adaptation_step"],
+                            "adaptation_examples_seen": state["adaptation_examples_seen"],
+                            "condition": condition,
+                            "task": task,
+                            "records": summary["samples"],
+                            "pairs": summary["pairs"],
+                            "sample_preference_accuracy": summary[
+                                "sample_preference_accuracy"
+                            ]["value"],
+                            "paired_preference_accuracy": summary[
+                                "paired_preference_accuracy"
+                            ]["value"],
+                            "mean_correct_margin": summary["mean_correct_margin"],
+                        }
+                    )
             for condition in ("vision", "paired_counterfactual_image"):
                 condition_rows = []
                 for start in range(0, len(generation), args.generation_batch_size):
@@ -405,7 +507,7 @@ def run(args: argparse.Namespace) -> None:
                             "id": str(record["id"]),
                             "pair_id": str(record["pair_id"]),
                             "pair_variant": str(record["pair_variant"]),
-                            "task": "shape",
+                            "task": str(record["task"]),
                             "visual_source_id": source_id,
                             "answers": [expected],
                             "prediction": prediction,
@@ -417,22 +519,30 @@ def run(args: argparse.Namespace) -> None:
                         generation_stream.write(json.dumps(row, ensure_ascii=False) + "\n")
                         condition_rows.append(row)
                 generation_stream.flush()
-                summary = summarize_synthetic_rows(condition_rows)
-                generation_curves.append(
-                    {
-                        "state": state["id"],
-                        "kind": state["kind"],
-                        "adaptation_step": state["adaptation_step"],
-                        "adaptation_examples_seen": state["adaptation_examples_seen"],
-                        "condition": condition,
-                        "records": summary["samples"],
-                        "pairs": summary["pairs"],
-                        "accuracy": summary["accuracy"]["value"],
-                        "paired_accuracy": summary["paired_accuracy"]["value"],
-                        "answer_flip_accuracy": summary["answer_flip_accuracy"]["value"],
-                        "prediction_flip_rate": summary["prediction_flip_rate"]["value"],
-                    }
-                )
+                tasks = sorted({str(row["task"]) for row in condition_rows})
+                for task in ["overall", *tasks]:
+                    rows = (
+                        condition_rows
+                        if task == "overall"
+                        else [row for row in condition_rows if row["task"] == task]
+                    )
+                    summary = summarize_synthetic_rows(rows)
+                    generation_curves.append(
+                        {
+                            "state": state["id"],
+                            "kind": state["kind"],
+                            "adaptation_step": state["adaptation_step"],
+                            "adaptation_examples_seen": state["adaptation_examples_seen"],
+                            "condition": condition,
+                            "task": task,
+                            "records": summary["samples"],
+                            "pairs": summary["pairs"],
+                            "accuracy": summary["accuracy"]["value"],
+                            "paired_accuracy": summary["paired_accuracy"]["value"],
+                            "answer_flip_accuracy": summary["answer_flip_accuracy"]["value"],
+                            "prediction_flip_rate": summary["prediction_flip_rate"]["value"],
+                        }
+                    )
             print(f"completed {state['id']}", flush=True)
     preference_curve_path = args.out / "preference_curve.csv"
     generation_curve_path = args.out / "generation_curve.csv"
@@ -441,17 +551,25 @@ def run(args: argparse.Namespace) -> None:
     decisions = {
         "status": "valid",
         "best_vision_paired_preference": max(
-            (row for row in preference_curves if row["condition"] == "vision"),
+            (
+                row
+                for row in preference_curves
+                if row["condition"] == "vision" and row["task"] == "overall"
+            ),
             key=lambda row: (float(row["paired_preference_accuracy"]), float(row["mean_correct_margin"])),
         ),
         "best_vision_paired_generation": max(
-            (row for row in generation_curves if row["condition"] == "vision"),
+            (
+                row
+                for row in generation_curves
+                if row["condition"] == "vision" and row["task"] == "overall"
+            ),
             key=lambda row: (float(row["paired_accuracy"]), float(row["accuracy"])),
         ),
         "interpretation_limits": [
-            "all selection records are disjoint from the 400-record shape adaptation train split",
+            "all selection records are disjoint from the adaptation train split",
             "LoRA and projector continuation see equal true-batch examples from the same frozen order",
-            "this shape-only diagnostic does not estimate general benchmark transfer",
+            "this synthetic diagnostic does not estimate general benchmark transfer",
             "final odd halves remain unscored",
         ],
     }

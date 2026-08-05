@@ -1,0 +1,106 @@
+{
+  "status": "valid",
+  "format_version": "balanced-multitask-adaptation-training-v2",
+  "arm": "additional_projector_epoch",
+  "kind": "projector",
+  "metadata": {
+    "completed_at_utc": "2026-08-05T02:39:32.694664+00:00",
+    "git_sha": "d5944d934f9cf27bf6b71eec137450491083eafc",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "wall_seconds": 34.91780638694763,
+    "peak_gpu_memory_bytes": 11591414784,
+    "final_half_scored": false
+  },
+  "steps": 1,
+  "batch_size": 24,
+  "examples_seen": 24,
+  "train_records": 2400,
+  "train_pairs": 1200,
+  "tasks": [
+    "color",
+    "coordinate",
+    "count",
+    "ocr",
+    "shape",
+    "spatial"
+  ],
+  "train_records_by_task": {
+    "color": 400,
+    "coordinate": 400,
+    "count": 400,
+    "ocr": 400,
+    "shape": 400,
+    "spatial": 400
+  },
+  "trainable_parameters": 20454272,
+  "resolved_lora_modules": [],
+  "base_projector_sha256": "98a566eb2c8414f105662b6532734a4246830b7e5a2df56ae3da14ad23737ef3",
+  "projector_config_source": "/run/media/ezra/13D010B6FDBC1A06/data/gate_b/ckpt/checkpoints/step-000500",
+  "projector_config_sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804",
+  "optimizer_resume": {
+    "restored": true,
+    "source": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_multitask_projector_v1/checkpoints/step-000100/training_state.pt",
+    "source_step": 100,
+    "source_sha256": "47ceb28f64df2573beae51480e75fe5626d32e6c134f67dc91f35cfc6ba97196"
+  },
+  "selection_manifest_sha256": "b5a851bb969b41607fc95299df90ec51cc7a0db6c1e0d560380bed1f7abac71e",
+  "checkpoints": {
+    "step-000000": {
+      "status": "valid",
+      "arm": "additional_projector_epoch",
+      "kind": "projector",
+      "step": 0,
+      "examples_seen": 0,
+      "weights_tensor_sha256": "d2b413c2155d6e70ef6f2fa3a5fd8b9ba8d56d0ef163d4d31d719543c2f70e69",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "70d8e66f13b5d90f058884eb2130aedef3a0f210e1ec52a7f744a8cbf968b0dd"
+        },
+        "projector_config.json": {
+          "bytes": 127,
+          "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+        },
+        "training_state.pt": {
+          "bytes": 163640597,
+          "sha256": "c3dca5bdbb9b247a75fff5aec48e4492619e74545fb5e8ccc8640172d8536a96"
+        }
+      }
+    },
+    "step-000001": {
+      "status": "valid",
+      "arm": "additional_projector_epoch",
+      "kind": "projector",
+      "step": 1,
+      "examples_seen": 24,
+      "weights_tensor_sha256": "a69d4f1f811bbd10e75df09de03443ef3e9026b331fb91a7f83a118dacfb1420",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "2d52ac17e60ea96eca3c5b5ba28056c32a1b22aead9adb21d95ff083d388fe0b"
+        },
+        "projector_config.json": {
+          "bytes": 127,
+          "sha256": "d505f4a2ee6a2312c758ae16bfaf051367282ede7617676fd1234c118e4c7804"
+        },
+        "training_state.pt": {
+          "bytes": 163640597,
+          "sha256": "8d95216fe7dd101b69b381fcae1e7231f2dbe62d7ce96b6d5a6cbc34176eca00"
+        }
+      }
+    }
+  },
+  "files": {
+    "train_history.jsonl": {
+      "bytes": 326,
+      "sha256": "f1f2b124328fa0dccbf90c8085deba130125d595e73cc0d467e2beedea28517c"
+    },
+    "training_order.jsonl": {
+      "bytes": 593,
+      "sha256": "a4ca65d51010b6ea49a98ab248da39ac167ad12ad521cdaf38fd62b7193bc9f9"
+    }
+  },
+  "final_half_scored": false
+}

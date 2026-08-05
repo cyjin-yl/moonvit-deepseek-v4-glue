@@ -47,6 +47,42 @@ def git_sha() -> str | None:
     return result.stdout.strip() or None
 
 
+def resolve_projector_config_source(config: dict) -> Path:
+    """允许权重断点与不可变 projector 结构定义分开存放。"""
+    return Path(config.get("projector_config_source", config["base_projector"]))
+
+
+def maybe_resume_projector_optimizer(
+    *,
+    optimizer,
+    arm: dict,
+    base_projector: Path,
+    device: torch.device,
+) -> dict:
+    """仅给真实 projector continuation 恢复 AdamW 动量。"""
+    provenance = {"restored": False, "source": None, "source_step": None}
+    if arm["kind"] != "projector" or not bool(arm.get("resume_optimizer", False)):
+        return provenance
+    state_path = base_projector / "training_state.pt"
+    if not state_path.is_file():
+        raise FileNotFoundError(f"projector optimizer state is missing: {state_path}")
+    state = torch.load(state_path, map_location="cpu", weights_only=False)
+    if "optimizer" not in state or "step" not in state:
+        raise ValueError("projector training state is incomplete")
+    optimizer.load_state_dict(state["optimizer"])
+    # PyTorch 通常会自动迁移状态；显式迁移避免旧版本把 AdamW 动量留在 CPU。
+    for parameter_state in optimizer.state.values():
+        for key, value in parameter_state.items():
+            if torch.is_tensor(value):
+                parameter_state[key] = value.to(device=device)
+    return {
+        "restored": True,
+        "source": str(state_path),
+        "source_step": int(state["step"]),
+        "source_sha256": sha256(state_path),
+    }
+
+
 def read_frozen_records(data_path: Path, ids_path: Path) -> list[dict]:
     all_records = {str(row["id"]): row for row in load_records(data_path)}
     requested = [
@@ -209,12 +245,12 @@ def save_checkpoint(
             encoding="utf-8",
         )
     else:
+        projector.save_pretrained(directory)
         state = {
             name: value.detach().cpu().contiguous()
             for name, value in projector.state_dict().items()
         }
-        weights_path = directory / "projector.safetensors"
-        save_file(state, str(weights_path))
+        weights_path = directory / projector.weights_filename
     training_state_path = directory / "training_state.pt"
     torch.save({"step": step, "optimizer": optimizer.state_dict()}, training_state_path)
     files = {
@@ -276,8 +312,13 @@ def run(args: argparse.Namespace) -> None:
     ).to(device)
     language_model.requires_grad_(False)
     projector_source = Path(config["base_projector"])
+    projector_config_source = resolve_projector_config_source(config)
     projector_config = ProjectorConfig(
-        **json.loads((projector_source / "projector_config.json").read_text(encoding="utf-8"))
+        **json.loads(
+            (projector_config_source / "projector_config.json").read_text(
+                encoding="utf-8"
+            )
+        )
     )
     projector = PatchMergerProjector(projector_config).to(
         device=device, dtype=projector_dtype
@@ -320,6 +361,12 @@ def run(args: argparse.Namespace) -> None:
         parameters,
         lr=float(training["learning_rate"]),
         weight_decay=float(training["weight_decay"]),
+    )
+    optimizer_resume = maybe_resume_projector_optimizer(
+        optimizer=optimizer,
+        arm=arm,
+        base_projector=projector_source,
+        device=device,
     )
     dataset = config["dataset"]
     train_records = read_adaptation_records(dataset)
@@ -472,6 +519,11 @@ def run(args: argparse.Namespace) -> None:
         "trainable_parameters": trainable_parameters,
         "resolved_lora_modules": resolved_modules,
         "base_projector_sha256": base_projector_sha256,
+        "projector_config_source": str(projector_config_source),
+        "projector_config_sha256": sha256(
+            projector_config_source / "projector_config.json"
+        ),
+        "optimizer_resume": optimizer_resume,
         "selection_manifest_sha256": sha256(Path(dataset["selection_manifest"])),
         "checkpoints": checkpoint_manifests,
         "files": {

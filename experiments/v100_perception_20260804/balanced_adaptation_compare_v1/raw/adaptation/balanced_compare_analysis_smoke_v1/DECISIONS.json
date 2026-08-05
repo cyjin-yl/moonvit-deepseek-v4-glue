@@ -1,0 +1,18 @@
+{
+  "status": "valid",
+  "frozen_state": "frozen-base",
+  "lora_state": "lora-step100",
+  "projector_state": "projector-step100",
+  "tasks": {
+    "color": {
+      "preference_lora_minus_projector": -0.5,
+      "preference_lora_minus_projector_ci95_low": -0.8333333333333334,
+      "preference_lora_minus_projector_ci95_high": -0.16666666666666666,
+      "generation_lora_minus_projector": -0.16666666666666666,
+      "generation_lora_minus_projector_ci95_low": -0.5,
+      "generation_lora_minus_projector_ci95_high": 0.0
+    }
+  },
+  "selected_direction": "mixed_or_underpowered_expand_trajectory",
+  "decision_rule": "at least two task-level paired-generation confidence intervals must exclude zero in the same arm direction"
+}

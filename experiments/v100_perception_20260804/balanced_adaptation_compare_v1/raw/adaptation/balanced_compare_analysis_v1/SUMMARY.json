@@ -1,0 +1,37 @@
+{
+  "status": "valid",
+  "format_version": "balanced-adaptation-comparison-analysis-v1",
+  "completed_at_utc": "2026-08-05T03:03:33.623087+00:00",
+  "states": [
+    "frozen-base",
+    "lora-step100",
+    "projector-step100"
+  ],
+  "tasks": [
+    "color",
+    "coordinate",
+    "count",
+    "ocr",
+    "shape",
+    "spatial"
+  ],
+  "metric_rows": 315,
+  "contrasts": 189,
+  "bootstrap_samples": 2000,
+  "eval_summary_sha256": "b2a1cb16f142ed212cf369ab5a0d062413ab7a8d8601967f54d5c23f0192f644",
+  "files": {
+    "adaptation_metrics.csv": {
+      "bytes": 25134,
+      "sha256": "ac5fc75f4c91ea62ea993ccfd47e9b407de9073bd6a466c589372c2b3a07343b"
+    },
+    "adaptation_contrasts.csv": {
+      "bytes": 36741,
+      "sha256": "15e77cdff6bc0db5ae4be0a1f87e44ea61a1e8b05be917f4f5fb799b16aea0f9"
+    },
+    "DECISIONS.json": {
+      "bytes": 2414,
+      "sha256": "91b4a45ebda0c6c66a75bf2213eac01c9a6d1672bd82c536745eabe3d7aafdf8"
+    }
+  },
+  "final_half_scored": false
+}

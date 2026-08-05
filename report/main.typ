@@ -17,7 +17,7 @@
 
 = 执行摘要
 
-本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段不训练视觉塔和语言模型，只训练一个 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。当前结论是：V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证。包 3–6 依次定位 shape 内容信号、证明 tower/projector 保留信息、用短程 projector 续训完全恢复 shape，并确认这种 shape-only 恢复不跨任务泛化。包 7 随后用一轮六任务均衡监督使全部任务的 teacher-forced paired preference 和 vision−shuffle 下界同时转正；自由生成仍只有 shape/spatial 形成 paired 改善，因而剩余问题已收敛到冻结语言栈的使用/解码与训练量。正式 0731 大权重的 FP4/FP8 可微 kernel 仍是尚未消除的主要风险。
+本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段不训练视觉塔和语言模型，只训练一个 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。当前结论是：V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证。包 3–6 依次定位 shape 内容信号、证明 tower/projector 保留信息、用短程 projector 续训完全恢复 shape，并确认这种 shape-only 恢复不跨任务泛化。包 7 用一轮六任务均衡监督使全部任务的 teacher-forced paired preference 和 vision−shuffle 下界同时转正；自由生成仍只有 shape/spatial 形成 paired 改善。包 8 从该 checkpoint 做严格等顺序对照：额外 projector epoch 把总体 strict preference 从 0.224 提至 0.511、paired generation 从 0.063 提至 0.257，并新解锁 color/coordinate/spatial 生成；顶部 LoRA 只显著强化 shape，且伤害 count/spatial。主要剩余问题已收敛到多任务干扰、训练轨迹和 OCR/count 的目标设计。正式 0731 大权重的 FP4/FP8 可微 kernel 仍是尚未消除的主要风险。
 
 MoonViT-V2 有 401.2M 参数，抽取后的 BF16 权重约 802 MB，相对于约 160 GB 级的 DeepSeek 混合精度权重很小。更大的资源变量是图像分辨率带来的视觉 token 数和冻结 LLM 反向所保留的激活，而不是视觉塔权重。
 
@@ -615,6 +615,77 @@ Generation 终表含 12,000 行和 128 条 heldout shuffle-loss，零失败。st
 
 下一包从 balanced-projector-step100 出发，让 projector-only continuation 与小规模顶部 LoRA 使用同一均衡记录顺序和 examples-seen。若 projector 继续训练同时抬高 preference/generation，优先延长训练；若 LoRA 对四项生成的改善明显更大，则先定位上层 use/decoding 瓶颈，再做 Qwen2.5-1.5B 容量对照。三次实现失败均完整保留并作废：padding/placeholder 同 ID、checkpoint provenance 缺字段、runner 强制 random control。final odd halves 未评分，付费 Gate D 继续暂缓。
 
+== 等顺序 extra-projector 与顶部 LoRA 对照（包 8，2026-08-05）
+
+=== 公平训练合同与优化器连续性
+
+两臂都从 balanced-projector step 100 出发，使用相同 seed、相同 2,400 条记录顺序（SHA `a0929326…2f5`）、true batch 24 和 100 步；每步每项任务固定 4 条。projector 臂恢复 step-100 AdamW 动量，因而是连续的第二轮训练；top-12 rank-8 LoRA 从严格零 delta 初始化并冻结 projector。前者训练 20,454,272 个参数，耗时 159.1s、峰值 11.80 GB；后者训练 442,368 个参数，耗时 153.4s、峰值 9.93 GB。两臂 step 1 loss 精确同为 1.221496。step 100 时 projector loss/梯度范数为 0.9509/0.590，LoRA 为 1.3066/8.639，提示 LoRA 末端存在优化不稳或任务冲突。
+
+#figure(
+  image("../experiments/v100_perception_20260804/balanced_adaptation_compare_v1/charts/00-training-loss.svg", width: 82%),
+  caption: [同一记录顺序下的六任务训练 loss。LoRA 在末段出现梯度尖峰，因此单个 endpoint 之后还需读 step 25/50 轨迹。],
+)
+
+=== 额外 projector epoch 提升总体读出与生成
+
+canonical bf16 评测含 21,600 条 preference 与 3,600 条 generation 原始记录，3 个状态、9/6 个 cell，全部为完整 counterfactual pair、零失败；区间使用 2,000 次 pair bootstrap。总体 strict paired preference 为 base/LoRA/projector *0.224/0.247/0.511*：projector 相对 base *+0.287 [0.258, 0.318]*，LoRA *+0.023 [−0.003, 0.049]*。总体 paired generation 为 *0.063/0.080/0.257*：projector *+0.193 [0.147, 0.240]*，LoRA *+0.017 [−0.020, 0.050]*。
+
+#table(
+  columns: (1fr, 0.75fr, 0.75fr, 0.75fr, 1.55fr),
+  [*任务*], [*base*], [*LoRA*], [*projector*], [*projector−base（95% CI）*],
+  [color], [0.230], [0.330], [0.735], [+0.505 [0.430, 0.575]],
+  [coordinate], [0.055], [0.095], [0.575], [+0.520 [0.450, 0.585]],
+  [count], [0.115], [0.000], [0.100], [−0.015 [−0.070, 0.040]],
+  [OCR], [0.135], [0.175], [0.220], [+0.085 [0.040, 0.130]],
+  [shape], [0.560], [0.880], [0.435], [−0.125 [−0.180, −0.065]],
+  [spatial], [0.250], [0.000], [1.000], [+0.750 [0.685, 0.805]],
+)
+
+#table(
+  columns: (1fr, 0.75fr, 0.75fr, 0.75fr, 1.55fr),
+  [*paired generation*], [*base*], [*LoRA*], [*projector*], [*projector−base（95% CI）*],
+  [color], [0.000], [0.000], [0.160], [+0.160 [0.060, 0.260]],
+  [coordinate], [0.000], [0.000], [0.240], [+0.240 [0.120, 0.360]],
+  [count], [0.000], [0.000], [0.020], [+0.020 [0.000, 0.060]],
+  [OCR], [0.000], [0.000], [0.000], [+0.000 [0.000, 0.000]],
+  [shape], [0.160], [0.480], [0.120], [−0.040 [−0.100, 0.000]],
+  [spatial], [0.220], [0.000], [1.000], [+0.780 [0.660, 0.880]],
+)
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 10pt,
+    image("../experiments/v100_perception_20260804/balanced_adaptation_compare_v1/charts/01-endpoint-paired-preference.svg", width: 100%),
+    image("../experiments/v100_perception_20260804/balanced_adaptation_compare_v1/charts/02-endpoint-paired-generation.svg", width: 100%),
+  ),
+  caption: [左：六任务 strict paired preference；右：paired free generation。额外 projector epoch 产生广泛净增益，同时 shape 出现明确遗忘。],
+)
+
+=== LoRA 是 shape 特异修复，多任务竞争成为主问题
+
+LoRA 对 shape 的 strict preference 与 generation 均提高 *+0.320*，区间分别为 [0.250, 0.395] 与 [0.200, 0.460]；color 只在 preference 提高 +0.100 [0.030, 0.175]，另外三项生成保持零。与此同时 count preference 下降 −0.115 [−0.160, −0.070]，spatial preference/generation 下降 −0.250 [−0.310, −0.190] 与 −0.220 [−0.340, −0.120]。额外 projector epoch 则显著提升 color、coordinate、OCR 与 spatial，shape preference 下降。两种适配都发生任务竞争，宽泛的“冻结上层统一阻止生成”解释被反驳。
+
+#figure(
+  image("../experiments/v100_perception_20260804/balanced_adaptation_compare_v1/charts/03-lora-minus-projector.svg", width: 70%),
+  caption: [LoRA−projector 的任务差。正值集中在 shape，其余主要任务由额外 projector epoch 占优。],
+)
+
+=== 精度敏感性、假设更新与下一项
+
+首个完整 endpoint run 使用训练态 fp32 projector，内部对照有效，但 package 7 canonical 评测使用 bf16。fp32 把 spatial base strict/generation 从 0.250/0.220 移到 0/0，并让其他边界值产生小幅漂移。该 v1 作为阈值敏感性诊断保留；bf16 v2 逐任务精确复现 package 7 base，承担所有跨包结论。这说明离散 paired accuracy 在 margin 接近零时对 serving dtype 敏感，后续需同步报告 mean margin 与阈值翻转数。
+
+#table(
+  columns: (1.7fr, 1fr, 2.6fr),
+  [*假设*], [*包 8 更新*], [*证据与动作*],
+  [只需延长 projector 即可广泛改善], [部分支持], [总体 preference/generation 下界转正，并新解锁 color/coordinate/spatial；count/OCR generation 仍未解决，shape 显著遗忘。],
+  [冻结语言上层是四项生成裂缝的统一原因], [反驳], [top-12 LoRA 只提升 shape；color/coordinate/count/OCR generation 不动，并抹掉 spatial。],
+  [0.5B 容量是当前首要瓶颈], [继续暂缓], [同一 0.5B 在额外 projector epoch 后能生成 color/coordinate/spatial；先解决训练轨迹与任务竞争，再做 1.5B 容量对照。],
+  [单一 endpoint 足以选方案], [反驳], [LoRA 梯度尖峰、projector shape 遗忘与包 7 的短程回归共同要求 step 25/50/100 轨迹。],
+)
+
+下一项在 canonical bf16 下用每任务固定 50 个 selection pair 筛查两臂 step 25/50/100；自由生成继续用固定 50 pair/task。若 LoRA 在 step 25/50 出现跨任务早期峰值，转学习率/早停消融；若 projector 的任务峰值错位，测试 replay weighting 或抗干扰辅助目标；若 count/OCR 全轨迹仍为零，再进入 projector 辅助目标与 Qwen2.5-1.5B 容量对照。final odd halves 未评分，付费 Gate D 继续暂缓。
+
 == Gate C：Vast 只读调研
 
 2026-08-02 12:23（UTC+8）用官方 Search Offers API 查询 verified、rentable、可靠度至少 0.98、至少 4 张卡、单卡至少 80 GB、总显存至少 320 GB 的 on-demand offer。市场是动态的，以下价格只用于预算，offer ID 不应写进自动租用脚本。
@@ -863,6 +934,7 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
   [2026-08-05], [V100 包 5 等顺序适配诊断：顶部 rank-8 LoRA 最佳 strict/generation paired 为 0.605/0.080；projector 续训仅见 400 个 shape 样本即达到 1.000/1.000，vision−shuffle strict paired +0.820，并把 final assistant probe/native head 恢复到 0.945/1.000。下一项转向六任务迁移与 balanced multi-task 最小训练。],
   [2026-08-05], [V100 包 6 零训练六任务迁移：shape strict paired preference 0.130→1.000、generation 0→1.000，且 vision−shuffle 为 +0.820/+0.980；其余五项没有通过配对 bootstrap 与视觉因果双门槛。shape-only continuation 被判定为窄任务映射，下一项锁定 balanced 六任务 projector continuation。],
   [2026-08-05], [V100 包 7 完成一轮 true-batch 六任务均衡 projector 续训：step 100 时六项 strict paired preference 与 vision−shuffle 下界全部转正；自由生成仅 shape/spatial 改善，定位出四项明确的 teacher-forced/生成裂缝。下一项做等顺序额外 projector epoch 与顶部 LoRA screen。],
+  [2026-08-05], [V100 包 8 等顺序 endpoint 对照：额外 projector epoch 使总体 strict preference 0.224→0.511、paired generation 0.063→0.257，并解锁 color/coordinate/spatial 生成；top-12 LoRA 只显著强化 shape 且伤害 count/spatial。fp32/bf16 敏感性被显式保留，canonical bf16 base 精确复现包 7。],
 )
 
 = 下一位执行者的最短路径

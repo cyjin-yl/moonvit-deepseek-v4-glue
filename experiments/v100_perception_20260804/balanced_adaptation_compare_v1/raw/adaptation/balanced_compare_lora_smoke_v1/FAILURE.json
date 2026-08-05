@@ -1,0 +1,7 @@
+{
+  "status": "invalid",
+  "error_type": "FileNotFoundError",
+  "error": "[Errno 2] No such file or directory: 'configs/perception-balanced-adaptation-compare-v1.json'",
+  "traceback": "Traceback (most recent call last):\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package5/tools/train_shape_adaptation.py\", line 552, in main\n    run(args)\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package5/tools/train_shape_adaptation.py\", line 277, in run\n    config = json.loads(args.config.read_text(encoding=\"utf-8\"))\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ezra/.conda/envs/tsenv/lib/python3.12/pathlib.py\", line 1027, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors) as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ezra/.conda/envs/tsenv/lib/python3.12/pathlib.py\", line 1013, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: 'configs/perception-balanced-adaptation-compare-v1.json'\n",
+  "final_half_scored": false
+}

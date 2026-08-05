@@ -1,0 +1,17 @@
+{
+  "status": "valid",
+  "kind": "projector",
+  "steps_verified": 100,
+  "examples_verified": 2400,
+  "checkpoints_verified": 4,
+  "checkpoint_tensors_verified": 24,
+  "task_examples_verified": {
+    "color": 400,
+    "coordinate": 400,
+    "count": 400,
+    "ocr": 400,
+    "shape": 400,
+    "spatial": 400
+  },
+  "final_half_scored": false
+}
