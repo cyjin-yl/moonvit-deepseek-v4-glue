@@ -1,0 +1,27 @@
+{
+  "status": "valid",
+  "package": "v100-perception-matched-replay-20260805-v1",
+  "source_git_sha": "5d6367617831e4b4d81d7985ae5a25505aa85208",
+  "local_package_root": "experiments/v100_perception_20260804/matched_replay_v1",
+  "hdd_root": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation",
+  "hdd_runs": [
+    "matched_replay_plan_v1",
+    "matched_replay_ordinary_v1",
+    "matched_replay_fixed_v1",
+    "matched_replay_trigger_config_v1",
+    "matched_replay_triggered_v1",
+    "matched_replay_sentinel_index_v1",
+    "matched_replay_sentinel_eval_v1",
+    "matched_replay_sentinel_analysis_v1",
+    "matched_replay_final_index_v1",
+    "matched_replay_final_eval_v1",
+    "matched_replay_analysis_v1",
+    "matched_replay_charts_v1",
+    "matched_replay_logs_v1"
+  ],
+  "checkpoint_weights_retained_on_hdd": true,
+  "checkpoint_weights_committed_to_git": false,
+  "raw_jsonl_committed_to_git": true,
+  "final_half_scored": false,
+  "paid_resources_used": false
+}

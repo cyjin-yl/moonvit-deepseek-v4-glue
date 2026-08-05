@@ -1,0 +1,160 @@
+{
+  "run_id": "v100-perception-matched-replay-20260805-v1-triggered",
+  "training_format_version": "fixed-budget-triggered-replay-v1",
+  "seed": 20260816,
+  "device": "cuda",
+  "language_dtype": "bfloat16",
+  "projector_dtype": "float32",
+  "text_model": "/run/media/ezra/13D010B6FDBC1A06/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+  "placeholder_token_id": 151643,
+  "prompt_template": "User: {image}\n{question}\nAssistant:",
+  "base_projector": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_ordinary_v1/checkpoints/step-000075",
+  "projector_config_source": "/run/media/ezra/13D010B6FDBC1A06/data/gate_b/ckpt/checkpoints/step-000500",
+  "dataset": {
+    "tasks": [
+      "color",
+      "coordinate",
+      "count",
+      "ocr",
+      "shape",
+      "spatial"
+    ],
+    "train_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/train.jsonl",
+    "selection_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/selection.jsonl",
+    "generation_data": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/trajectory/synthetic-generation-selection-v1/synthetic_generation_selection.jsonl",
+    "controls": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/controls.jsonl",
+    "train_feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/synthetic-train-256-v1",
+    "selection_feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/cache/synthetic-selection-256-v1",
+    "selection_manifest": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/synthetic/synthetic-v1-seed20260804/MANIFEST.json",
+    "generation_selection_manifest": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/trajectory/synthetic-generation-selection-v1/MANIFEST.json",
+    "expected_train_records": 2400,
+    "expected_train_records_per_task": 400,
+    "expected_train_pairs_per_task": 200,
+    "expected_selection_records": 2400,
+    "expected_generation_records": 600,
+    "logical_dataset_sha256": "122ae820381e11e12c7dd9db03a525b801a5ebee5adbef037919185e65cbaa71",
+    "max_image_side": 256
+  },
+  "training": {
+    "initial_step": 75,
+    "steps": 100,
+    "batch_size": 24,
+    "learning_rate": 0.0005,
+    "weight_decay": 0.0,
+    "gradient_clip": 1.0,
+    "order_strategy": "balanced_stratified",
+    "source_training_order": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/training_order.jsonl",
+    "source_training_order_sha256": "a0929326fc8b494f85b82fc504855cd23f1ddfa74348ccc9b364a13ada39f2f5",
+    "checkpoint_steps": [
+      75,
+      100
+    ],
+    "fixed_continuation_steps": 25,
+    "fixed_continuation_examples": 600
+  },
+  "arms": {
+    "triggered_replay": {
+      "kind": "projector",
+      "resume_optimizer": true,
+      "expected_base_projector_sha256": "945da40095b55dfdbbe491f127db6eff71a18d15e34ab2b33a7086906b77d10a",
+      "expected_optimizer_sha256": "5bdce7e606d149995e928c40022470aad07920a1920c456086f72364eb1ff03e",
+      "expected_optimizer_step": 75,
+      "replay_policy": {
+        "pairs_per_task_per_window": 10,
+        "window_steps": 25,
+        "history_start_step_exclusive": 0,
+        "history_end_step_inclusive": 50,
+        "history_training_order_sha256": "a0929326fc8b494f85b82fc504855cd23f1ddfa74348ccc9b364a13ada39f2f5",
+        "seed": 20260825,
+        "tasks": [
+          "count"
+        ]
+      },
+      "trigger_decision": {
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_sentinel_analysis_v1/DECISION.json",
+        "sha256": "14c2993ce1edf888da5cd5ace2650ff7d76e921b90334bbc62fdd485ee2bdb22",
+        "reference_state": "exchange-step50",
+        "current_state": "ordinary-step75",
+        "tasks": [
+          "count"
+        ]
+      }
+    }
+  },
+  "matched_replay": {
+    "exchange_checkpoint_step": 50,
+    "sentinel_step": 75,
+    "endpoint_step": 100,
+    "fixed_training_budget": {
+      "steps_per_arm": 50,
+      "batch_size": 24,
+      "examples_per_arm": 1200,
+      "extra_optimizer_steps_allowed": 0,
+      "extra_training_examples_allowed": 0
+    },
+    "fixed_policy_expected_counts": {
+      "color": 180,
+      "coordinate": 180,
+      "count": 240,
+      "ocr": 180,
+      "shape": 240,
+      "spatial": 180
+    },
+    "trigger_rule": {
+      "metric": "vision paired_preference",
+      "minimum_absolute_drop": 0.1,
+      "paired_ci_requirement": "step75-minus-step50 ci95_high < 0",
+      "maximum_tasks": 2,
+      "ranking": "most negative mean gap, then task name"
+    },
+    "triggered_policy_template": {
+      "pairs_per_task_per_window": 10,
+      "window_steps": 25,
+      "history_start_step_exclusive": 0,
+      "history_end_step_inclusive": 50,
+      "history_training_order_sha256": "a0929326fc8b494f85b82fc504855cd23f1ddfa74348ccc9b364a13ada39f2f5",
+      "seed": 20260825
+    },
+    "recovery_rule": {
+      "metric": "vision paired_preference",
+      "within_exchange_value": 0.05,
+      "action_after_recovery": "return to base distribution at next fixed window"
+    }
+  },
+  "evaluation": {
+    "projector_dtype": "bfloat16",
+    "teacher_forced_records": 2400,
+    "generation_records": 600,
+    "conditions": [
+      "vision",
+      "shuffled_image",
+      "paired_counterfactual_image"
+    ],
+    "checkpoint_steps": [
+      50,
+      75,
+      100
+    ],
+    "generation_max_new_tokens": 8,
+    "bootstrap_seed": 20260823,
+    "bootstrap_samples": 2000
+  },
+  "hard_constraints": {
+    "gpu": "existing Tesla V100-PCIE-32GB only",
+    "rent_new_server": false,
+    "run_full_deepseek_v4": false,
+    "score_final_odd_half": false,
+    "increase_training_budget": false
+  },
+  "trigger_derivation": {
+    "ordinary_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_ordinary_v1",
+    "ordinary_step": 75,
+    "ordinary_projector_sha256": "945da40095b55dfdbbe491f127db6eff71a18d15e34ab2b33a7086906b77d10a",
+    "ordinary_optimizer_sha256": "5bdce7e606d149995e928c40022470aad07920a1920c456086f72364eb1ff03e",
+    "decision_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_sentinel_analysis_v1/DECISION.json",
+    "decision_sha256": "14c2993ce1edf888da5cd5ace2650ff7d76e921b90334bbc62fdd485ee2bdb22",
+    "remaining_steps": 25,
+    "remaining_examples": 600,
+    "extra_training_examples": 0
+  }
+}

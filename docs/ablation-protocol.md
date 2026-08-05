@@ -120,3 +120,21 @@ synthetic 集报告 single accuracy、paired accuracy、answer-flip accuracy、b
 包 12 只改变 2,400 条记录的 batch-order constraint：分层臂每个 true batch 六任务各 4 条，全局臂对相同记录做 seeded random permutation；初始化、optimizer state、seed、超参数与 examples seen 均精确匹配。分层在 step 50 的 macro preference/generation 为 0.512/0.233，高于 global 的 0.389/0.167；step 100 的 global macro/generation 反超为 0.531/0.320，对分层 0.511/0.257。终点 overall gap −0.020 的 paired CI `[−0.0442, 0.0025]`，coordinate 分层更好，color/shape 显著偏向 global，预注册判定为 `mixed_or_underpowered`。
 
 逐 batch 分层不能写成 DeepSeek 的硬规则。正式主线采用固定窗口领域覆盖，并用 sentinel/replay 管理任务交换；分层只保留为短校准候选。gradient diagnostic 显示分层终点 6/15 个负 task-pair cosines，global 为 0，当前结果也未支持“分层必然降低干扰”。下一项按既定顺序进入 matched replay，不追加块状 curriculum。
+
+## 10. 固定预算 replay 与 sentinel 边界（包 13）
+
+包 13 从分层 step 50 精确恢复 projector、AdamW 和数据游标，把每条完整策略锁为 50 steps、batch 24、1,200 examples。ordinary 使用六任务各 200；fixed replay 在两个 25-step 窗口各给 count/shape 重放 10 个历史 complete pairs，同时等量换出 donor pairs，最终分配为 `180/180/240/180/240/180`。训练预算没有增加。ordinary 的 step-100 六个 tensor 与历史 checkpoint 逐张量一致，排除了训练器或恢复误差。
+
+触发规则在结果前冻结：step 75 相对 step 50 的 paired preference 下降至少 0.10，且 current-minus-reference paired-bootstrap `ci95_high < 0`，最多取下降最大的两个任务。整体 step 50→75 上升 +0.040 [0.0108, 0.0675] 时，count 仍从 0.380 坍塌到 0.075，gap −0.305 [−0.365, −0.245]；只有 count 触发。该结果要求所有正式 sentinel 保留 per-domain 指标，macro 不能覆盖局部退化。
+
+终点 ordinary/fixed/triggered macro preference 为 0.5108/0.5983/0.5358。fixed 的 count+shape 相对 ordinary 提升 +0.255 [0.210, 0.300]，donor 四任务合并 +0.00375 [−0.0125, 0.01875]；目标自由生成提升 +0.120 [0.050, 0.190]。triggered 的 count 提升 +0.175 [0.125, 0.230]，endpoint 0.275 仍未回到 step-50 参考 0.380±0.05。fixed 相对 triggered overall 为 +0.0625 [0.0425, 0.0833]。
+
+正式训练准备据此采用以下顺序：
+
+1. optimizer steps 与 examples seen 双重锁定；replay 只替换下一固定窗口内的槽位。
+2. 已知高风险域使用小比例预防性 replay，触发式 replay 保留为 fallback。
+3. 每个替换记录 source ID、donor ID、完整 pair 状态、窗口计数与 wall time。
+4. 恢复带固定为参考值下方 0.05；未恢复时只能使用预注册的下一剂量，禁止看结果后手调。
+5. 小模型每目标每 25-step 窗口 10 complete pairs 是机制证据；正式域配额仍需按域规模、pair 可用性与 sentinel 功效换算。
+
+全量 sentinel 三 state 在 V100 上耗时 878.5 s，而 25 个训练 step 的纯 step wall time约 22.5 s。下一包先复用 raw rows 做 8/16/25/50/100 pair 子采样功效、trigger recall 与 false-trigger 分析，再实测 teacher-only Tiny/Medium。只有同时复现 count 触发并满足监控开销公式的最小分母进入租卡配置。replay 剂量扩展排在该成本校准之后。

@@ -1,0 +1,43 @@
+{
+  "status": "valid",
+  "format_version": "matched-replay-package-verification-v1",
+  "source_git_sha": "5d6367617831e4b4d81d7985ae5a25505aa85208",
+  "training": {
+    "total_examples_per_policy": 1200,
+    "ordinary_steps": 50,
+    "fixed_steps": 50,
+    "triggered_shared_steps": 25,
+    "triggered_replay_steps": 25,
+    "fixed_reallocated_examples": 80,
+    "triggered_reallocated_examples": 20,
+    "extra_training_examples": 0,
+    "checkpoint_manifests": 8,
+    "ordinary_exact_reproduction": true
+  },
+  "evaluation": {
+    "sentinel_preference_rows": 21600,
+    "sentinel_generation_rows": 3600,
+    "final_states": 7,
+    "preference_rows": 50400,
+    "generation_rows": 8400,
+    "metric_rows": 735,
+    "contrast_rows": 223,
+    "trajectory_rows": 18
+  },
+  "decision": {
+    "trigger_tasks": [
+      "count"
+    ],
+    "recommendation": "fixed_preventive_replay",
+    "fixed_target_preference_gap": 0.255,
+    "fixed_target_preference_ci95": [
+      0.21,
+      0.3
+    ],
+    "fixed_target_generation_gap": 0.12,
+    "fixed_minus_triggered_overall_gap": 0.0625
+  },
+  "large_checkpoint_weights_in_git": false,
+  "failed_attempt_preserved": true,
+  "final_half_scored": false
+}

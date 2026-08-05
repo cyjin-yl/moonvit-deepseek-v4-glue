@@ -1,0 +1,147 @@
+{
+  "status": "valid",
+  "format_version": "projector-comparison-index-v1",
+  "metadata": {
+    "completed_at_utc": "2026-08-05T09:17:53.694199+00:00",
+    "git_sha": "5d6367617831e4b4d81d7985ae5a25505aa85208",
+    "host": "doesworkstation",
+    "final_half_scored": false
+  },
+  "source_runs": {
+    "exchange-step50": {
+      "run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1",
+      "summary_sha256": "adcdee5c6e36e13f6ee052e34a78ec021ebd3290acb14e9d25573468ee446ecc",
+      "step": 50
+    },
+    "ordinary-step75": {
+      "run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_ordinary_v1",
+      "summary_sha256": "f901eb71693b3161ce073f8db35ffa60c6f8e92002b0fcd091723275045d63cf",
+      "step": 75
+    },
+    "ordinary-step100": {
+      "run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_ordinary_v1",
+      "summary_sha256": "f901eb71693b3161ce073f8db35ffa60c6f8e92002b0fcd091723275045d63cf",
+      "step": 100
+    },
+    "fixed-step75": {
+      "run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_fixed_v1",
+      "summary_sha256": "433591821a016beb3d0ef4bcc2eaaabf522b8dc8035ad5ec10e3f55680fd1216",
+      "step": 75
+    },
+    "fixed-step100": {
+      "run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_fixed_v1",
+      "summary_sha256": "433591821a016beb3d0ef4bcc2eaaabf522b8dc8035ad5ec10e3f55680fd1216",
+      "step": 100
+    },
+    "triggered-step100": {
+      "run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_triggered_v1",
+      "summary_sha256": "5b641023d7a1526ed82d8a4ff508fb6a1a1eb596b58ceb068aeeef20f86cee2c",
+      "step": 100
+    }
+  },
+  "checkpoints": {
+    "exchange-step50": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 50,
+      "examples_seen": 1200,
+      "evaluation_state_id": "exchange-step50",
+      "relative_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1/checkpoints/step-000050",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/balanced_compare_projector_v1",
+      "source_summary_sha256": "adcdee5c6e36e13f6ee052e34a78ec021ebd3290acb14e9d25573468ee446ecc",
+      "weights_tensor_sha256": "fd7b07e6fe9f4e9054b9f4e4dcbecf8bbeaf83241c937ec6d5c4d589a017d192",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "8dd9321656d2d745303213634e61fe429587a76c149ac00631cc78e2ef0128a8"
+        }
+      }
+    },
+    "ordinary-step75": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 75,
+      "examples_seen": 1800,
+      "evaluation_state_id": "ordinary-step75",
+      "relative_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_ordinary_v1/checkpoints/step-000075",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_ordinary_v1",
+      "source_summary_sha256": "f901eb71693b3161ce073f8db35ffa60c6f8e92002b0fcd091723275045d63cf",
+      "weights_tensor_sha256": "ff6cbf220537205976be5ba4f442055c3b2d87d164c24954f6c29abcf3b75cdb",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "945da40095b55dfdbbe491f127db6eff71a18d15e34ab2b33a7086906b77d10a"
+        }
+      }
+    },
+    "ordinary-step100": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 100,
+      "examples_seen": 2400,
+      "evaluation_state_id": "ordinary-step100",
+      "relative_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_ordinary_v1/checkpoints/step-000100",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_ordinary_v1",
+      "source_summary_sha256": "f901eb71693b3161ce073f8db35ffa60c6f8e92002b0fcd091723275045d63cf",
+      "weights_tensor_sha256": "7b731cffcb11da833efbd7d99a41ee77cba9eda3dfdb1135989e79adbb921a76",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "05f19079bc6db6757f378c22b05a5cb3ae3e638551513f642bb25dea04ef092d"
+        }
+      }
+    },
+    "fixed-step75": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 75,
+      "examples_seen": 1800,
+      "evaluation_state_id": "fixed-step75",
+      "relative_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_fixed_v1/checkpoints/step-000075",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_fixed_v1",
+      "source_summary_sha256": "433591821a016beb3d0ef4bcc2eaaabf522b8dc8035ad5ec10e3f55680fd1216",
+      "weights_tensor_sha256": "1fd9964badf0705a24541de276a44016f8b3428c7e4d51d5a37219e250fb52b5",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "cf64cd7f0f8a8c103d9f4f6fc902a712a1f09765fab845c2630153a9de850ec4"
+        }
+      }
+    },
+    "fixed-step100": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 100,
+      "examples_seen": 2400,
+      "evaluation_state_id": "fixed-step100",
+      "relative_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_fixed_v1/checkpoints/step-000100",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_fixed_v1",
+      "source_summary_sha256": "433591821a016beb3d0ef4bcc2eaaabf522b8dc8035ad5ec10e3f55680fd1216",
+      "weights_tensor_sha256": "594bb20f383c0164b62e8b827674574addb47a9c736c6056822b835e28131fd6",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "55858f45724cf95da4f46325a4e493084ccf1f8ef7c49dafe80ad88f7033cae3"
+        }
+      }
+    },
+    "triggered-step100": {
+      "status": "valid",
+      "kind": "projector",
+      "step": 100,
+      "examples_seen": 2400,
+      "evaluation_state_id": "triggered-step100",
+      "relative_path": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_triggered_v1/checkpoints/step-000100",
+      "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_triggered_v1",
+      "source_summary_sha256": "5b641023d7a1526ed82d8a4ff508fb6a1a1eb596b58ceb068aeeef20f86cee2c",
+      "weights_tensor_sha256": "0caf0130ac55ff4b53f03d96775347bf30ebe6ac2c515f78e64b11c1820f1b10",
+      "files": {
+        "projector.safetensors": {
+          "bytes": 81817648,
+          "sha256": "cd87b5bbc7fc15a3e9365809c27b38ea6d522c497c024357aabff677775dc146"
+        }
+      }
+    }
+  },
+  "final_half_scored": false
+}

@@ -1,0 +1,8 @@
+task,current_state,reference_state,denominator,sum_a,sum_b,mean_a,mean_b,mean_gap,a_only_better,b_only_better,equal,ci95_low,ci95_high,bootstrap_samples,seed
+overall,ordinary-step75,exchange-step50,1200,662.0,614.0,0.5516666666666666,0.5116666666666667,0.04,170,122,908,0.010833333333333334,0.0675,2000,20260823
+color,ordinary-step75,exchange-step50,200,167.0,127.0,0.835,0.635,0.2,56,16,128,0.115,0.285,2000,20260824
+coordinate,ordinary-step75,exchange-step50,200,102.0,83.0,0.51,0.415,0.095,40,21,139,0.015,0.165,2000,20260825
+count,ordinary-step75,exchange-step50,200,15.0,76.0,0.075,0.38,-0.305,0,61,139,-0.365,-0.245,2000,20260826
+ocr,ordinary-step75,exchange-step50,200,38.0,31.0,0.19,0.155,0.035,12,5,183,-0.005,0.075,2000,20260827
+shape,ordinary-step75,exchange-step50,200,140.0,147.0,0.7,0.735,-0.035,12,19,169,-0.09,0.02,2000,20260828
+spatial,ordinary-step75,exchange-step50,200,200.0,150.0,1.0,0.75,0.25,50,0,150,0.19,0.31,2000,20260829

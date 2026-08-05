@@ -1,6 +1,6 @@
 # DeepSeek-V4-Flash 租机训练合同
 
-状态：`local_prerequisites_in_progress`。本文把 V100 证据转成机械执行规则；尚未完成的包 12、replay 与 sentinel 成本结果以显式占位符保留。只有全部本地前置项冻结、用户明确授权 GPU 架构与费用上限后，才能执行任何付费步骤。
+状态：`local_prerequisites_in_progress`。本文把 V100 证据转成机械执行规则；包 12 的窗口覆盖与包 13 的 fixed-budget replay 已完成，Tiny/Medium sentinel 功效/成本、正式域 replay 配额与真实量化 DGRAD 仍是显式未完成项。只有全部本地前置项冻结、用户明确授权 GPU 架构与费用上限后，才能执行任何付费步骤。
 
 ## 1. 证据边界与固定来源
 
@@ -64,9 +64,14 @@
 ### 3.3 synthetic、sentinel 与 replay
 
 - 六类 synthetic perception 数据默认只进入 evaluation sentinel，不混入主训练分布。
-- synthetic 数据只有在预注册 replay 触发器命中时，才可作为固定、小比例 replay；每个额外 example 单独计数。
+- 正式训练预算以 optimizer steps 与 examples seen 双重锁定。replay 只允许替换下一固定窗口内的既有槽位，禁止追加 optimizer step、追加训练 example 或在窗口末尾补跑。
+- synthetic 数据只有在预注册规则允许且与正式域语义一致时，才可作为小比例诊断 replay；正式主线优先重放原训练域内已审计记录。所有重分配的 source ID、被换出的 donor ID 与窗口计数必须完整记录。
 - OCR、count 的本地诊断若显示内部 paired preference 可靠、自由生成仍失败，才启动 Qwen2.5-1.5B 纯文本容量桥接；不得用原生 VLM 替代。
-- 正式 replay 的绝对退化阈值、CI 条件、权重倍数与固定窗口长度由 matched replay 包冻结。当前状态：`pending_replay_package`。
+- 包 13 在完全相同的 50 steps / 1,200 examples 下验证了 complete-pair replay：固定臂重分配 80 个槽位，count+shape preference 相对 ordinary 为 `+0.255 [0.210, 0.300]`，donor 合并为 `+0.00375 [−0.0125, 0.01875]`，目标自由生成为 `+0.120 [0.050, 0.190]`。
+- 预防性 replay 是阶段 1 的主候选：每 25-step 固定窗口给已知高风险域预留小配额，并从其余域等量换出。包 13 的小模型配额是每目标任务每窗口 10 个完整 pair；该数值用于 V100 机制证据，迁移到正式域前仍需按域规模与 sentinel 功效换算。
+- 遗忘触发 fallback 冻结为：任务相对参考 checkpoint 的 paired preference 绝对下降至少 0.10，且 current-minus-reference paired-bootstrap `ci95_high < 0`；最多选择下降最大的两个任务。恢复带为参考值下方 0.05，恢复后下一窗口回到基础分布。
+- 包 13 的 late trigger 只给 count 重分配 20 个槽位，endpoint 从 ordinary 0.100 提到 0.275，仍未回到 0.380±0.05。该结果支持触发器的检测能力，也表明 25-step 晚介入配额不足以替代预防性 replay。
+- 当前状态：`package13_complete_fixed_preventive_replay_supported`。正式 DeepSeek 域的高风险配额、Tiny/Medium sentinel 分母与成本仍由下一本地包校准。
 - 不允许在看到下一窗口结果后手调 task weight。
 
 ## 4. Checkpoint 合同
@@ -128,7 +133,9 @@ t_tiny / (K_tiny * t_step + t_tiny) <= 0.05
 
 早期短校准采用满足预算的最高频率；能力斜率稳定后拉长间隔；检测到退化或 replay 触发时临时恢复早期频率。若开销超标，增大间隔，保留 sentinel 本身。评测不能在同一组 GPU 上与训练并发抢显存。
 
-当前 V100 与目标机成本状态：`pending_sentinel_cost_experiment`。任何频率数字在实测前都只是公式输入，不写入最终配置。
+包 13 的全量 V100 sentinel 三 state 共耗时 878.5 s；同一训练链路中 25 个 optimizer steps 的纯 step wall time约 22.5 s。全量 2,400-record teacher-forced 加 600-record generation sentinel 显然不能在线高频执行。最终七 state 评测耗时 2,035.8 s。下一本地包必须从现有 raw rows 做 8/16/25/50/100 pair 功效与 false-trigger 稳定性分析，再实测 teacher-only Tiny/Medium；只有能复现 count 触发且满足 5%/10% 开销公式的最小分母可以进入正式配置。
+
+当前 V100 与目标机成本状态：`full_cost_measured_tiny_medium_pending`。任何 Tiny/Medium 频率数字在功效与实测完成前都只是公式输入，不写入最终配置。
 
 ## 6. 停训、回滚与 replay
 
@@ -136,11 +143,11 @@ t_tiny / (K_tiny * t_step + t_tiny) <= 0.05
 
 1. loss 下降但 macro、worst-task、vision-minus-blind、vision-minus-shuffle 与 generation 均无改善时，不记为能力进步。
 2. 每任务保存 paired preference 与 generation 历史峰值及 paired bootstrap CI。
-3. 当前任务相对历史峰值超过预注册绝对阈值，且 paired CI 支持退化时，下一固定窗口启动遗忘触发式 replay。
-4. 恢复到预注册范围后回到基础权重；每次触发、额外 examples 与 wall time写入 raw log。
+3. 已知高风险域在阶段 1 使用固定预算内的预防性 replay；当前任务相对历史参考超过 0.10 且 paired CI 支持退化时，下一固定窗口启用或扩大预注册 fallback 配额。
+4. 恢复到参考值下方 0.05 以内后，下一窗口回到基础权重；每次触发、重分配 examples、被换出的 donor IDs 与 wall time 写入 raw log。总 optimizer steps 与 examples seen 不得变化。
 5. overall 上升且关键任务明显退化时，保留对应 Pareto checkpoint，不用 overall 覆盖任务损失。
 6. 连续若干 sentinel 窗口无任何预注册能力改善时提前停止；窗口数在阶段 1 校准后冻结。
-7. replay 与 anchoring 都失败后，才允许进入 per-task gradient-conflict 方法。
+7. 包 13 已支持 fixed replay，anchoring 仍失败。只有 replay 剂量/域桥接不能满足恢复带时，才允许进入 per-task gradient-conflict 方法。
 
 最终选择基于多 checkpoint Pareto 前沿。最后一步没有默认优先级，也不做默认线性平均。
 

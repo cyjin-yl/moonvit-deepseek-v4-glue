@@ -924,6 +924,76 @@ screen 含 9,000 条 preference 与 6,000 条 generation，零 failure，分析�
 
 全包含 50,400 条 preference、8,400 条 generation、735 个 metrics、525 个 paired contrasts、42 个 gradient norms 和 105 个 pairwise cosines；全部文件 hash 与 14 项 matched-order invariant 通过，完整仓库测试 *220/220* 全绿。下一项从已知能力交换 checkpoint 运行 ordinary balanced、fixed replay、forgetting-triggered replay 三臂；在 replay 结果前不增加块状 curriculum。付费 Gate D 继续暂缓。
 
+== 固定训练预算内的 preventive replay（包 13，2026-08-05）
+
+=== 1,200 examples 总量不变，replay 只重分配槽位
+
+三条策略共享 package-12 分层臂 step 50 的 projector、AdamW state 和后续训练顺序。ordinary 完成原 steps 51–100；fixed replay 每个 25-step 窗口给 count/shape 各重放 10 个历史 complete pairs，并等量换出其他任务 pair；triggered 策略先与 ordinary 共用 steps 51–75，再由冻结 sentinel 决定 steps 76–100 的重分配。每条完整策略均为 50 steps × batch 24 = *1,200 training examples*，额外 optimizer steps 与额外训练 examples 都为 0。
+
+#table(
+  columns: (1.2fr, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr, 1.2fr),
+  [*策略*], [*color*], [*coord*], [*count*], [*OCR*], [*shape*], [*spatial*], [*总量*],
+  [ordinary], [200], [200], [200], [200], [200], [200], [*1,200*],
+  [fixed], [180], [180], [*240*], [180], [*240*], [180], [*1,200*],
+  [triggered], [196], [196], [*220*], [196], [196], [196], [*1,200*],
+)
+
+fixed 重分配 80 个槽位；triggered 在后半窗只重分配 20 个 count 槽位。ordinary 逐张量精确复现历史 step 100：六个 tensor 全等，projector 文件 SHA `05f19079…092d`，tensor SHA `7b731ffc…a76`。采样账本、恢复状态和训练实现因此通过单变量检查。
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 10pt,
+    image("../experiments/v100_perception_20260804/matched_replay_v1/charts/01-policy-summary-trajectories.svg", width: 100%),
+    image("../experiments/v100_perception_20260804/matched_replay_v1/charts/04-fixed-budget-allocation.svg", width: 100%),
+  ),
+  caption: [左：ordinary、fixed 与 triggered 的 macro preference/generation 轨迹；右：同一 1,200-example 总预算内的任务分配。],
+)
+
+=== 宏平均上升时，count 仍发生可辨别坍塌
+
+触发规则在训练前冻结：任务从 step 50 到 step 75 的 strict paired preference 绝对下降至少 0.10，且 current-minus-reference paired-bootstrap `ci95_high < 0`；最多选择下降最大的两个任务。ordinary 整体在该窗口上升 *+0.040 [0.0108, 0.0675]*，count 却从 0.380 降到 0.075，gap *−0.305 [−0.365, −0.245]*。shape 为 −0.035 [−0.090, 0.020]。机械决策只触发 count。
+
+这组结果给正式训练一个直接约束：每个 domain/task 必须保留独立历史峰值与 paired CI；macro 改善不能覆盖局部灾难性遗忘。
+
+=== Preventive replay 同时恢复内部选择与自由生成
+
+#table(
+  columns: (1.2fr, 1.1fr, 1fr, 1fr, 1.1fr, 1fr),
+  [*策略 / step100*], [*macro pref*], [*worst*], [*count*], [*shape*], [*macro gen*],
+  [ordinary], [0.5108], [0.100], [0.100], [0.435], [0.2567],
+  [fixed], [*0.5983*], [*0.195*], [*0.490*], [*0.555*], [*0.3567*],
+  [triggered], [0.5358], [0.155], [0.275], [0.435], [0.2600],
+)
+
+fixed 的 count+shape strict paired preference 相对 ordinary 为 *+0.255 [0.210, 0.300]*；其 donor 四任务合并为 +0.00375 [−0.0125, 0.01875]，没有可辨别的 donor 损失。目标任务 paired generation 为 *+0.120 [0.050, 0.190]*。count endpoint 达到 0.490，超过 step-50 参考 0.380；shape 从 ordinary 的 0.435 提到 0.555，仍低于 0.735±0.05 的恢复带。
+
+triggered 对 count 仍有真实收益：相对 ordinary 为 *+0.175 [0.125, 0.230]*，donor 合并 −0.005 [−0.021, 0.011]。它只把 count 拉到 0.275，未回到 0.380±0.05；count generation +0.020 [0, 0.060] 也未形成严格正下界。fixed 相对 triggered 的 overall preference 为 *+0.0625 [0.0425, 0.0833]*。晚触发的方向有效，一个 25-step / 20-slot 修复窗强度不足。
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 10pt,
+    image("../experiments/v100_perception_20260804/matched_replay_v1/charts/02-retention-task-trajectories.svg", width: 100%),
+    image("../experiments/v100_perception_20260804/matched_replay_v1/charts/03-endpoint-task-deltas.svg", width: 100%),
+  ),
+  caption: [左：count/shape 在三策略下的 paired-preference 轨迹；右：fixed/triggered 相对 ordinary 的逐任务终点差。fixed 的主要收益集中在预注册 retention tasks，同时 donor 总体保持。],
+)
+
+#table(
+  columns: (1.9fr, 1fr, 2.6fr),
+  [*假设*], [*包 13 更新*], [*证据与动作*],
+  [固定预算内的 replay 能缓解能力交换], [支持], [目标 preference +0.255 且 generation +0.120，二者 CI 下界均为正；总训练 examples 仍为 1,200。],
+  [replay 必然牺牲 donor 任务], [未支持], [fixed donor 合并 +0.00375 [−0.0125, 0.01875]，预注册平均代价 0.05 边界未触发。],
+  [宏平均足以驱动 checkpoint 选择], [反驳], [overall 上升时 count 下降 0.305；正式 sentinel 必须保存 domain-level 历史与 CI。],
+  [检测后一个窗口足以完全恢复], [反驳], [triggered count 显著改善到 0.275，仍未进入 0.380±0.05 恢复带。],
+  [teacher-forced 收益只反映“看见但说不出”], [反驳于 fixed 臂], [target generation +0.120 [0.050, 0.190]，内部选择与自由生成同步改善。],
+)
+
+Package verifier 重读了 21,600/3,600 条 sentinel preference/generation、50,400/8,400 条终评原始行、735 个 metrics、223 个 contrasts、18 条 trajectory 和八份 checkpoint manifest。首次 analyzer 因把字典顺序当成语义 state 顺序而退出；失败日志保留，修复为精确集合验证后重跑。完整仓库测试 *231/231* 全绿；报告共 45 页，包 13 第 33--35 页通过渲染检查。final odd half 未评分，未使用任何付费资源。
+
+在线成本仍需压缩：三-state 全量 sentinel 用时 878.5 s，而 25 个训练 step 的纯 step wall time约 22.5 s；七-state full eval 用时 2,035.8 s。下一包复用原始 rows 做 8/16/25/50/100 pair 的 trigger recall、false-trigger 与 CI 稳定性分析，再实测 teacher-only Tiny/Medium。只有同时复现 count 触发并满足 5%/10% 开销公式的最小分母写进 DeepSeek 配置；fixed replay 剂量筛选随后进行。付费 Gate D 继续暂缓。
+
 == Gate C：Vast 只读调研
 
 *本节的 marketplace 价格与 offer 仅保留为 2026-08-02 历史快照，不再是可执行租机方案。* 固定 revision 源码审计发现 Transformers 量化 forward 集成尚无已确认的 autograd 注册，DeepGEMM #372 又给出 SM120/121 的 NVFP4 scale-layout weight-load blocker。当前架构建议已改为先请求单卡 SM100/B200 最小 kernel gate，只下载三个目标模块所需 shard；通过后再单独申请完整模型 Gate D。详见 `docs/dsv4-runtime-source-audit.md`、`docs/gpu-runtime-matrix.md` 与 `docs/deepseek-rental-training-contract.md`。任何付费步骤仍未获授权。
@@ -1183,9 +1253,10 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
   [2026-08-05], [V100 包 10 step-50/100 projector 插值：alpha 0/1 的张量和逐条评测精确复现；alpha=.25 虽提高 macro generation，却显著损失 count，并未改善 worst-task 或保留 shape。线性权重平均无法合并两端能力，下一项转任务条件抗遗忘辅助目标。],
   [2026-08-05], [V100 包 11 从 step 50 精确恢复 optimizer/order 并测试 count/shape projector-output MSE anchoring：表示距离受控，旧答案边界仍遗忘；中锚定改变 Pareto 路径但未通过 retention 规则。],
   [2026-08-05], [V100 包 12 严格匹配分层 batch 与 global random：分层在 step 50 加快 macro/generation，step 100 总体差异 CI 跨零且任务显著交换；终点梯度冲突多于 global。正式合同改为固定窗口领域覆盖，下一项进入遗忘触发 replay。],
+  [2026-08-05], [V100 包 13 fixed-budget matched replay：ordinary 精确复现历史 step 100；fixed 在同一 1,200-example 预算内重分配 80 个槽位，使 count+shape preference/generation 相对 ordinary 提升 +0.255/+0.120，donor 合并近零。late trigger 识别 count 坍塌并产生 +0.175 收益，仍未完全恢复。正式候选改为 preventive replay，下一项校准 Tiny/Medium sentinel 功效与成本。],
   [2026-08-05], [固定 revision 的 DeepSeek 量化 runtime 源码审计与 GPU 矩阵成稿：forward 集成缺少已确认 autograd 证据，SM120/121 受 DeepGEMM #372 weight-load blocker 影响；首个付费建议降为单卡 SM100/B200 最小 kernel gate，仍等待授权。],
 )
 
 = 下一位执行者的最短路径
 
-先运行 `pytest` 和 `examples/smoke_tiny_text_lm.py`。然后在 V100 工作站使用机械盘作为 `HF_HOME`，按 MANIFEST 校验并验证真实 MoonViT-V2。正式 0731 实验前不要写训练循环，先证明目标 CUDA/量化 runtime 支持 input data-gradient。若失败，优先评估 FP8 可微加载或定制 Dgrad，不要改用 GGUF 假装完成训练链路。
+先验证 Package 13 manifest，再从其 sentinel raw rows 运行 8/16/25/50/100 pair 多 seed 功效分析，冻结能复现 count trigger 且 false-trigger 可控的最小分母；随后实测 teacher-only Tiny/Medium wall time并套入 5%/10% 开销公式。完成本地监控合同后，再继续 replay 剂量与 OCR/count 专项诊断。正式 0731 实验前必须先证明目标 CUDA/量化 runtime 支持 input data-gradient；失败时优先评估 FP8 可微加载或定制 Dgrad，GGUF 不进入训练证据链。

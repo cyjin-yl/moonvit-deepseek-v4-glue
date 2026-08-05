@@ -13,6 +13,7 @@ from replay_order import transform_replay_batches
 from analyze_replay_sentinel import select_trigger_tasks
 from train_shape_adaptation import validate_fixed_training_budget
 from build_triggered_replay_config import build_triggered_config
+from analyze_matched_replay import forgetting_auc, policy_support, recovered_within
 
 
 TASKS = ("color", "coordinate", "count", "ocr", "shape", "spatial")
@@ -227,3 +228,26 @@ def test_triggered_config_derivation_keeps_the_remaining_budget_fixed(tmp_path: 
     assert arm["expected_optimizer_step"] == 75
     assert arm["replay_policy"]["tasks"] == ["count", "shape"]
     assert arm["trigger_decision"]["sha256"] == "decision-hash"
+
+
+def test_forgetting_auc_integrates_only_deficit_below_exchange() -> None:
+    value = forgetting_auc([(50, 0.4), (75, 0.1), (100, 0.3)], reference=0.4)
+
+    assert value == pytest.approx(0.175)
+
+
+def test_recovery_uses_the_preregistered_exchange_tolerance() -> None:
+    assert recovered_within(endpoint=0.36, reference=0.40, tolerance=0.05)
+    assert not recovered_within(endpoint=0.34, reference=0.40, tolerance=0.05)
+
+
+def test_policy_support_needs_positive_target_ci_and_bounded_donor_cost() -> None:
+    assert policy_support(
+        {"ci95_low": 0.02}, {"mean_gap": -0.01}, maximum_donor_cost=0.05
+    ) == "supported"
+    assert policy_support(
+        {"ci95_low": -0.01}, {"mean_gap": 0.01}, maximum_donor_cost=0.05
+    ) == "target_effect_underpowered"
+    assert policy_support(
+        {"ci95_low": 0.02}, {"mean_gap": -0.06}, maximum_donor_cost=0.05
+    ) == "donor_cost_exceeded"

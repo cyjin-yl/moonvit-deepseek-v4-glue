@@ -1,0 +1,405 @@
+{
+  "status": "valid",
+  "format_version": "fixed-budget-matched-replay-analysis-v1",
+  "recommendation": "fixed_preventive_replay",
+  "ranking_note": "policy ranking synthesizes preregistered target and donor tests with direct endpoint and generation evidence",
+  "fixed_policy": {
+    "status": "supported",
+    "target_preference": {
+      "family": "fixed_targets_minus_ordinary_endpoint",
+      "modality": "preference",
+      "metric": "paired_preference",
+      "state_a": "fixed-step100",
+      "condition_a": "vision",
+      "state_b": "ordinary-step100",
+      "condition_b": "vision",
+      "task": "count+shape",
+      "denominator": 400,
+      "sum_a": 209.0,
+      "sum_b": 107.0,
+      "mean_a": 0.5225,
+      "mean_b": 0.2675,
+      "mean_gap": 0.255,
+      "a_only_better": 111,
+      "b_only_better": 9,
+      "equal": 280,
+      "ci95_low": 0.21,
+      "ci95_high": 0.3,
+      "bootstrap_samples": 2000,
+      "seed": 20261044
+    },
+    "donor_preference": {
+      "family": "fixed_donors_minus_ordinary_endpoint",
+      "modality": "preference",
+      "metric": "paired_preference",
+      "state_a": "fixed-step100",
+      "condition_a": "vision",
+      "state_b": "ordinary-step100",
+      "condition_b": "vision",
+      "task": "donors",
+      "denominator": 800,
+      "sum_a": 509.0,
+      "sum_b": 506.0,
+      "mean_a": 0.63625,
+      "mean_b": 0.6325,
+      "mean_gap": 0.00375,
+      "a_only_better": 21,
+      "b_only_better": 18,
+      "equal": 761,
+      "ci95_low": -0.0125,
+      "ci95_high": 0.01875,
+      "bootstrap_samples": 2000,
+      "seed": 20261045
+    },
+    "target_generation": {
+      "family": "fixed_targets_minus_ordinary_endpoint",
+      "modality": "generation",
+      "metric": "generation_paired",
+      "state_a": "fixed-step100",
+      "condition_a": "vision",
+      "state_b": "ordinary-step100",
+      "condition_b": "vision",
+      "task": "count+shape",
+      "denominator": 100,
+      "sum_a": 19.0,
+      "sum_b": 7.0,
+      "mean_a": 0.19,
+      "mean_b": 0.07,
+      "mean_gap": 0.12,
+      "a_only_better": 13,
+      "b_only_better": 1,
+      "equal": 86,
+      "ci95_low": 0.05,
+      "ci95_high": 0.19,
+      "bootstrap_samples": 2000,
+      "seed": 20261048
+    },
+    "count_recovery": {
+      "task": "count",
+      "policy": "fixed",
+      "step50": 0.38,
+      "step75": 0.075,
+      "step100": 0.49,
+      "ability_auc": 0.255,
+      "forgetting_auc": 0.1525,
+      "endpoint_minus_exchange": 0.10999999999999999,
+      "recovered_within_tolerance": true
+    },
+    "shape_recovery": {
+      "task": "shape",
+      "policy": "fixed",
+      "step50": 0.735,
+      "step75": 0.535,
+      "step100": 0.555,
+      "ability_auc": 0.59,
+      "forgetting_auc": 0.14499999999999996,
+      "endpoint_minus_exchange": -0.17999999999999994,
+      "recovered_within_tolerance": false
+    },
+    "reallocated_examples": 80,
+    "extra_training_examples": 0
+  },
+  "triggered_policy": {
+    "status": "supported",
+    "target_preference": {
+      "family": "triggered_target_minus_ordinary_endpoint",
+      "modality": "preference",
+      "metric": "paired_preference",
+      "state_a": "triggered-step100",
+      "condition_a": "vision",
+      "state_b": "ordinary-step100",
+      "condition_b": "vision",
+      "task": "count",
+      "denominator": 200,
+      "sum_a": 55.0,
+      "sum_b": 20.0,
+      "mean_a": 0.275,
+      "mean_b": 0.1,
+      "mean_gap": 0.175,
+      "a_only_better": 35,
+      "b_only_better": 0,
+      "equal": 165,
+      "ci95_low": 0.125,
+      "ci95_high": 0.23,
+      "bootstrap_samples": 2000,
+      "seed": 20261046
+    },
+    "donor_preference": {
+      "family": "triggered_donors_minus_ordinary_endpoint",
+      "modality": "preference",
+      "metric": "paired_preference",
+      "state_a": "triggered-step100",
+      "condition_a": "vision",
+      "state_b": "ordinary-step100",
+      "condition_b": "vision",
+      "task": "donors",
+      "denominator": 1000,
+      "sum_a": 588.0,
+      "sum_b": 593.0,
+      "mean_a": 0.588,
+      "mean_b": 0.593,
+      "mean_gap": -0.005,
+      "a_only_better": 30,
+      "b_only_better": 35,
+      "equal": 935,
+      "ci95_low": -0.021,
+      "ci95_high": 0.011,
+      "bootstrap_samples": 2000,
+      "seed": 20261047
+    },
+    "target_generation": {
+      "family": "triggered_target_minus_ordinary_endpoint",
+      "modality": "generation",
+      "metric": "generation_paired",
+      "state_a": "triggered-step100",
+      "condition_a": "vision",
+      "state_b": "ordinary-step100",
+      "condition_b": "vision",
+      "task": "count",
+      "denominator": 50,
+      "sum_a": 2.0,
+      "sum_b": 1.0,
+      "mean_a": 0.04,
+      "mean_b": 0.02,
+      "mean_gap": 0.02,
+      "a_only_better": 1,
+      "b_only_better": 0,
+      "equal": 49,
+      "ci95_low": 0.0,
+      "ci95_high": 0.06,
+      "bootstrap_samples": 2000,
+      "seed": 20261049
+    },
+    "count_recovery": {
+      "task": "count",
+      "policy": "triggered",
+      "step50": 0.38,
+      "step75": 0.075,
+      "step100": 0.275,
+      "ability_auc": 0.20125,
+      "forgetting_auc": 0.17875,
+      "endpoint_minus_exchange": -0.10499999999999998,
+      "recovered_within_tolerance": false
+    },
+    "trigger_tasks": [
+      "count"
+    ],
+    "reallocated_examples": 20,
+    "extra_training_examples": 0
+  },
+  "fixed_minus_triggered_overall_preference": {
+    "family": "fixed_minus_triggered_step100",
+    "modality": "preference",
+    "metric": "paired_preference",
+    "state_a": "fixed-step100",
+    "condition_a": "vision",
+    "state_b": "triggered-step100",
+    "condition_b": "vision",
+    "task": "overall",
+    "denominator": 1200,
+    "sum_a": 718.0,
+    "sum_b": 643.0,
+    "mean_a": 0.5983333333333334,
+    "mean_b": 0.5358333333333334,
+    "mean_gap": 0.0625,
+    "a_only_better": 120,
+    "b_only_better": 45,
+    "equal": 1035,
+    "ci95_low": 0.0425,
+    "ci95_high": 0.08333333333333333,
+    "bootstrap_samples": 2000,
+    "seed": 20260953
+  },
+  "state_metrics": {
+    "frozen-base": {
+      "preference": {
+        "color": 0.635,
+        "coordinate": 0.415,
+        "count": 0.38,
+        "ocr": 0.155,
+        "shape": 0.735,
+        "spatial": 0.75
+      },
+      "preference_macro": 0.5116666666666666,
+      "preference_worst_task": 0.155,
+      "generation": {
+        "color": 0.14,
+        "coordinate": 0.02,
+        "count": 0.02,
+        "ocr": 0.0,
+        "shape": 0.44,
+        "spatial": 0.78
+      },
+      "generation_macro": 0.23333333333333336,
+      "vision_shuffle_overall": 0.3975000000000001
+    },
+    "exchange-step50": {
+      "preference": {
+        "color": 0.635,
+        "coordinate": 0.415,
+        "count": 0.38,
+        "ocr": 0.155,
+        "shape": 0.735,
+        "spatial": 0.75
+      },
+      "preference_macro": 0.5116666666666666,
+      "preference_worst_task": 0.155,
+      "generation": {
+        "color": 0.14,
+        "coordinate": 0.02,
+        "count": 0.02,
+        "ocr": 0.0,
+        "shape": 0.44,
+        "spatial": 0.78
+      },
+      "generation_macro": 0.23333333333333336,
+      "vision_shuffle_overall": 0.3975000000000001
+    },
+    "fixed-step100": {
+      "preference": {
+        "color": 0.805,
+        "coordinate": 0.545,
+        "count": 0.49,
+        "ocr": 0.195,
+        "shape": 0.555,
+        "spatial": 1.0
+      },
+      "preference_macro": 0.5983333333333334,
+      "preference_worst_task": 0.195,
+      "generation": {
+        "color": 0.42,
+        "coordinate": 0.34,
+        "count": 0.1,
+        "ocr": 0.0,
+        "shape": 0.28,
+        "spatial": 1.0
+      },
+      "generation_macro": 0.3566666666666667,
+      "vision_shuffle_overall": 0.46666666666666673
+    },
+    "fixed-step75": {
+      "preference": {
+        "color": 0.75,
+        "coordinate": 0.57,
+        "count": 0.075,
+        "ocr": 0.175,
+        "shape": 0.535,
+        "spatial": 0.75
+      },
+      "preference_macro": 0.47583333333333333,
+      "preference_worst_task": 0.075,
+      "generation": {
+        "color": 0.3,
+        "coordinate": 0.26,
+        "count": 0.0,
+        "ocr": 0.0,
+        "shape": 0.22,
+        "spatial": 0.66
+      },
+      "generation_macro": 0.24,
+      "vision_shuffle_overall": 0.3516666666666667
+    },
+    "ordinary-step100": {
+      "preference": {
+        "color": 0.735,
+        "coordinate": 0.575,
+        "count": 0.1,
+        "ocr": 0.22,
+        "shape": 0.435,
+        "spatial": 1.0
+      },
+      "preference_macro": 0.5108333333333334,
+      "preference_worst_task": 0.1,
+      "generation": {
+        "color": 0.16,
+        "coordinate": 0.24,
+        "count": 0.02,
+        "ocr": 0.0,
+        "shape": 0.12,
+        "spatial": 1.0
+      },
+      "generation_macro": 0.25666666666666665,
+      "vision_shuffle_overall": 0.385
+    },
+    "ordinary-step75": {
+      "preference": {
+        "color": 0.835,
+        "coordinate": 0.51,
+        "count": 0.075,
+        "ocr": 0.19,
+        "shape": 0.7,
+        "spatial": 1.0
+      },
+      "preference_macro": 0.5516666666666666,
+      "preference_worst_task": 0.075,
+      "generation": {
+        "color": 0.38,
+        "coordinate": 0.16,
+        "count": 0.0,
+        "ocr": 0.0,
+        "shape": 0.44,
+        "spatial": 1.0
+      },
+      "generation_macro": 0.33,
+      "vision_shuffle_overall": 0.43666666666666665
+    },
+    "triggered-step100": {
+      "preference": {
+        "color": 0.7,
+        "coordinate": 0.65,
+        "count": 0.275,
+        "ocr": 0.155,
+        "shape": 0.435,
+        "spatial": 1.0
+      },
+      "preference_macro": 0.5358333333333333,
+      "preference_worst_task": 0.155,
+      "generation": {
+        "color": 0.06,
+        "coordinate": 0.34,
+        "count": 0.04,
+        "ocr": 0.0,
+        "shape": 0.12,
+        "spatial": 1.0
+      },
+      "generation_macro": 0.26,
+      "vision_shuffle_overall": 0.41750000000000004
+    }
+  },
+  "training_budgets": {
+    "ordinary": {
+      "steps": 50,
+      "examples": 1200
+    },
+    "fixed": {
+      "steps": 50,
+      "examples": 1200
+    },
+    "triggered_prefix_shared_with_ordinary": {
+      "steps": 25,
+      "examples": 600
+    },
+    "triggered_remaining": {
+      "steps": 25,
+      "examples": 600
+    },
+    "total_examples_per_policy": 1200
+  },
+  "thresholds": {
+    "recovery_tolerance": 0.05,
+    "maximum_mean_donor_cost": 0.05
+  },
+  "sources": {
+    "preference_records_sha256": "bf4a694ed9fc4ad07d97b134ac48bab17a790f62dbafe3be19977a53bb0607df",
+    "generation_records_sha256": "07ea8bba47667b94ffd77937ab3498b920939b2779c50333e06d987edf2a0ff8",
+    "sentinel_decision_sha256": "14c2993ce1edf888da5cd5ace2650ff7d76e921b90334bbc62fdd485ee2bdb22",
+    "ordinary_summary_sha256": "f901eb71693b3161ce073f8db35ffa60c6f8e92002b0fcd091723275045d63cf",
+    "fixed_summary_sha256": "433591821a016beb3d0ef4bcc2eaaabf522b8dc8035ad5ec10e3f55680fd1216",
+    "triggered_summary_sha256": "5b641023d7a1526ed82d8a4ff508fb6a1a1eb596b58ceb068aeeef20f86cee2c"
+  },
+  "bootstrap": {
+    "samples": 2000,
+    "seed": 20260826
+  },
+  "final_half_scored": false
+}

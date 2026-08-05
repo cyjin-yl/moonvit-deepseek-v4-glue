@@ -228,4 +228,4 @@ Gate D 通过后只允许进入合同中的阶段 1 短校准训练。完整训�
 - V100 本地机制研究：**继续**。
 - 单卡最小 kernel gate：**等待用户付费授权**。
 - 完整模型 Gate D：**尚未具备授权前提**。
-- 完整训练：**no-go**，直到包 12、matched replay、OCR/count 定位、sentinel 成本、三模式 DGRAD 工具和完整 Gate D 均收敛。
+- 完整训练：**no-go**。包 12 窗口覆盖与包 13 fixed-budget replay 已收敛；Tiny/Medium sentinel 功效/成本、正式域 replay 配额、OCR/count 定位、真实量化三模式 DGRAD 和完整 Gate D 仍需完成。

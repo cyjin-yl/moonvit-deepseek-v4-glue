@@ -1,0 +1,29 @@
+{
+  "status": "valid",
+  "recommendation": "fixed_preventive_replay",
+  "source_files": {
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_analysis_v1/DECISIONS.json": "2fc671c746d606afcef776bb4bdcd497bbb22972870874ce3d55f74fddbf8c7a",
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_ordinary_v1/SUMMARY.json": "f901eb71693b3161ce073f8db35ffa60c6f8e92002b0fcd091723275045d63cf",
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_fixed_v1/SUMMARY.json": "433591821a016beb3d0ef4bcc2eaaabf522b8dc8035ad5ec10e3f55680fd1216",
+    "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/matched_replay_triggered_v1/SUMMARY.json": "5b641023d7a1526ed82d8a4ff508fb6a1a1eb596b58ceb068aeeef20f86cee2c"
+  },
+  "charts": {
+    "01-policy-summary-trajectories.svg": {
+      "bytes": 4280,
+      "sha256": "5fbb4d0822a3c9757e07f54737ae5e81ba9d899e04389e1797eccbf189fed40a"
+    },
+    "02-retention-task-trajectories.svg": {
+      "bytes": 4249,
+      "sha256": "880606b76fccd83ee7e2cfc8bc858a34e4e15031cccda4106287e45a2ab2a8fa"
+    },
+    "03-endpoint-task-deltas.svg": {
+      "bytes": 3527,
+      "sha256": "da361a395afffc05b41c9033abd23b63ad0b458709fadf6a03cebf92c15a83e3"
+    },
+    "04-fixed-budget-allocation.svg": {
+      "bytes": 4127,
+      "sha256": "be9002f260010a7cffc68b05cf4140fc50592502be47c2a46ed507f4a88d1d2b"
+    }
+  },
+  "final_half_scored": false
+}

@@ -1,0 +1,54 @@
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading weights:   0%|          | 0/290 [00:00<?, ?it/s]Loading weights: 100%|██████████| 290/290 [00:00<00:00, 18143.89it/s]
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+completed frozen-base
+completed exchange-step50
+completed ordinary-step75
+{
+  "status": "valid",
+  "format_version": "shape-adaptation-eval-v1",
+  "metadata": {
+    "completed_at_utc": "2026-08-05T09:15:18.851397+00:00",
+    "git_sha": "5d6367617831e4b4d81d7985ae5a25505aa85208",
+    "host": "doesworkstation",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "wall_seconds": 878.5101149082184,
+    "peak_gpu_memory_bytes": 6886173184,
+    "final_half_scored": false
+  },
+  "states": 3,
+  "teacher_forced_records_per_cell": 2400,
+  "generation_records_per_cell": 600,
+  "preference_rows": 21600,
+  "generation_rows": 3600,
+  "sources": {
+    "lora_summary_sha256": "b605c0c8427d3e1f4b0f66dadaa5ace8c90d507e8a6ab2a313212a1d19fc4515",
+    "projector_summary_sha256": "457c0af746eec359b4ae695a9a26b913c5b21f8333ae21e9b9982d56ce817ab0"
+  },
+  "files": {
+    "preference_records.jsonl": {
+      "bytes": 13054810,
+      "sha256": "0c3eec4fbce33e98d8a5acd1e9211d942fbaadd2a4665a81f9743c4a0ddf11a8"
+    },
+    "generation_records.jsonl": {
+      "bytes": 1575920,
+      "sha256": "16a5d4f682dfc5f26e2d8407415da829909a2411d46560dfd008c9d0b7ebecd1"
+    },
+    "preference_curve.csv": {
+      "bytes": 6345,
+      "sha256": "b1f7f5dfb5a42f7451d43866ce3ce494e841d22420cb2894601ed58df9a8ec7e"
+    },
+    "generation_curve.csv": {
+      "bytes": 3920,
+      "sha256": "93c22eef80c9776e4ca2b3896fb2d56e945b0d8a94d98c8a240efdb529233c80"
+    },
+    "DECISIONS.json": {
+      "bytes": 1192,
+      "sha256": "529907ba63f65f22b504d0f81b87f877d7374dd0db1a2967bb409dda826d692f"
+    }
+  },
+  "final_half_scored": false
+}
