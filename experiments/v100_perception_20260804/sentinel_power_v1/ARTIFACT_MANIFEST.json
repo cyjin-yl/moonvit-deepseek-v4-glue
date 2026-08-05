@@ -1,0 +1,215 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-05T11:32:53.672142+00:00",
+  "root": "sentinel_power_v1",
+  "git_base_sha": "d7eb18e97e5981563c397c705c933921e2a558ec",
+  "files": {
+    "charts/01-power-curves.svg": {
+      "bytes": 3763,
+      "sha256": "29556ac936534e3347e8d51336d6c99ca8a8bcdf0ca111476c18e22a804ab70e"
+    },
+    "charts/02-v100-timing.svg": {
+      "bytes": 2463,
+      "sha256": "e32ea18fe160bcb63d479fdd9e82d6881ee217adeb437abb181c68ad1b569426"
+    },
+    "charts/03-required-interval.svg": {
+      "bytes": 2466,
+      "sha256": "a28750277b4f7b97a01b174fff5db467e756dcc9290924bbb469260abecfa41a"
+    },
+    "charts/CHARTS.json": {
+      "bytes": 1163,
+      "sha256": "b3a10052824b20d2105580f93ed17ad9eab20215dba01aa6413176a82f34a91f"
+    },
+    "logs/sentinel_timing_medium_rep1_v1.log": {
+      "bytes": 2615,
+      "sha256": "6e257eec1acfeeb7fb8e1cad45cc776f4bcbe8015bae8f40b3459ee9b65880ae"
+    },
+    "logs/sentinel_timing_medium_rep2_v1.log": {
+      "bytes": 2072,
+      "sha256": "50724769a9cdf8608b5f96b037a0e65889ad93cd21a4c9bdbc8495f6f422eb51"
+    },
+    "logs/sentinel_timing_medium_rep3_v1.log": {
+      "bytes": 2070,
+      "sha256": "f310aab1138c362715b67ad5e815a272270360d839669953ad546c4d5ae4ddc6"
+    },
+    "logs/sentinel_timing_tiny_rep1_v1.log": {
+      "bytes": 2068,
+      "sha256": "c27ab07251acda0d979e006b5cdcdef87998e7f840e341dab2b5dee336cedf68"
+    },
+    "logs/sentinel_timing_tiny_rep2_v1.log": {
+      "bytes": 2073,
+      "sha256": "950d5c7dc3f2fb132bb097260cd560dd75e0726946137e74b1eeef9cef7458a1"
+    },
+    "logs/sentinel_timing_tiny_rep3_v1.log": {
+      "bytes": 2070,
+      "sha256": "d80abf37e8dcb39cb41bcf4c46918c2985cfb24e1bf2efc92876d6442c5fae11"
+    },
+    "PACKAGE_VERIFICATION.json": {
+      "bytes": 1245,
+      "sha256": "d2358c7ef285d1d783f38f01e58175771204aef338322e31c9106662cb126691"
+    },
+    "raw/adaptation/sentinel_power_analysis_v1/candidate_summary.csv": {
+      "bytes": 1760,
+      "sha256": "5cdac87b8796888653c698ac614566af3b2df3b49946f4fbf1766171d9cab209"
+    },
+    "raw/adaptation/sentinel_power_analysis_v1/DECISIONS.json": {
+      "bytes": 6585,
+      "sha256": "92477c1510cdbb32dac56c6ba7cde1f7985f738f1aee79828eb49bd1b694b01e"
+    },
+    "raw/adaptation/sentinel_power_analysis_v1/full_contrasts.csv": {
+      "bytes": 579,
+      "sha256": "813a49a4251ea75975e5691b921b696ae00283c1181927c08ad1f529d4942809"
+    },
+    "raw/adaptation/sentinel_power_analysis_v1/task_trials.csv": {
+      "bytes": 328905,
+      "sha256": "525d09ca1abae41da23e823e7f526161ca05047544b0e3b56830db8fe66bf969"
+    },
+    "raw/adaptation/sentinel_power_analysis_v1/trial_decisions.csv": {
+      "bytes": 30354,
+      "sha256": "e381b078046cd614c77e1aedabb0b30d47d5bf55fbdfe4509f1fcc90f3f39d5f"
+    },
+    "raw/adaptation/sentinel_timing_analysis_v1/DECISIONS.json": {
+      "bytes": 5015,
+      "sha256": "fa3ec5d4365cf1741c3ffb2422388d4d06bad843a773893aea2b37d10c3159eb"
+    },
+    "raw/adaptation/sentinel_timing_analysis_v1/overhead_budget.csv": {
+      "bytes": 1172,
+      "sha256": "5c58e0c7da81cca24a06902b33955511dfdfe198cff0c94ea4be6530566b6369"
+    },
+    "raw/adaptation/sentinel_timing_analysis_v1/timing_profiles.csv": {
+      "bytes": 2367,
+      "sha256": "6d04d008963c03dbf8e10883bb5f462fc89330a2c6455b71b65593f6c0bb8859"
+    },
+    "raw/adaptation/sentinel_timing_medium_rep1_v1/CONFIG.json": {
+      "bytes": 7879,
+      "sha256": "79bf07aead067479c7cbcab0e15f74fa58a08e11e7992c8432caf2a200baa998"
+    },
+    "raw/adaptation/sentinel_timing_medium_rep1_v1/DECISIONS.json": {
+      "bytes": 812,
+      "sha256": "782548ef3789dffe095b05272d7ace78a446c916bbe14b06384072e46bceaf9d"
+    },
+    "raw/adaptation/sentinel_timing_medium_rep1_v1/preference_curve.csv": {
+      "bytes": 1414,
+      "sha256": "58bc619083b288c5e4d6d6751ac55a98d7e5c5b69d58775ac9091b537a5a6558"
+    },
+    "raw/adaptation/sentinel_timing_medium_rep1_v1/preference_records.jsonl": {
+      "bytes": 718399,
+      "sha256": "b31ea359c99f726ae703344fee49a8061d8f9061899a510026c0bf30dd97bb82"
+    },
+    "raw/adaptation/sentinel_timing_medium_rep1_v1/SUMMARY.json": {
+      "bytes": 1505,
+      "sha256": "11ab9b5a94a6abf4f161846b369ec5ea0837e9b4b25f9feb1298027f3f891cb2"
+    },
+    "raw/adaptation/sentinel_timing_medium_rep2_v1/CONFIG.json": {
+      "bytes": 7879,
+      "sha256": "79bf07aead067479c7cbcab0e15f74fa58a08e11e7992c8432caf2a200baa998"
+    },
+    "raw/adaptation/sentinel_timing_medium_rep2_v1/DECISIONS.json": {
+      "bytes": 812,
+      "sha256": "782548ef3789dffe095b05272d7ace78a446c916bbe14b06384072e46bceaf9d"
+    },
+    "raw/adaptation/sentinel_timing_medium_rep2_v1/preference_curve.csv": {
+      "bytes": 1414,
+      "sha256": "58bc619083b288c5e4d6d6751ac55a98d7e5c5b69d58775ac9091b537a5a6558"
+    },
+    "raw/adaptation/sentinel_timing_medium_rep2_v1/preference_records.jsonl": {
+      "bytes": 718399,
+      "sha256": "b31ea359c99f726ae703344fee49a8061d8f9061899a510026c0bf30dd97bb82"
+    },
+    "raw/adaptation/sentinel_timing_medium_rep2_v1/SUMMARY.json": {
+      "bytes": 1506,
+      "sha256": "b2490f16951f9c466a4851e90f819bdb5d0941927411941d3ae74c5eab9b3455"
+    },
+    "raw/adaptation/sentinel_timing_medium_rep3_v1/CONFIG.json": {
+      "bytes": 7879,
+      "sha256": "79bf07aead067479c7cbcab0e15f74fa58a08e11e7992c8432caf2a200baa998"
+    },
+    "raw/adaptation/sentinel_timing_medium_rep3_v1/DECISIONS.json": {
+      "bytes": 812,
+      "sha256": "782548ef3789dffe095b05272d7ace78a446c916bbe14b06384072e46bceaf9d"
+    },
+    "raw/adaptation/sentinel_timing_medium_rep3_v1/preference_curve.csv": {
+      "bytes": 1414,
+      "sha256": "58bc619083b288c5e4d6d6751ac55a98d7e5c5b69d58775ac9091b537a5a6558"
+    },
+    "raw/adaptation/sentinel_timing_medium_rep3_v1/preference_records.jsonl": {
+      "bytes": 718399,
+      "sha256": "b31ea359c99f726ae703344fee49a8061d8f9061899a510026c0bf30dd97bb82"
+    },
+    "raw/adaptation/sentinel_timing_medium_rep3_v1/SUMMARY.json": {
+      "bytes": 1504,
+      "sha256": "84e2fe2ed73ebad6bb1471cf71680d4c14ec68451f863fca55b603c8ad02832c"
+    },
+    "raw/adaptation/sentinel_timing_tiny_rep1_v1/CONFIG.json": {
+      "bytes": 7878,
+      "sha256": "6d136027df2d59249585d7c32b70d9a69410196a3e163abab66050251a97ffc2"
+    },
+    "raw/adaptation/sentinel_timing_tiny_rep1_v1/DECISIONS.json": {
+      "bytes": 824,
+      "sha256": "42f2a878ba736ff4ab35af968e9266c232a1a96a318f3c2970c4c4a65f7ca500"
+    },
+    "raw/adaptation/sentinel_timing_tiny_rep1_v1/preference_curve.csv": {
+      "bytes": 1412,
+      "sha256": "6e3499f436cb965efae9be5a909e2830ed7288487a5e1ddefdb40aa762f4aa33"
+    },
+    "raw/adaptation/sentinel_timing_tiny_rep1_v1/preference_records.jsonl": {
+      "bytes": 358968,
+      "sha256": "72fb9261f36b7a89746b40ea7f98fa653b3a390a4ec85f2006d10b1c81e4f3de"
+    },
+    "raw/adaptation/sentinel_timing_tiny_rep1_v1/SUMMARY.json": {
+      "bytes": 1503,
+      "sha256": "4f77e7cb21916b4e9590878b7c35ae5b0f115e6adf207dc5aab0c430bd4550d8"
+    },
+    "raw/adaptation/sentinel_timing_tiny_rep2_v1/CONFIG.json": {
+      "bytes": 7878,
+      "sha256": "6d136027df2d59249585d7c32b70d9a69410196a3e163abab66050251a97ffc2"
+    },
+    "raw/adaptation/sentinel_timing_tiny_rep2_v1/DECISIONS.json": {
+      "bytes": 824,
+      "sha256": "42f2a878ba736ff4ab35af968e9266c232a1a96a318f3c2970c4c4a65f7ca500"
+    },
+    "raw/adaptation/sentinel_timing_tiny_rep2_v1/preference_curve.csv": {
+      "bytes": 1412,
+      "sha256": "6e3499f436cb965efae9be5a909e2830ed7288487a5e1ddefdb40aa762f4aa33"
+    },
+    "raw/adaptation/sentinel_timing_tiny_rep2_v1/preference_records.jsonl": {
+      "bytes": 358968,
+      "sha256": "72fb9261f36b7a89746b40ea7f98fa653b3a390a4ec85f2006d10b1c81e4f3de"
+    },
+    "raw/adaptation/sentinel_timing_tiny_rep2_v1/SUMMARY.json": {
+      "bytes": 1507,
+      "sha256": "169b60e664c6b3e9c9f5db90adb667c8a155bfec7641eee47e4045820ec87c2c"
+    },
+    "raw/adaptation/sentinel_timing_tiny_rep3_v1/CONFIG.json": {
+      "bytes": 7878,
+      "sha256": "6d136027df2d59249585d7c32b70d9a69410196a3e163abab66050251a97ffc2"
+    },
+    "raw/adaptation/sentinel_timing_tiny_rep3_v1/DECISIONS.json": {
+      "bytes": 824,
+      "sha256": "42f2a878ba736ff4ab35af968e9266c232a1a96a318f3c2970c4c4a65f7ca500"
+    },
+    "raw/adaptation/sentinel_timing_tiny_rep3_v1/preference_curve.csv": {
+      "bytes": 1412,
+      "sha256": "6e3499f436cb965efae9be5a909e2830ed7288487a5e1ddefdb40aa762f4aa33"
+    },
+    "raw/adaptation/sentinel_timing_tiny_rep3_v1/preference_records.jsonl": {
+      "bytes": 358968,
+      "sha256": "72fb9261f36b7a89746b40ea7f98fa653b3a390a4ec85f2006d10b1c81e4f3de"
+    },
+    "raw/adaptation/sentinel_timing_tiny_rep3_v1/SUMMARY.json": {
+      "bytes": 1504,
+      "sha256": "b3dffe136a4ec50549d2a3d5d2ee4228a9eb8088364218a076b07860fc818ddf"
+    },
+    "RAW_DATA_LOCATION.json": {
+      "bytes": 921,
+      "sha256": "050f359fb6df9dc76449b9a278a2e7a4d3b3bd487593a43e19fe55dd778e625e"
+    },
+    "RUN_NOTES.md": {
+      "bytes": 5000,
+      "sha256": "d61588d606ebc0ecf66911e54448886b88d74206d60e2c70d2a160569af69c0b"
+    }
+  },
+  "file_count": 51,
+  "total_bytes": 3708513,
+  "final_half_scored": false
+}

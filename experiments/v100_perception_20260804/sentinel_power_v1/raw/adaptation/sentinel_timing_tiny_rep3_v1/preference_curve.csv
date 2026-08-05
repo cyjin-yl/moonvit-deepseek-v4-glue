@@ -1,0 +1,15 @@
+state,kind,adaptation_step,adaptation_examples_seen,interpolation_alpha,condition,task,records,pairs,sample_preference_accuracy,paired_preference_accuracy,mean_correct_margin
+exchange-step50,projector,50,1200,,vision,overall,300,150,0.7466666666666667,0.5133333333333333,1.8981362383189935
+exchange-step50,projector,50,1200,,vision,color,50,25,0.8,0.6,2.1400000011920928
+exchange-step50,projector,50,1200,,vision,coordinate,50,25,0.7,0.4,0.8419601076841354
+exchange-step50,projector,50,1200,,vision,count,50,25,0.64,0.4,0.3537499952316284
+exchange-step50,projector,50,1200,,vision,ocr,50,25,0.6,0.2,0.7187253572827293
+exchange-step50,projector,50,1200,,vision,shape,50,25,0.88,0.76,6.395624960507266
+exchange-step50,projector,50,1200,,vision,spatial,50,25,0.86,0.72,0.9387570080161095
+ordinary-step75,projector,75,1800,,vision,overall,300,150,0.7733333333333333,0.5666666666666667,2.308619345380969
+ordinary-step75,projector,75,1800,,vision,color,50,25,0.9,0.8,3.2237500141561033
+ordinary-step75,projector,75,1800,,vision,coordinate,50,25,0.78,0.56,0.9813060438632966
+ordinary-step75,projector,75,1800,,vision,count,50,25,0.52,0.16,0.2962499910593033
+ordinary-step75,projector,75,1800,,vision,ocr,50,25,0.58,0.16,0.8012087108067104
+ordinary-step75,projector,75,1800,,vision,shape,50,25,0.86,0.72,6.364687481224537
+ordinary-step75,projector,75,1800,,vision,spatial,50,25,1.0,1.0,2.1845138311758636

@@ -1,0 +1,41 @@
+{
+  "status": "valid",
+  "format_version": "sentinel-power-package-verification-v1",
+  "source_git_sha": "d7eb18e97e5981563c397c705c933921e2a558ec",
+  "power": {
+    "candidate_pairs_per_task": [
+      8,
+      16,
+      25,
+      50,
+      100
+    ],
+    "trials_per_candidate": 200,
+    "bootstrap_samples_per_contrast": 2000,
+    "trial_rows": 1000,
+    "task_trial_rows": 6000,
+    "tiny_pairs_per_task": 25,
+    "medium_pairs_per_task": 50,
+    "tiny_count_recall": 0.975,
+    "tiny_exact_decision_rate": 0.935,
+    "tiny_familywise_false_trigger_rate": 0.04
+  },
+  "timing": {
+    "repeats_per_profile": 3,
+    "raw_preference_rows": 5400,
+    "tiny_teacher_seconds_median": 22.501351576764137,
+    "medium_teacher_seconds_median": 43.880532410461456,
+    "tiny_minimum_interval_steps_5pct": 476,
+    "tiny_minimum_interval_steps_10pct": 226,
+    "peak_gpu_memory_bytes": 6886173184,
+    "repeated_preference_hashes_exact": true
+  },
+  "decision": {
+    "recommended_profile": "tiny",
+    "fixed_preventive_replay_default": true,
+    "sentinel_role": "sparse checkpoint audit",
+    "every_25_small_model_steps": false
+  },
+  "large_checkpoint_weights_in_git": false,
+  "final_half_scored": false
+}

@@ -1,0 +1,24 @@
+{
+  "status": "valid",
+  "best_vision_paired_preference": {
+    "state": "ordinary-step75",
+    "kind": "projector",
+    "adaptation_step": 75,
+    "adaptation_examples_seen": 1800,
+    "interpolation_alpha": null,
+    "condition": "vision",
+    "task": "overall",
+    "records": 300,
+    "pairs": 150,
+    "sample_preference_accuracy": 0.7733333333333333,
+    "paired_preference_accuracy": 0.5666666666666667,
+    "mean_correct_margin": 2.308619345380969
+  },
+  "best_vision_paired_generation": null,
+  "interpretation_limits": [
+    "all selection records are disjoint from the adaptation train split",
+    "LoRA and projector continuation see equal true-batch examples from the same frozen order",
+    "this synthetic diagnostic does not estimate general benchmark transfer",
+    "final odd halves remain unscored"
+  ]
+}

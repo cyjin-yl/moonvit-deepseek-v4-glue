@@ -1,0 +1,24 @@
+{
+  "status": "valid",
+  "package": "sentinel_power_v1",
+  "source_git_sha": "d7eb18e97e5981563c397c705c933921e2a558ec",
+  "power_source": {
+    "committed_package": "experiments/v100_perception_20260804/matched_replay_v1/raw/adaptation/matched_replay_sentinel_eval_v1/preference_records.jsonl",
+    "sha256": "0c3eec4fbce33e98d8a5acd1e9211d942fbaadd2a4665a81f9743c4a0ddf11a8",
+    "final_half_scored": false
+  },
+  "v100_root": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation",
+  "v100_directories": [
+    "sentinel_power_analysis_v1",
+    "sentinel_timing_analysis_v1",
+    "sentinel_timing_tiny_rep1_v1",
+    "sentinel_timing_tiny_rep2_v1",
+    "sentinel_timing_tiny_rep3_v1",
+    "sentinel_timing_medium_rep1_v1",
+    "sentinel_timing_medium_rep2_v1",
+    "sentinel_timing_medium_rep3_v1"
+  ],
+  "large_checkpoint_weights_in_git": false,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

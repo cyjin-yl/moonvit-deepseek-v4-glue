@@ -9,7 +9,7 @@
   #v(5pt)
   #text(size: 14pt)[训练前架构审计、胶水原型与硬件计划]
   #v(8pt)
-  版本 0.4 · 2026-08-05
+  版本 0.5 · 2026-08-05
 ]
 
 #outline()
@@ -17,7 +17,7 @@
 
 = 执行摘要
 
-本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段不训练视觉塔和语言模型，只训练一个 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。当前结论是：V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证。包 3–6 依次定位 shape 内容信号、证明 tower/projector 保留信息、用短程 projector 续训完全恢复 shape，并确认这种 shape-only 恢复不跨任务泛化。包 7 用一轮六任务均衡监督使全部任务的 teacher-forced paired preference 和 vision−shuffle 下界同时转正；自由生成仍只有 shape/spatial 形成 paired 改善。包 8 从该 checkpoint 做严格等顺序对照：额外 projector epoch 把总体 strict preference 从 0.224 提至 0.511、paired generation 从 0.063 提至 0.257，并新解锁 color/coordinate/spatial 生成；顶部 LoRA 只显著强化 shape，且伤害 count/spatial。包 9 进一步证明 projector step 50 与 100 的总体 strict preference 几乎相同，却在 count/shape 与 coordinate/spatial 之间发生大幅能力重排；包 10 验证两端处于平滑相连的权重路径，但线性插值仍沿相同 Pareto 权衡移动，无法无训练地合并互补能力；包 11 表明完整 projector-output MSE anchoring 也无法保留旧答案边界；包 12 的严格 batch-order 对照显示分层覆盖只带来中期加速，终点在任务间产生 mixed trade-off。当前瓶颈已收敛到遗忘触发 replay、OCR/count 的生成裂缝和决策边界级辅助目标。正式 0731 大权重的 FP4/FP8 可微 kernel 仍是尚未消除的主要风险。
+本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段冻结视觉塔和语言模型，只训练 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证。包 3–12 依次建立 synthetic paired preference/generation、逐层 probe、activation patching、projector/LoRA 轨迹、任务干扰、checkpoint averaging、anchoring 与 batch-order 证据。包 13 在相同 1,200-example 预算内用 preventive replay 恢复 count/shape，包 14 又把可靠 Tiny sentinel 固定为 25 pairs/task 并测得 V100 teacher-only 中位开销 22.501 秒。这条机制支线已收束为默认保护配方。工程主线现转向纯文本 `Qwen/Qwen2.5-3B-Instruct` 的固定真实视觉合同，用 ScreenSpot、TextVQA、DocVQA、OCRBench、synthetic 与语言保持筛选可迁移方法；0.5B 只保留为容量受限的早期对齐证据。完整 DeepSeek-V4-Flash-0731 尚未完成图像前向、量化 input DGRAD、训练、恢复和生成闭环，Gate D 当前未通过。
 
 MoonViT-V2 有 401.2M 参数，抽取后的 BF16 权重约 802 MB，相对于约 160 GB 级的 DeepSeek 混合精度权重很小。更大的资源变量是图像分辨率带来的视觉 token 数和冻结 LLM 反向所保留的激活，而不是视觉塔权重。
 
@@ -992,7 +992,83 @@ triggered 对 count 仍有真实收益：相对 ordinary 为 *+0.175 [0.125, 0.2
 
 Package verifier 重读了 21,600/3,600 条 sentinel preference/generation、50,400/8,400 条终评原始行、735 个 metrics、223 个 contrasts、18 条 trajectory 和八份 checkpoint manifest。首次 analyzer 因把字典顺序当成语义 state 顺序而退出；失败日志保留，修复为精确集合验证后重跑。完整仓库测试 *231/231* 全绿；报告共 45 页，包 13 第 33--35 页通过渲染检查。final odd half 未评分，未使用任何付费资源。
 
-在线成本仍需压缩：三-state 全量 sentinel 用时 878.5 s，而 25 个训练 step 的纯 step wall time约 22.5 s；七-state full eval 用时 2,035.8 s。下一包复用原始 rows 做 8/16/25/50/100 pair 的 trigger recall、false-trigger 与 CI 稳定性分析，再实测 teacher-only Tiny/Medium。只有同时复现 count 触发并满足 5%/10% 开销公式的最小分母写进 DeepSeek 配置；fixed replay 剂量筛选随后进行。付费 Gate D 继续暂缓。
+在线成本仍需压缩：三-state 全量 sentinel 用时 878.5 s，而 25 个训练 step 的纯 step wall time约 22.5 s；七-state full eval 用时 2,035.8 s。包 14 因此复用原始 rows 做 8/16/25/50/100 pair 的 trigger recall、false-trigger 与 CI 稳定性分析，再实测 teacher-only Tiny/Medium。最小可靠分母和 5%/10% 开销公式在下一节给出；此后 fixed replay 作为默认保护，机制扩展暂缓。付费 Gate D 继续暂缓。
+
+#pagebreak()
+
+== Sentinel 功效与 V100 开销标定（包 14，2026-08-05）
+
+=== 25 pairs/task 是预注册护栏下的最小可靠分母
+
+包 14 在任何 timing 结果产生前冻结源 SHA、候选分母、200 次确定性子采样、每项 2,000 次 paired bootstrap、Wilson 护栏和 trigger 规则。源数据是包 13 的 21,600 条 preference rows，仅使用 `exchange-step50` 与 `ordinary-step75` 的 `vision` 条件；final odd half 仍未评分。
+
+#table(
+  columns: (1fr, 1.1fr, 1.2fr, 1.4fr, 0.8fr),
+  [*pairs/task*], [*count recall*], [*exact count-only*], [*familywise false trigger*], [*通过*],
+  [8], [0.375], [0.360], [0.015], [否],
+  [16], [0.760], [0.720], [0.045], [否],
+  [25], [*0.975*], [*0.935*], [*0.040*], [*是*],
+  [50], [1.000], [0.965], [0.035], [是],
+  [100], [1.000], [1.000], [0.000], [是],
+)
+
+Tiny 因此固定为 25 pairs/task，即每个 state 300 records。其 recall Wilson 95% CI 为 `[0.943, 0.989]`，exact decision 为 `[0.892, 0.962]`，false trigger 为 `[0.020, 0.077]`；25-pair 的误触发全部来自 shape，比例 0.040。8/16-pair profile 的 recall 只有 0.375/0.760，不能进入正式合同。Medium 固定为下一档 50 pairs/task。
+
+#figure(
+  image("../experiments/v100_perception_20260804/sentinel_power_v1/charts/01-power-curves.svg", width: 86%),
+  caption: [五档子样本的 count recall、精确决策率与 familywise false-trigger；虚线为预注册阈值。],
+)
+
+=== 实测 V100 时延决定稀疏 audit 频率
+
+#table(
+  columns: (1.1fr, 1fr, 1.3fr, 1.3fr, 1.2fr),
+  [*profile*], [*pairs/task*], [*teacher rows/repeat*], [*teacher median*], [*end-to-end median*],
+  [Tiny], [25], [600], [*22.501 s*], [31.215 s],
+  [Medium], [50], [1,200], [*43.881 s*], [52.537 s],
+)
+
+六次运行均无 OOM/NaN，峰值显存 6.886 GB；同一 profile 的三次 preference rows SHA 完全一致，Tiny/Medium 的每一行又精确等于包 13 原始数据中相同 `(state,id)` 的行。以 fixed replay 的 median train-step `0.8989666 s` 代入 `t_eval / (K*t_step + t_eval) <= overhead`，模型常驻 Tiny 在 5%/10% 开销下至少间隔 476/226 steps，操作配置向上取 512/256；每次单独起进程则至少为 660/313，向上取 1024/512。DeepSeek runtime 必须用 Gate D 实测 step time 重算 K。
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 10pt,
+    image("../experiments/v100_perception_20260804/sentinel_power_v1/charts/02-v100-timing.svg", width: 100%),
+    image("../experiments/v100_perception_20260804/sentinel_power_v1/charts/03-required-interval.svg", width: 100%),
+  ),
+  caption: [左：Tiny/Medium 三次 V100 timing；右：5%/10% 开销下所需最小 checkpoint 间隔。],
+)
+
+#table(
+  columns: (1.9fr, 1fr, 2.7fr),
+  [*假设*], [*包 14 更新*], [*证据与动作*],
+  [25 pairs/task 足以复现遗忘 trigger], [支持], [recall 0.975、exact 0.935、false trigger 0.040，三项 Wilson 护栏全部通过。],
+  [8/16 pairs/task 可用于可靠在线检测], [反驳], [recall 0.375/0.760，未通过最小功效门槛。],
+  [Tiny 可每 25 个小模型 step 同步执行], [反驳], [teacher compute 22.501 s，已接近一个 25-step 训练窗口。],
+  [继续扩展 replay 消融是工程主线], [反驳], [fixed preventive replay 已成为默认保护；Tiny 稀疏审计，Medium 只确认告警。],
+)
+
+独立 verifier 重读 1,000 个 trial、6,000 个 task-trial 和六次 timing 的 5,400 条 raw preference rows，并核对 profile 内重复 SHA、Package-13 行级复现与全部 declared hashes。artifact manifest 的 51 个文件、3,708,513 bytes 经独立 SHA-256 重算 51/51 一致；完整仓库测试 *240/240* 全绿。报告共 49 页，包 13 收尾与包 14/Gate-D 状态第 35--38 页通过渲染目检。完整原始产物、失败边界、图表和 V100 HDD 路径均保存在 `experiments/v100_perception_20260804/sentinel_power_v1/`。未增加训练 examples，未使用付费资源。
+
+#pagebreak()
+
+== 工程主线与 Gate D 真实缺口（2026-08-05）
+
+当前仓库已经有真实 MoonViT-V2 编码、视觉 token 映射、placeholder 展开、loss mask、generic `inputs_embeds` 注入、DeepSeek routing-ID 保留、projector-only 训练、checkpoint 保存恢复和两分支生成实现。小文本主干与真实视觉塔已经跑通；tiny `DeepseekV4ForCausalLM` 只验证专用接口。完整 `deepseek-ai/DeepSeek-V4-Flash-0731` 权重从未完成图像 forward/backward/train/save/resume/generate，因此 Gate D 判定为 *NO-GO*。
+
+#table(
+  columns: (2fr, 1.2fr, 3fr),
+  [*证据*], [*状态*], [*边界*],
+  [MoonViT-V2 真实权重与预处理], [通过], [V100 输出 `[tokens,4,1024]`，可进入 projector。],
+  [通用纯文本 glue 闭环], [通过（小主干）], [真实数据训练、保存、恢复和生成均有证据。],
+  [Qwen2.5-0.5B 真实数据], [早期对齐证据], [16,000 examples、约 0.27 epoch；低容量混杂绝对 benchmark。],
+  [Qwen2.5-3B 固定真实合同], [待执行], [模型/数据 revision、ScreenSpot manifests、parser 与四条件必须先冻结。],
+  [完整 DeepSeek-V4-Flash 闭环], [未通过], [完整权重未加载联跑；真实 FP4/FP8 input DGRAD 仍 `hardware_pending`。],
+  [语言保持与真实视觉显著性], [待执行], [需要 ScreenSpot/TextVQA/DocVQA/OCRBench 的 vision−blind、vision−shuffle 与 paired CI。],
+)
+
+下一条 V100 路径固定使用纯文本 `Qwen/Qwen2.5-3B-Instruct`。MoonViT-V2 保持最终视觉塔，canonical projector 输出保持 4096；若 Qwen receiver hidden width 不同，适配 readout 必须显式隔离并标记为 Qwen 专用组件，不能改写 DeepSeek 主合同。所有 projector、数据、replay、分辨率、初始化和训练策略从此在固定 ScreenSpot50/full、TextVQA、DocVQA、OCRBench、synthetic 与语言保持合同下比较。详细硬阻塞与最短路径见 `docs/project-status-and-gate-d-gap.md`。付费 Gate D 继续等待明确授权，本地 3B 研究持续推进。
 
 == Gate C：Vast 只读调研
 
@@ -1104,7 +1180,7 @@ Package verifier 重读了 21,600/3,600 条 sentinel preference/generation、50,
 
 Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/GLM-5.2-Vision-NVFP4）只作为配方先验：*constant lr 5e-4*、global batch 64、约 66k 条短 QA、2 epoch ≈ 2070 optimizer steps，grokking 在第一 epoch 末附近出现。它不是本项目的时长承诺。审计发现当前训练器的历史 `batch_size=N` 是 `micro_batch_size=1` 下串行 N 次 forward/backward；若照抄 64，每个 optimizer step 会执行 64 次视觉塔和 LLM 前后向，3–6 s/step 与 2–4 h 估计均无效。新版训练器已改用 micro-batch、gradient accumulation、effective batch、examples seen 与 answer tokens 的明确计量，并暂时拒绝伪造 `micro_batch_size > 1`。正式租卡前必须实现 padded multi-example forward，在小主干上实测 micro batch 1/2/4 的吞吐与显存，再由目标 examples/token 数反推 optimizer steps 和租时。
 
-分辨率也从“写死”改为待证：先跑训练 448/640 × 评测 448/640/1024 的固定子集矩阵，只有在小字 OCR 收益、分布失配、视觉 token 数和吞吐都可接受时才采用训练 640/评测 1024。容量消融按相同 examples seen 比较 Qwen2.5 0.5B/1.5B/3B 纯文本主干；随后才做 projector scratch/warm-start、顶部 LoRA、blank/fixed/shuffle/patch-permutation 与 synthetic minimal-pair 控制。完整协议在仓库 `docs/ablation-protocol.md`。
+分辨率仍由真实证据决定：先在固定数据和预算下比较训练 448/640 × 评测 448/640/1024，只有小字 OCR/grounding 收益、分布失配、视觉 token 数和吞吐都可接受时才采用更高分辨率。容量代理固定为纯文本 Qwen2.5-3B；0.5B 只保留历史 early-alignment 证据。随后在相同 ScreenSpot/TextVQA/DocVQA/OCRBench/synthetic/语言合同下筛选 projector scratch/warm-start、顶部 LoRA、blind/shuffle/random-projector、分辨率和数据配比。完整协议将由固定 3B 合同取代旧的宽泛 ablation 队列。
 
 停训判据联合使用 macro、worst-task、vision−blind、vision−shuffle、paired generation、历史遗忘与 Pareto 前沿。loss 下降而视觉哨兵不升不能扩预算；连续多个冻结窗口无改善、达到 examples/GPU-hours/美元上限或关键任务显著退化时停止或触发预注册 replay。
 
@@ -1254,9 +1330,11 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
   [2026-08-05], [V100 包 11 从 step 50 精确恢复 optimizer/order 并测试 count/shape projector-output MSE anchoring：表示距离受控，旧答案边界仍遗忘；中锚定改变 Pareto 路径但未通过 retention 规则。],
   [2026-08-05], [V100 包 12 严格匹配分层 batch 与 global random：分层在 step 50 加快 macro/generation，step 100 总体差异 CI 跨零且任务显著交换；终点梯度冲突多于 global。正式合同改为固定窗口领域覆盖，下一项进入遗忘触发 replay。],
   [2026-08-05], [V100 包 13 fixed-budget matched replay：ordinary 精确复现历史 step 100；fixed 在同一 1,200-example 预算内重分配 80 个槽位，使 count+shape preference/generation 相对 ordinary 提升 +0.255/+0.120，donor 合并近零。late trigger 识别 count 坍塌并产生 +0.175 收益，仍未完全恢复。正式候选改为 preventive replay，下一项校准 Tiny/Medium sentinel 功效与成本。],
+  [2026-08-05], [V100 包 14 sentinel 功效/成本：25 pairs/task 是 Wilson 护栏下最小可靠 Tiny，count recall 0.975、exact 0.935、familywise false trigger 0.040；V100 teacher median 22.501 s，模型常驻时 5%/10% 开销至少间隔 476/226 steps。fixed replay 冻结为默认保护，Tiny 改作稀疏 audit。],
+  [2026-08-05], [工程主线回到真实 VLM：容量代理固定切换为纯文本 Qwen/Qwen2.5-3B-Instruct；所有新方法必须在预冻结 ScreenSpot50/full、TextVQA、DocVQA、OCRBench、synthetic、语言保持和四项因果控制下报告。0.5B/synthetic 只保留代理证据，完整 0731 Gate D 仍未通过。],
   [2026-08-05], [固定 revision 的 DeepSeek 量化 runtime 源码审计与 GPU 矩阵成稿：forward 集成缺少已确认 autograd 证据，SM120/121 受 DeepGEMM #372 weight-load blocker 影响；首个付费建议降为单卡 SM100/B200 最小 kernel gate，仍等待授权。],
 )
 
 = 下一位执行者的最短路径
 
-先验证 Package 13 manifest，再从其 sentinel raw rows 运行 8/16/25/50/100 pair 多 seed 功效分析，冻结能复现 count trigger 且 false-trigger 可控的最小分母；随后实测 teacher-only Tiny/Medium wall time并套入 5%/10% 开销公式。完成本地监控合同后，再继续 replay 剂量与 OCR/count 专项诊断。正式 0731 实验前必须先证明目标 CUDA/量化 runtime 支持 input data-gradient；失败时优先评估 FP8 可微加载或定制 Dgrad，GGUF 不进入训练证据链。
+先提交并验证 Package 14；随后在任何新模型结果产生前，冻结纯文本 `Qwen/Qwen2.5-3B-Instruct` 的 resolved revision、权重/tokenizer/config SHA、`screenspot_glm50_v1`、完整公共 ScreenSpot manifest、严格 click parser、生成配置、四项因果控制、examples-seen 节点、bootstrap seed 和语言保持集。解决 canonical 4096 projector 与 Qwen receiver width 的显式隔离接口后，先跑最小 ScreenSpot projector-only baseline，再扩到 TextVQA、DocVQA、OCRBench 与 synthetic。正式 0731 仍必须通过完整权重 load、真实 FP4/FP8 input DGRAD、图像 forward/backward、20-step 稳定性和 save/resume/generate Gate D；任何付费动作等待用户明确授权。

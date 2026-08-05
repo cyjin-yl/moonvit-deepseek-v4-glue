@@ -133,9 +133,9 @@ t_tiny / (K_tiny * t_step + t_tiny) <= 0.05
 
 早期短校准采用满足预算的最高频率；能力斜率稳定后拉长间隔；检测到退化或 replay 触发时临时恢复早期频率。若开销超标，增大间隔，保留 sentinel 本身。评测不能在同一组 GPU 上与训练并发抢显存。
 
-包 13 的全量 V100 sentinel 三 state 共耗时 878.5 s；同一训练链路中 25 个 optimizer steps 的纯 step wall time约 22.5 s。全量 2,400-record teacher-forced 加 600-record generation sentinel 显然不能在线高频执行。最终七 state 评测耗时 2,035.8 s。下一本地包必须从现有 raw rows 做 8/16/25/50/100 pair 功效与 false-trigger 稳定性分析，再实测 teacher-only Tiny/Medium；只有能复现 count 触发且满足 5%/10% 开销公式的最小分母可以进入正式配置。
+包 14 已完成 8/16/25/50/100 pairs/task 的 200-trial 功效分析和 Tiny/Medium 三次 V100 timing。Tiny 固定为 25 pairs/task：count recall 0.975、exact count-only 0.935、familywise false trigger 0.040；Medium 固定为 50 pairs/task。teacher-only 中位时间分别为 22.501/43.881 s，峰值显存 6.886 GB。以包 13 median step time `0.8989666 s` 计算，模型常驻 Tiny 在 5%/10% 开销下至少间隔 476/226 steps，操作配置向上取 512/256；单独起进程时向上取 1024/512。
 
-当前 V100 与目标机成本状态：`full_cost_measured_tiny_medium_pending`。任何 Tiny/Medium 频率数字在功效与实测完成前都只是公式输入，不写入最终配置。
+当前 V100 成本状态：`tiny_medium_power_and_cost_measured`。上述绝对间隔只适用于包 13 的小主干 step time；目标 DeepSeek Gate D 必须重测 `t_step`、setup 和同步 teacher time，并用同一公式重算 K。fixed preventive replay 为默认保护，Tiny 只作稀疏 checkpoint audit，Medium 只确认 Tiny 告警。
 
 ## 6. 停训、回滚与 replay
 
@@ -243,11 +243,11 @@ cost             = hours * authorized_hourly_price + measured_storage_and_transf
 | 条件 | 当前状态 | 冻结证据 |
 |---|---|---|
 | 分层 batch 与全局随机判定 | 已完成：窗口覆盖 | Package 12，`mixed_or_underpowered` |
-| matched replay 规则与效果 | 待执行 | 后续 V100 包 |
-| OCR/计数瓶颈定位 | 待完成 | synthetic 轨迹与专门诊断 |
-| 1.5B 容量桥接 | 条件触发 | 仅在内部视觉偏好可靠、0.5B generation 失败时 |
-| checkpoint/sentinel 成本 | 待执行 | V100 成本包；Gate D 复测 |
-| 三模式 DGRAD reproducer | 待实现/测试 | `tools/gate_d_dgrad.py` |
+| matched replay 规则与效果 | 已完成 | Package 13，固定预算 preventive replay |
+| sentinel 功效与 V100 成本 | 已完成 | Package 14；Tiny=25 pairs/task，目标 Gate D 复测绝对间隔 |
+| Qwen2.5-3B 固定真实视觉合同 | 待完成 | ScreenSpot50/full、TextVQA、DocVQA、OCRBench、synthetic、语言保持 |
+| 4096 projector 到 Qwen receiver 接口 | 待完成 | canonical 4096 输出与 Qwen 专用 readout 显式隔离 |
+| 三模式 DGRAD reproducer | 本地接口完成，硬件待测 | `tools/gate_d_dgrad.py`；真实 FP8/FP4 module `hardware_pending` |
 | runtime 源码审计 | 已形成 | `docs/dsv4-runtime-source-audit.md` |
 | GPU 架构矩阵 | 已形成 | `docs/gpu-runtime-matrix.md` |
 | 付费授权 | 未授权 | 用户明确指令才可变更 |

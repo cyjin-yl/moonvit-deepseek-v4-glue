@@ -1,0 +1,176 @@
+{
+  "status": "valid",
+  "format_version": "sentinel-power-analysis-v1",
+  "source_git_sha": "d7eb18e97e5981563c397c705c933921e2a558ec",
+  "reference_state": "exchange-step50",
+  "current_state": "ordinary-step75",
+  "condition": "vision",
+  "tasks": [
+    "color",
+    "coordinate",
+    "count",
+    "ocr",
+    "shape",
+    "spatial"
+  ],
+  "full_source_pairs_per_task": {
+    "color": 200,
+    "coordinate": 200,
+    "count": 200,
+    "ocr": 200,
+    "shape": 200,
+    "spatial": 200
+  },
+  "full_source_trigger_tasks": [
+    "count"
+  ],
+  "candidate_summary": [
+    {
+      "pairs_per_task": 8,
+      "teacher_records_per_state": 96,
+      "trials": 200,
+      "count_recall": 0.375,
+      "count_recall_ci95_low": 0.31085436858409826,
+      "count_recall_ci95_high": 0.44385696301021843,
+      "exact_decision_rate": 0.36,
+      "exact_decision_ci95_low": 0.2966919730456654,
+      "exact_decision_ci95_high": 0.42858471833996925,
+      "familywise_false_trigger_rate": 0.015,
+      "familywise_false_trigger_ci95_low": 0.00511423779325831,
+      "familywise_false_trigger_ci95_high": 0.04316572879269026,
+      "count_mean_gap_median": -0.25,
+      "count_mean_gap_p05": -0.625,
+      "count_mean_gap_p95": -0.11875000000000213,
+      "count_ci95_high_median": 0.0,
+      "count_ci95_high_p95": 0.0,
+      "false_trigger_rates_by_task": "{\"color\": 0.005, \"coordinate\": 0.0, \"ocr\": 0.0, \"shape\": 0.01, \"spatial\": 0.0}",
+      "passes_preregistered_criteria": false
+    },
+    {
+      "pairs_per_task": 16,
+      "teacher_records_per_state": 192,
+      "trials": 200,
+      "count_recall": 0.76,
+      "count_recall_ci95_low": 0.6962665902079583,
+      "count_recall_ci95_high": 0.8139338400758631,
+      "exact_decision_rate": 0.72,
+      "exact_decision_ci95_low": 0.6540769541334929,
+      "exact_decision_ci95_high": 0.7776311022605097,
+      "familywise_false_trigger_rate": 0.045,
+      "familywise_false_trigger_ci95_low": 0.023852543001492997,
+      "familywise_false_trigger_ci95_high": 0.0832967040018196,
+      "count_mean_gap_median": -0.3125,
+      "count_mean_gap_p05": -0.5,
+      "count_mean_gap_p95": -0.125,
+      "count_ci95_high_median": -0.125,
+      "count_ci95_high_p95": 0.0,
+      "false_trigger_rates_by_task": "{\"color\": 0.0, \"coordinate\": 0.015, \"ocr\": 0.0, \"shape\": 0.03, \"spatial\": 0.0}",
+      "passes_preregistered_criteria": false
+    },
+    {
+      "pairs_per_task": 25,
+      "teacher_records_per_state": 300,
+      "trials": 200,
+      "count_recall": 0.975,
+      "count_recall_ci95_low": 0.942821659593358,
+      "count_recall_ci95_high": 0.9892752803482386,
+      "exact_decision_rate": 0.935,
+      "exact_decision_ci95_low": 0.8919809207009312,
+      "exact_decision_ci95_high": 0.961623645350847,
+      "familywise_false_trigger_rate": 0.04,
+      "familywise_false_trigger_ci95_low": 0.020405632066152306,
+      "familywise_false_trigger_ci95_high": 0.07693206820093293,
+      "count_mean_gap_median": -0.32,
+      "count_mean_gap_p05": -0.44,
+      "count_mean_gap_p95": -0.2,
+      "count_ci95_high_median": -0.16,
+      "count_ci95_high_p95": -0.04,
+      "false_trigger_rates_by_task": "{\"color\": 0.0, \"coordinate\": 0.0, \"ocr\": 0.0, \"shape\": 0.04, \"spatial\": 0.0}",
+      "passes_preregistered_criteria": true
+    },
+    {
+      "pairs_per_task": 50,
+      "teacher_records_per_state": 600,
+      "trials": 200,
+      "count_recall": 1.0,
+      "count_recall_ci95_low": 0.9811546736227335,
+      "count_recall_ci95_high": 1.0,
+      "exact_decision_rate": 0.965,
+      "exact_decision_ci95_low": 0.9295293884777092,
+      "exact_decision_ci95_high": 0.9829444579914328,
+      "familywise_false_trigger_rate": 0.035,
+      "familywise_false_trigger_ci95_low": 0.017055542008567192,
+      "familywise_false_trigger_ci95_high": 0.07047061152229073,
+      "count_mean_gap_median": -0.3,
+      "count_mean_gap_p05": -0.4,
+      "count_mean_gap_p95": -0.21900000000000036,
+      "count_ci95_high_median": -0.18,
+      "count_ci95_high_p95": -0.1,
+      "false_trigger_rates_by_task": "{\"color\": 0.0, \"coordinate\": 0.0, \"ocr\": 0.0, \"shape\": 0.035, \"spatial\": 0.0}",
+      "passes_preregistered_criteria": true
+    },
+    {
+      "pairs_per_task": 100,
+      "teacher_records_per_state": 1200,
+      "trials": 200,
+      "count_recall": 1.0,
+      "count_recall_ci95_low": 0.9811546736227335,
+      "count_recall_ci95_high": 1.0,
+      "exact_decision_rate": 1.0,
+      "exact_decision_ci95_low": 0.9811546736227335,
+      "exact_decision_ci95_high": 1.0,
+      "familywise_false_trigger_rate": 0.0,
+      "familywise_false_trigger_ci95_low": 0.0,
+      "familywise_false_trigger_ci95_high": 0.018845326377266575,
+      "count_mean_gap_median": -0.3,
+      "count_mean_gap_p05": -0.36,
+      "count_mean_gap_p95": -0.2595000000000002,
+      "count_ci95_high_median": -0.21,
+      "count_ci95_high_p95": -0.17,
+      "false_trigger_rates_by_task": "{\"color\": 0.0, \"coordinate\": 0.0, \"ocr\": 0.0, \"shape\": 0.0, \"spatial\": 0.0}",
+      "passes_preregistered_criteria": true
+    }
+  ],
+  "selection_criteria": {
+    "minimum_count_recall": 0.95,
+    "minimum_count_recall_ci95_low": 0.9,
+    "minimum_exact_decision_rate": 0.9,
+    "minimum_exact_decision_ci95_low": 0.85,
+    "maximum_familywise_false_trigger_rate": 0.05,
+    "maximum_familywise_false_trigger_ci95_high": 0.1
+  },
+  "recommended_tiny_pairs_per_task": 25,
+  "recommended_medium_pairs_per_task": 50,
+  "timing_protocol": {
+    "tiny": "smallest candidate passing every preregistered point and Wilson guard",
+    "medium": "next larger registered candidate, or Tiny if Tiny is already the maximum",
+    "states": [
+      "exchange-step50",
+      "ordinary-step75"
+    ],
+    "teacher_conditions": [
+      "vision"
+    ],
+    "generation": false,
+    "teacher_batch_size": 32,
+    "repeats": 3,
+    "reported_time": "median synchronized teacher_forced_seconds; setup and end-to-end wall reported separately",
+    "training_step_seconds_reference": 0.8989665508270264,
+    "overhead_targets": [
+      0.05,
+      0.1
+    ]
+  },
+  "source": {
+    "preference_records": "experiments/v100_perception_20260804/matched_replay_v1/raw/adaptation/matched_replay_sentinel_eval_v1/preference_records.jsonl",
+    "preference_records_sha256": "0c3eec4fbce33e98d8a5acd1e9211d942fbaadd2a4665a81f9743c4a0ddf11a8"
+  },
+  "analysis": {
+    "trials_per_candidate": 200,
+    "bootstrap_samples_per_contrast": 2000,
+    "sampling_seed": 20260826,
+    "bootstrap_seed": 20260827,
+    "wall_seconds": 4.429497003555298
+  },
+  "final_half_scored": false
+}

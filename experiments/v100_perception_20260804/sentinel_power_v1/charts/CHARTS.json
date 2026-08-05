@@ -1,0 +1,24 @@
+{
+  "status": "valid",
+  "recommended_profile": "tiny",
+  "source_files": {
+    "experiments\\v100_perception_20260804\\sentinel_power_v1\\raw\\adaptation\\sentinel_power_analysis_v1\\DECISIONS.json": "92477c1510cdbb32dac56c6ba7cde1f7985f738f1aee79828eb49bd1b694b01e",
+    "experiments\\v100_perception_20260804\\sentinel_power_v1\\raw\\adaptation\\sentinel_timing_analysis_v1\\DECISIONS.json": "fa3ec5d4365cf1741c3ffb2422388d4d06bad843a773893aea2b37d10c3159eb",
+    "experiments\\v100_perception_20260804\\sentinel_power_v1\\raw\\adaptation\\sentinel_timing_analysis_v1\\overhead_budget.csv": "5c58e0c7da81cca24a06902b33955511dfdfe198cff0c94ea4be6530566b6369"
+  },
+  "charts": {
+    "01-power-curves.svg": {
+      "bytes": 3763,
+      "sha256": "29556ac936534e3347e8d51336d6c99ca8a8bcdf0ca111476c18e22a804ab70e"
+    },
+    "02-v100-timing.svg": {
+      "bytes": 2463,
+      "sha256": "e32ea18fe160bcb63d479fdd9e82d6881ee217adeb437abb181c68ad1b569426"
+    },
+    "03-required-interval.svg": {
+      "bytes": 2466,
+      "sha256": "a28750277b4f7b97a01b174fff5db467e756dcc9290924bbb469260abecfa41a"
+    }
+  },
+  "final_half_scored": false
+}

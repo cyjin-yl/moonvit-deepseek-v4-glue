@@ -1,5 +1,7 @@
 # 租卡前能力归因与消融协议
 
+> 2026-08-05 方向更新：第 3–7 节原先的 0.5B/1.5B/3B 宽筛选队列已被纯文本 `Qwen/Qwen2.5-3B-Instruct` 固定社区可比合同取代。0.5B 只保留历史容量下界，不再继续分配新训练预算；1.5B 不进入当前主线。任何 projector、数据、replay、sentinel、分辨率或训练改进都必须先在固定 ScreenSpot50/full、TextVQA、DocVQA、OCRBench、synthetic、语言保持与 vision/blind/shuffled/random-projector 条件下报告。新合同完成后将替代本文第 2–7 节；包 8–14 的机制证据仍有效。
+
 本协议把当前低分拆成可分别回答的问题，不把继续放大原生 VLM 对照当作主线。正式目标仍是：冻结 MoonViT-V2 与纯文本语言主干，仅训练视觉接口；原生 Qwen3.5-4B 只用于证明数据、processor 和评分器健康。
 
 ## 1. 当前 Gate B 的准确定位
@@ -32,22 +34,22 @@
 
 旧的最后 32 条随机留出和循环平移 1/2/3 位只作为历史数据保留，不与新协议的标准差直接比较。
 
-## 3. 第一优先级：语言主干容量
+## 3. 第一优先级：固定 Qwen2.5-3B 代理
 
-保持 MoonViT-V2、数据、分辨率、scratch projector、答案规则、验证 manifest 和 `examples_seen` 完全相同，只更换**无 `vision_config` 的纯文本**主干：
+主干固定为无 `vision_config` 的纯文本 `Qwen/Qwen2.5-3B-Instruct`。MoonViT-V2、数据、分辨率、projector 初始化、答案规则、验证 manifest、记录顺序和 `examples_seen` 全部冻结。历史尺寸只作上下文：
 
 | 实验 | 主干 | 问题 |
 |---|---|---|
 | B0 | Qwen2.5-0.5B-Instruct | 历史容量下界 |
-| B1 | Qwen2.5-1.5B-Instruct | 容量增加是否迅速改善 |
-| B2 | Qwen2.5-3B-Instruct | 更强语言/推理能力能否利用视觉 token |
+| B1 | Qwen2.5-1.5B-Instruct | 暂缓，不分配当前预算 |
+| B2 | Qwen2.5-3B-Instruct | 当前唯一主代理；验证真实视觉能力与 DeepSeek 迁移价值 |
 
-先在固定 10k 分层训练子集上做等 `examples_seen` 筛选，再让最好的两组跑完整 1 epoch。每组至少在 10%、25%、50%、100% epoch 保存并评测；关键结论尽量用 3 个种子复核。
+在 4k/8k/16k/32k/64k `examples_seen` 保存并按固定合同评测；数据不足时报告实际最大值。探索先用一个固定 seed，任何替代 previous best 或改变 DeepSeek 配方的结论至少用三个独立 seed 复核。
 
 解释规则：
 
-- 三个尺寸都低：优先怀疑 projector、特征层、分辨率或监督，而不是继续放大 LLM；
-- 分数随尺寸清晰上升：当前低分主要是 0.5B 容量混杂，不能归咎于 MoonViT-V2；
+- 3B 仍低且视觉因果区间跨零：优先检查 projector、特征层、分辨率、监督和数据覆盖；
+- 3B 明显超过历史 0.5B：确认低容量是历史绝对分数的重要混杂，但不直接外推 DeepSeek Hash-MoE；
 - loss / shuffle delta 改善但 benchmark 不改善：配对依赖已经形成，但未转化为可解码能力；
 - OCR 随尺寸增长仍为零：优先检查分辨率与答案监督。
 
@@ -65,7 +67,7 @@ Qwen3.5-4B 是原生 VLM，不进入 B0/B1/B2；它不能替代纯文本主干�
 
 P2 只迁移 `pre_norm + linear_1`，语言宽度相关的最后一层重新初始化。比较达到同一 validation loss 所需的 `examples_seen`，以及 10%/25%/50%/100% epoch 的 benchmark、shuffle delta 和 3-seed 稳定性。只有跨至少两个纯文本主干稳定加速时，才把 warm-start 带入昂贵的 DeepSeek 实验。
 
-然后在 Qwen2.5-1.5B 上比较：
+然后在 Qwen2.5-3B 上比较：
 
 - A：projector only；
 - B：projector + 文本主干顶部若干层 LoRA。
@@ -100,12 +102,12 @@ synthetic 集报告 single accuracy、paired accuracy、answer-flip accuracy、b
 
 ## 7. 执行顺序与租卡门槛
 
-1. 完成真实 multi-example forward，并测量 micro batch 1/2/4 的 LLM step time、视觉塔时间和峰值显存。
-2. 运行 B0/B1/B2 的 10k 等量筛选，决定是否存在明显语言容量瓶颈。
-3. 在胜出主干上完成 P0/P1/P2 与 projector-only/LoRA 定位实验。
-4. 完成 448/640 训练 × 448/640/1024 评测矩阵。
-5. 加入 causal controls 与 synthetic minimal pairs，确认模型使用图片内容和空间信息。
-6. 只有上述结果确定训练分辨率、主干敏感性和真实 step time 后，才重新估算 DeepSeek Gate D 租期；Gate D 仍需单独验证 Hash-MoE 路由与量化 kernel 的 input gradient。
+1. 冻结 Qwen2.5-3B 模型哈希、ScreenSpot50/full manifests、严格 parser、生成与 bootstrap 配置。
+2. 解决 canonical 4096 projector 与 Qwen receiver width 的显式接口，再完成真实 multi-example forward 的 micro batch 1/2/4 测量。
+3. 在最小真实预算上运行 vision/blind/shuffled/random-projector/step0，确认图像因果增益。
+4. 按 4k/8k/16k/32k/64k 节点建立 ScreenSpot、TextVQA、DocVQA、OCRBench、synthetic 和语言保持轨迹。
+5. 只在同一合同与 matched budget 下完成 P0/P1/P2、projector-only/LoRA、数据、replay 和分辨率实验。
+6. 冻结可迁移候选后再估算 DeepSeek Gate D；Gate D 仍需单独验证 Hash-MoE 路由与量化 kernel input gradient。
 
 任何阶段都不得用原生 VLM 高分替代 MoonViT-V2 → 纯文本主干的接口证据，也不得把 0.27 epoch 的历史 Gate B 低分写成能力上限。
 
@@ -121,7 +123,7 @@ synthetic 集报告 single accuracy、paired accuracy、answer-flip accuracy、b
 
 逐 batch 分层不能写成 DeepSeek 的硬规则。正式主线采用固定窗口领域覆盖，并用 sentinel/replay 管理任务交换；分层只保留为短校准候选。gradient diagnostic 显示分层终点 6/15 个负 task-pair cosines，global 为 0，当前结果也未支持“分层必然降低干扰”。下一项按既定顺序进入 matched replay，不追加块状 curriculum。
 
-## 10. 固定预算 replay 与 sentinel 边界（包 13）
+## 10. 固定预算 replay 与 sentinel 边界（包 13–14）
 
 包 13 从分层 step 50 精确恢复 projector、AdamW 和数据游标，把每条完整策略锁为 50 steps、batch 24、1,200 examples。ordinary 使用六任务各 200；fixed replay 在两个 25-step 窗口各给 count/shape 重放 10 个历史 complete pairs，同时等量换出 donor pairs，最终分配为 `180/180/240/180/240/180`。训练预算没有增加。ordinary 的 step-100 六个 tensor 与历史 checkpoint 逐张量一致，排除了训练器或恢复误差。
 
@@ -137,4 +139,4 @@ synthetic 集报告 single accuracy、paired accuracy、answer-flip accuracy、b
 4. 恢复带固定为参考值下方 0.05；未恢复时只能使用预注册的下一剂量，禁止看结果后手调。
 5. 小模型每目标每 25-step 窗口 10 complete pairs 是机制证据；正式域配额仍需按域规模、pair 可用性与 sentinel 功效换算。
 
-全量 sentinel 三 state 在 V100 上耗时 878.5 s，而 25 个训练 step 的纯 step wall time约 22.5 s。下一包先复用 raw rows 做 8/16/25/50/100 pair 子采样功效、trigger recall 与 false-trigger 分析，再实测 teacher-only Tiny/Medium。只有同时复现 count 触发并满足监控开销公式的最小分母进入租卡配置。replay 剂量扩展排在该成本校准之后。
+包 14 已完成上述成本校准：Tiny=25 pairs/task，count recall 0.975、exact count-only 0.935、familywise false trigger 0.040；Medium=50 pairs/task。V100 teacher-only 中位时间为 22.501/43.881 s，峰值显存 6.886 GB。fixed preventive replay 作为默认保护，Tiny 只作稀疏 checkpoint audit，Medium 只确认告警。replay 剂量、trigger、Fisher 与 EWC 扩展暂缓，除非固定真实视觉合同显示它们会直接改变 DeepSeek 正式配方。

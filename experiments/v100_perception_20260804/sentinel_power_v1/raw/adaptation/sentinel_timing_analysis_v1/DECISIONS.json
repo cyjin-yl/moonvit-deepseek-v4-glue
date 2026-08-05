@@ -1,0 +1,110 @@
+{
+  "status": "valid",
+  "format_version": "sentinel-timing-analysis-v1",
+  "power_source_git_sha": "d7eb18e97e5981563c397c705c933921e2a558ec",
+  "recommended_profile": "tiny",
+  "tiny_pairs_per_task": 25,
+  "medium_pairs_per_task": 50,
+  "profiles": [
+    {
+      "profile": "tiny",
+      "pairs_per_task": 25,
+      "teacher_records_per_state": 300,
+      "states": 2,
+      "preference_rows_per_repeat": 600,
+      "repeats": 3,
+      "wall_seconds_median": 31.214686632156372,
+      "wall_seconds_min": 31.106985569000244,
+      "wall_seconds_max": 32.9586021900177,
+      "setup_seconds_median": 8.669198751449585,
+      "setup_seconds_min": 8.586475372314453,
+      "setup_seconds_max": 10.265706539154053,
+      "state_load_seconds_median": 0.03987565590068698,
+      "state_load_seconds_min": 0.038472847547382116,
+      "state_load_seconds_max": 0.04458078881725669,
+      "teacher_forced_seconds_median": 22.501351576764137,
+      "teacher_forced_seconds_min": 22.47345395339653,
+      "teacher_forced_seconds_max": 22.6434197537601,
+      "generation_seconds_median": 1.3363081961870193e-05,
+      "generation_seconds_min": 1.2876000255346298e-05,
+      "generation_seconds_max": 1.698872074484825e-05,
+      "peak_gpu_memory_bytes": 6886173184,
+      "preference_records_sha256": "72fb9261f36b7a89746b40ea7f98fa653b3a390a4ec85f2006d10b1c81e4f3de",
+      "run_summaries": [
+        "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/sentinel_timing_tiny_rep1_v1/SUMMARY.json",
+        "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/sentinel_timing_tiny_rep2_v1/SUMMARY.json",
+        "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/sentinel_timing_tiny_rep3_v1/SUMMARY.json"
+      ],
+      "run_summary_sha256": [
+        "4f77e7cb21916b4e9590878b7c35ae5b0f115e6adf207dc5aab0c430bd4550d8",
+        "169b60e664c6b3e9c9f5db90adb667c8a155bfec7641eee47e4045820ec87c2c",
+        "b3dffe136a4ec50549d2a3d5d2ee4228a9eb8088364218a076b07860fc818ddf"
+      ]
+    },
+    {
+      "profile": "medium",
+      "pairs_per_task": 50,
+      "teacher_records_per_state": 600,
+      "states": 2,
+      "preference_rows_per_repeat": 1200,
+      "repeats": 3,
+      "wall_seconds_median": 52.53748941421509,
+      "wall_seconds_min": 52.48838925361633,
+      "wall_seconds_max": 53.82760429382324,
+      "setup_seconds_median": 8.611867427825928,
+      "setup_seconds_min": 8.576411962509155,
+      "setup_seconds_max": 9.784427881240845,
+      "state_load_seconds_median": 0.04135866276919842,
+      "state_load_seconds_min": 0.04028054093942046,
+      "state_load_seconds_max": 0.0442079808562994,
+      "teacher_forced_seconds_median": 43.880532410461456,
+      "teacher_forced_seconds_min": 43.86269006552175,
+      "teacher_forced_seconds_max": 43.99640844995156,
+      "generation_seconds_median": 1.4857389032840729e-05,
+      "generation_seconds_min": 1.3886019587516785e-05,
+      "generation_seconds_max": 2.0245090126991272e-05,
+      "peak_gpu_memory_bytes": 6886173184,
+      "preference_records_sha256": "b31ea359c99f726ae703344fee49a8061d8f9061899a510026c0bf30dd97bb82",
+      "run_summaries": [
+        "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/sentinel_timing_medium_rep1_v1/SUMMARY.json",
+        "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/sentinel_timing_medium_rep2_v1/SUMMARY.json",
+        "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/sentinel_timing_medium_rep3_v1/SUMMARY.json"
+      ],
+      "run_summary_sha256": [
+        "11ab9b5a94a6abf4f161846b369ec5ea0837e9b4b25f9feb1298027f3f891cb2",
+        "b2490f16951f9c466a4851e90f819bdb5d0941927411941d3ae74c5eab9b3455",
+        "84e2fe2ed73ebad6bb1471cf71680d4c14ec68451f863fca55b603c8ad02832c"
+      ]
+    }
+  ],
+  "overhead_contract": {
+    "formula": "t_eval / (K * t_step + t_eval) <= maximum_overhead",
+    "training_step_seconds_reference": 0.8989665508270264,
+    "model_resident_tiny": {
+      "0.05": {
+        "minimum_interval_steps": 476,
+        "rounded_power_of_two_interval_steps": 512
+      },
+      "0.1": {
+        "minimum_interval_steps": 226,
+        "rounded_power_of_two_interval_steps": 256
+      }
+    },
+    "recompute_after_target_runtime_calibration": true
+  },
+  "training_action": {
+    "use_fixed_preventive_replay": true,
+    "run_tiny_sentinel_as_sparse_checkpoint_audit": true,
+    "run_tiny_sentinel_every_25_small_model_steps": false,
+    "reason": "Tiny teacher cost is comparable to one 25-step V100 training window",
+    "training_examples_changed": false,
+    "training_steps_changed": false
+  },
+  "sources": {
+    "config": "configs/perception-sentinel-power-v1.json",
+    "config_sha256": "7a775b595deee9f7cdc9a47ef3e2c746b339cc47b082749a98384f930789ee7c",
+    "power": "/run/media/ezra/13D010B6FDBC1A06/data/perception_v1/adaptation/sentinel_power_analysis_v1/DECISIONS.json",
+    "power_sha256": "92477c1510cdbb32dac56c6ba7cde1f7985f738f1aee79828eb49bd1b694b01e"
+  },
+  "final_half_scored": false
+}
