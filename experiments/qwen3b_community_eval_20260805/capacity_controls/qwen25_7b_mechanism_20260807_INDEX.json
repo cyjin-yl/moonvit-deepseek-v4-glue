@@ -35,6 +35,7 @@
     {"name": "qwen25_7b_freegen_margin05_showui8_20260807_FAILURE.json", "kind": "failure", "optimizer_steps": 0},
     {"name": "qwen25_7b_freegen_margin05_showui8_20260807_retry1_generic", "kind": "free_generation_diagnostic", "prompt_route": "generic"},
     {"name": "qwen25_7b_freegen_margin05_showui8_20260807_retry2_grounding", "kind": "free_generation_diagnostic", "prompt_route": "grounding"},
+    {"name": "qwen25_7b_stripped_screenspot_margin05_scale01_glm50_20260807", "kind": "screenspot_diagnostic", "dataset": "screenspot_glm50_v1", "sample_count": 50, "max_visual_tokens": 16},
     {"name": "qwen25_7b_real_probe32_scale001_full240_20260807", "kind": "scale_probe", "projector_scale": 0.01},
     {"name": "qwen25_7b_real_probe32_scale003_full240_20260807", "kind": "scale_probe", "projector_scale": 0.03},
     {"name": "qwen25_7b_real_probe32_scale01_full240_20260807", "kind": "scale_probe", "projector_scale": 0.1},

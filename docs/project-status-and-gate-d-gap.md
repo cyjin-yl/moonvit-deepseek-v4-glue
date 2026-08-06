@@ -140,3 +140,5 @@ Package 15P 已完成预注册 geometry-repair 的固定 λ 校准。冻结 step
 下一步会优先复用固定 parser 和四条件生成合同，把该 checkpoint 作为 7B capacity diagnostic 的 candidate screen；它有资格进入诊断队列，没有资格替换 3B `previous_best` 或进入 DeepSeek 正式候选。若自由生成不跟随 teacher-forced 方向，停止扩大训练，回到 projector/receiver 接口；若方向一致，再做 3B matched λ=0.5 health screen。
 
 最小自由生成检查随后给出“未跟随”：8 条 ShowUI 样本的四条件 parse rate 都为 100%，vision/blind/shuffled/random 到目标点的平均距离为 `491.73/514.31/493.97/499.97`，vision 相对 shuffled 只改善 `+2.24`。输出集中在窄坐标先验。λ=0.5 因此继续停留在机制候选层；下一项优先统一 7B formal evaluator 的 prompt、parser、四条件和 bbox/point 评分，再决定是否把目标带回 3B。
+
+50 条 `screenspot_glm50_v1` 的统一格式诊断已经完成：四条件 parse rate 均为 100%，click-in-box 均 10%，Accuracy@50/@100/@200 均为 2%/6%/18%。vision 的中心距离均值 380.73，shuffled 为 384.45；vision-shuffled 差值 CI `[-9.91,+1.54]` 跨零。该 checkpoint 没有满足真实 grounding 改进规则，训练量冻结。

@@ -316,3 +316,11 @@ scale=`0.1` 是在 32-sample 预冻结 probe 中唯一值得继续做短训练�
 对 λ=0.5 checkpoint 取冻结的 8 条 ShowUI click 样本，使用社区 grounding prompt、`do_sample=false`、`max_new_tokens=32` 和四种条件。vision、blind、shuffled、random-projector 的格式解析率都是 `8/8`，但预测高度集中在默认坐标附近；到目标点的平均 L2 距离分别为 `491.73/514.31/493.97/499.97`。逐样本 vision 相对 shuffled 的距离改善均值仅 `+2.24`，8 条样本没有 bootstrap 证据；vision 相对 blind 为 `+22.58`，主要体现“有图像 token 会改变输出”，没有体现正确图片归因。
 
 这条结果把 teacher-forced 与自由生成的差异钉实：λ=0.5 能让正确图的答案 log-prob 在 32-sample probe 上显著高于 shuffled，生成阶段仍输出窄坐标先验。第一次自由生成尝试还记录了两个实现缺口：manifest 的 derangement 必须按冻结行序重建，generic VQA prompt 不能拿来评估 click parser；两次失败/修复均保留在 raw index。当前 λ=0.5 因此仍是机制候选，不能进入 ScreenSpot previous-best，也不能进入 DeepSeek 正式配方。
+
+### 7B stripped ScreenSpot GLM50 结果
+
+在同一 λ=0.5 checkpoint 上完成预注册的 50 条 `screenspot_glm50_v1` 诊断，使用 16 个 mean-pool token、scale=`0.1`、固定 grounding prompt、`do_sample=false`、四种条件和 2,000 次 bootstrap。四种条件 parse rate 都是 `50/50`；vision/blind/shuffled/random 的 click-in-box 都是 `10%`，Accuracy@50/@100/@200 都分别是 `2%/6%/18%`。全样本中心距离均值为 `380.73/415.11/384.45/390.22`。
+
+vision 相对 blind 的中心距离差为 `-34.38`（视觉更近），bootstrap CI `[-70.63,-3.30]`；vision 相对 shuffled 的差为 `-3.72`，CI `[-9.91,+1.54]`。点击命中和阈值命中在 vision/shuffled 间完全相同，正确图像没有带来可重复的 grounding 增益。这个结果与 32-sample teacher-forced 正向 CI 放在一起，形成了清晰的层级：λ=0.5 修正了答案 log-prob 的局部归因，尚未修正 ScreenSpot 的内容选择。Qwen7B 候选因此拒绝晋升，训练预算冻结。
+
+下一步停止继续增加 λ、数据或步数，优先把 formal evaluator 的结果和 receiver-prior 机制记录统一起来；只有出现 vision 相对 shuffled 的 click/threshold/距离显著改善，才重新考虑 3B matched λ=0.5 或 projector 结构实验。
