@@ -1,0 +1,121 @@
+{
+  "schema_version": "stripped-receiver-probe-v1",
+  "status": "diagnostic_only",
+  "model_type": "qwen3_5",
+  "model_loader": "AutoModelForImageTextToText",
+  "model_hf_revision": null,
+  "config_sha256": "d0883072e01861ed0b2d47be3c16c36a8e81c224c7ffaa310c6558fb3f932b05",
+  "weight_manifest_sha256": "de9984058e61b0bf0399e3d98c158a8ca12484e2878f91069123cefcbea6e211",
+  "dtype": "bfloat16",
+  "max_visual_tokens": 240,
+  "sample_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "sample_count": 8,
+  "random_projector_seed": 20260806,
+  "native_vision_forward_calls": 0,
+  "vision_minus_shuffle_mean": 0.062003254890441895,
+  "vision_minus_shuffle_std": 0.41852674829773717,
+  "vision_minus_blind_mean": 0.37795257568359375,
+  "vision_minus_blind_std": 0.19620974202344688,
+  "rows": [
+    {
+      "sample_index": 0,
+      "sample_id": "textvqa_train_020685",
+      "shuffled_sample_id": "showui_desktop_003814",
+      "vision_answer_logp": -11.272494316101074,
+      "shuffled_answer_logp": -11.421159744262695,
+      "blind_answer_logp": -11.722925186157227,
+      "random_projector_answer_logp": -11.208025932312012,
+      "vision_minus_shuffle": 0.1486654281616211,
+      "vision_minus_blind": 0.45043087005615234
+    },
+    {
+      "sample_index": 1,
+      "sample_id": "showui_desktop_003814",
+      "shuffled_sample_id": "showui_desktop_004939",
+      "vision_answer_logp": -11.421159744262695,
+      "shuffled_answer_logp": -11.412150382995605,
+      "blind_answer_logp": -11.722925186157227,
+      "random_projector_answer_logp": -11.411741256713867,
+      "vision_minus_shuffle": -0.009009361267089844,
+      "vision_minus_blind": 0.30176544189453125
+    },
+    {
+      "sample_index": 2,
+      "sample_id": "showui_desktop_004939",
+      "shuffled_sample_id": "textvqa_train_018064",
+      "vision_answer_logp": -11.412150382995605,
+      "shuffled_answer_logp": -11.115549087524414,
+      "blind_answer_logp": -11.722925186157227,
+      "random_projector_answer_logp": -10.970592498779297,
+      "vision_minus_shuffle": -0.2966012954711914,
+      "vision_minus_blind": 0.3107748031616211
+    },
+    {
+      "sample_index": 3,
+      "sample_id": "textvqa_train_018064",
+      "shuffled_sample_id": "showui_desktop_002566",
+      "vision_answer_logp": -11.115549087524414,
+      "shuffled_answer_logp": -11.701839447021484,
+      "blind_answer_logp": -11.722925186157227,
+      "random_projector_answer_logp": -11.091734886169434,
+      "vision_minus_shuffle": 0.5862903594970703,
+      "vision_minus_blind": 0.6073760986328125
+    },
+    {
+      "sample_index": 4,
+      "sample_id": "showui_desktop_002566",
+      "shuffled_sample_id": "docvqa_train_007425",
+      "vision_answer_logp": -11.701839447021484,
+      "shuffled_answer_logp": -11.167424201965332,
+      "blind_answer_logp": -11.722925186157227,
+      "random_projector_answer_logp": -10.89938735961914,
+      "vision_minus_shuffle": -0.5344152450561523,
+      "vision_minus_blind": 0.021085739135742188
+    },
+    {
+      "sample_index": 5,
+      "sample_id": "docvqa_train_007425",
+      "shuffled_sample_id": "train_000072",
+      "vision_answer_logp": -11.167424201965332,
+      "shuffled_answer_logp": -11.47982120513916,
+      "blind_answer_logp": -11.722925186157227,
+      "random_projector_answer_logp": -11.269160270690918,
+      "vision_minus_shuffle": 0.3123970031738281,
+      "vision_minus_blind": 0.5555009841918945
+    },
+    {
+      "sample_index": 6,
+      "sample_id": "train_000072",
+      "shuffled_sample_id": "docvqa_train_000029",
+      "vision_answer_logp": -11.47982120513916,
+      "shuffled_answer_logp": -11.189342498779297,
+      "blind_answer_logp": -11.722925186157227,
+      "random_projector_answer_logp": -11.072699546813965,
+      "vision_minus_shuffle": -0.2904787063598633,
+      "vision_minus_blind": 0.2431039810180664
+    },
+    {
+      "sample_index": 7,
+      "sample_id": "docvqa_train_000029",
+      "shuffled_sample_id": "train_003074",
+      "vision_answer_logp": -11.189342498779297,
+      "shuffled_answer_logp": -11.76852035522461,
+      "blind_answer_logp": -11.722925186157227,
+      "random_projector_answer_logp": -11.580015182495117,
+      "vision_minus_shuffle": 0.5791778564453125,
+      "vision_minus_blind": 0.5335826873779297
+    }
+  ],
+  "capability_claim_allowed": false,
+  "deepseek_transfer_label": "transferable_with_runtime_validation",
+  "wall_seconds": 43.22130408603698
+}

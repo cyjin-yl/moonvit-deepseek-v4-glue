@@ -27,3 +27,5 @@
 | 240 token | `-0.0748 ± 0.4520` | `+0.6753 ± 0.3335` | 有 token 影响，正确图与打乱图仍不可分 |
 
 这比单样本结果更接近真实判断：9B 接收器能对外部视觉 token 产生响应，但目前没有稳定的图像归因。`probe_metrics.jsonl` 保留每个样本与 random-projector log-prob；仍然不能称为 projector capability。
+
+同一 8-sample/240-token screen 换成 V1（MoonViT-SO-400M，1152 维）得到 `vision−shuffle=+0.0620 ± 0.4185`、`vision−blind=+0.3780 ± 0.1962`。V2 对照为 `-0.0748 ± 0.4520`、`+0.6753 ± 0.3335`。V1 略高但差异被样本方差覆盖；目前不能写成 V1 优于 V2，也不能把版本差异当作主要故障解释。

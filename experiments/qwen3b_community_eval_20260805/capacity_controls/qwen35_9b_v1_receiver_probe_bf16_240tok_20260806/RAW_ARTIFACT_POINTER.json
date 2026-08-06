@@ -1,0 +1,19 @@
+{
+  "schema_version": "raw-artifact-pointer-v1",
+  "status": "diagnostic_only_v1_v2_screen",
+  "remote_raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_9b_v1_receiver_probe_bf16_240tok_20260806",
+  "files": ["SUMMARY.json", "probe_metrics.jsonl"],
+  "model_hf_revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "vision_tower": "moonshotai/MoonViT-SO-400M",
+  "vision_tower_revision": "a889d399ff2306053e4e28d499d3b8f97d3e5007",
+  "projector": "local_v1_family_proxy",
+  "dtype": "bfloat16",
+  "max_visual_tokens": 240,
+  "sample_count": 8,
+  "native_vision_forward_calls": 0,
+  "vision_minus_shuffle_mean": 0.062003254890441895,
+  "vision_minus_shuffle_std": 0.41852674829773717,
+  "vision_minus_blind_mean": 0.37795257568359375,
+  "vision_minus_blind_std": 0.19620974202344688,
+  "capability_claim_allowed": false
+}

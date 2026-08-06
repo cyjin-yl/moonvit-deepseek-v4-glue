@@ -619,3 +619,5 @@ Qwen3.5 的 native vision、merger 和 visual forward 被绕过，外部输入�
 下一步不要直接扩大 9B 训练。先用固定 9B receiver 做至少 8--32 个 probe 样本的 16/32/64/128/240 token 小筛选，并加入 random projector；若正向差异仍不稳定，优先检查视觉 token 顺序、压缩和尺度。Qwen3.5 的所有结果仍为 `transferable_with_runtime_validation` diagnostic，不能替代 DeepSeek Gate D。
 
 8-sample probe 已完成：16 token 的 `vision−shuffle` 为 `+0.0447 ± 0.3729`，240 token 为 `-0.0748 ± 0.4520`；`vision−blind` 分别为 `+0.1993 ± 0.2142` 和 `+0.6753 ± 0.3335`。因此 9B receiver-prior 能感知“有视觉 token”，但不能稳定归因到正确图片。下一条应优先做 token ordering/压缩或输入尺度的小设计筛选，而不是把 9B 直接扩成长训或把它写成 VLM 成功。
+
+V1 交叉检查也完成：同一 9B、8 个样本、240 token 下，V1 `vision−shuffle=+0.0620 ± 0.4185`，V2 `-0.0748 ± 0.4520`；V1 `vision−blind=+0.3780 ± 0.1962`，V2 `+0.6753 ± 0.3335`。V1 只略高于零，差异没有超过方差，不能宣称 V1 胜出。主要嫌疑移向 token 顺序/压缩、输入尺度和监督接口。
