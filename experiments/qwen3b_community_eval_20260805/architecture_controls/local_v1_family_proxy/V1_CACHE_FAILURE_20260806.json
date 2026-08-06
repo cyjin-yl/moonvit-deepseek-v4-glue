@@ -6,6 +6,12 @@
   "exception": "Transformers dynamic-module loader resolved configuration_moonvit.py into the HF blob directory and could not find the relative module file.",
   "cause": "The HF snapshot uses symlinks; passing the snapshot directory directly to AutoModel.from_pretrained breaks relative-import discovery in Transformers 5.12.1.",
   "repair": "Use pinned model ID plus pinned revision for loading; use the resolved snapshot only for offline file identity and aggregate weight SHA-256.",
+  "retry": {
+    "status": "failed_before_forward",
+    "exception_type": "FileExistsError",
+    "cause": "The first attempt created its output directory before the loader failed; the retry correctly refused to overwrite it.",
+    "repair": "After verifying the directory is empty, remove only that intended empty target and rerun with a real-file runtime snapshot."
+  },
   "weights_manifest_sha256": "51a39391d4a36cb536fe68176bb68f4218d0526c93749e04e63d4e779675f0ef",
   "paid_resources_used": false,
   "capability_claim_allowed": false

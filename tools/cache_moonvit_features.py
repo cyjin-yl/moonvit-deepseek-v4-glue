@@ -263,6 +263,15 @@ def parse_args() -> argparse.Namespace:
         help="Optional already-resolved V1 snapshot; avoids re-resolving a HF repo",
     )
     parser.add_argument(
+        "--moonvit-runtime-snapshot",
+        type=Path,
+        default=None,
+        help=(
+            "Optional real-file V1 snapshot used only for Transformers loading; "
+            "the pinned --moonvit-model/revision remain the cache identity"
+        ),
+    )
+    parser.add_argument(
         "--moonvit-v2-weights",
         type=Path,
         default=None,
@@ -305,12 +314,14 @@ def load_tower(args: argparse.Namespace, *, dtype: torch.dtype):
         )
     # ``snapshot_download`` 的 snapshot 目录含有指向 blobs 的符号链接；
     # Transformers dynamic-module loader 在直接接收这个本地路径时会把相对
-    # import 解析到 blob 哈希目录，导致 configuration_moonvit.py 丢失。这里
-    # 用 pinned model ID/revision 加载，snapshot 仅承担离线身份与权重哈希。
-    model_id = str(args.moonvit_model)
+    # import 解析到 blob 哈希目录，导致 configuration_moonvit.py 丢失。正式
+    # 缓存可传入一个由 ``cp -L`` 物化的 real-file snapshot，模型 ID/revision
+    # 仍写入 manifest 作为社区身份，权重 snapshot 仍独立哈希。
+    model_id = str(args.moonvit_runtime_snapshot or args.moonvit_model)
+    revision = None if args.moonvit_runtime_snapshot is not None else args.moonvit_revision
     return MoonViTEncoder.from_pretrained(
         model_id,
-        revision=args.moonvit_revision,
+        revision=revision,
         torch_dtype=dtype,
     )
 
@@ -410,6 +421,11 @@ def main() -> None:
         "moonvit_snapshot": str(args.moonvit_snapshot.resolve())
         if args.moonvit_snapshot is not None
         else None,
+        "moonvit_runtime_snapshot": (
+            str(args.moonvit_runtime_snapshot.resolve())
+            if args.moonvit_runtime_snapshot is not None
+            else None
+        ),
         "moonvit_snapshot_files": snapshot_files if args.vision_tower == "v1" else None,
         "moonvit_architecture": type(tower.model).__name__,
         "moonvit_config_sha256": hashlib.sha256(config_json).hexdigest(),

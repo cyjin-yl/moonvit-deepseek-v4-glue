@@ -80,6 +80,26 @@ def test_v1_snapshot_is_identity_only_and_does_not_break_dynamic_imports(monkeyp
     }
 
 
+def test_v1_real_file_runtime_snapshot_is_used_without_changing_identity(monkeypatch):
+    seen = {}
+
+    def fake_loader(model_id, *, revision, torch_dtype):
+        seen.update(model_id=model_id, revision=revision)
+        return object()
+
+    monkeypatch.setattr(cache_moonvit_features.MoonViTEncoder, "from_pretrained", fake_loader)
+    args = Namespace(
+        vision_tower="v1",
+        moonvit_v2_weights=None,
+        moonvit_v2_attn="eager",
+        moonvit_model="moonshotai/MoonViT-SO-400M",
+        moonvit_revision="a" * 40,
+        moonvit_runtime_snapshot=Path("/real/files/snapshot"),
+    )
+    cache_moonvit_features.load_tower(args, dtype=cache_moonvit_features.torch.float32)
+    assert seen == {"model_id": "/real/files/snapshot", "revision": None}
+
+
 def test_training_order_mode_rejects_secondary_selection(tmp_path):
     with pytest.raises(ValueError, match="cannot be combined"):
         cache_moonvit_features.resolve_cache_selection(
