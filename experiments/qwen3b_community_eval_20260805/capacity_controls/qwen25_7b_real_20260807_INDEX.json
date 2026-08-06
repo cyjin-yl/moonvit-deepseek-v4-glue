@@ -1,0 +1,21 @@
+{
+  "schema_version": "capacity-screen-index-v1",
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/architecture_controls/local_v2_exact_k3/feature_cache_4k_rebound_retry1",
+  "sample_manifest": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_real_probe_manifest.json",
+  "raw_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls",
+  "runs": [
+    {"name": "qwen25_7b_real_train_ceonly_16tok_20260807", "kind": "train", "local_files": ["RUN_CONFIG.json", "SUMMARY.json", "train_health.jsonl"], "raw_files": ["RUN_CONFIG.json", "SUMMARY.json", "train_health.jsonl", "optimizer_final.pt", "projector_final/projector.safetensors", "projector_final/projector_config.json"]},
+    {"name": "qwen25_7b_real_train_margin01_16tok_20260807", "kind": "train", "local_files": ["RUN_CONFIG.json", "SUMMARY.json", "train_health.jsonl"], "raw_files": ["RUN_CONFIG.json", "SUMMARY.json", "train_health.jsonl", "optimizer_final.pt", "projector_final/projector.safetensors", "projector_final/projector_config.json"]},
+    {"name": "qwen25_7b_real_train_ceonly_240tok_20260807", "kind": "train", "local_files": ["RUN_CONFIG.json", "SUMMARY.json", "train_health.jsonl"], "raw_files": ["RUN_CONFIG.json", "SUMMARY.json", "train_health.jsonl", "optimizer_final.pt", "projector_final/projector.safetensors", "projector_final/projector_config.json"]},
+    {"name": "qwen25_7b_real_train_margin01_240tok_20260807", "kind": "train", "local_files": ["RUN_CONFIG.json", "SUMMARY.json", "train_health.jsonl"], "raw_files": ["RUN_CONFIG.json", "SUMMARY.json", "train_health.jsonl", "optimizer_final.pt", "projector_final/projector.safetensors", "projector_final/projector_config.json"]},
+    {"name": "qwen25_7b_real_train_margin01_uniform16_20260807", "kind": "train", "local_files": ["RUN_CONFIG.json", "SUMMARY.json", "train_health.jsonl"], "raw_files": ["RUN_CONFIG.json", "SUMMARY.json", "train_health.jsonl", "optimizer_final.pt", "projector_final/projector.safetensors", "projector_final/projector_config.json"]},
+    {"name": "qwen25_7b_real_train_margin01_meanpool16_20260807", "kind": "train", "local_files": ["RUN_CONFIG.json", "SUMMARY.json", "train_health.jsonl"], "raw_files": ["RUN_CONFIG.json", "SUMMARY.json", "train_health.jsonl", "optimizer_final.pt", "projector_final/projector.safetensors", "projector_final/projector_config.json"]},
+    {"name": "qwen25_7b_real_probe_240_20260807_retry1", "kind": "probe", "local_files": ["SUMMARY.json", "probe_metrics.jsonl"], "raw_files": ["SUMMARY.json", "probe_metrics.jsonl"]},
+    {"name": "qwen25_7b_real_probe_uniform16_20260807", "kind": "probe", "local_files": ["SUMMARY.json", "probe_metrics.jsonl"], "raw_files": ["SUMMARY.json", "probe_metrics.jsonl"]},
+    {"name": "qwen25_7b_real_probe_meanpool16_20260807", "kind": "probe", "local_files": ["SUMMARY.json", "probe_metrics.jsonl"], "raw_files": ["SUMMARY.json", "probe_metrics.jsonl"]}
+  ],
+  "capability_claim_allowed": false,
+  "deepseek_transfer_label": "transferable_with_runtime_validation"
+}

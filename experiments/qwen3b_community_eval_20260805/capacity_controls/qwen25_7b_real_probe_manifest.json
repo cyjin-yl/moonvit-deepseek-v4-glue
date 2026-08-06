@@ -1,0 +1,24 @@
+{
+  "schema_version": "receiver-real-answer-probe-v1",
+  "source_jsonl": "/run/media/ezra/13D010B6FDBC1A06/data/train_v1/train_mix.jsonl",
+  "sample_order": [
+    "textvqa_train_020685",
+    "showui_desktop_003814",
+    "showui_desktop_004939",
+    "textvqa_train_018064",
+    "showui_desktop_002566",
+    "docvqa_train_007425",
+    "train_000072",
+    "docvqa_train_000029"
+  ],
+  "records": [
+    {"sample_index": 0, "id": "textvqa_train_020685", "image": "images/textvqa_train_020685.jpg", "image_sha256": "3d2177de419042aa8a6f2042a1fe302c60cd79b60228d536529c8f42ba63aaaa", "question": "what number is on the jersey in the background?", "answers": ["9", "9 ", "9", "9", "9", "9", "9", "6", "9", "9"], "source": "textvqa_train"},
+    {"sample_index": 1, "id": "showui_desktop_003814", "image": "images/showui_desktop_003814.jpg", "image_sha256": "04dfa4983e7a9d6754ef7a00b78cf8fa005ce0d34a50da3458dd69c528353e80", "question": "Manage user accounts and permissions.", "answers": ["click(start_box=[423,423])"], "source": "showui_desktop"},
+    {"sample_index": 2, "id": "showui_desktop_004939", "image": "images/showui_desktop_004939.jpg", "image_sha256": "6328d2b12df23b7eb56438ccd63f35349bef629fb4248f76dbd214e53e7928c7", "question": "select_baku", "answers": ["click(start_box=[564,540])"], "source": "showui_desktop"},
+    {"sample_index": 3, "id": "textvqa_train_018064", "image": "images/textvqa_train_018064.jpg", "image_sha256": "79368b5110b22c6e615b6ff14469ccb0956911cb52ad9f844ab6d7852e0d31f1", "question": "what is written in bold on the sign behind the pitcher?", "answers": ["power!", "power!", "power", "power", "power", "power", "power", "power", "power", "power"], "source": "textvqa_train"},
+    {"sample_index": 4, "id": "showui_desktop_002566", "image": "images/showui_desktop_002566.jpg", "image_sha256": "ab9f4860f1be8c625487f71ed4971e5513c30a62bb5d3a26231392d58c4698be", "question": "Positioned directly below 'meeting professor' task.", "answers": ["click(start_box=[349,143])"], "source": "showui_desktop"},
+    {"sample_index": 5, "id": "docvqa_train_007425", "image": "images/docvqa_train_007425.png", "image_sha256": "1889b2c5095843d0bff358037fa716f4d360e934942eb69960b427d6020d2735", "question": "What is the Promotion Completed Date ?", "answers": ["June 30, 1985"], "source": "docvqa_train"},
+    {"sample_index": 6, "id": "train_000072", "image": "images/train_000072.jpg", "image_sha256": "bdf98711de706e3e1fb84cf0f40559bc500d71c23817ad3bde4da934c75d887f", "question": "What product is shown in this image?", "answers": ["Nightdress"], "source": "train"},
+    {"sample_index": 7, "id": "docvqa_train_000029", "image": "images/docvqa_train_000029.png", "image_sha256": "1502ab93855b01ab45619760f117c40cbfbbac10d03c1cef9b1aa6502936850b", "question": "How many focus groups were held?", "answers": ["Two"], "source": "docvqa_train"}
+  ]
+}

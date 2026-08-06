@@ -629,3 +629,17 @@ Qwen3.5 native 3D mRoPE 诊断也完成：V2、8 samples、240 tokens 下 `visio
 Qwen2.5-7B 的 3-step CE-only screen 已完成：8 samples、16 tokens、FP16 全 finite；CE `0.2381→0.0094`，RMS/spread 基本不动，`vision−shuffle` `+0.0333→-0.1027`。这确认 7B 有足够显存完成 projector backward，却重复“loss 下降、图像归因变差”的路线。CE-only 结果不进入 candidate；下一条训练若继续，必须用 matched image-vs-shuffle objective，并用相同 7B CE-only control 对照。
 
 matched margin arm（λ=0.1）在 7B 上的 16-token 轨迹为 `+0.0333/-0.0568/+0.0365/+0.0984`，240-token 轨迹为 `+0.0263/+0.0033/+0.0086/+0.0090`。这是一条有限但重要的监督方向证据；240-token 仍接近零，不能进入 ScreenSpot。下一条只在 7B 上做 token compression/scale-safe 的单变量筛选，保持 CE-only control 与 health guard。
+
+## 2026-08-07 审计修正与当前大方向
+
+审计发现，以上 stripped-receiver 的旧 3B/7B/9B 运行只使用 feature-cache manifest；它没有问题和答案字段，旧 `build_inputs()` 静默回退到统一 prompt 与 `click(start_box=[500,500])`。这些 raw 结果仍保留，能证明加载、反向、保存和健康日志链路，但所有 `vision−shuffle`、capacity 和 token-length attribution 只能标记为伪监督 receiver 扰动诊断，不能作为真实视觉能力或 projector 优劣证据。
+
+已新增冻结真实答案 manifest：`experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_real_probe_manifest.json`，SHA-256 `9fb216e...de130`。训练/探针现在按 ID 连接该 manifest，逐条校验 image SHA，并在缺少 question/instruction 或 target answer 时硬失败；不再允许默认坐标回退。
+
+修复后的 Qwen2.5-7B 8-sample matched runs（FP16、exact step0、3 steps、prefix 16）仍健康，但真实答案归因为负：CE-only `6.9373→4.4393`、`vision−shuffle -0.2741→-0.8746`；paired margin λ=`0.1` 为 `6.9373→4.5825`、`-0.2741→-0.1613`。因此“7B 能训练”成立，“7B 已经学会看图”不成立；当前不能进入 ScreenSpot 或 DeepSeek 候选。
+
+机制经验必须与 benchmark 同步保留：CE 下降不等于视觉归因提升；3B 高 LR 的 common-direction collapse 可在首步出现；小 LR/几何保护可保留表示却没有自动产生 image attribution；V1/V2/mRoPE 对照尚未消除 paired gap；监督接口和真实答案 manifest 本身是 Gate D 前置条件。
+
+真实答案合同下的后续 token screen：240-token CE-only `vision−shuffle +0.3338→+0.2444`，paired margin λ=`0.1` `+0.3338→+0.3375`；16-token prefix `-0.2741→-0.1613`，uniform `-0.2421→+0.0630`，mean-pool `-0.2036→-0.1363`。这些结果只说明 token 覆盖会影响 receiver 的局部答案归因；8 samples、3 steps、无 bootstrap，不能替代 ScreenSpot。mean-pool 梯度峰值约 4,292，需保留为数值风险记录。
+
+最短后续是对四个 token 条件做逐样本 probe、random-projector 和 bootstrap，再决定是否扩大样本。只有真实 benchmark 通过，才能替代 previous-best 或进入 DeepSeek 候选。旧 cache-only receiver-prior 数字均已降级，见 `docs/current-status.md` 的审计修正节。

@@ -31,7 +31,9 @@ from smoke_stripped_qwen35 import (  # noqa: E402
 
 from moonvit_glue import FeatureCache  # noqa: E402
 from moonvit_glue.merge import expand_image_placeholders  # noqa: E402
+from moonvit_glue.probe_samples import load_receiver_probe_records  # noqa: E402
 from moonvit_glue.projector import PatchMergerProjector, seeded_projector  # noqa: E402
+from moonvit_glue.token_selection import select_visual_tokens  # noqa: E402
 
 
 def sha256_file(path: Path) -> str:
@@ -47,12 +49,14 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--model-dir", type=Path, required=True)
     p.add_argument("--weight-manifest", type=Path, required=True)
     p.add_argument("--feature-cache", type=Path, required=True)
+    p.add_argument("--sample-manifest", type=Path, required=True)
     p.add_argument("--projector-dir", type=Path, required=True)
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--dtype", choices=("float16", "bfloat16"), default="bfloat16")
     p.add_argument("--device", default="cuda")
     p.add_argument("--sample-indices", default="0,1,2,3,4,5,6,7")
     p.add_argument("--max-visual-tokens", type=int, default=16)
+    p.add_argument("--token-selection", choices=("prefix", "uniform", "mean_pool"), default="prefix")
     p.add_argument("--random-seed", type=int, default=20260806)
     p.add_argument("--qwen-mrope", action="store_true", help="Qwen3.5-only positional diagnostic; not transferable")
     return p.parse_args()
@@ -145,7 +149,12 @@ def main() -> None:
     random_projector = seeded_projector(projector.config, seed=args.random_seed).to(device)
     random_projector.eval()
     cache = FeatureCache(args.feature_cache)
-    records = cache.manifest.get("records", [])
+    cache_cap = cache.manifest.get("max_visual_tokens")
+    if cache_cap is not None and args.max_visual_tokens > int(cache_cap):
+        raise ValueError(
+            f"requested max-visual-tokens {args.max_visual_tokens} exceeds cache contract {cache_cap}"
+        )
+    _, records = load_receiver_probe_records(args.sample_manifest, cache.manifest.get("records", []))
     indices = [int(item.strip()) for item in args.sample_indices.split(",") if item.strip()]
     if not indices or any(i < 0 or i >= len(records) for i in indices):
         raise ValueError(f"sample indices outside cache: {indices}")
@@ -154,8 +163,14 @@ def main() -> None:
     for index in indices:
         sample = records[index]
         shuffled = records[(index + 1) % len(records)]
-        feature = cache.get(sample["id"], device=device, dtype=torch.float32)[0][: args.max_visual_tokens].contiguous()
-        shuffled_feature = cache.get(shuffled["id"], device=device, dtype=torch.float32)[0][: args.max_visual_tokens].contiguous()
+        feature = select_visual_tokens(
+            cache.get(sample["id"], device=device, dtype=torch.float32)[0],
+            args.max_visual_tokens, args.token_selection,
+        )
+        shuffled_feature = select_visual_tokens(
+            cache.get(shuffled["id"], device=device, dtype=torch.float32)[0],
+            args.max_visual_tokens, args.token_selection,
+        )
         correct = eval_case(model=model, projector=projector, receiver=receiver, tokenizer=tokenizer, sample=sample, feature=feature, placeholder=placeholder, device=device, qwen_mrope=args.qwen_mrope)
         shuffled_lp = eval_case(model=model, projector=projector, receiver=receiver, tokenizer=tokenizer, sample=sample, feature=shuffled_feature, placeholder=placeholder, device=device, qwen_mrope=args.qwen_mrope)
         _, input_ids, labels, attention = build_inputs(tokenizer=tokenizer, features=None, sample=sample, placeholder_token_id=placeholder, device=device)
@@ -183,6 +198,7 @@ def main() -> None:
         "config_sha256": sha256_file(args.model_dir / "config.json"),
         "weight_manifest_sha256": sha256_file(args.weight_manifest),
         "dtype": args.dtype, "max_visual_tokens": args.max_visual_tokens,
+        "token_selection": args.token_selection,
         "qwen_mrope": args.qwen_mrope,
         "sample_indices": indices, "sample_count": len(rows), "random_projector_seed": args.random_seed,
         "native_vision_forward_calls": vision_calls["count"],

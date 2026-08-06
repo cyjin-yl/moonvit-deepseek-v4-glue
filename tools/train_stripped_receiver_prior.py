@@ -9,6 +9,7 @@ spread、梯度和 NaN/Inf；这是 receiver-prior 诊断，不是正式能力�
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import time
@@ -19,7 +20,9 @@ import torch.nn.functional as F
 from safetensors.torch import save_file
 
 from moonvit_glue import FeatureCache
+from moonvit_glue.probe_samples import load_receiver_probe_records
 from moonvit_glue.projector import PatchMergerProjector
+from moonvit_glue.token_selection import select_visual_tokens
 from probe_stripped_receiver import FixedGroupedReceiverAdapter, build_inputs, expanded_forward
 
 
@@ -30,17 +33,30 @@ def answer_logprob_tensor(logits: torch.Tensor, labels: torch.Tensor) -> torch.T
     return selected.masked_select(mask).mean()
 
 
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        while chunk := stream.read(8 * 1024 * 1024):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--model-dir", type=Path, required=True)
     p.add_argument("--weight-manifest", type=Path, required=True)
     p.add_argument("--feature-cache", type=Path, required=True)
+    p.add_argument("--sample-manifest", type=Path, required=True)
     p.add_argument("--projector-dir", type=Path, required=True)
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--dtype", choices=("float16", "bfloat16"), default="bfloat16")
     p.add_argument("--device", default="cuda")
     p.add_argument("--sample-indices", default="0,1,2,3,4,5,6,7")
     p.add_argument("--max-visual-tokens", type=int, default=240)
+    p.add_argument(
+        "--token-selection", choices=("prefix", "uniform", "mean_pool"), default="prefix",
+        help="固定 token 预算下的序列选择/压缩方式",
+    )
     p.add_argument("--steps", type=int, default=3)
     p.add_argument("--learning-rate", type=float, default=5e-5)
     p.add_argument("--shuffle-margin-lambda", type=float, default=0.0)
@@ -53,7 +69,9 @@ def main() -> None:
     if args.steps <= 0 or args.max_visual_tokens <= 0:
         raise ValueError("steps and max-visual-tokens must be positive")
     started = time.perf_counter()
-    args.out.mkdir(parents=True, exist_ok=True)
+    if args.out.exists():
+        raise FileExistsError(f"refusing to overwrite existing output: {args.out}")
+    args.out.mkdir(parents=True)
     dtype = getattr(torch, args.dtype)
     device = torch.device(args.device)
     config = json.loads((args.model_dir / "config.json").read_text(encoding="utf-8"))
@@ -76,21 +94,58 @@ def main() -> None:
     receiver = FixedGroupedReceiverAdapter(4096, receiver_width, seed=20260806).to(device) if receiver_width != 4096 else None
     optimizer = torch.optim.AdamW(projector.parameters(), lr=args.learning_rate)
     cache = FeatureCache(args.feature_cache)
-    records = cache.manifest.get("records", [])
+    cache_cap = cache.manifest.get("max_visual_tokens")
+    if cache_cap is not None and args.max_visual_tokens > int(cache_cap):
+        raise ValueError(
+            f"requested max-visual-tokens {args.max_visual_tokens} exceeds cache contract {cache_cap}"
+        )
+    sample_manifest, records = load_receiver_probe_records(
+        args.sample_manifest, cache.manifest.get("records", [])
+    )
     indices = [int(item.strip()) for item in args.sample_indices.split(",") if item.strip()]
     if not indices or any(i < 0 or i >= len(records) for i in indices):
         raise ValueError(f"sample indices outside cache: {indices}")
     feature_rows = []
+    feature_selection_meta = []
     for index in indices:
         sample = records[index]
         shuffled = records[(index + 1) % len(records)]
-        feature_rows.append((sample, cache.get(sample["id"], device=device, dtype=torch.float32)[0][:args.max_visual_tokens].contiguous(), cache.get(shuffled["id"], device=device, dtype=torch.float32)[0][:args.max_visual_tokens].contiguous()))
+        source_feature = cache.get(sample["id"], device=device, dtype=torch.float32)[0]
+        source_shuffled_feature = cache.get(shuffled["id"], device=device, dtype=torch.float32)[0]
+        selected_feature = select_visual_tokens(source_feature, args.max_visual_tokens, args.token_selection)
+        selected_shuffled_feature = select_visual_tokens(source_shuffled_feature, args.max_visual_tokens, args.token_selection)
+        feature_rows.append((
+            sample,
+            selected_feature,
+            selected_shuffled_feature,
+        ))
+        feature_selection_meta.append({
+            "sample_index": index, "sample_id": sample["id"],
+            "shuffled_sample_id": shuffled["id"],
+            "source_feature_shape": list(source_feature.shape),
+            "selected_feature_shape": list(selected_feature.shape),
+            "shuffled_source_feature_shape": list(source_shuffled_feature.shape),
+            "shuffled_selected_feature_shape": list(selected_shuffled_feature.shape),
+        })
     (args.out / "RUN_CONFIG.json").write_text(json.dumps({
         "schema_version": "stripped-receiver-prior-train-v1", "model_dir": str(args.model_dir),
         "model_type": config.get("model_type"), "model_loader": model_class.__name__,
         "weight_manifest": str(args.weight_manifest), "feature_cache": str(args.feature_cache),
+        "sample_manifest": str(args.sample_manifest),
+        "sample_manifest_sha256": sha256_file(args.sample_manifest),
+        "sample_manifest_schema_version": sample_manifest.get("schema_version"),
         "projector_dir": str(args.projector_dir), "dtype": args.dtype,
         "max_visual_tokens": args.max_visual_tokens, "sample_indices": indices,
+        "token_selection": {
+            "schema_version": "visual-token-selection-v1",
+            "mode": args.token_selection,
+            "requested_max_tokens": args.max_visual_tokens,
+            "axis": 0,
+            "source_layout": "row_major_cache_tokens",
+            "uniform_rule": "integer_nearest_endpoint_v1",
+            "mean_pool_rule": "integer_floor_bins_v1",
+            "feature_rows": feature_selection_meta,
+        },
         "steps": args.steps, "learning_rate": args.learning_rate,
         "shuffle_margin_lambda": args.shuffle_margin_lambda, "shuffle_margin": args.shuffle_margin,
         "receiver_width": receiver_width, "native_vision_bypassed": True,

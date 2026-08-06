@@ -1905,3 +1905,34 @@ Qwen3.5 原生 3D mRoPE 的 V2 诊断在同一 8-sample/240-token 条件下给�
 Qwen2.5-7B 的 3-step CE-only projector screen 在 V100 上完成：8 samples、16 tokens、FP16 全 finite，projector RMS `0.99775→0.99779`、between-image RMS `0.4064→0.4055`，CE `0.2381→0.0094`，但 `vision-minus-shuffle` `+0.0333→-0.1027`。它给出了容量对照的关键答案：7B 能训练，不代表会按图像回答；下一轮训练目标必须直接优化 paired image attribution，并保留 CE-only matched control。
 
 匹配的 paired image-vs-shuffle margin（λ=`0.1`、margin=`0.1`）在 7B 上保持 finite。16-token 3-step 后 `vision-minus-shuffle=+0.0984`，240-token 为 `+0.0090`；RMS 和 between-image spread 没有崩坏。它支持监督方向的价值，却反驳“短上下文正 margin 足以代表完整视觉能力”。
+
+== 2026-08-07：receiver-prior 监督接口审计与结论修订
+
+对 stripped-receiver 工具做独立数据审计时发现，旧的 3B/7B/9B capacity 运行只从
+`FeatureCache` manifest 读取样本。该 manifest 不含问题、instruction 或答案；旧
+`build_inputs()` 因此回退到统一 prompt 和 `click(start_box=[500,500])`。旧运行的
+checkpoint、optimizer、健康日志和数值结果仍完整保留，能证明模型加载、projector backward、
+保存和 finite health 链路；其 CE 与 `vision-minus-shuffle` 不能再被解释为真实 grounding
+attribution，也不能用于宣称某个 token 数、receiver 或 projector 更好。
+
+本次修订冻结了带真实问题/答案和图片 SHA 的 8-sample manifest：
+`experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_real_probe_manifest.json`，
+SHA-256 `9fb216e...de130`。训练和 probe 现在按 ID join feature cache，逐条核对 image SHA，
+缺少监督字段时 fail-closed。修复后的 Qwen2.5-7B 16-token matched screen 使用真实 TextVQA、
+DocVQA、ShowUI click 和 VQA 答案：CE-only 的 CE `6.9373→4.4393`、
+`vision-minus-shuffle -0.2741→-0.8746`；paired margin λ=`0.1` 的 CE `6.9373→4.5825`、
+`vision-minus-shuffle -0.2741→-0.1613`。两条均 finite 且 RMS/spread 稳定，但没有正的图像因果信号。
+
+因此当前保留两层结论：7B projector-only 训练在 V100 32GB 可运行；Qwen 代理尚未证明
+MoonViT token 已被纯文本 receiver 解读。后续机制记录继续同时保存训练健康（loss、RMS、spread、rank、
+gradient、NaN/Inf）和真实能力（vision/blind/shuffled、ScreenSpot、TextVQA、DocVQA、OCRBench），
+任何单项下降或固定答案扰动都不能替代 paired benchmark。240-token 真实答案 matched arm 完成后，
+才决定 prefix/uniform/mean-pool、输入尺度和 projector 结构的最小筛选；Gate D 仍为 NO-GO。
+
+真实答案 240-token matched screen 随后完成：CE-only 的 `vision-minus-shuffle` 为
+`+0.3338→+0.2444`，paired margin λ=`0.1` 为 `+0.3338→+0.3375`；两臂均 finite，RMS/spread
+稳定，margin 相对 control 的末步差约 `+0.093`。这只能支持“paired objective 在全长 token 条件下没有立即破坏已有信号”，不能称为 grounding 改进。
+
+同一合同的 16-token 选择 screen 给出 prefix `-0.2741→-0.1613`、uniform
+`-0.2421→+0.0630`、mean-pool `-0.2036→-0.1363`。uniform 的终点方向较好，mean-pool
+出现约 `4,292` 的梯度峰值；8 条混合真实答案样本和 3 steps 不足以做能力结论。下一项先为四种 token 条件生成逐样本 probe、random-projector 和 bootstrap，之后再决定是否扩大到 32 samples 或 ScreenSpot50。

@@ -218,3 +218,39 @@ Qwen2.5-7B 纯文本 matched control 使用官方 revision `a09a35458c702b33eeac
 Qwen2.5-7B 反向训练已在 V100 完成一个匹配的 3-step CE-only screen。8 个样本、16 token 全部 finite，projector RMS 和 between-image RMS 基本稳定，梯度从 `137.56` 降到 `3.40`；CE 从 `0.2381` 降到 `0.0094`，但 `vision−shuffle` 从 `+0.0333` 变成 `-0.1027`。这与 3B 的故障方向一致：纯文本容量提高后，CE 更快吸收坐标格式/文本先验，仍没有形成图像归因。下一条正式训练目标必须把 paired image supervision 和 health guard 同时纳入，CE-only 不再进入候选。
 
 7B 的匹配 paired margin arm（λ=`0.1`、margin=`0.1`）也完成：16 token 的 `vision−shuffle` 在 3 steps 后为 `+0.0984`，240 token 只有 `+0.0090`；两者 RMS/spread 都稳定。它支持“直接监督 image-vs-shuffle 比 CE-only 更有方向”，但短 token 的正向不能迁移到完整长度，仍不满足真实 grounding 改进规则。
+
+## 2026-08-07 监督接口审计与 7B 结果降级
+
+对 stripped-receiver 小工具做数据审计时发现，旧的 3B/7B/9B receiver-prior 运行只读取了
+`FeatureCache` 的记录。该 manifest 只含样本 ID、图片 SHA、尺寸和 feature shape，不含真实问题与答案。
+`build_inputs()` 当时静默回退到统一问题和 `click(start_box=[500, 500])`，所以这些运行的 CE、RMS、梯度和
+`vision−shuffle` 只能说明不同视觉 token 会改变固定答案的 log-prob，不能说明模型依据了对应图片。
+完整 raw 产物保留，`capability_claim_allowed` 统一降级为 `false`，旧的 token/容量排序不再作为能力证据。
+
+修复后的合同要求在运行前用冻结 manifest 按 ID 连接 cache，并逐条校验 image SHA；缺少
+`question/instruction` 或 `target_answer/answers` 立即失败，不再使用默认 prompt/坐标。冻结的 8 条真实答案探针为
+[`qwen25_7b_real_probe_manifest.json`](../experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_real_probe_manifest.json)，SHA-256 为
+`9fb216e...de130`，其中包含 TextVQA、DocVQA、ShowUI click 和普通 VQA，属于 receiver-prior 诊断，不是 ScreenSpot benchmark。
+
+修复后 Qwen2.5-7B 的真实答案 matched screen 已完成两条：
+
+| 条件 | CE step0→3 | vision−shuffle step0→3 | 健康 | 解释 |
+|---|---:|---:|---|---|
+| CE-only，prefix 16 | `6.9373→4.4393` | `-0.2741→-0.8746` | finite，RMS/spread 稳定 | 真实答案监督下仍向 image-agnostic/错误图方向移动 |
+| paired margin λ=0.1，prefix 16 | `6.9373→4.5825` | `-0.2741→-0.1613` | finite，RMS/spread 稳定 | margin 减少负向程度，但没有形成正的图像归因 |
+
+这两条结果反驳“7B 只需 CE 或小 paired margin 就能读入 MoonViT token”。它们支持更窄的结论：7B 训练和反向链路可运行，当前 projector/receiver/目标组合在真实答案上仍未产生可用的视觉因果信号。240-token matched arm 正在同一合同下运行；在它完成前不启动 ScreenSpot 或继续扩大训练量。
+
+## 机制经验与设计依据
+
+1. CE loss 可以快速下降而视觉归因不升，必须同时看 correct-image、blind、shuffled 的 paired 指标；loss、RMS、gradient 只属于训练健康。
+2. 3B exact-V2 的高学习率会在首步制造 common-direction collapse；geometry objective、LayerNorm/RMSNorm、zero-init residual 目前都未通过早期 health gate。
+3. exact V2 小学习率能保住表示几何，却没有自动产生 image-vs-shuffle 优势；“表征没塌缩”和“模型看懂图像”是两道门。
+4. 9B visual-pretrained receiver 能感受到外部视觉 token，但多样样本的正确图/打乱图差异接近零；它是 receiver-prior 证据，不能替代真实 VLM benchmark。纯文本 7B 的训练稳定性也没有转化为视觉能力。
+5. V1/V2 与 mRoPE 对照尚未改变 paired attribution gap，当前更有判别力的变量是监督接口、token 覆盖/压缩、输入尺度和 receiver 是否具备可解码先验。
+
+真实答案 240-token matched arm 已完成：CE-only 的 `vision−shuffle` 为 `+0.3338→+0.2444`，paired margin λ=`0.1` 为 `+0.3338→+0.3375`；两者都 finite，RMS/spread 稳定，margin 相对 control 的末步差约 `+0.093`。这是一条有限的“paired objective 没有破坏全长信号”证据，仍只有 8 条混合 VQA/ShowUI 样本，未做 bootstrap、自由生成或 ScreenSpot。
+
+同一真实答案合同下的 16-token 单变量 screen：prefix margin `-0.2741→-0.1613`，uniform margin `-0.2421→+0.0630`，mean-pool margin `-0.2036→-0.1363`。uniform 的方向比 prefix 好，mean-pool 训练中出现 4,292 的梯度峰值；三臂均未达到真实 grounding 改进规则。它支持“token 覆盖/选择是有判别力的变量”，不支持“16-token 任意压缩都能修复 receiver”。
+
+下一步固定顺序：先对 prefix/uniform/mean-pool 和 240 full 做逐样本 step0/step3 probe、random-projector 与 paired bootstrap；只有方向在样本层面稳定，才运行 32-sample probe 或 ScreenSpot50。之后再做 projector scale/结构 screen。任何 arm 只有在真实 ScreenSpot、TextVQA、DocVQA、OCRBench 和 paired CI 同时满足合同后，才可进入 DeepSeek 候选列表。

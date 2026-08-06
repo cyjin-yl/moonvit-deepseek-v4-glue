@@ -1,0 +1,10 @@
+{
+  "schema_version": "diagnostic-failure-v1",
+  "status": "failed_before_forward",
+  "command_role": "valid-answer-qwen25-7b-step0-probe",
+  "failure": "NameError: load_receiver_probe_records was referenced without an import after the sample-manifest hardening patch",
+  "optimizer_steps": 0,
+  "gpu_forward_started": false,
+  "repair": "add explicit import from moonvit_glue.probe_samples and rerun",
+  "capability_claim_allowed": false
+}

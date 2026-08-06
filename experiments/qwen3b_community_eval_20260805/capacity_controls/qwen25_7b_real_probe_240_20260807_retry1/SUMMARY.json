@@ -1,0 +1,123 @@
+{
+  "schema_version": "stripped-receiver-probe-v1",
+  "status": "diagnostic_only",
+  "model_type": "qwen2",
+  "model_loader": "AutoModelForCausalLM",
+  "model_hf_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "config_sha256": "7463bb0ea78315365e6c6b74de4e73bbcc8359dfb0c5a737584e077d42c0b03c",
+  "weight_manifest_sha256": "fc12640759ad54fa04ef2e5e09a63314bf046c46830c5fba11e752717ae89724",
+  "dtype": "float16",
+  "max_visual_tokens": 240,
+  "token_selection": "prefix",
+  "qwen_mrope": false,
+  "sample_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "sample_count": 8,
+  "random_projector_seed": 20260806,
+  "native_vision_forward_calls": 0,
+  "vision_minus_shuffle_mean": 0.33380651473999023,
+  "vision_minus_shuffle_std": 1.8492098092987885,
+  "vision_minus_blind_mean": 4.48767626285553,
+  "vision_minus_blind_std": 1.6083292939435716,
+  "rows": [
+    {
+      "sample_index": 0,
+      "sample_id": "textvqa_train_020685",
+      "shuffled_sample_id": "showui_desktop_003814",
+      "vision_answer_logp": -14.909795761108398,
+      "shuffled_answer_logp": -14.16898250579834,
+      "blind_answer_logp": -18.08489418029785,
+      "random_projector_answer_logp": -14.97428035736084,
+      "vision_minus_shuffle": -0.7408132553100586,
+      "vision_minus_blind": 3.175098419189453
+    },
+    {
+      "sample_index": 1,
+      "sample_id": "showui_desktop_003814",
+      "shuffled_sample_id": "showui_desktop_004939",
+      "vision_answer_logp": -12.715349197387695,
+      "shuffled_answer_logp": -11.929821968078613,
+      "blind_answer_logp": -16.2782039642334,
+      "random_projector_answer_logp": -14.055871963500977,
+      "vision_minus_shuffle": -0.785527229309082,
+      "vision_minus_blind": 3.562854766845703
+    },
+    {
+      "sample_index": 2,
+      "sample_id": "showui_desktop_004939",
+      "shuffled_sample_id": "textvqa_train_018064",
+      "vision_answer_logp": -11.635822296142578,
+      "shuffled_answer_logp": -12.425586700439453,
+      "blind_answer_logp": -16.958961486816406,
+      "random_projector_answer_logp": -13.268861770629883,
+      "vision_minus_shuffle": 0.789764404296875,
+      "vision_minus_blind": 5.323139190673828
+    },
+    {
+      "sample_index": 3,
+      "sample_id": "textvqa_train_018064",
+      "shuffled_sample_id": "showui_desktop_002566",
+      "vision_answer_logp": -20.626022338867188,
+      "shuffled_answer_logp": -22.467254638671875,
+      "blind_answer_logp": -25.726070404052734,
+      "random_projector_answer_logp": -21.554759979248047,
+      "vision_minus_shuffle": 1.8412322998046875,
+      "vision_minus_blind": 5.100048065185547
+    },
+    {
+      "sample_index": 4,
+      "sample_id": "showui_desktop_002566",
+      "shuffled_sample_id": "docvqa_train_007425",
+      "vision_answer_logp": -12.783077239990234,
+      "shuffled_answer_logp": -12.200657844543457,
+      "blind_answer_logp": -16.00296401977539,
+      "random_projector_answer_logp": -12.929326057434082,
+      "vision_minus_shuffle": -0.5824193954467773,
+      "vision_minus_blind": 3.2198867797851562
+    },
+    {
+      "sample_index": 5,
+      "sample_id": "docvqa_train_007425",
+      "shuffled_sample_id": "train_000072",
+      "vision_answer_logp": -14.391087532043457,
+      "shuffled_answer_logp": -17.653215408325195,
+      "blind_answer_logp": -21.57737159729004,
+      "random_projector_answer_logp": -19.00798988342285,
+      "vision_minus_shuffle": 3.2621278762817383,
+      "vision_minus_blind": 7.186284065246582
+    },
+    {
+      "sample_index": 6,
+      "sample_id": "train_000072",
+      "shuffled_sample_id": "docvqa_train_000029",
+      "vision_answer_logp": -20.907320022583008,
+      "shuffled_answer_logp": -18.344417572021484,
+      "blind_answer_logp": -23.437217712402344,
+      "random_projector_answer_logp": -18.603656768798828,
+      "vision_minus_shuffle": -2.5629024505615234,
+      "vision_minus_blind": 2.529897689819336
+    },
+    {
+      "sample_index": 7,
+      "sample_id": "docvqa_train_000029",
+      "shuffled_sample_id": "textvqa_train_020685",
+      "vision_answer_logp": -23.17279815673828,
+      "shuffled_answer_logp": -24.621788024902344,
+      "blind_answer_logp": -28.976999282836914,
+      "random_projector_answer_logp": -27.136802673339844,
+      "vision_minus_shuffle": 1.4489898681640625,
+      "vision_minus_blind": 5.804201126098633
+    }
+  ],
+  "capability_claim_allowed": false,
+  "deepseek_transfer_label": "transferable_with_runtime_validation",
+  "wall_seconds": 17.780757343862206
+}

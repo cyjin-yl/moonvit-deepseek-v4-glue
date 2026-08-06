@@ -1,0 +1,243 @@
+{
+  "schema_version": "stripped-receiver-prior-train-v1",
+  "model_dir": "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/models/Qwen2.5-7B-Instruct",
+  "model_type": "qwen2",
+  "model_loader": "AutoModelForCausalLM",
+  "weight_manifest": "configs/qwen2.5-7b-hf-sha256.json",
+  "feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/architecture_controls/local_v2_exact_k3/feature_cache_4k_rebound_retry1",
+  "sample_manifest": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_real_probe_manifest.json",
+  "sample_manifest_sha256": "9fb2167ec98b681546e3767b1ca85a25c67dc7288d81b3ec29539c19a28de130",
+  "sample_manifest_schema_version": "receiver-real-answer-probe-v1",
+  "projector_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/architecture_controls/local_v2_exact_k3/projector_initializations/step0",
+  "dtype": "float16",
+  "max_visual_tokens": 16,
+  "sample_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "token_selection": {
+    "schema_version": "visual-token-selection-v1",
+    "mode": "uniform",
+    "requested_max_tokens": 16,
+    "axis": 0,
+    "source_layout": "row_major_cache_tokens",
+    "uniform_rule": "integer_nearest_endpoint_v1",
+    "mean_pool_rule": "integer_floor_bins_v1",
+    "feature_rows": [
+      {
+        "sample_index": 0,
+        "sample_id": "textvqa_train_020685",
+        "shuffled_sample_id": "showui_desktop_003814",
+        "source_feature_shape": [
+          240,
+          4,
+          1024
+        ],
+        "selected_feature_shape": [
+          16,
+          4,
+          1024
+        ],
+        "shuffled_source_feature_shape": [
+          160,
+          4,
+          1024
+        ],
+        "shuffled_selected_feature_shape": [
+          16,
+          4,
+          1024
+        ]
+      },
+      {
+        "sample_index": 1,
+        "sample_id": "showui_desktop_003814",
+        "shuffled_sample_id": "showui_desktop_004939",
+        "source_feature_shape": [
+          160,
+          4,
+          1024
+        ],
+        "selected_feature_shape": [
+          16,
+          4,
+          1024
+        ],
+        "shuffled_source_feature_shape": [
+          160,
+          4,
+          1024
+        ],
+        "shuffled_selected_feature_shape": [
+          16,
+          4,
+          1024
+        ]
+      },
+      {
+        "sample_index": 2,
+        "sample_id": "showui_desktop_004939",
+        "shuffled_sample_id": "textvqa_train_018064",
+        "source_feature_shape": [
+          160,
+          4,
+          1024
+        ],
+        "selected_feature_shape": [
+          16,
+          4,
+          1024
+        ],
+        "shuffled_source_feature_shape": [
+          176,
+          4,
+          1024
+        ],
+        "shuffled_selected_feature_shape": [
+          16,
+          4,
+          1024
+        ]
+      },
+      {
+        "sample_index": 3,
+        "sample_id": "textvqa_train_018064",
+        "shuffled_sample_id": "showui_desktop_002566",
+        "source_feature_shape": [
+          176,
+          4,
+          1024
+        ],
+        "selected_feature_shape": [
+          16,
+          4,
+          1024
+        ],
+        "shuffled_source_feature_shape": [
+          144,
+          4,
+          1024
+        ],
+        "shuffled_selected_feature_shape": [
+          16,
+          4,
+          1024
+        ]
+      },
+      {
+        "sample_index": 4,
+        "sample_id": "showui_desktop_002566",
+        "shuffled_sample_id": "docvqa_train_007425",
+        "source_feature_shape": [
+          144,
+          4,
+          1024
+        ],
+        "selected_feature_shape": [
+          16,
+          4,
+          1024
+        ],
+        "shuffled_source_feature_shape": [
+          208,
+          4,
+          1024
+        ],
+        "shuffled_selected_feature_shape": [
+          16,
+          4,
+          1024
+        ]
+      },
+      {
+        "sample_index": 5,
+        "sample_id": "docvqa_train_007425",
+        "shuffled_sample_id": "train_000072",
+        "source_feature_shape": [
+          208,
+          4,
+          1024
+        ],
+        "selected_feature_shape": [
+          16,
+          4,
+          1024
+        ],
+        "shuffled_source_feature_shape": [
+          192,
+          4,
+          1024
+        ],
+        "shuffled_selected_feature_shape": [
+          16,
+          4,
+          1024
+        ]
+      },
+      {
+        "sample_index": 6,
+        "sample_id": "train_000072",
+        "shuffled_sample_id": "docvqa_train_000029",
+        "source_feature_shape": [
+          192,
+          4,
+          1024
+        ],
+        "selected_feature_shape": [
+          16,
+          4,
+          1024
+        ],
+        "shuffled_source_feature_shape": [
+          208,
+          4,
+          1024
+        ],
+        "shuffled_selected_feature_shape": [
+          16,
+          4,
+          1024
+        ]
+      },
+      {
+        "sample_index": 7,
+        "sample_id": "docvqa_train_000029",
+        "shuffled_sample_id": "textvqa_train_020685",
+        "source_feature_shape": [
+          208,
+          4,
+          1024
+        ],
+        "selected_feature_shape": [
+          16,
+          4,
+          1024
+        ],
+        "shuffled_source_feature_shape": [
+          240,
+          4,
+          1024
+        ],
+        "shuffled_selected_feature_shape": [
+          16,
+          4,
+          1024
+        ]
+      }
+    ]
+  },
+  "steps": 3,
+  "learning_rate": 5e-05,
+  "shuffle_margin_lambda": 0.1,
+  "shuffle_margin": 0.1,
+  "receiver_width": 3584,
+  "native_vision_bypassed": true,
+  "native_vision_forward_calls": 0,
+  "capability_claim_allowed": false
+}

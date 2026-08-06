@@ -26,6 +26,7 @@ import torch.nn.functional as F
 from moonvit_glue import FeatureCache
 from moonvit_glue.chat_contract import build_chat_supervision
 from moonvit_glue.merge import expand_image_placeholders
+from moonvit_glue.probe_samples import load_receiver_probe_records, receiver_probe_supervision
 from moonvit_glue.projector import PatchMergerProjector
 
 
@@ -75,6 +76,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model-dir", type=Path, required=True)
     parser.add_argument("--weight-manifest", type=Path, required=True)
     parser.add_argument("--feature-cache", type=Path, required=True)
+    parser.add_argument("--sample-manifest", type=Path, required=True)
     parser.add_argument("--projector-dir", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--steps", type=int, default=2)
@@ -100,20 +102,14 @@ def build_inputs(
     *, tokenizer: Any, features: torch.Tensor | None, sample: dict[str, Any],
     placeholder_token_id: int, device: torch.device,
 ):
-    bbox = sample.get("bbox_999_xyxy") or [0.0, 0.0, 999.0, 999.0]
-    center_x = round((float(bbox[0]) + float(bbox[2])) / 2.0)
-    center_y = round((float(bbox[1]) + float(bbox[3])) / 2.0)
-    answer = f"click(start_box=[{center_x}, {center_y}])"
+    question, answer = receiver_probe_supervision(sample)
     supervision = build_chat_supervision(
         tokenizer,
         system_prompt=(
-            "You are a GUI grounding model. Return exactly one click action and no other text. "
-            "Use integer coordinates from 0 to 999 with the top-left origin. "
-            "Required format: click(start_box=[x, y])"
+            "Use the image to answer the user's question. Return only the answer with no explanation."
         ),
         user_prompt=(
-            "Locate the UI element described below and click its center.\n"
-            f"Target: {sample.get('instruction', 'the target UI element')}"
+            f"Question: {question}"
         ),
         answer=answer,
         placeholder_token_id=placeholder_token_id,
@@ -200,7 +196,7 @@ def main() -> None:
     )
     optimizer = torch.optim.AdamW(projector.parameters(), lr=args.learning_rate)
     cache = FeatureCache(args.feature_cache)
-    records = cache.manifest.get("records", [])
+    _, records = load_receiver_probe_records(args.sample_manifest, cache.manifest.get("records", []))
     if not records:
         raise ValueError("feature cache has no records")
     index = int(args.sample_index)
