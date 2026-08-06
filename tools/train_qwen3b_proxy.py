@@ -309,6 +309,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--checkpoint-every", type=int, default=100)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--development-max-optimizer-steps", type=int)
+    parser.add_argument(
+        "--projector-learning-rate",
+        type=float,
+        help="探索用 projector 学习率覆盖；examples/steps/order 仍绑定主合同",
+    )
     parser.add_argument("--geometry-screen-contract", type=Path)
     parser.add_argument("--geometry-calibration", type=Path)
     parser.add_argument("--geometry-reference-projector", type=Path)
@@ -1398,6 +1403,14 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         "binding": binding_summary,
         "target_optimizer_steps": target_steps,
         "formal_optimizer_steps": total_steps,
+        "projector_learning_rate_contract": float(
+            contract["training_budget"]["learning_rate"]
+        ),
+        "projector_learning_rate_override": (
+            float(args.projector_learning_rate)
+            if args.projector_learning_rate is not None
+            else None
+        ),
         "checkpoint_every": args.checkpoint_every,
         "resume": str(args.resume.resolve()) if args.resume else None,
         "supervision": supervision_summary,
@@ -1496,9 +1509,16 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
     ).to(device)
     model.train()
     budget = contract["training_budget"]
+    learning_rate = (
+        float(args.projector_learning_rate)
+        if args.projector_learning_rate is not None
+        else float(budget["learning_rate"])
+    )
+    if learning_rate <= 0.0:
+        raise ValueError("projector learning rate must be positive")
     optimizer = torch.optim.AdamW(
         projector.parameters(),
-        lr=float(budget["learning_rate"]),
+        lr=learning_rate,
         betas=tuple(float(value) for value in budget["betas"]),
         eps=float(budget["epsilon"]),
         weight_decay=float(budget["weight_decay"]),
