@@ -1812,3 +1812,9 @@ Package 15Q 已在任何新结构结果前冻结。它把一个结构变量放�
 独立 verifier 重算了 3 个 probe、3 个 checkpoint 与 22 个 health artifact，状态为 `verified`，health manifest 总字节数 `1,141,294,624`。完整 checkpoint、optimizer、RNG、batch IDs 和日志已完成本地/远端双份保存；Git 只保留可审查结果和 raw pointer。该 control 只证明健康合同能复现并止损，不能证明视觉能力，也没有进入 ScreenSpot、TextVQA、DocVQA 或 OCRBench。下一步运行零初始化残差臂；若它仍在 step 2 失败，优先检查残差分支的梯度接口，而不扩大训练预算。
 
 `zero_init_residual` 的第一次候选启动在 GPU 初始化前被旧 runner 拒绝：它把任何非 canonical projector 都当成错误 SHA。该次失败已保存为 `projector_residual_screen_v1/failures/attempt04_variant_sha_gate/`，没有 optimizer step 或 checkpoint。修复后的通用 projector binding 会在加载语言主干前检查注册 arm 的 config/weights SHA、冻结 base 权重、参数量、共享 base tensor 和逐元素相同的 step0 输出；训练与 health 合同保持不变。修复先提交，再重启候选，避免把接口修复和实验结果混在一起。
+
+== Package 15R：zero-init residual 结果
+
+修复后的 `zero_init_residual` 通过 variant binding 后进入真实 Qwen2.5-3B 训练。它从同一 step0 输出开始，step 1 的 projector 梯度范数（clip 前）为 `189.33`，证明残差分支确实参与优化；然而 step 2 的 projector output RMS 已升到 `1.4244`，spread/rank ratio 降到 `0.1838/0.1799`，receiver RMS 为 `1.9779`，ratio 为 `0.1672/0.1358`。CE 从 `4.14400` 降到 `2.88565`，两条固定 RMS-rising/spread-falling critical guard 在 `[1,2]` 触发，运行自动回滚。
+
+独立 verifier 重算 3 个 probe、3 个 checkpoint 和 22 个 health artifact，状态为 `verified`，总字节数 `1,711,724,384`；完整 raw checkpoint、optimizer、RNG 与日志已保存并做 SHA 重算。该臂支持“梯度能进入残差支路，但 receiver-facing 更新仍会压扁图像差异”，反驳“zero-init residual 单独足以修复 projector”。它没有进入任何真实能力评测；最后的 gated arm 仍按同一合同执行。

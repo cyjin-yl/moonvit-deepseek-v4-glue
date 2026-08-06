@@ -1,7 +1,7 @@
 # Package 15R — residual structure screen results
 
-This directory records the first completed arm of the frozen residual/gated-
-residual screen. The `baseline_none` control reuses the exact step0 projector
+This directory records completed arms of the frozen residual/gated-residual
+screen. The `baseline_none` control reuses the exact step0 projector
 and the same Qwen2.5-3B data, order, receiver, budget and projector-health
 contract as the earlier structure screens.
 
@@ -16,3 +16,8 @@ The complete raw copy, including checkpoint tensors, optimizer state, RNG
 state, probe logs and launcher log, is outside Git at
 `D:/V100-artifacts/projector_residual_screen_hf_v1/baseline_none` and on the
 V100 HDD. The next arm is `zero_init_residual`, under the same contract.
+
+`zero_init_residual` also stopped at optimizer step 2. Its residual branch
+passed the registered binding and received a non-zero first-step gradient, but
+projector/receiver geometry degraded faster than the control. It remains a
+health-screen failure and has no capability claim.

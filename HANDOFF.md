@@ -162,6 +162,27 @@ refutes any claim that the residual candidates can be judged by a lower CE
 alone. The next arm is `zero_init_residual`; it must keep the same first-step
 geometry healthy before we spend time on full grounding evaluation.
 
+### Package 15R zero-initialized residual result (2026-08-06 UTC)
+
+After the variant-binding repair, `zero_init_residual` passed the pre-GPU
+contract check and ran on the same V100 budget. Its step-1 projector gradient
+norm before clipping was `189.33`, confirming that the new branch was trainable.
+The health trajectory still stopped at `[1, 2]`: CE fell `4.14400 → 2.88565`,
+while step-2 projector output RMS reached `1.4244`, spread/rank ratios fell to
+`0.1838/0.1799`, and receiver RMS reached `1.9779` with ratios
+`0.1672/0.1358`. The same two fixed critical guards fired and rollback restored
+the healthy step-1 checkpoint.
+
+The independent verifier passed 3 probes, 3 checkpoints and 22 artifacts
+(`1,711,724,384` bytes); the local raw copy and SHA recheck are bound under
+`experiments/qwen3b_community_eval_20260805/projector_residual_screen_hf_v1/results/zero_init_residual/`.
+This arm is not a capability result. It supports the narrower conclusion that
+the residual branch can receive gradient while the receiver-facing update still
+collapses image geometry, and it refutes “zero initialization alone preserves
+the visual subspace.” `gated_residual` remains the final pre-registered arm;
+if it also stops at step 2, the package moves to a frozen-base residual-only or
+learning-rate-cap intervention rather than a 500-step expansion.
+
 ### Package 15R variant-binding repair before the first candidate
 
 The first `zero_init_residual` launch stopped before CUDA model load because
@@ -178,7 +199,7 @@ fixed. The candidate will be relaunched after this repair is committed.
 
 **Current task / hard boundary**: the engineering mainline is now a fixed real-data bridge on pure-text `Qwen/Qwen2.5-3B-Instruct`, followed by transfer of the same MoonViT-V2/projector/data/eval contract to DeepSeek-V4-Flash-0731. The 0.5B/synthetic line remains mechanism evidence. Do not rent any server, create a paid resource, run the full DeepSeek weights, or inspect final evaluation halves without explicit authorization. Exact V100 environment evidence is under `experiments/v100_perception_20260804/infra/environment/`.
 
-**Experiment packages 1–14 COMPLETE; Packages 15A–15R establish, diagnose and redirect the 3B bridge**: packages 1–12 established auditable caching and mechanism controls. Package 13 fixes preventive replay; Package 14 fixes the smallest reliable sentinel and V100 cost. Package 15A freezes the Qwen2.5-3B model/data/generation/scoring/budget contract before any 3B output. Package 15B closes the real-image load/gradient/optimizer/checkpoint smoke. Package 15C freezes the exact first-4,000 training prefix and teacher targets. Package 15D independently verifies the content-addressed MoonViT cache. Package 15E completes exact 4k projector-only training. Package 15F rejects the first GLM-format ScreenSpot50 candidate. Package 15G confirms the failure on all 1,272 public ScreenSpot rows. Package 15H shows that training raises coordinate-answer probability without learning correct-image coordinate preference. Package 15I preregisters the matched 2,000-grounding/2,000-short-answer treatment before its cache or training result exists. Package 15J independently verifies its content-addressed MoonViT cache. Package 15K completes the exact matched-budget training and checkpoint audit. Packages 15L/15M reject it by preference and free generation: vision/blind/shuffled preference is 52%/56%/54%, while click is 6%/12%/6%. Package 15N localizes a scale/rank collapse at the projector output; Package 15O shows that both collapse guards already fire at the first saved checkpoint, step 100/800 examples. Package 15P freezes a directly transferable step-one geometry repair and completes its independent λ calibration. Package 15Q tests output LayerNorm/RMSNorm and cancels its 500-step expansion after all three arms stop at step 2. Package 15R freezes the residual/gated-residual screen and has completed its matched baseline control; `zero_init_residual` is next.
+**Experiment packages 1–14 COMPLETE; Packages 15A–15R establish, diagnose and redirect the 3B bridge**: packages 1–12 established auditable caching and mechanism controls. Package 13 fixes preventive replay; Package 14 fixes the smallest reliable sentinel and V100 cost. Package 15A freezes the Qwen2.5-3B model/data/generation/scoring/budget contract before any 3B output. Package 15B closes the real-image load/gradient/optimizer/checkpoint smoke. Package 15C freezes the exact first-4,000 training prefix and teacher targets. Package 15D independently verifies the content-addressed MoonViT cache. Package 15E completes exact 4k projector-only training. Package 15F rejects the first GLM-format ScreenSpot50 candidate. Package 15G confirms the failure on all 1,272 public ScreenSpot rows. Package 15H shows that training raises coordinate-answer probability without learning correct-image coordinate preference. Package 15I preregisters the matched 2,000-grounding/2,000-short-answer treatment before its cache or training result exists. Package 15J independently verifies its content-addressed MoonViT cache. Package 15K completes the exact matched-budget training and checkpoint audit. Packages 15L/15M reject it by preference and free generation: vision/blind/shuffled preference is 52%/56%/54%, while click is 6%/12%/6%. Package 15N localizes a scale/rank collapse at the projector output; Package 15O shows that both collapse guards already fire at the first saved checkpoint, step 100/800 examples. Package 15P freezes a directly transferable step-one geometry repair and completes its independent λ calibration. Package 15Q tests output LayerNorm/RMSNorm and cancels its 500-step expansion after all three arms stop at step 2. Package 15R freezes the residual/gated-residual screen; baseline and zero-init both stop at step 2, and gated is next.
 
 **Pre-rental go/no-go (authoritative top-level table)**:
 

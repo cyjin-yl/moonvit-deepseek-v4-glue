@@ -1,0 +1,64 @@
+stage: contract_order_cache_verification
+stage: frozen_file_verification
+stage: tokenizer_config_supervision
+stage: cuda_and_model_load
+Loading weights:   0%|          | 0/434 [00:00<?, ?it/s]Loading weights:   0%|          | 1/434 [00:00<01:15,  5.74it/s]Loading weights:  20%|##        | 88/434 [00:00<00:00, 366.72it/s]Loading weights:  34%|###4      | 148/434 [00:00<00:00, 403.56it/s]Loading weights:  48%|####7     | 207/434 [00:00<00:00, 424.35it/s]Loading weights:  58%|#####8    | 252/434 [00:00<00:00, 417.60it/s]Loading weights:  68%|######8   | 296/434 [00:00<00:00, 415.36it/s]Loading weights:  79%|#######8  | 341/434 [00:00<00:00, 403.96it/s]Loading weights:  90%|########9 | 389/434 [00:00<00:00, 420.95it/s]Loading weights: 100%|##########| 434/434 [00:01<00:00, 404.25it/s]
+stage: projector_receiver_optimizer_load
+stage: health_probe_step0_reference
+stage: projector_training
+stage: health_probe_step_1
+optimizer_step 1/100 loss=4.144004 examples_seen=8 answer_tokens_seen=73 step_wall=1.035s
+stage: health_probe_step_2
+health auto-stop at optimizer_step 2: ['projector_rms_rising_spread_falling', 'receiver_rms_rising_spread_falling']
+stage: health_auto_stopped
+{
+  "status": "auto_stopped_by_projector_health_guard",
+  "formal_training_complete": false,
+  "capability_claim_allowed": false,
+  "visual_ability_established": false,
+  "previous_best": "step0",
+  "final_half_scored": false,
+  "paid_resources_used": false,
+  "runner_git_sha": "263a845fd5a456904c2fb10f07272c7f8039f08e",
+  "projector_binding": {
+    "kind": "registered_variant",
+    "weights_sha256": "24b2b74e82c0949c801aa2e7895a4d7d1aa233e94f603186df1f03ae7cd0f7ef",
+    "parameter_count": 50341888,
+    "variant_contract_path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/configs/qwen3b-projector-residual-screen-v1.json",
+    "variant_contract_sha256": "7852806c9a3c22879ac3be439646f07c5e084fadb77d49e0e4a8e2972ff37245",
+    "arm": "zero_init_residual",
+    "residual_mode": "zero_init",
+    "config_sha256": "bd12bf202803365bbca87b7ab6c7765e5d0aa213dbd68152c188e4336d3b138c",
+    "base_weights_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0"
+  },
+  "git_tracked_worktree_clean": true,
+  "target_optimizer_steps": 100,
+  "optimizer_steps_completed": 2,
+  "examples_seen": 16,
+  "answer_tokens_seen": 145,
+  "loss_first": 4.144003733992577,
+  "loss_last": 2.8856489807367325,
+  "training_wall_seconds": 33.82158219907433,
+  "total_wall_seconds": 76.20340224076062,
+  "peak_gpu_memory_bytes": 13580889600,
+  "critical_reasons": [
+    "projector_rms_rising_spread_falling",
+    "receiver_rms_rising_spread_falling"
+  ],
+  "collapse_onset_interval": [
+    1,
+    2
+  ],
+  "failure_checkpoint": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/zero_init_residual/health_snapshots/checkpoints/failure-step-000002",
+  "last_healthy_checkpoint": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/zero_init_residual/health_snapshots/checkpoints/healthy-step-000001",
+  "rollback": {
+    "status": "rolled_back_to_last_healthy_checkpoint",
+    "source": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/zero_init_residual/health_snapshots/checkpoints/healthy-step-000001",
+    "restored_step": 1,
+    "failed_step": 2,
+    "critical_checkpoint_must_not_resume": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/zero_init_residual/health_snapshots/checkpoints/failure-step-000002"
+  },
+  "health_artifact_file_count": 22,
+  "health_artifact_total_bytes": 1711724384,
+  "transfer_label": "directly_transferable"
+}

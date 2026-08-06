@@ -1,0 +1,24 @@
+{
+  "format_version": "qwen3b-projector-residual-raw-pointer-v1",
+  "package": "15R",
+  "arm": "zero_init_residual",
+  "local_root": "D:/V100-artifacts/projector_residual_screen_hf_v1/zero_init_residual",
+  "remote_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/zero_init_residual",
+  "complete_raw_copy": true,
+  "local_file_count": 34,
+  "local_total_bytes": 1714034241,
+  "health_manifest": "HEALTH_ARTIFACT_MANIFEST.json",
+  "health_manifest_sha256": "d81b0bafc1aa58da4221e489282d7b76fad8435a0542f10b348176d8d0844889",
+  "health_manifest_file_count": 22,
+  "health_manifest_total_bytes": 1711724384,
+  "local_rehash": {
+    "status": "verified",
+    "manifest_entries_checked": 22,
+    "mismatches": 0,
+    "extra_raw_files": ["launcher.log", "launcher.pid"]
+  },
+  "large_files_policy": "checkpoint tensors and optimizer state remain in the local raw archive and are not duplicated in Git",
+  "pre_result_launcher_failure": "experiments/qwen3b_community_eval_20260805/projector_residual_screen_v1/failures/attempt04_variant_sha_gate",
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

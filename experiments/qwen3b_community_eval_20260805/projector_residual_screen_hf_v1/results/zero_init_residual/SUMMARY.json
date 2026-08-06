@@ -1,0 +1,51 @@
+{
+  "answer_tokens_seen": 145,
+  "capability_claim_allowed": false,
+  "collapse_onset_interval": [
+    1,
+    2
+  ],
+  "critical_reasons": [
+    "projector_rms_rising_spread_falling",
+    "receiver_rms_rising_spread_falling"
+  ],
+  "examples_seen": 16,
+  "failure_checkpoint": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/zero_init_residual/health_snapshots/checkpoints/failure-step-000002",
+  "final_half_scored": false,
+  "formal_training_complete": false,
+  "git_tracked_worktree_clean": true,
+  "health_artifact_file_count": 22,
+  "health_artifact_total_bytes": 1711724384,
+  "last_healthy_checkpoint": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/zero_init_residual/health_snapshots/checkpoints/healthy-step-000001",
+  "loss_first": 4.144003733992577,
+  "loss_last": 2.8856489807367325,
+  "optimizer_steps_completed": 2,
+  "paid_resources_used": false,
+  "peak_gpu_memory_bytes": 13580889600,
+  "previous_best": "step0",
+  "projector_binding": {
+    "arm": "zero_init_residual",
+    "base_weights_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0",
+    "config_sha256": "bd12bf202803365bbca87b7ab6c7765e5d0aa213dbd68152c188e4336d3b138c",
+    "kind": "registered_variant",
+    "parameter_count": 50341888,
+    "residual_mode": "zero_init",
+    "variant_contract_path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/configs/qwen3b-projector-residual-screen-v1.json",
+    "variant_contract_sha256": "7852806c9a3c22879ac3be439646f07c5e084fadb77d49e0e4a8e2972ff37245",
+    "weights_sha256": "24b2b74e82c0949c801aa2e7895a4d7d1aa233e94f603186df1f03ae7cd0f7ef"
+  },
+  "rollback": {
+    "critical_checkpoint_must_not_resume": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/zero_init_residual/health_snapshots/checkpoints/failure-step-000002",
+    "failed_step": 2,
+    "restored_step": 1,
+    "source": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/zero_init_residual/health_snapshots/checkpoints/healthy-step-000001",
+    "status": "rolled_back_to_last_healthy_checkpoint"
+  },
+  "runner_git_sha": "263a845fd5a456904c2fb10f07272c7f8039f08e",
+  "status": "auto_stopped_by_projector_health_guard",
+  "target_optimizer_steps": 100,
+  "total_wall_seconds": 76.20340224076062,
+  "training_wall_seconds": 33.82158219907433,
+  "transfer_label": "directly_transferable",
+  "visual_ability_established": false
+}
