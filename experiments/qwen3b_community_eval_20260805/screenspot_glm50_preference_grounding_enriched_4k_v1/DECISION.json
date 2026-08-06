@@ -1,0 +1,82 @@
+{
+  "format_version": "qwen3b-grounding-preference-decision-v1",
+  "dataset_name": "screenspot_glm50_v1",
+  "dataset_label": "GLM-format metric-aligned public subset",
+  "sample_count": 50,
+  "current_candidate": "train_grounding_enriched_4k_v1/step-000500",
+  "current_projector_sha256": "62f69393dd3d157446db05a7060942bdfbd23f834bbe2e6782560431b5773df4",
+  "decision": "reject_at_paired_preference_gate",
+  "previous_best_after_decision": "step0",
+  "vision": {
+    "paired_preference_accuracy": 0.52,
+    "mean_correct_margin": 0.0019789965248806518,
+    "median_correct_margin": 0.012030635561261938,
+    "mean_correct_logp": -1.0591498362887037,
+    "mean_correct_token_nll": 1.0591498362887037
+  },
+  "blind": {
+    "paired_preference_accuracy": 0.56,
+    "mean_correct_margin": 0.0011100577958774549,
+    "mean_correct_token_nll": 2.7826127724071124
+  },
+  "shuffled": {
+    "paired_preference_accuracy": 0.54,
+    "mean_correct_margin": 0.0043570004802047,
+    "mean_correct_token_nll": 1.0575173076867184
+  },
+  "step0": {
+    "paired_preference_accuracy": 0.54,
+    "mean_correct_margin": 0.00564761312016636,
+    "mean_correct_token_nll": 2.5076928175762023
+  },
+  "random_projector": {
+    "paired_preference_accuracy": 0.5,
+    "mean_correct_margin": -0.0006968086019103748,
+    "mean_correct_token_nll": 2.4795935364607926
+  },
+  "vision_minus_blind": {
+    "paired_preference_accuracy": -0.040000000000000036,
+    "paired_preference_accuracy_ci95": [-0.18, 0.09999999999999998]
+  },
+  "vision_minus_shuffled": {
+    "paired_preference_accuracy": -0.020000000000000018,
+    "paired_preference_accuracy_ci95": [-0.06000000000000005, 0.0],
+    "mean_correct_margin": -0.0023780039553240487,
+    "mean_correct_margin_ci95": [-0.0060991037232534856, 0.0012481013676185677],
+    "mean_correct_logp": -0.0016325286019853724,
+    "mean_correct_logp_ci95": [-0.00578621568129612, 0.002342096596847069]
+  },
+  "trained_minus_random_projector": {
+    "paired_preference_accuracy": 0.020000000000000018,
+    "paired_preference_accuracy_ci95": [-0.14, 0.18000000000000005],
+    "mean_correct_token_nll_improvement": 1.4204437001720889,
+    "mean_correct_token_nll_improvement_ci95": [1.2635658211939498, 1.5723413107093875]
+  },
+  "current_candidate_minus_previous_best": {
+    "paired_preference_accuracy": -0.020000000000000018,
+    "paired_preference_accuracy_ci95": [-0.19999999999999996, 0.14],
+    "mean_correct_token_nll_improvement": 1.4485429812874986,
+    "mean_correct_token_nll_improvement_ci95": [1.297928403741711, 1.6069774260918297]
+  },
+  "paired_preference_gate_passed": false,
+  "visual_ability_established": false,
+  "content_specific_image_use_supported": false,
+  "more_grounding_with_same_ce_objective_supported": false,
+  "advance_to_full_screenspot_or_three_seeds": false,
+  "complete_glm50_generation_contract": true,
+  "hypotheses_supported": [
+    "A 50 percent grounding mix further lowers the absolute NLL of coordinate answers.",
+    "The absolute probability gain remains effectively invariant to correct versus shuffled image identity.",
+    "The frozen-backbone cross-entropy objective still behaves as an image-agnostic coordinate soft prompt at 4,000 examples."
+  ],
+  "hypotheses_refuted": [
+    "The first 4k failure was explained solely by having only 339 grounding records.",
+    "Increasing ShowUI grounding to 2,000 records is sufficient to create correct-image preference.",
+    "Lower teacher-forced coordinate NLL establishes content-specific visual grounding."
+  ],
+  "method_transfer_label": "directly_transferable",
+  "checkpoint_enters_deepseek_candidate_list": false,
+  "next_experiment": "complete_matched_glm50_generation_then_screen_discard_after_training_counterfactual_margin_auxiliary",
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

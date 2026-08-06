@@ -1,0 +1,187 @@
+{
+  "binding_sha256": "4bc1b5ea88946efeb7e17f573d784bc68d08cf8ed36a07e6281aefabb75e474a",
+  "bootstrap": {
+    "samples": 2000,
+    "seed": 20260805
+  },
+  "cache_binding": {
+    "aliased_records": 0,
+    "maximum_visual_tokens": 1332,
+    "records": 50,
+    "unique_feature_spans": 50
+  },
+  "cache_verification": {
+    "aliased_records": 0,
+    "cache": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_features_1024_v1",
+    "manifest_sha256": "03f35d8cee962a97996f3250e41c351978f28c0ca9a8fe74d4f8d41c411ae7f3",
+    "records_verified": 50,
+    "runner_git_sha": "fbbd81f7dc77c146642b678fe84605f62615f58c",
+    "runner_tracked_worktree_clean": true,
+    "runtime_source_files_verified": 3,
+    "shards_verified": 50,
+    "status": "valid",
+    "total_shard_bytes": 627596320,
+    "training_order_binding": null,
+    "unique_feature_spans": 50,
+    "unique_values_verified": 156897280,
+    "values_verified": 156897280
+  },
+  "candidate_batch_size": 2,
+  "contract_file_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+  "dataset_manifest_file_sha256": "b578229e72a59a983623514f259d2f49fc46cb66c0802a622682727d88151543",
+  "dataset_manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+  "dataset_name": "screenspot_glm50_v1",
+  "feature_cache_manifest_file_sha256": "03f35d8cee962a97996f3250e41c351978f28c0ca9a8fe74d4f8d41c411ae7f3",
+  "formal_run": true,
+  "format_version": "qwen3b-screenspot-teacher-forced-preference-v1",
+  "git_tracked_worktree_clean": true,
+  "model_files": [
+    {
+      "bytes": 661,
+      "path": "config.json",
+      "sha256": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b"
+    },
+    {
+      "bytes": 242,
+      "path": "generation_config.json",
+      "sha256": "ea35dfb6fc5051b01114f9b995820d55dab01ed33ee490f6378b442af82c09f9"
+    },
+    {
+      "bytes": 1671839,
+      "path": "merges.txt",
+      "sha256": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3"
+    },
+    {
+      "bytes": 3968658944,
+      "path": "model-00001-of-00002.safetensors",
+      "sha256": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2"
+    },
+    {
+      "bytes": 2203268048,
+      "path": "model-00002-of-00002.safetensors",
+      "sha256": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d"
+    },
+    {
+      "bytes": 35581,
+      "path": "model.safetensors.index.json",
+      "sha256": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56"
+    },
+    {
+      "bytes": 7031645,
+      "path": "tokenizer.json",
+      "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"
+    },
+    {
+      "bytes": 7305,
+      "path": "tokenizer_config.json",
+      "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+    },
+    {
+      "bytes": 2776833,
+      "path": "vocab.json",
+      "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+    }
+  ],
+  "paid_resources_used": false,
+  "projector_sources": {
+    "current_candidate": {
+      "checkpoint_manifest_sha256": "19219dee0c22efa84a4b54e352075840cd725a2bb2f7bad0b63c395efc38774b",
+      "checkpoint_step": 500,
+      "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+      "directory": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_grounding_enriched_4k_v1/checkpoints/step-000500",
+      "role": "current_candidate",
+      "weights_bytes": 134259248,
+      "weights_sha256": "62f69393dd3d157446db05a7060942bdfbd23f834bbe2e6782560431b5773df4"
+    },
+    "previous_best": {
+      "alias_of": "step0",
+      "checkpoint_manifest_sha256": null,
+      "checkpoint_step": 0,
+      "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+      "directory": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_initializations_v1/step0",
+      "role": "previous_best",
+      "weights_bytes": 134259248,
+      "weights_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0"
+    },
+    "random_projector": {
+      "checkpoint_manifest_sha256": null,
+      "checkpoint_step": 0,
+      "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+      "directory": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_initializations_v1/random_projector",
+      "role": "random_projector",
+      "weights_bytes": 134259248,
+      "weights_sha256": "7bd4aacfa7cfbd3ba9e44337d873a66a5b2bbd77636c30c36febc47a07ddfc44"
+    },
+    "step0": {
+      "checkpoint_manifest_sha256": null,
+      "checkpoint_step": 0,
+      "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+      "directory": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_initializations_v1/step0",
+      "role": "step0",
+      "weights_bytes": 134259248,
+      "weights_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0"
+    }
+  },
+  "prompt_contract": {
+    "blind_rule": "remove the image placeholder and image tokens; preserve every semantic prompt character",
+    "chat_template": "official tokenizer chat_template at the pinned revision",
+    "do_sample": false,
+    "eos_token": "<|im_end|>",
+    "eos_token_id": 151645,
+    "image_placeholder_token": "<|image_pad|>",
+    "image_placeholder_token_id": 151655,
+    "image_placement": "the single image placeholder is the first line of the user message, followed by one newline and the task user prompt",
+    "max_new_tokens": 32,
+    "parser": "anchored exact click(start_box=[x, y]); surrounding whitespace only; one coordinate; integers 0..999",
+    "short_answer_system_prompt": "Answer the visual question. Return only the shortest answer that directly answers the question. Do not explain.",
+    "short_answer_user_prompt": "{question}",
+    "shuffled_rule": "preserve the prompt and replace only the image according to the frozen manifest derangement",
+    "stop_token_ids": [
+      151645
+    ],
+    "system_prompt": "You are a GUI grounding model. Return exactly one click action and no other text. Use integer coordinates from 0 to 999 with the top-left origin. Required format: click(start_box=[x, y])",
+    "task_prompt_routing": "grounding records use system_prompt/user_prompt; TextVQA, DocVQA and OCRBench use short_answer_system_prompt/short_answer_user_prompt",
+    "temperature": 0.0,
+    "tokenizer_is_extended": false,
+    "training_supervision": "official chat template; loss is masked through the assistant prefix and applies only to the assistant answer plus im_end",
+    "user_prompt": "Locate the UI element described below and click its center.\nTarget: {instruction}"
+  },
+  "receiver_sha256": "1cecc883394edc51a30c151ff955e92b6abfb9b7bf512f91a7644071551a6d47",
+  "runner_git_sha": "f09d28b8792a5ac287f7719a8a8c71959105f742",
+  "runtime_source_files": [
+    {
+      "bytes": 29284,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/eval_qwen3b_screenspot_preference.py",
+      "sha256": "adb2010f3bedc83ef5a1b96d48d925cb4ae037996fa8b66c05051f5858e576d1"
+    },
+    {
+      "bytes": 11426,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/src/moonvit_glue/grounding_preference.py",
+      "sha256": "6607130e3a18a8c69d027ee7c66eeb17f52ab3dc9084acf507ea84102deb0e81"
+    },
+    {
+      "bytes": 6325,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/src/moonvit_glue/paired_preference.py",
+      "sha256": "5c43ad96c6cf27e7654e359568a4c79482e04af83dcb8459df0d64df9eee029f"
+    },
+    {
+      "bytes": 27478,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/eval_qwen3b_screenspot.py",
+      "sha256": "8188b6bc078f66a6536437731a5874a03d358683de7fab8e0ee475002ff1be9a"
+    },
+    {
+      "bytes": 36385,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/train_qwen3b_proxy.py",
+      "sha256": "957f59005913638874ee0a87f7d98863382d87c53c1bac25461fb4ac020ba19e"
+    },
+    {
+      "bytes": 9032,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/verify_feature_cache.py",
+      "sha256": "8aeea8d316298470a7a984b7acd9d25c7a3dc62e72d223447d9d76f0c4b204b7"
+    }
+  ],
+  "score_rule": "token-normalized assistant answer plus im_end log probability; strict greater-than",
+  "selected_records": 50,
+  "target_binding_sha256": "bd1ff9740b98bf68d4ff70669be746d0c036d49369c957c16dbf6a8fa62ab096",
+  "target_rule": "rounded bbox center versus frozen shuffled-image sample rounded bbox center"
+}

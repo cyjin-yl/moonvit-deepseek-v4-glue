@@ -1,0 +1,67 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-05T23:58:22.017239+00:00",
+  "root": "screenspot_glm50_preference_grounding_enriched_4k_v1",
+  "git_base_sha": "f09d28b8792a5ac287f7719a8a8c71959105f742",
+  "files": {
+    "preferences/blind.jsonl": {
+      "bytes": 43507,
+      "sha256": "73c348221a738fefaf8521ef9a9d5ca3ad75b87d5d2ed34c6851658482d4079c"
+    },
+    "preferences/current_candidate.jsonl": {
+      "bytes": 48602,
+      "sha256": "3911cef9c8556c3e7cc64f5d6fc51300f1741fae4922621ad2e6f2865e25993a"
+    },
+    "preferences/current_candidate_shuffled.jsonl": {
+      "bytes": 49032,
+      "sha256": "1c5e4be17ebfaf6035e4618bc7405683a97d3f8b83f28a75df0e7df92df60f78"
+    },
+    "preferences/previous_best.jsonl": {
+      "bytes": 47845,
+      "sha256": "f54573d35b0c16c9bf79d4ff0aed62bd64cf765cd3464f474e9cc96dbb765569"
+    },
+    "preferences/previous_best_shuffled.jsonl": {
+      "bytes": 48301,
+      "sha256": "3f69b339eb1ffca9bd6803a1e32ca57370b004682915e71b0a87f8722102d91b"
+    },
+    "preferences/random_projector.jsonl": {
+      "bytes": 48364,
+      "sha256": "3ce413b18576a1ac04439c083ebeced03ef44f5e87f9db70e47d01863eae8423"
+    },
+    "preferences/random_projector_shuffled.jsonl": {
+      "bytes": 48827,
+      "sha256": "3ca9581488282ed53588eebdd3bafc66e67b0c55f329e20f2fbbd68eefd8af4c"
+    },
+    "preferences/shuffled.jsonl": {
+      "bytes": 49032,
+      "sha256": "1c5e4be17ebfaf6035e4618bc7405683a97d3f8b83f28a75df0e7df92df60f78"
+    },
+    "preferences/step0.jsonl": {
+      "bytes": 47845,
+      "sha256": "f54573d35b0c16c9bf79d4ff0aed62bd64cf765cd3464f474e9cc96dbb765569"
+    },
+    "preferences/step0_shuffled.jsonl": {
+      "bytes": 48301,
+      "sha256": "3f69b339eb1ffca9bd6803a1e32ca57370b004682915e71b0a87f8722102d91b"
+    },
+    "preferences/vision.jsonl": {
+      "bytes": 48602,
+      "sha256": "3911cef9c8556c3e7cc64f5d6fc51300f1741fae4922621ad2e6f2865e25993a"
+    },
+    "run.log": {
+      "bytes": 76459,
+      "sha256": "9b6a4a0ca0572f114c50157084858b683082e7fcd1dc6701e886396ee3cd4f3c"
+    },
+    "RUN_CONFIG.json": {
+      "bytes": 8602,
+      "sha256": "3b5b69fe401720cee676d805c620337133d822c89bb61498ec229d5eb08a2ce7"
+    },
+    "SUMMARY.json": {
+      "bytes": 71821,
+      "sha256": "d42041b0c1e845bc38f45c23e8be2e7cbb165c9e43c82941dfa2fc7f940ffa93"
+    }
+  },
+  "file_count": 14,
+  "total_bytes": 685140,
+  "final_half_scored": false
+}
