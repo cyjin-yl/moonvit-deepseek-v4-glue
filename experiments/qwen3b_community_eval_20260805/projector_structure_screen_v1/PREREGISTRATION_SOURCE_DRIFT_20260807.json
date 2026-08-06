@@ -1,0 +1,13 @@
+{
+  "format_version": "preregistration-source-drift-addendum-v1",
+  "package": "projector_structure_screen_v1",
+  "historical_preregistration_unchanged": true,
+  "reason": "The shared projector implementation gained later variants and runtime validation after the frozen structure screen. Historical source identity remains bound to the archived result.",
+  "files": {
+    "src/moonvit_glue/projector.py": {
+      "frozen_sha256": "6c98a8232844eaf1acc7ed9dcad9d0199bfb5a26b4e52b1491127ed133dbabcb",
+      "current_sha256": "188db381c570225f38237d6e404cca09f4462b7f5b586df3607dc2bf7ba21b30"
+    }
+  },
+  "paid_resources_used": false
+}

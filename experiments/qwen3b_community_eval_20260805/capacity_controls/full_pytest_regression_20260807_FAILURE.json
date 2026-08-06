@@ -1,0 +1,41 @@
+{
+  "format_version": "full-pytest-regression-v1",
+  "created_at_utc": "2026-08-07T00:00:00Z",
+  "command": "PYTHONPATH=src:tools python -m pytest -q",
+  "git_head": "91f82c2",
+  "status": "5_failures_after_collection",
+  "interpretation": "The new DeepSeek tiny seam tests pass; the remaining failures are one compatibility bug, one missing compact artifact manifest, and three frozen historical source-binding checks. No capability claim is changed by this regression.",
+  "failures": [
+    {
+      "test": "tests/test_eval_outputs.py::test_build_metadata_captures_run_context",
+      "class": "runtime_compatibility_bug",
+      "detail": "build_metadata accessed moonvit_revision directly although an older test caller omitted the optional field",
+      "planned_fix": "use getattr(args, moonvit_revision, None)"
+    },
+    {
+      "test": "tests/test_qwen3b_geometry_health_result.py::test_curated_health_artifact_manifest_rehashes",
+      "class": "missing_compact_artifact",
+      "detail": "failure-step-000002/CHECKPOINT_MANIFEST.json is listed by the committed manifest and exists in the workstation raw archive",
+      "planned_fix": "restore the exact compact manifest from the verified raw archive"
+    },
+    {
+      "test": "tests/test_qwen3b_geometry_repair_contract.py::test_geometry_preregistration_binds_runtime_source_bytes",
+      "class": "frozen_source_drift",
+      "detail": "the trainer has evolved after Package 15P; the frozen preregistration still records the historical source byte count",
+      "planned_fix": "preserve the frozen hash and add an explicit source-drift addendum; do not rewrite historical results"
+    },
+    {
+      "test": "tests/test_qwen3b_projector_residual_contract.py::test_residual_variant_configs_and_preregistration_hashes_are_bound",
+      "class": "frozen_source_drift",
+      "detail": "the residual preregistration hash identifies the historical runner used for the result",
+      "planned_fix": "preserve historical provenance and validate new runs against a new source identity"
+    },
+    {
+      "test": "tests/test_qwen3b_projector_structure_contract.py::test_structure_preregistration_binds_contract_and_source",
+      "class": "frozen_source_drift",
+      "detail": "the structure preregistration hash identifies the historical runner used for the result",
+      "planned_fix": "preserve historical provenance and validate new runs against a new source identity"
+    }
+  ],
+  "paid_resources_used": false
+}

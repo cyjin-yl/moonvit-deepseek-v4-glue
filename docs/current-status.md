@@ -10,6 +10,39 @@ Qwen2.5-3B 代理的真实图像 glue、projector 梯度、checkpoint 保存恢�
 当前最有判别力的本地任务，是在同一 Qwen3B 社区评测合同下完成
 `local_v2_exact_k3` 与 `local_v1_family_proxy` 的 matched architecture screen。
 
+## 给本科生的整体进度判断（2026-08-07）
+
+把项目想成一条流水线：MoonViT 负责把图片变成视觉特征，projector 负责把特征翻译到语言模型能接收的 4096 维接口，DeepSeek 负责根据这些接口生成答案。现在已经证明这条“接线、反向传播、保存、恢复、生成”的软件链路可以工作；还没有证明语言模型会按照图片内容回答。训练 loss 下降只能说明它学会了更容易的答案模式，不能单独证明图片被使用。
+
+当前最重要的数字结论：
+
+| 规模/版本 | 能否在 V100 上运行 | 视觉归因结果 | 结论 |
+|---|---|---|---|
+| Qwen2.5-3B + V2 | 可以 | vision 没有稳定优于 blind/shuffled；早期 projector/receiver 几何塌缩 | 工程链路通过，能力未通过 |
+| Qwen2.5-3B + V1 | 可以 | V1 同样在前两步触发健康止损 | V2 压缩并非唯一解释 |
+| Qwen2.5-7B 纯文本 | 可以，短序列 projector-only | 50 条 GLM-format 诊断中 vision 与 shuffled 的 paired CI 跨 0；真实答案训练也未形成稳定正向归因 | 7B 能跑，容量增加暂未解决问题 |
+| Qwen3.5-9B stripped-native | 只能做短诊断，训练会撞显存 | 少量样本对 blind 有信号，对 shuffled 不稳定，240 token 方向反复 | 视觉预训练接收器值得研究，不能当成功模型 |
+| tiny DeepSeek 软件模型 | FP32/BF16 均可 | 20 步梯度、冻结主干、精确恢复和生成均通过 | 只证明软件接口，尚未证明 0731 |
+
+所以项目现在处于“候选方案筛选完成一轮、DeepSeek 真实训练尚未获准”的位置。仍有希望，但希望来自下一步能否让 `vision - shuffled` 在真实数据上稳定为正；当前证据不支持直接租机开长训。
+
+## 进入 DeepSeek-V4-Flash-0731 前还剩的 Gate
+
+| Gate | 当前状态 | 还需的证据 |
+|---|---|---|
+| 权重与结构 | 未通过 | 固定 revision 的完整 0731 权重、image placeholder、Hash-MoE routing 的真实加载 |
+| 输入梯度 | 仅数学接口通过 | 真实 FP4/FP8 模块的有限、非零 input gradient；V100 只能做软件/替身验证 |
+| 端到端微循环 | tiny FP32/BF16 通过 | 完整 0731 图像 forward/backward/generate，含真实视觉 token 数和位置语义 |
+| 稳定训练 | 未通过 | 至少 20 步真实量化 pilot、健康 guard、显存/吞吐、activation checkpointing |
+| checkpoint | tiny 通过 | 完整主干与 projector 的保存、恢复、RNG/optimizer 精确续跑 |
+| 能力 Gate D | 未通过 | ScreenSpot、TextVQA、DocVQA、OCRBench 上 vision 显著优于 blind/shuffled，且语言保持 |
+
+本地软件补齐与独立复核预计还需约 1–2 个工作日；获得硬件授权后，最小量化 pilot 约需 2–5 个工作日，结果依赖权重下载、内核和显存余量。以上时间不包含任何自动租机或付费操作。
+
+## 机制经验必须保留
+
+后续报告同时保存训练健康和真实能力两条轨迹。当前已经观察到：CE 可以下降而视觉归因不升；V1/V2 都会遇到早期 receiver-facing 几何退化；降低学习率能保住 rank/spread，却不能自行产生正确图像优势；token 数量和压缩方式会改变 grounding margin；Qwen3.5 的视觉预训练 receiver 对外部 MoonViT token 有局部响应，但多样样本上仍无法稳定区分正确图与打乱图。这些结果决定下一轮优先检查监督接口、视觉 token 覆盖/尺度和 receiver 解码能力，避免把 projector norm 或 synthetic preference 当作能力提升。
+
 ## 当前状态表
 
 | 问题 | 当前证据 | 状态 | 允许的结论 |

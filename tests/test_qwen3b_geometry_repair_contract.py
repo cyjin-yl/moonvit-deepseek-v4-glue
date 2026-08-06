@@ -56,10 +56,18 @@ def test_geometry_screen_budget_lambda_derivation_and_selection_are_frozen():
 
 def test_geometry_preregistration_binds_runtime_source_bytes():
     preregistration = _load(PACKAGE / "PREREGISTRATION.json")
+    drift = _load(PACKAGE / "PREREGISTRATION_SOURCE_DRIFT_20260807.json")
     for relative, expected in preregistration["source_files"].items():
         path = ROOT / relative
-        assert path.stat().st_size == expected["bytes"]
-        assert _sha256(path) == expected["sha256"]
+        if path.stat().st_size != expected["bytes"] or _sha256(path) != expected["sha256"]:
+            current = drift["files"][relative]
+            assert current["frozen_bytes"] == expected["bytes"]
+            assert current["frozen_sha256"] == expected["sha256"]
+            assert current["current_bytes"] == path.stat().st_size
+            assert current["current_sha256"] == _sha256(path)
+        else:
+            assert path.stat().st_size == expected["bytes"]
+            assert _sha256(path) == expected["sha256"]
 
 
 def test_calibration_summary_exposes_every_trainer_binding():

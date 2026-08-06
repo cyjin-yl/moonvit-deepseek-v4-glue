@@ -1,0 +1,17 @@
+{
+  "format_version": "preregistration-source-drift-addendum-v1",
+  "package": "projector_residual_screen_v1",
+  "historical_preregistration_unchanged": true,
+  "reason": "The shared runner and projector implementation gained later variants and DeepSeek validation paths after the frozen residual screen. Historical source identity remains bound to the archived result.",
+  "files": {
+    "src/moonvit_glue/projector.py": {
+      "frozen_sha256": "f6e0ed618c465230658358fa7a69697173520c8fbb41dffbd401cd91cb0f14d8",
+      "current_sha256": "188db381c570225f38237d6e404cca09f4462b7f5b586df3607dc2bf7ba21b30"
+    },
+    "tools/train_qwen3b_proxy.py": {
+      "frozen_sha256": "58de666101bdb32550113d9f3497ba4eed9a50a7049f08405e813d199e919e0f",
+      "current_sha256": "7777c295b17dbe3c0517c3128e6b7e0e4e6637a01cc0bbb69a4adec5bdf02544"
+    }
+  },
+  "paid_resources_used": false
+}

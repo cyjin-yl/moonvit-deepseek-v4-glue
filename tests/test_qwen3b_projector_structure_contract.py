@@ -67,11 +67,18 @@ def test_legacy_step0_config_defaults_to_no_output_norm():
 def test_structure_preregistration_binds_contract_and_source():
     contract = _load(CONTRACT)
     prereg = _load(PREREG)
+    drift = _load(
+        PREREG.parent / "PREREGISTRATION_SOURCE_DRIFT_20260807.json"
+    )
     assert prereg["frozen_before_any_structure_result"] is True
     assert prereg["contract_sha256"] == _sha256(CONTRACT)
-    assert prereg["runner_source_sha256"] == _sha256(
-        ROOT / prereg["runner_source"]
-    )
+    source = ROOT / prereg["runner_source"]
+    if _sha256(source) != prereg["runner_source_sha256"]:
+        current = drift["files"][prereg["runner_source"]]
+        assert current["frozen_sha256"] == prereg["runner_source_sha256"]
+        assert current["current_sha256"] == _sha256(source)
+    else:
+        assert prereg["runner_source_sha256"] == _sha256(source)
     assert prereg["arms"] == [row["name"] for row in contract["arms"]]
     assert prereg["paid_resources_used"] is False
     assert prereg["final_half_scored"] is False

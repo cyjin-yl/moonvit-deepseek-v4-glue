@@ -2002,3 +2002,24 @@ seam; complete 0731 weights and real FP4/FP8 input-DGRAD remain pending.
 The same tiny loop also passed in bfloat16 on the V100, including batch 2,
 20 steps, exact save/resume and generation. This covers the local BF16 seam;
 the target 0731 FP4/FP8 kernels remain unverified.
+
+== Overall decision and remaining gates (2026-08-07)
+
+For a reader following the engineering goal, the result is currently a
+reliable adapter prototype rather than a usable VLM. The Qwen2.5-3B V1/V2
+screens, Qwen2.5-7B capacity control and Qwen3.5 receiver-prior diagnostic all
+run through the same placeholder/projector interface. They show that images can
+reach the receiver and change logits, while none gives a reproducible
+correct-image advantage over a deterministic shuffled image on the fixed
+grounding contract. CE decreases and geometry can remain healthy while visual
+attribution stays absent; these are recorded as mechanism evidence, not hidden
+behind the final benchmark table.
+
+Gate D therefore remains **NO-GO**. The tiny DeepSeek FP32/BF16 loop only closes
+the software seam. Before a 0731 pilot, the full resolved weights and image-token
+routing, real FP4/FP8 finite input gradients, full Hash-MoE image
+forward/backward/generation, 20-step memory/stability, exact full-checkpoint
+resume, and causal ScreenSpot/TextVQA/DocVQA/OCRBench gains must be recorded.
+Local software validation is estimated at 1--2 working days; an explicitly
+authorized paid-hardware pilot is roughly 2--5 working days, conditional on
+kernel and weight availability.

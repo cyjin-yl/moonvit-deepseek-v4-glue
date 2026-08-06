@@ -235,7 +235,9 @@ def build_metadata(
         "text_model": args.text_model,
         "vision_tower": args.vision_tower,
         "vision_weights": args.moonvit_v2_weights if args.vision_tower == "v2" else args.moonvit_model,
-        "vision_revision": args.moonvit_revision,
+        # 兼容旧版调用方：评测元数据仍需记录 revision，但旧的
+        # SimpleNamespace/脚本可能还没有该 CLI 字段。
+        "vision_revision": getattr(args, "moonvit_revision", None),
         "projector": args.projector or "random",
         "projector_variant": getattr(args, "projector_variant", None),
         "random_projector_seed": getattr(args, "random_projector_seed", None),

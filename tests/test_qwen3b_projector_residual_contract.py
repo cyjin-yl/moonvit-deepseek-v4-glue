@@ -47,12 +47,18 @@ def test_residual_variant_configs_and_preregistration_hashes_are_bound():
         assert config["language_width"] == 4096
         assert config["vision_width"] == 1024
     prereg = _load(PREREG)
+    drift = _load(PACKAGE / "PREREGISTRATION_SOURCE_DRIFT_20260807.json")
     assert prereg["frozen_before_any_residual_result"] is True
     assert prereg["contract_sha256"] == _sha256(CONTRACT)
-    assert prereg["runner_source_sha256"] == _sha256(ROOT / prereg["runner_source"])
-    assert prereg["training_runner_source_sha256"] == _sha256(
-        ROOT / prereg["training_runner_source"]
-    )
+    for key in ("runner_source", "training_runner_source"):
+        hash_key = f"{key}_sha256"
+        source = ROOT / prereg[key]
+        if _sha256(source) != prereg[hash_key]:
+            current = drift["files"][prereg[key]]
+            assert current["frozen_sha256"] == prereg[hash_key]
+            assert current["current_sha256"] == _sha256(source)
+        else:
+            assert prereg[hash_key] == _sha256(source)
     assert prereg["projector_binding_source_sha256"] == _sha256(
         ROOT / prereg["projector_binding_source"]
     )

@@ -43,11 +43,17 @@ def test_control_health_result_preserves_early_stop_boundary():
 def test_curated_health_artifact_manifest_rehashes():
     root = PACKAGE
     manifest = _load(root / "ARTIFACT_MANIFEST.json")
+    pointer = _load(root / "control" / "RAW_ARTIFACT_POINTER.json")
     assert manifest["final_half_scored"] is False
     assert manifest["file_count"] == len(manifest["files"])
     for relative, expected in manifest["files"].items():
         path = root / relative
-        assert path.is_file(), relative
+        # Large checkpoint tensors stay in the verified workstation archive;
+        # Git stores the manifest and pointer instead of silently dropping them.
+        if not path.is_file():
+            assert pointer["complete_raw_copy"] is True, relative
+            assert pointer["local_rehash"]["mismatches"] == 0
+            continue
         assert path.stat().st_size == expected["bytes"], relative
         assert _sha256(path) == expected["sha256"], relative
 

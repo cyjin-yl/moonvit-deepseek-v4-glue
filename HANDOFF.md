@@ -17,6 +17,36 @@ reserved rows are dummy pure-text initialization; DeepSeek `<｜image｜>` is ID
 Qwen3.5 native token rows belong to a diagnostic receiver-prior control and never
 replace the pure-text Qwen contract.
 
+## 2026-08-07 plain-language status and DeepSeek ETA
+
+The project has a working software seam: real MoonViT features enter a frozen
+receiver through a trainable projector, gradients reach the projector, and tiny
+DeepSeek-shaped FP32/BF16 loops save, resume, and generate exactly. The central
+product claim is still open: Qwen2.5-3B and the matched V1/V2 screens do not show
+stable correct-image attribution. Qwen2.5-7B runs on the V100, but its 50-row
+GLM-format diagnostic has a vision-vs-shuffled paired CI crossing zero; the
+larger receiver changed coordinate priors without producing reproducible click
+grounding. Qwen3.5-9B gives a useful receiver-prior signal but is too memory
+heavy for projector-only training on this V100 and is not a leaderboard result.
+
+This leaves a credible engineering path with an unresolved scientific bottleneck:
+the projector/receiver/target interface must make `vision - shuffled` positive on
+real data. Before DeepSeek-V4-Flash-0731 training, six gates remain: load the
+resolved 0731 weights and image-token routing; verify finite non-zero input
+gradients through the real FP4/FP8 path; run a full-model image forward/backward/
+generate micro-loop; pass a 20-step stability and memory pilot with the online
+collapse guard; prove exact full-checkpoint save/resume; and finally pass the
+fixed ScreenSpot/TextVQA/DocVQA/OCRBench causal contract. Local software work is
+estimated at 1–2 working days; after explicit paid-hardware authorization, the
+minimum 0731 pilot is roughly 2–5 working days, conditional on kernels and
+weight access. Gate D is **NO-GO** until these artifacts exist.
+
+The historical mechanism record remains part of the handoff: falling CE without
+visual attribution, V1/V2 early geometry collapse, low-LR geometry preservation
+without causal gain, token-count sensitivity, and Qwen2.5/Qwen3.5 receiver-prior
+differences. These observations guide the next local screen and are not replaced
+by a single final benchmark number.
+
 The matched V1/exact-K3 V2 initialization contract is now executable. Both
 step0 (seed 20260805) and random-projector (seed 20260806) were serialized and
 verified by regeneration plus strict save/load. V1 step0 is

@@ -1,0 +1,15 @@
+{
+  "format_version": "preregistration-source-drift-addendum-v1",
+  "package": "geometry_repair_screen_v1",
+  "historical_preregistration_unchanged": true,
+  "reason": "The shared trainer gained later health, causal-supervision, and DeepSeek validation paths after this frozen geometry screen. Historical source identity remains the identity of the archived result.",
+  "files": {
+    "tools/train_qwen3b_proxy.py": {
+      "frozen_bytes": 86258,
+      "frozen_sha256": "f246ec8c2db0b9e05dc606576636bb381cb8ffd1e9075382bdb13b264d0f9941",
+      "current_bytes": 101217,
+      "current_sha256": "7777c295b17dbe3c0517c3128e6b7e0e4e6637a01cc0bbb69a4adec5bdf02544"
+    }
+  },
+  "paid_resources_used": false
+}
