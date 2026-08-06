@@ -210,3 +210,5 @@ Qwen2.5-7B 纯文本 matched control 使用官方 revision `a09a35458c702b33eeac
 把 9B 的正确图/确定性打乱图/blind/random-projector 扩展到固定 8 个样本后，16 token 的 `vision−shuffle` 均值为 `+0.0447 ± 0.3729`，240 token 为 `-0.0748 ± 0.4520`；两档中各有 5/8 样本为正。`vision−blind` 则为 `+0.1993 ± 0.2142` 和 `+0.6753 ± 0.3335`。这支持“接收器确实响应外部视觉 token”，没有支持“它已经能区分正确图像”。后续若要进入真实 ScreenSpot，必须先解决这个 paired image attribution gap。
 
 同一 9B、8 个样本、240 token 条件换成 V1 projector 后，`vision−shuffle=+0.0620 ± 0.4185`、`vision−blind=+0.3780 ± 0.1962`。V2 对照是 `-0.0748 ± 0.4520`、`+0.6753 ± 0.3335`。V1 轻微为正但没有超过样本波动；版本差异暂时不能解释主要失败，下一项转向 token ordering、压缩和输入尺度。
+
+再把 V2 的普通连续位置换成 Qwen3.5 原生 3D mRoPE，8-sample/240-token 的 `vision−shuffle` 为 `-0.0375 ± 0.4537`，`vision−blind` 为 `+0.6680 ± 0.2896`，与普通位置几乎一致。因此 Qwen-specific position rule 也没有修复 paired image attribution；该结果不具备 DeepSeek 迁移资格。

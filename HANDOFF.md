@@ -621,3 +621,5 @@ Qwen3.5 的 native vision、merger 和 visual forward 被绕过，外部输入�
 8-sample probe 已完成：16 token 的 `vision−shuffle` 为 `+0.0447 ± 0.3729`，240 token 为 `-0.0748 ± 0.4520`；`vision−blind` 分别为 `+0.1993 ± 0.2142` 和 `+0.6753 ± 0.3335`。因此 9B receiver-prior 能感知“有视觉 token”，但不能稳定归因到正确图片。下一条应优先做 token ordering/压缩或输入尺度的小设计筛选，而不是把 9B 直接扩成长训或把它写成 VLM 成功。
 
 V1 交叉检查也完成：同一 9B、8 个样本、240 token 下，V1 `vision−shuffle=+0.0620 ± 0.4185`，V2 `-0.0748 ± 0.4520`；V1 `vision−blind=+0.3780 ± 0.1962`，V2 `+0.6753 ± 0.3335`。V1 只略高于零，差异没有超过方差，不能宣称 V1 胜出。主要嫌疑移向 token 顺序/压缩、输入尺度和监督接口。
+
+Qwen3.5 native 3D mRoPE 诊断也完成：V2、8 samples、240 tokens 下 `vision−shuffle=-0.0375 ± 0.4537`、`vision−blind=+0.6680 ± 0.2896`，和普通连续位置的 `-0.0748/+0.6753` 几乎一致。mRoPE 不是当前差异缺失的主因；该分支为 `qwen_specific_not_transferable`，不能改变 DeepSeek 方案。

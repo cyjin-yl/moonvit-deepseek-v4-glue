@@ -1,0 +1,18 @@
+{
+  "schema_version": "raw-artifact-pointer-v1",
+  "status": "diagnostic_only_qwen_specific_positioning",
+  "remote_raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_9b_receiver_probe_bf16_240tok_qwen_mrope_20260806",
+  "files": ["SUMMARY.json", "probe_metrics.jsonl"],
+  "model_hf_revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "dtype": "bfloat16",
+  "max_visual_tokens": 240,
+  "sample_count": 8,
+  "qwen_mrope": true,
+  "native_vision_forward_calls": 0,
+  "vision_minus_shuffle_mean": -0.037525177001953125,
+  "vision_minus_shuffle_std": 0.45371341165681023,
+  "vision_minus_blind_mean": 0.6680338382720947,
+  "vision_minus_blind_std": 0.2896249148712608,
+  "capability_claim_allowed": false,
+  "deepseek_transfer_label": "qwen_specific_not_transferable"
+}
