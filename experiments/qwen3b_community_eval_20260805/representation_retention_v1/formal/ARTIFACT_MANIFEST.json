@@ -1,9 +1,13 @@
 {
   "format_version": "experiment-artifact-manifest-v1",
-  "created_at_utc": "2026-08-06T01:13:17.926848+00:00",
+  "created_at_utc": "2026-08-06T01:33:15.739636+00:00",
   "root": "formal",
-  "git_base_sha": "d66f1c5eec4d1ba4a94d51c625e089f444f7f9a1",
+  "git_base_sha": "741c3259deced5624c5a149a847e4ab6a1db3431",
   "files": {
+    "full_suite_failed_crlf_attempt_01.log": {
+      "bytes": 1837,
+      "sha256": "3bbded1b451918c0513efad99ecebf4948c59e41ba3d2a1b941b34aba5126f8a"
+    },
     "INDEPENDENT_VERIFICATION.json": {
       "bytes": 1387,
       "sha256": "4fb048207153e39434088a1e03c8c408adf026677b2d3174331823cd7022f961"
@@ -37,7 +41,7 @@
       "sha256": "c6fd9663c4c8e401d3f910b538b7bfb251da19ceeb0c94c886e4cd1e3e3ec7f9"
     }
   },
-  "file_count": 8,
-  "total_bytes": 8101748,
+  "file_count": 9,
+  "total_bytes": 8103585,
   "final_half_scored": false
 }

@@ -63,7 +63,7 @@ def test_preregistration_and_post_result_repair_bind_runtime_source_bytes():
 def test_preresult_package_manifest_rehashes_every_declared_artifact():
     manifest = _load(PACKAGE / "ARTIFACT_MANIFEST.json")
     assert manifest["final_half_scored"] is False
-    assert manifest["file_count"] == 14
+    assert manifest["file_count"] == 16
     assert manifest["total_bytes"] == sum(
         expected["bytes"] for expected in manifest["files"].values()
     )

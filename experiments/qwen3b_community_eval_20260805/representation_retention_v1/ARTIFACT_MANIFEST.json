@@ -1,16 +1,20 @@
 {
   "format_version": "experiment-artifact-manifest-v1",
-  "created_at_utc": "2026-08-06T01:19:16.525501+00:00",
+  "created_at_utc": "2026-08-06T01:33:16.473470+00:00",
   "root": "representation_retention_v1",
-  "git_base_sha": "d66f1c5eec4d1ba4a94d51c625e089f444f7f9a1",
+  "git_base_sha": "741c3259deced5624c5a149a847e4ab6a1db3431",
   "files": {
     "DECISION.json": {
       "bytes": 2804,
       "sha256": "073e29723c248cac611e4c7b0e7e3be1aa2e76d12e1f78ff28b58657be33b7b1"
     },
     "formal/ARTIFACT_MANIFEST.json": {
-      "bytes": 1481,
-      "sha256": "1cd4b185ffc5ed1238952af456977424fca2da9f68f2dd6243b7177e4004c463"
+      "bytes": 1596,
+      "sha256": "da22002f8c33a6278f8a0b28f434b6c25a40defcceb3d115f6b88248e12c774d"
+    },
+    "formal/full_suite_failed_crlf_attempt_01.log": {
+      "bytes": 1837,
+      "sha256": "3bbded1b451918c0513efad99ecebf4948c59e41ba3d2a1b941b34aba5126f8a"
     },
     "formal/INDEPENDENT_VERIFICATION.json": {
       "bytes": 1387,
@@ -44,6 +48,10 @@
       "bytes": 549,
       "sha256": "c6fd9663c4c8e401d3f910b538b7bfb251da19ceeb0c94c886e4cd1e3e3ec7f9"
     },
+    "POST_RESULT_MANIFEST_REPAIR.json": {
+      "bytes": 870,
+      "sha256": "ba19ce6acaeb025d2e015a0f7fa3e9139e2234779e15b76862aee85590c0c3c4"
+    },
     "POST_RESULT_VERIFIER_REPAIR.json": {
       "bytes": 996,
       "sha256": "0e52b1f71bafc5a9c5e59179c28c4ddc54a7039f17ac95b5a2a85240f602c4bd"
@@ -61,7 +69,7 @@
       "sha256": "17ce8fb942b64ee2ed9820f2b04808864d97ccba08df495fb5df5278f81bd088"
     }
   },
-  "file_count": 14,
-  "total_bytes": 8114601,
+  "file_count": 16,
+  "total_bytes": 8117423,
   "final_half_scored": false
 }

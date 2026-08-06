@@ -1,0 +1,24 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_______ test_preresult_package_manifest_rehashes_every_declared_artifact _______
+
+    def test_preresult_package_manifest_rehashes_every_declared_artifact():
+        manifest = _load(PACKAGE / "ARTIFACT_MANIFEST.json")
+        assert manifest["final_half_scored"] is False
+        assert manifest["file_count"] == 14
+        assert manifest["total_bytes"] == sum(
+            expected["bytes"] for expected in manifest["files"].values()
+        )
+        for relative, expected in manifest["files"].items():
+            path = PACKAGE / relative
+>           assert path.stat().st_size == expected["bytes"]
+E           AssertionError: assert 1438 == 1481
+E            +  where 1438 = os.stat_result(st_mode=33272, st_ino=4584759, st_dev=2050, st_nlink=1, st_uid=1000, st_gid=1000, st_size=1438, st_atime=1785979760, st_mtime=1785979760, st_ctime=1785979760).st_size
+E            +    where os.stat_result(st_mode=33272, st_ino=4584759, st_dev=2050, st_nlink=1, st_uid=1000, st_gid=1000, st_size=1438, st_atime=1785979760, st_mtime=1785979760, st_ctime=1785979760) = stat()
+E            +      where stat = PosixPath('/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/experiments/qwen3b_community_eval_20260805/representation_retention_v1/formal/ARTIFACT_MANIFEST.json').stat
+
+tests/test_qwen3b_representation_retention_contract.py:72: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_qwen3b_representation_retention_contract.py::test_preresult_package_manifest_rehashes_every_declared_artifact
+exit_code=1
+full_suite_context=348 passed, 1 failed; only this cross-platform manifest-byte assertion failed

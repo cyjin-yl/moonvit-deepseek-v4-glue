@@ -44,9 +44,9 @@ def main() -> None:
         "total_bytes": sum(value["bytes"] for value in files.values()),
         "final_half_scored": False,
     }
-    output.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
+    # Manifest 自身会进入 Git；强制 LF，避免 Windows checkout 的 CRLF 字节数污染嵌套清单。
+    with output.open("w", encoding="utf-8", newline="\n") as stream:
+        stream.write(json.dumps(payload, ensure_ascii=False, indent=2) + "\n")
     print(json.dumps({key: payload[key] for key in ("file_count", "total_bytes")}, indent=2))
 
 

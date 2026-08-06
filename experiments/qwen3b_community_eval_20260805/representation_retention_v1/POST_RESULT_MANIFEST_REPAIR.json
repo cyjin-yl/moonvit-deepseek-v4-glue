@@ -1,0 +1,23 @@
+{
+  "format_version": "experiment-artifact-manifest-lf-repair-v1",
+  "result_commit": "741c3259deced5624c5a149a847e4ab6a1db3431",
+  "failed_full_suite": {
+    "passed": 348,
+    "failed": 1,
+    "failure": "The Windows-generated nested artifact manifest counted CRLF bytes, while Git normalized the committed file to LF on the V100 checkout.",
+    "artifact": "formal/full_suite_failed_crlf_attempt_01.log"
+  },
+  "writer_before": {
+    "bytes": 1770,
+    "sha256": "245210d7ef3e5dee6a768f937479e86399ee791c155a99110fbfb57eafcfdb53"
+  },
+  "writer_after": {
+    "bytes": 1919,
+    "sha256": "e5ed4e5b759217cb55dbfdde4abee13a0d5224e60904fe28a802d03a224367d9",
+    "change": "Open ARTIFACT_MANIFEST.json with newline=LF explicitly."
+  },
+  "raw_result_changed": false,
+  "scientific_decision_changed": false,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}
