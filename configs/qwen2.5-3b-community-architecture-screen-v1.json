@@ -36,7 +36,7 @@
         "revision": "a889d399ff2306053e4e28d499d3b8f97d3e5007",
         "vision_width": 1152,
         "merge_factor": 4,
-        "weights_sha256": "pending_snapshot_manifest_hash",
+        "weights_sha256": "51a39391d4a36cb536fe68176bb68f4218d0526c93749e04e63d4e779675f0ef",
         "require_tower_identity": true
       },
       "projector": {

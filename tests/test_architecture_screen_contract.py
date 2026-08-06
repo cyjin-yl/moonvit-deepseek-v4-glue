@@ -25,6 +25,9 @@ def test_architecture_screen_binds_canonical_boundary_and_distinct_towers():
     }
     arms = contract["arms"]
     assert arms["local_v1_family_proxy"]["vision_tower"]["vision_width"] == 1152
+    assert arms["local_v1_family_proxy"]["vision_tower"]["weights_sha256"] == (
+        "51a39391d4a36cb536fe68176bb68f4218d0526c93749e04e63d4e779675f0ef"
+    )
     assert arms["local_v2_exact_k3"]["vision_tower"]["vision_width"] == 1024
     assert all(
         arm["projector"]["output_width"] == 4096

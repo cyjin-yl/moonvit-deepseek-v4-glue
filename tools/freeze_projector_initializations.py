@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+from dataclasses import MISSING, asdict, fields
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -12,6 +13,22 @@ import torch
 
 from moonvit_glue.projector import ProjectorConfig, seeded_projector
 from moonvit_glue.screenspot_contract import seal_manifest, verify_manifest
+
+
+def projector_config_from_source(raw: Mapping[str, Any]) -> ProjectorConfig:
+    """从可审计 sidecar 中只提取真正参与 projector 构造的字段。"""
+
+    allowed = {field.name for field in fields(ProjectorConfig)}
+    values = {key: value for key, value in raw.items() if key in allowed}
+    missing = {
+        field.name
+        for field in fields(ProjectorConfig)
+        if field.default is MISSING and field.default_factory is MISSING
+        and field.name not in values
+    }
+    if missing:
+        raise ValueError(f"projector config is missing required fields: {sorted(missing)}")
+    return ProjectorConfig(**values)
 
 
 def sha256_file(path: Path, chunk_size: int = 8 * 1024 * 1024) -> str:
@@ -107,7 +124,7 @@ def main() -> None:
     if args.out_dir.exists() and any(args.out_dir.iterdir()):
         raise FileExistsError(f"refusing to overwrite non-empty output: {args.out_dir}")
     raw_config = json.loads(args.projector_config.read_text(encoding="utf-8"))
-    config = ProjectorConfig(**raw_config)
+    config = projector_config_from_source(raw_config)
     if config.language_width != 4096:
         raise ValueError("canonical contract projector output width must be 4096")
     args.out_dir.mkdir(parents=True, exist_ok=True)
@@ -136,7 +153,8 @@ def main() -> None:
             "construction_device": "cpu",
             "config_source": str(args.projector_config),
             "config_source_sha256": sha256_file(args.projector_config),
-            "config": raw_config,
+            "source_config": raw_config,
+            "config": asdict(config),
             "comparison_rule": "every horizontal method comparison must load the same exact step0 file; random_projector always uses the separately frozen control file",
             "roles": roles,
         }
