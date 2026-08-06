@@ -1,0 +1,81 @@
+{
+  "format_version": "qwen3b-geometry-repair-four-arm-decision-v1",
+  "package": "15P",
+  "screen_contract": "experiments/qwen3b_community_eval_20260805/geometry_repair_screen_v1/PREREGISTRATION.json",
+  "health_contract": "configs/qwen3b-projector-health-v1.json",
+  "arms": [
+    {
+      "name": "control",
+      "lambda": 0.0,
+      "status": "auto_stopped_by_projector_health_guard",
+      "optimizer_steps_completed": 2,
+      "collapse_onset_interval": [1, 2],
+      "projector_spread_ratio_step2": 0.2690394393229053,
+      "projector_rank_ratio_step2": 0.5021815003364928,
+      "receiver_spread_ratio_step2": 0.22535580701898872,
+      "receiver_rank_ratio_step2": 0.36220314252365915,
+      "total_loss_step2": 2.438019228167832,
+      "result": "control/RESULT.json"
+    },
+    {
+      "name": "ratio005",
+      "lambda": 0.01018730507868909,
+      "status": "auto_stopped_by_projector_health_guard",
+      "optimizer_steps_completed": 2,
+      "collapse_onset_interval": [1, 2],
+      "projector_spread_ratio_step2": 0.2690771087849958,
+      "projector_rank_ratio_step2": 0.5022115360038018,
+      "receiver_spread_ratio_step2": 0.22538527878719955,
+      "receiver_rank_ratio_step2": 0.3622376221643931,
+      "total_loss_step2": 2.452683502598505,
+      "result": "ratio005/RESULT.json"
+    },
+    {
+      "name": "ratio020",
+      "lambda": 0.04074922031475636,
+      "status": "auto_stopped_by_projector_health_guard",
+      "optimizer_steps_completed": 2,
+      "collapse_onset_interval": [1, 2],
+      "projector_spread_ratio_step2": 0.26919028208943707,
+      "projector_rank_ratio_step2": 0.5023016047763744,
+      "receiver_spread_ratio_step2": 0.22547382385138517,
+      "receiver_rank_ratio_step2": 0.36234116282426526,
+      "total_loss_step2": 2.4966763258905242,
+      "result": "ratio020/RESULT.json"
+    },
+    {
+      "name": "ratio080",
+      "lambda": 0.16299688125902545,
+      "status": "auto_stopped_by_projector_health_guard",
+      "optimizer_steps_completed": 2,
+      "collapse_onset_interval": [1, 2],
+      "projector_spread_ratio_step2": 0.26964476504228657,
+      "projector_rank_ratio_step2": 0.5026625426156871,
+      "receiver_spread_ratio_step2": 0.22582928376563569,
+      "receiver_rank_ratio_step2": 0.3627572982049573,
+      "total_loss_step2": 2.6726476190586013,
+      "result": "ratio080/RESULT.json"
+    }
+  ],
+  "selection": {
+    "passing_arms": [],
+    "selected_arm": null,
+    "full_500_step_expansion": "cancelled",
+    "previous_best_promoted": false,
+    "capability_claim_allowed": false,
+    "paid_resources_used": false,
+    "final_half_scored": false
+  },
+  "hypothesis_decision": {
+    "supported": [
+      "projector collapse begins within the first two optimizer steps",
+      "the online health contract detects and rolls back the failure reproducibly"
+    ],
+    "refuted": [
+      "the current step0-geometry objective is sufficient at any preregistered lambda",
+      "more training under the current projector is the highest-value next action"
+    ]
+  },
+  "next_registered_direction": "projector_output_normalization_or_residual_structure_screen",
+  "transfer_label": "directly_transferable"
+}

@@ -1,0 +1,53 @@
+stage: contract_order_cache_verification
+stage: frozen_file_verification
+stage: tokenizer_config_supervision
+stage: cuda_and_model_load
+Loading weights:   0%|          | 0/434 [00:00<?, ?it/s]Loading weights:   0%|          | 1/434 [00:00<01:22,  5.25it/s]Loading weights:  23%|##3       | 101/434 [00:00<00:00, 393.68it/s]Loading weights:  35%|###4      | 150/434 [00:00<00:00, 387.37it/s]Loading weights:  45%|####4     | 194/434 [00:00<00:00, 370.15it/s]Loading weights:  54%|#####3    | 234/434 [00:00<00:00, 375.25it/s]Loading weights:  64%|######4   | 279/434 [00:00<00:00, 388.97it/s]Loading weights:  76%|#######5  | 329/434 [00:00<00:00, 403.93it/s]Loading weights:  89%|########9 | 388/434 [00:01<00:00, 451.94it/s]Loading weights: 100%|##########| 434/434 [00:01<00:00, 405.37it/s]
+stage: projector_receiver_optimizer_load
+stage: health_probe_step0_reference
+stage: projector_training
+stage: health_probe_step_1
+optimizer_step 1/100 loss=4.144004 examples_seen=8 answer_tokens_seen=73 step_wall=1.107s
+stage: health_probe_step_2
+health auto-stop at optimizer_step 2: ['projector_rms_rising_spread_falling', 'receiver_rms_rising_spread_falling']
+stage: health_auto_stopped
+{
+  "status": "auto_stopped_by_projector_health_guard",
+  "formal_training_complete": false,
+  "capability_claim_allowed": false,
+  "visual_ability_established": false,
+  "previous_best": "step0",
+  "final_half_scored": false,
+  "paid_resources_used": false,
+  "runner_git_sha": "b3300dcfe62f2418357e0e9d62629bb1890d919e",
+  "git_tracked_worktree_clean": true,
+  "target_optimizer_steps": 100,
+  "optimizer_steps_completed": 2,
+  "examples_seen": 16,
+  "answer_tokens_seen": 145,
+  "loss_first": 4.144003733992577,
+  "loss_last": 2.438019228167832,
+  "training_wall_seconds": 30.951759244780988,
+  "total_wall_seconds": 70.8451878959313,
+  "peak_gpu_memory_bytes": 13405331456,
+  "critical_reasons": [
+    "projector_rms_rising_spread_falling",
+    "receiver_rms_rising_spread_falling"
+  ],
+  "collapse_onset_interval": [
+    1,
+    2
+  ],
+  "failure_checkpoint": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/geometry_repair_screen_hf_v1/ratio080/health_snapshots/checkpoints/failure-step-000002",
+  "last_healthy_checkpoint": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/geometry_repair_screen_hf_v1/ratio080/health_snapshots/checkpoints/healthy-step-000001",
+  "rollback": {
+    "status": "rolled_back_to_last_healthy_checkpoint",
+    "source": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/geometry_repair_screen_hf_v1/ratio080/health_snapshots/checkpoints/healthy-step-000001",
+    "restored_step": 1,
+    "failed_step": 2,
+    "critical_checkpoint_must_not_resume": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/geometry_repair_screen_hf_v1/ratio080/health_snapshots/checkpoints/failure-step-000002"
+  },
+  "health_artifact_file_count": 22,
+  "health_artifact_total_bytes": 1141300223,
+  "transfer_label": "directly_transferable"
+}

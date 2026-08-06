@@ -1768,3 +1768,5 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
 `ratio005` 的 matched 结果没有改变这个判断。它使用固定的 λ=`0.01018730507868909`，在 step 2 的 total loss 为 2.45268（CE 2.43802，geometry 1.43947），projector 与 receiver 的 spread ratio 为 0.2691 与 0.2254，receiver effective-rank ratio 为 0.3622，同样触发两条 adverse-trend guard 并回滚到 step 1。control 与 ratio005 的 onset 都是 `[1,2]`，所以“control 由于没有几何项才失败”目前被反驳；需要继续跑 λ=`0.04074922031475636` 与 `0.16299688125902545`，再按预注册规则决定是否重设计 projector。
 
 `ratio020` 也在 step 2 停止。固定 λ=`0.04074922031475636` 将 total loss 提高到 2.49668，但 projector/receiver spread ratio 仍为 0.2692/0.2255，receiver effective-rank ratio 为 0.3623；onset 仍为 `[1,2]`。control、ratio005、ratio020 三条轨迹的共同 onset 说明当前问题不能靠调大同一 geometry objective 的剂量解决。最后的 ratio080 只用于完成预注册筛选；若它也失败，停止 500-step 扩展并转 projector 结构/尺度路径。
+
+最后的 `ratio080`（λ=`0.16299688125902545`）也在 step 2 停止，total loss 为 2.67265，receiver spread/rank ratio 为 0.2258/0.3628。四臂的 passing set 为空，`DECISION.json` 因此取消完整 500-step expansion；这条决定遵守了预注册的“无 pass 就重设计”规则。当前证据支持“塌缩是首步更新方向/尺度的结构性问题”，反驳“继续增加同一几何损失剂量即可修复”。下一条本地实验从 projector 输出 LayerNorm/RMSNorm 与 matched CE-only control 开始，仍使用同一 3B、同一数据顺序、同一 health contract。

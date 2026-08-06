@@ -25,7 +25,12 @@ early trajectory. Its raw pointer and result are under `ratio005/`.
 
 The `ratio020` arm is archived under `ratio020/` and also stops at `[1,2]`.
 The 5% and 20% doses therefore fail the same early health test; only the
-pre-registered `ratio080` arm remains before the lambda screen is closed.
+pre-registered `ratio080` arm is now archived too. It stops at `[1,2]` as well;
+the four-arm decision is recorded in `DECISION.json`.
+
+No arm passes the frozen representation/CE screen. The planned 500-step
+expansion is cancelled. The next package must change projector structure or
+update scale, starting with a matched output-normalization screen.
 
 This result keeps Gate D at `NO-GO`, leaves `previous_best=step0`, and requires
 the matched `ratio005`, `ratio020`, and `ratio080` arms to run under the same

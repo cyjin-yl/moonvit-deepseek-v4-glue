@@ -1,0 +1,573 @@
+{
+  "binding": {
+    "aliased_records": 1987,
+    "examples_seen": 4000,
+    "gradient_accumulation": 8,
+    "maximum_visual_tokens": 256,
+    "micro_batch_size": 1,
+    "optimizer_steps": 500,
+    "projector_output_width": 4096,
+    "real_global_batch": 8,
+    "receiver_output_width": 2048,
+    "unique_feature_spans": 2013
+  },
+  "capability_claim_allowed_before_evaluation": false,
+  "checkpoint_every": 100,
+  "contract": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/configs/qwen2.5-3b-community-eval-v1.json",
+  "contract_file_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+  "created_at_utc": "2026-08-06T06:16:59.499934+00:00",
+  "data": "/run/media/ezra/13D010B6FDBC1A06/data/train_v1/train_mix.jsonl",
+  "feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/feature_cache_grounding_enriched_4k_v1",
+  "feature_cache_manifest_file_sha256": "1f035374a0db01c8347dfcb2fb6aa6c5e4aad7128ccaa4e169e17f784a6c8a41",
+  "feature_cache_verification": {
+    "aliased_records": 1987,
+    "cache": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/feature_cache_grounding_enriched_4k_v1",
+    "manifest_sha256": "1f035374a0db01c8347dfcb2fb6aa6c5e4aad7128ccaa4e169e17f784a6c8a41",
+    "records_verified": 4000,
+    "runner_git_sha": "aa933ca1cf5a9386f60cd67658083d4e79b2b376",
+    "runner_tracked_worktree_clean": true,
+    "runtime_source_files_verified": 3,
+    "shards_verified": 63,
+    "status": "valid",
+    "total_shard_bytes": 5943468912,
+    "training_order_binding": {
+      "aliased_records_matched": 1987,
+      "maximum_visual_tokens": 256,
+      "records_matched": 4000,
+      "unique_images_matched": 2013
+    },
+    "unique_feature_spans": 2013,
+    "unique_values_verified": 1485864960,
+    "values_verified": 2742976512
+  },
+  "final_half_scored": false,
+  "formal_optimizer_steps": 500,
+  "formal_run": false,
+  "format_version": "qwen3b-fixed-budget-training-run-v1",
+  "geometry_setup": {
+    "arm": "ratio080",
+    "calibration_summary": {
+      "capability_claim_allowed": false,
+      "checkpoint_manifest_sha256": "99bef0b084bba8a17f0ae960d6a73d4aea0f36457c04dfde8112e61c845113fc",
+      "checkpoint_projector_sha256": "08bdda72d5f984edbf7931dc4eb3dad8f3b296b05c18afa0364071dd1fdc19b1",
+      "core_contract_file_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+      "derived_arms": {
+        "control": {
+          "lambda": 0.0,
+          "target_gradient_ratio": 0.0
+        },
+        "ratio005": {
+          "lambda": 0.01018730507868909,
+          "target_gradient_ratio": 0.05
+        },
+        "ratio020": {
+          "lambda": 0.04074922031475636,
+          "target_gradient_ratio": 0.2
+        },
+        "ratio080": {
+          "lambda": 0.16299688125902545,
+          "target_gradient_ratio": 0.8
+        }
+      },
+      "feature_cache_manifest_file_sha256": "1f035374a0db01c8347dfcb2fb6aa6c5e4aad7128ccaa4e169e17f784a6c8a41",
+      "final_half_scored": false,
+      "formal_calibration_complete": true,
+      "format_version": "qwen3b-geometry-calibration-summary-v1",
+      "geometry": {
+        "centered_gram": 0.5036343336105347,
+        "current_between_rms": 2.919761896133423,
+        "current_relative_spread": 0.07972410321235657,
+        "current_rms": 36.62332534790039,
+        "reference_between_rms": 0.052200451493263245,
+        "reference_relative_spread": 0.4034738540649414,
+        "reference_rms": 0.12937752902507782,
+        "relative_spread": 2.6293909549713135,
+        "relative_spread_ratio": 0.19759422540664673,
+        "rms_ratio": 283.07330322265625,
+        "scale": 31.873992919921875,
+        "total": 35.00701904296875
+      },
+      "gpu_name": "Tesla V100-PCIE-32GB",
+      "paid_resources_used": false,
+      "peak_gpu_memory_bytes": 703628800,
+      "per_parameter_gradients": [
+        {
+          "gradient_nonzero": 1024,
+          "gradient_norm": 0.5967691540718079,
+          "name": "pre_norm.weight",
+          "numel": 1024
+        },
+        {
+          "gradient_nonzero": 1024,
+          "gradient_norm": 0.8428378105163574,
+          "name": "pre_norm.bias",
+          "numel": 1024
+        },
+        {
+          "gradient_nonzero": 16777216,
+          "gradient_norm": 3.5340092182159424,
+          "name": "linear_1.weight",
+          "numel": 16777216
+        },
+        {
+          "gradient_nonzero": 4096,
+          "gradient_norm": 0.07053670287132263,
+          "name": "linear_1.bias",
+          "numel": 4096
+        },
+        {
+          "gradient_nonzero": 16777216,
+          "gradient_norm": 1.2163777351379395,
+          "name": "linear_2.weight",
+          "numel": 16777216
+        },
+        {
+          "gradient_nonzero": 4096,
+          "gradient_norm": 0.006181266624480486,
+          "name": "linear_2.bias",
+          "numel": 4096
+        }
+      ],
+      "pooled": {
+        "bytes": 524528,
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/geometry_repair_calibration_v2/CALIBRATION_POOLED.safetensors",
+        "sha256": "92d57dd38d95c68a40e5e917792da21be91e4495429d3c3ffea82faabbb8e7ee",
+        "tensors": {
+          "current_pooled": [
+            8,
+            4096
+          ],
+          "reference_pooled": [
+            8,
+            4096
+          ]
+        }
+      },
+      "record_ids": [
+        "showui_desktop_001540",
+        "docvqa_train_013657",
+        "showui_desktop_004133",
+        "textvqa_train_016391",
+        "showui_desktop_003854",
+        "train_006489",
+        "showui_desktop_001562",
+        "textvqa_train_028980"
+      ],
+      "recorded_ce_gradient_norm_before_clip": 0.7901650667190552,
+      "reference_projector_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0",
+      "runner_git_sha": "1dcf61753a1dfe5679f0cdf2dc43b1882a971d40",
+      "screen_contract_file_sha256": "4b23e708e1fb0ff4c4bfa9f974d2680128f579bf43e60ce2ab5d3436f2170e8e",
+      "status": "valid",
+      "training_history_sha256": "c22a01631598d4ca4850347474f39171853cc9ba22da4176e0a0fac6067df3a8",
+      "training_order_manifest_file_sha256": "640b36840d96e765e694d888f4db801b216b16081d52c963c34d4e0bfa93d5ee",
+      "unweighted_auxiliary_gradient_norm": 3.8781849596907043,
+      "visual_ability_established": false,
+      "wall_seconds": 6.981965823099017
+    },
+    "calibration_summary_file_sha256": "8c716eefffa0ea51c9d7c47538fc8d1f697ba272fa8da24bed4e0bb06b4b800b",
+    "geometry_kwargs": {
+      "centered_gram_weight": 1.0,
+      "epsilon": 1e-08,
+      "relative_spread_weight": 1.0,
+      "scale_weight": 1.0
+    },
+    "geometry_lambda": 0.16299688125902545,
+    "reference_projector_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_initializations_v1/step0",
+    "reference_projector_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0",
+    "screen_contract": {
+      "calibration": {
+        "batch_record_ids_sha256": "c8c2fcee84da94aad7c019c2722a4baabeaea571750edf5130106ed73f1ee2b3",
+        "checkpoint_manifest_sha256": "99bef0b084bba8a17f0ae960d6a73d4aea0f36457c04dfde8112e61c845113fc",
+        "checkpoint_projector_sha256": "08bdda72d5f984edbf7931dc4eb3dad8f3b296b05c18afa0364071dd1fdc19b1",
+        "checkpoint_step": 100,
+        "lambda_formula": "target_gradient_ratio * recorded_ce_gradient_norm_before_clip / unweighted_auxiliary_gradient_norm",
+        "optimizer_batch_step": 100,
+        "record_indices": [
+          792,
+          793,
+          794,
+          795,
+          796,
+          797,
+          798,
+          799
+        ],
+        "recorded_ce_gradient_norm_before_clip": 0.7901650667190552,
+        "target_gradient_ratios": [
+          0.05,
+          0.2,
+          0.8
+        ],
+        "training_history_sha256": "c22a01631598d4ca4850347474f39171853cc9ba22da4176e0a0fac6067df3a8"
+      },
+      "core_contract_file_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+      "feature_cache_manifest_file_sha256": "1f035374a0db01c8347dfcb2fb6aa6c5e4aad7128ccaa4e169e17f784a6c8a41",
+      "final_half_allowed": false,
+      "format_version": "qwen3b-geometry-repair-screen-contract-v1",
+      "frozen_before_calibration_and_screen": true,
+      "geometry_objective": {
+        "batch_pooling": "concatenate feature groups per image, then arithmetic mean over visual tokens",
+        "boundary": "canonical_projector_4096",
+        "centered_gram_loss": "squared Frobenius distance between unit-Frobenius centered sample Gram matrices",
+        "component_weights": {
+          "centered_gram": 1.0,
+          "relative_spread": 1.0,
+          "scale": 1.0
+        },
+        "epsilon": 1e-08,
+        "orientation_freedom": "normalized centered Gram permits a shared orthogonal rotation while preserving cross-image geometry",
+        "reference": "exact frozen step0 projector on the same eight cached MoonViT feature groups",
+        "relative_spread_loss": "squared log ratio of current and reference between-image-RMS/sample-RMS",
+        "scale_loss": "squared log ratio of current and reference batch RMS"
+      },
+      "interpretation_boundary": "A short-screen pass only establishes representation preservation under early optimization. It does not establish grounding or visual ability.",
+      "paid_resources_allowed": false,
+      "reference_projector_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0",
+      "screen": {
+        "answer_tokens_seen": 7362,
+        "arms": [
+          {
+            "name": "control",
+            "target_gradient_ratio": 0.0
+          },
+          {
+            "name": "ratio005",
+            "target_gradient_ratio": 0.05
+          },
+          {
+            "name": "ratio020",
+            "target_gradient_ratio": 0.2
+          },
+          {
+            "name": "ratio080",
+            "target_gradient_ratio": 0.8
+          }
+        ],
+        "examples_seen": 800,
+        "no_pass_action": "do_not_spend_full_4k_budget_and_redesign_projector_structure_or_objective",
+        "optimization_guard": {
+          "final_20_step_ce_loss_mean_over_control_at_most": 1.25,
+          "finite_nonzero_projector_gradients_required": true
+        },
+        "optimizer_steps": 100,
+        "pass_action": "train_selected_arm_for_exact_500_steps_then_run_representation_preference_and_generation_gates",
+        "representation_guard": {
+          "current_over_step0_effective_rank_at_least": 0.5,
+          "current_over_step0_relative_spread_at_least": 0.25,
+          "requires_all": true
+        },
+        "same_initial_projector": true,
+        "same_optimizer_steps_and_examples_seen": true,
+        "same_resolution_and_receiver": true,
+        "same_training_records_and_order": true,
+        "selection_rule": "choose the smallest nonzero target-gradient-ratio arm passing both representation guards at projector and receiver plus the CE-loss guard",
+        "selection_stage": "fixed_receiver_2048"
+      },
+      "training_order_manifest_file_sha256": "640b36840d96e765e694d888f4db801b216b16081d52c963c34d4e0bfa93d5ee",
+      "training_order_manifest_sha256": "d632ecc2c9bc216a552f240e87b9733904b67dcfe30c489a62ba03df25370bf1",
+      "training_order_records_sha256": "f3c3dec199a30927fb715b2d4fbc890baa8e3f3a456b56707f46490164b915ab",
+      "transfer_label": "directly_transferable"
+    },
+    "screen_contract_file_sha256": "4b23e708e1fb0ff4c4bfa9f974d2680128f579bf43e60ce2ab5d3436f2170e8e",
+    "target_gradient_ratio": 0.8
+  },
+  "git_sha": "b3300dcfe62f2418357e0e9d62629bb1890d919e",
+  "git_tracked_worktree_clean": true,
+  "health_auto_stop": true,
+  "health_setup": {
+    "contract": {
+      "artifact_policy": {
+        "failure_record": "FAILURE.json",
+        "health_jsonl": "train_health.jsonl",
+        "manifest_required": true,
+        "probe_jsonl": "probe_metrics.jsonl",
+        "rollback_record": "ROLLBACK.json",
+        "snapshot_directory": "health_snapshots"
+      },
+      "canonical_projector_width": 4096,
+      "capability_claim_allowed": false,
+      "core_qwen_contract_file_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+      "format_version": "projector-health-contract-v1",
+      "guards": {
+        "critical": {
+          "adverse_trend_consecutive_intervals": 2,
+          "causal_consecutive_probe_points": 2,
+          "causal_guard_start_step": 1,
+          "consecutive_hard_failures": 2,
+          "gradient_norm_max": 1000000.0,
+          "nan_or_inf": true,
+          "output_rms_ratio": 50.0,
+          "top1_variance_fraction": 0.9,
+          "zero_gradient": true
+        },
+        "hard": {
+          "applies_to": [
+            "projector",
+            "receiver"
+          ],
+          "effective_rank_ratio_min": 0.5,
+          "relative_spread_ratio_min": 0.25,
+          "selection_requires_all": true
+        },
+        "warning": {
+          "correct_preference_not_above_shuffled": true,
+          "output_rms_ratio": 10.0,
+          "top1_variance_fraction": 0.8
+        }
+      },
+      "metrics": {
+        "probe_causal": [
+          "correct_image_preference",
+          "shuffled_image_preference",
+          "blind_preference",
+          "vision_minus_shuffle_correct_logp"
+        ],
+        "probe_representation": [
+          "effective_rank",
+          "participation_rank",
+          "top1_variance_fraction",
+          "top5_variance_fraction",
+          "relative_spread_ratio_over_step0",
+          "effective_rank_ratio_over_step0",
+          "sample_rms_ratio_over_step0",
+          "pairwise_distance_correlation_over_step0",
+          "centered_gram_similarity_over_step0"
+        ],
+        "step_health": [
+          "projector_output_rms",
+          "receiver_output_rms",
+          "between_image_rms",
+          "within_image_token_rms",
+          "relative_spread",
+          "mean_direction_fraction",
+          "projector_gradient_norm_before_clip",
+          "projector_gradient_norm_after_clip",
+          "ce_loss",
+          "geometry_loss",
+          "total_loss",
+          "has_nan_or_inf",
+          "learning_rate",
+          "examples_seen",
+          "optimizer_step"
+        ]
+      },
+      "name": "qwen3b_projector_health_v1",
+      "paid_resources_used": false,
+      "probe_manifest": {
+        "count": 50,
+        "feature_cache_manifest_file_sha256": "03f35d8cee962a97996f3250e41c351978f28c0ca9a8fe74d4f8d41c411ae7f3",
+        "file": "experiments/qwen3b_community_eval_20260805/health_probe_v1/PROBE_MANIFEST.json",
+        "file_sha256": "00bc648b15edfffd5af4b8ee3e9ea1c378d941ba5462729c385a3117cdb99d2e",
+        "manifest_sha256": "0c8db4ebf0b822f288e6f76cf3242fcbf589a443e6913c038def41f54abc995a",
+        "teacher_forced_probe_count": 8
+      },
+      "probe_schedule": {
+        "every_after_step": 50,
+        "first_100_generation": "disabled; cached projector/receiver forward and fixed teacher-forced subset only",
+        "initial_steps": [
+          0,
+          1,
+          2,
+          5,
+          10,
+          20,
+          30,
+          50,
+          75,
+          100
+        ],
+        "probe_order": "exact frozen PROBE_MANIFEST order"
+      },
+      "purpose": "在线发现 projector 表征塌缩，并在昂贵的后续训练前自动止损",
+      "receiver_boundary_is_optional": true,
+      "screen_contract": {
+        "label_boundary": "GLM-format metric-aligned public subset",
+        "manifest_file": "experiments/qwen3b_community_eval_20260805/contract/datasets/screenspot_glm50_v1/MANIFEST.json",
+        "manifest_file_sha256": "b578229e72a59a983623514f259d2f49fc46cb66c0802a622682727d88151543",
+        "manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+        "name": "screenspot_glm50_v1",
+        "sample_count": 50,
+        "selection_seed": "20260805"
+      },
+      "stop_policy": {
+        "auto_stop_on_any_critical": true,
+        "forbid_resume_from_critical_checkpoint": true,
+        "record_collapse_onset_interval": true,
+        "rollback_target": "most_recent_probe_without_critical_guard",
+        "save_current_batch_ids": true,
+        "save_failure_checkpoint": true,
+        "save_health_and_probe_logs": true,
+        "save_last_healthy_checkpoint": true,
+        "save_optimizer_state": true,
+        "save_rng_state": true
+      },
+      "teacher_forced": {
+        "answer_rule": "frozen ScreenSpot bbox center click(start_box=[x, y])",
+        "conditions": [
+          "vision",
+          "blind",
+          "shuffled"
+        ],
+        "generation": "not run during the first 100 optimizer steps",
+        "score": "token-normalized correct-answer log probability and strict paired preference"
+      },
+      "text_backbone_independent": true,
+      "transfer_label": "directly_transferable"
+    },
+    "contract_file_sha256": "c6b8f7c6fcefb2fcf11c4328e1cb1023b571ed36503f3d2519aeb2f257f9a325",
+    "probe_cache_manifest_file_sha256": "03f35d8cee962a97996f3250e41c351978f28c0ca9a8fe74d4f8d41c411ae7f3",
+    "probe_cache_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_features_1024_v1",
+    "probe_file_sha256": "00bc648b15edfffd5af4b8ee3e9ea1c378d941ba5462729c385a3117cdb99d2e",
+    "screen_manifest_file": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/experiments/qwen3b_community_eval_20260805/contract/datasets/screenspot_glm50_v1/MANIFEST.json",
+    "screen_manifest_file_sha256": "b578229e72a59a983623514f259d2f49fc46cb66c0802a622682727d88151543",
+    "teacher_ids": [
+      "screenspot-0be08781-0472",
+      "screenspot-0be08781-0689",
+      "screenspot-0be08781-0948",
+      "screenspot-0be08781-0054",
+      "screenspot-0be08781-0160",
+      "screenspot-0be08781-0194",
+      "screenspot-0be08781-0620",
+      "screenspot-0be08781-0213"
+    ]
+  },
+  "model_dir": "/run/media/ezra/13D010B6FDBC1A06/models/qwen2.5-3b-instruct-aa8e7253",
+  "model_files": [
+    {
+      "bytes": 661,
+      "path": "config.json",
+      "sha256": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b"
+    },
+    {
+      "bytes": 242,
+      "path": "generation_config.json",
+      "sha256": "ea35dfb6fc5051b01114f9b995820d55dab01ed33ee490f6378b442af82c09f9"
+    },
+    {
+      "bytes": 1671839,
+      "path": "merges.txt",
+      "sha256": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3"
+    },
+    {
+      "bytes": 3968658944,
+      "path": "model-00001-of-00002.safetensors",
+      "sha256": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2"
+    },
+    {
+      "bytes": 2203268048,
+      "path": "model-00002-of-00002.safetensors",
+      "sha256": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d"
+    },
+    {
+      "bytes": 35581,
+      "path": "model.safetensors.index.json",
+      "sha256": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56"
+    },
+    {
+      "bytes": 7031645,
+      "path": "tokenizer.json",
+      "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"
+    },
+    {
+      "bytes": 7305,
+      "path": "tokenizer_config.json",
+      "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+    },
+    {
+      "bytes": 2776833,
+      "path": "vocab.json",
+      "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+    }
+  ],
+  "paid_resources_used": false,
+  "projector_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_initializations_v1/step0",
+  "receiver_dir": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/experiments/qwen3b_community_eval_20260805/contract/proxy_receiver",
+  "resume": null,
+  "runtime_source_files": [
+    {
+      "bytes": 86258,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_qwen3b_proxy.py",
+      "sha256": "f246ec8c2db0b9e05dc606576636bb381cb8ffd1e9075382bdb13b264d0f9941"
+    },
+    {
+      "bytes": 4345,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/src/moonvit_glue/chat_contract.py",
+      "sha256": "7dcd04827d4e559693bfd943027db51d03afec0276e72765da8755d92532769a"
+    },
+    {
+      "bytes": 5792,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/src/moonvit_glue/checkpointing.py",
+      "sha256": "d9d63e4a9dc7a3c2a72be925eb071be5667ea28786bcee2bdd337875d2f0d49e"
+    },
+    {
+      "bytes": 10034,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/src/moonvit_glue/feature_cache.py",
+      "sha256": "6011695aae644091061368b87aee7e2e8a2baeef45a42c782e870fb54acff3a6"
+    },
+    {
+      "bytes": 10358,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/src/moonvit_glue/fixed_budget.py",
+      "sha256": "46cb55bba1b1c2edb6ede0baa6e5a7fbd65e7bc4f391c45ebf09dcc6548427c9"
+    },
+    {
+      "bytes": 6084,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/src/moonvit_glue/geometry_regularization.py",
+      "sha256": "cc720346f091befd1b1fb6c3b1ee5dfaa283fbf2235a8e7620f67e54d95a36f1"
+    },
+    {
+      "bytes": 6687,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/src/moonvit_glue/merge.py",
+      "sha256": "70330c09ee6fb3ace2150bcad1f50239cd7b160db290e933424586421413c756"
+    },
+    {
+      "bytes": 8325,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/src/moonvit_glue/model.py",
+      "sha256": "4aaee2316d918d1add8d576071a5062fbe3868d0db4c66644e127b866a70a6c5"
+    },
+    {
+      "bytes": 5992,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/src/moonvit_glue/projector.py",
+      "sha256": "21724314ac9eb3488f7eba0a85ef9af6de38142cfe57bb07fc287b2f6816a042"
+    },
+    {
+      "bytes": 4373,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/src/moonvit_glue/proxy_receiver.py",
+      "sha256": "98c08b46ace30c4d2a39fc3dea9de157992149448584259a1fe95f963bc2ab1d"
+    },
+    {
+      "bytes": 21634,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/src/moonvit_glue/training_order.py",
+      "sha256": "db691fa52b073cd7332938fe83cdab0712bcb352d8fa36ef88b409f1c5efc6d9"
+    },
+    {
+      "bytes": 9032,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/verify_feature_cache.py",
+      "sha256": "8aeea8d316298470a7a984b7acd9d25c7a3dc62e72d223447d9d76f0c4b204b7"
+    },
+    {
+      "bytes": 20204,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/src/moonvit_glue/training_health.py",
+      "sha256": "86c9df5a1715ea24b0015572ffec5fd8a5f1ae2d6d70b3193aa3f9dad41b5784"
+    }
+  ],
+  "supervision": {
+    "answer_tokens_max": 25,
+    "answer_tokens_min": 2,
+    "answer_tokens_total": 36589,
+    "expanded_sequence_length_max": 311,
+    "expanded_sequence_length_min": 97,
+    "prompt_length_max": 102,
+    "prompt_length_min": 38,
+    "records": 4000,
+    "records_file": "SUPERVISION_RECORDS.jsonl",
+    "records_file_sha256": "d90ea7515a67b2f4d77320fe061aef1cfc44ef877726d312366a309390ab5bc9",
+    "route_counts": {
+      "grounding": 2000,
+      "short_answer": 2000
+    }
+  },
+  "target_optimizer_steps": 100,
+  "training_order_manifest": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/experiments/qwen3b_community_eval_20260805/training_order_grounding_enriched_4k_v1/MANIFEST.json",
+  "training_order_manifest_file_sha256": "640b36840d96e765e694d888f4db801b216b16081d52c963c34d4e0bfa93d5ee",
+  "transformers_version": "5.12.1"
+}

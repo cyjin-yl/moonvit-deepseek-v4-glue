@@ -30,6 +30,14 @@
     "paid_resources_used": false,
     "final_half_scored": false
   },
+  "completed_screen": {
+    "decision": "DECISION.json",
+    "arms": ["control", "ratio005", "ratio020", "ratio080"],
+    "all_independently_verified": true,
+    "passing_arms": [],
+    "full_500_step_expansion": "cancelled",
+    "next_direction": "projector_output_normalization_or_residual_structure_screen"
+  },
   "selection_rule_unchanged": true,
   "interpretation_boundary": "health trajectory is representation evidence; it cannot establish visual ability or advance a checkpoint without the full community evaluation contract"
 }

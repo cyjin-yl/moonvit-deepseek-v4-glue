@@ -63,8 +63,11 @@ The 20% arm (`lambda=0.04074922031475636`) has now been independently verified
 and shows the same onset `[1,2]`. Its step-2 total loss is 2.49668, while
 projector/receiver spread ratios are `0.2692/0.2255` and receiver rank ratio is
 `0.3623`. Thus both nonzero low-to-moderate doses fail the frozen health screen
-before step 5. The final pre-registered `ratio080` arm remains; after it, the
-contract calls for projector structure redesign if no arm passes.
+before step 5. The final `ratio080` arm also stops at `[1,2]` (total loss
+2.67265; receiver spread/rank `0.2258/0.3628`). All four arms therefore fail;
+`DECISION.json` records an empty passing set and cancels the 500-step expansion.
+The contract now points to a matched projector output-normalization/residual
+structure screen.
 
 ## ⚠️ ACTIVE V100 REAL-VISION BRIDGE (2026-08-06)
 
@@ -84,7 +87,7 @@ contract calls for projector structure redesign if no arm passes.
 | Paired preference 机制判定 | **完成 / 无 content-specific readout** | trained vision/blind/shuffled 为 46%/56%/52%；训练显著降低坐标 NLL，但正确图与错图的 correct-logp 无差异 |
 | Grounding-enriched fixed-budget treatment | **训练通过 / preference+generation 拒绝** | preference 52%/56%/54%；generation click 6%/12%/6%，vision−blind mean distance 显著恶化 109.47 |
 | Projector representation retention | **step1–2 已触发在线止损** | Package 15P control 在 step2 停止；projector spread/rank ratio 0.2690/0.5022，receiver 0.2254/0.3622，RMS 0.1235→0.6598；CE 仍 4.144→2.438 |
-| Package 15P geometry calibration | **已完成；control/ratio005/ratio020 高频轨迹均止损** | unweighted auxiliary grad 3.8782；λ=0.0101873/0.0407492/0.162997；三臂 onset 均 [1,2]；独立 health verifier `verified` |
+| Package 15P geometry calibration | **四臂高频轨迹全部止损，500-step 取消** | λ=0/0.0101873/0.0407492/0.162997 的 onset 全为 [1,2]；四个独立 health verifier `verified`；转 projector 结构筛选 |
 | 通用 train/save/resume/generate 链路 | 通过（含 3B 代理） | Qwen2.5-3B + 真 MoonViT 图像完成生成、梯度、一步 AdamW 与 checkpoint/optimizer/RNG 精确恢复 |
 | 完整 DeepSeek-V4-Flash-0731 闭环 | **未通过** | 完整权重从未完成图像 forward/backward/train/save/resume/generate |
 | Gate D 量化 DGRAD | **未通过（本地 harness 完成）** | 三模式接口/reference 通过；真实 FP8/FP4 module 仍 `hardware_pending` |

@@ -62,3 +62,37 @@ def test_independent_verifier_and_raw_pointer_are_bound():
     assert pointer["local_rehash"]["mismatches"] == 0
     assert pointer["health_manifest_file_count"] == 22
     assert pointer["health_manifest_total_bytes"] == 1141300055
+
+
+def test_four_arm_screen_has_no_passing_lambda_and_cancels_expansion():
+    decision = _load(PACKAGE / "DECISION.json")
+    assert [row["name"] for row in decision["arms"]] == [
+        "control",
+        "ratio005",
+        "ratio020",
+        "ratio080",
+    ]
+    assert [row["lambda"] for row in decision["arms"]] == [
+        0.0,
+        0.01018730507868909,
+        0.04074922031475636,
+        0.16299688125902545,
+    ]
+    assert decision["selection"]["passing_arms"] == []
+    assert decision["selection"]["selected_arm"] is None
+    assert decision["selection"]["full_500_step_expansion"] == "cancelled"
+
+    for row in decision["arms"]:
+        arm = row["name"]
+        result = _load(PACKAGE / arm / "RESULT.json")
+        verifier = _load(PACKAGE / arm / "HEALTH_VERIFIER.json")
+        pointer = _load(PACKAGE / arm / "RAW_ARTIFACT_POINTER.json")
+        assert row["status"] == "auto_stopped_by_projector_health_guard"
+        assert row["collapse_onset_interval"] == [1, 2]
+        assert result["stop_and_rollback"]["collapse_onset_interval"] == [1, 2]
+        assert verifier["status"] == "verified"
+        assert verifier["probe_steps"] == [0, 1, 2]
+        assert pointer["local_rehash"]["mismatches"] == 0
+        assert _sha256(PACKAGE / arm / "HEALTH_ARTIFACT_MANIFEST.json") == pointer[
+            "health_manifest_sha256"
+        ]

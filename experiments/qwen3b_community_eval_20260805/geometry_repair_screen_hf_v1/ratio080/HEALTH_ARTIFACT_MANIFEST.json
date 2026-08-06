@@ -1,0 +1,119 @@
+{
+  "file_count": 22,
+  "files": [
+    {
+      "bytes": 13314,
+      "path": "FAILURE.json",
+      "sha256": "d46cfccd487462fb19716b07f2e77df68983c8408dda29ab852314571dd0f0ed"
+    },
+    {
+      "bytes": 440,
+      "path": "ROLLBACK.json",
+      "sha256": "cc1ff6a91d5fce4c5d51e5b8b97fbe510e0edb816cad57f0ea0e1c073649980e"
+    },
+    {
+      "bytes": 2889,
+      "path": "health_snapshots/checkpoints/failure-step-000002/CHECKPOINT_MANIFEST.json",
+      "sha256": "53d410bfbf5ab96abcac8c3a2e6ad753b1ddac15fe543d15108822f1cb618e37"
+    },
+    {
+      "bytes": 3439,
+      "path": "health_snapshots/checkpoints/failure-step-000002/history.json",
+      "sha256": "d6b796eea5bc27f611a0cae27ae86e44afcd2998252aa12513d0c5a5e204e9fc"
+    },
+    {
+      "bytes": 134259248,
+      "path": "health_snapshots/checkpoints/failure-step-000002/projector.safetensors",
+      "sha256": "9412750dcc22166bfefab532d08ceffd6c43270d01eae2bf13e9be93b61c1430"
+    },
+    {
+      "bytes": 67129856,
+      "path": "health_snapshots/checkpoints/failure-step-000002/projector_bf16.safetensors",
+      "sha256": "77b68c3456e673dc45331841e971618f5ac52bfa62bb261973afc32aad42865c"
+    },
+    {
+      "bytes": 128,
+      "path": "health_snapshots/checkpoints/failure-step-000002/projector_config.json",
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    {
+      "bytes": 268534877,
+      "path": "health_snapshots/checkpoints/failure-step-000002/training_state.pt",
+      "sha256": "c7a777d6c991de38deed74f29a3dc8e69eb77d1c43c9bbb3ab0f4fca368eac00"
+    },
+    {
+      "bytes": 2859,
+      "path": "health_snapshots/checkpoints/healthy-step-000000/CHECKPOINT_MANIFEST.json",
+      "sha256": "00e0ea0fd2a6f904cd1c114fc87767bc5f3e1329dee18a969137426a303cfdfd"
+    },
+    {
+      "bytes": 33,
+      "path": "health_snapshots/checkpoints/healthy-step-000000/history.json",
+      "sha256": "14a770dff8ee1382261970572c8e0c62554c19e22c3ea97513c5315e13909387"
+    },
+    {
+      "bytes": 134259248,
+      "path": "health_snapshots/checkpoints/healthy-step-000000/projector.safetensors",
+      "sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0"
+    },
+    {
+      "bytes": 67129856,
+      "path": "health_snapshots/checkpoints/healthy-step-000000/projector_bf16.safetensors",
+      "sha256": "abad356fe1f06fba463abe7fd2166ba5c7fc74a48f16eb45ae09518152fe835a"
+    },
+    {
+      "bytes": 128,
+      "path": "health_snapshots/checkpoints/healthy-step-000000/projector_config.json",
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    {
+      "bytes": 11101,
+      "path": "health_snapshots/checkpoints/healthy-step-000000/training_state.pt",
+      "sha256": "37565d14cebf876363795dd48e95e44780807aa94c32a9c3a308ec7200ba56ba"
+    },
+    {
+      "bytes": 2887,
+      "path": "health_snapshots/checkpoints/healthy-step-000001/CHECKPOINT_MANIFEST.json",
+      "sha256": "258cccf96fb81c3e6deb1f161aef4641ad7997f0d1bca5d5f62de641566778d1"
+    },
+    {
+      "bytes": 1661,
+      "path": "health_snapshots/checkpoints/healthy-step-000001/history.json",
+      "sha256": "e721e8c51ceaccc40a453c089c8a8ed208d702ff5674b567950c4a69688e56b3"
+    },
+    {
+      "bytes": 134259248,
+      "path": "health_snapshots/checkpoints/healthy-step-000001/projector.safetensors",
+      "sha256": "014682785629db242e6179feb2bc3c24b4a316bb0643024111dff0beb5005dc6"
+    },
+    {
+      "bytes": 67129856,
+      "path": "health_snapshots/checkpoints/healthy-step-000001/projector_bf16.safetensors",
+      "sha256": "6858d3437e61873989f2fc63d5ff077d4297b8e7ce0d7bf17d8c3ad37453e122"
+    },
+    {
+      "bytes": 128,
+      "path": "health_snapshots/checkpoints/healthy-step-000001/projector_config.json",
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    {
+      "bytes": 268534429,
+      "path": "health_snapshots/checkpoints/healthy-step-000001/training_state.pt",
+      "sha256": "6f88281488a5abf89c2fa63628f3a44c4a611cedf48409e32c26b64b2ae1462c"
+    },
+    {
+      "bytes": 22871,
+      "path": "probe_metrics.jsonl",
+      "sha256": "6ee2c88a5e5c078f0319dd9d33b80ab28982190ede0e102531ca86a6677c6c90"
+    },
+    {
+      "bytes": 1727,
+      "path": "train_health.jsonl",
+      "sha256": "976c70de96b86928c5e6a2d6ea4c25daa99d4289852aa739a2c33b83507c5942"
+    }
+  ],
+  "format_version": "projector-health-artifact-manifest-v1",
+  "paid_resources_used": false,
+  "run_log": "run.log (closed after the runner returns; independently verify later)",
+  "total_bytes": 1141300223
+}
