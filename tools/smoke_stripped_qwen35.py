@@ -272,9 +272,29 @@ def main() -> None:
 
     if hook is not None:
         hook.remove()
+    finite_gradient = any(
+        row["projector_gradient_norm_before_clip"] is not None
+        and math.isfinite(float(row["projector_gradient_norm_before_clip"]))
+        and float(row["projector_gradient_norm_before_clip"]) > 0.0
+        for row in health_rows[:-1]
+    )
+    finite_outputs = all(
+        math.isfinite(float(row["ce_loss"]))
+        and math.isfinite(float(row["correct_answer_logp"]))
+        and math.isfinite(float(row["shuffled_answer_logp"]))
+        and not row["nan_or_inf"]
+        for row in health_rows
+    )
     summary = {
         "schema_version": "stripped-native-qwen35-receiver-smoke-v1",
-        "status": "passed_input_gradient_gate" if any(row["projector_gradient_norm_before_clip"] for row in health_rows[:-1]) else "failed_input_gradient_gate",
+        "status": "passed_input_gradient_gate" if finite_gradient and finite_outputs and vision_calls["count"] == 0 else "failed_input_gradient_gate",
+        "failure_reasons": ([
+            reason for reason, condition in (
+                ("nonfinite_projector_or_loss", not finite_outputs),
+                ("zero_or_nonfinite_projector_gradient", not finite_gradient),
+                ("native_vision_module_called", vision_calls["count"] != 0),
+            ) if condition
+        ]),
         "native_vision_forward_calls": vision_calls["count"],
         "trajectory": health_rows,
         "projector_step0_state_keys": sorted(step0_projector),
