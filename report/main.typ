@@ -1899,3 +1899,5 @@ exact V2 的 projector 学习率降到 `5e-5` 后，前两步 rank/spread 几乎
 同一 8-sample/240-token 条件下，V1 projector 的 `vision-minus-shuffle=+0.0620 ± 0.4185`，V2 为 `-0.0748 ± 0.4520`；V1/V2 都有正的 vision-minus-blind，但 V2 的均值更高。V1 的轻微优势被样本方差覆盖，不能称为版本修复。当前最强解释从“V2 压缩独有故障”转向 token ordering、尺度和监督接口的共同问题。
 
 Qwen3.5 原生 3D mRoPE 的 V2 诊断在同一 8-sample/240-token 条件下给出 `vision-minus-shuffle=-0.0375 ± 0.4537`、`vision-minus-blind=+0.6680 ± 0.2896`，与普通连续位置几乎相同。它没有修复 paired image attribution gap，且只属于 Qwen-specific diagnostic，不具备 DeepSeek 迁移资格。
+
+9B projector-only backward 的本机边界已经实测：240-token 首次尝试触发 NVML allocator assert；修复训练器的 graph retention、缩到 16 token 后仍在 25.88 GiB allocated / 41 MiB free 时 OOM。由此把 Qwen3.5-9B 固定为 inference/input-gradient receiver-prior diagnostic；V100 projector 训练继续使用 3B/7B，Gate D 仍等待真实 DeepSeek runtime 证据。

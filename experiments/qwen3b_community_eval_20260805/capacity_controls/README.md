@@ -33,3 +33,5 @@
 同一 8-sample/240-token screen 换成 V1（MoonViT-SO-400M，1152 维）得到 `vision−shuffle=+0.0620 ± 0.4185`、`vision−blind=+0.3780 ± 0.1962`。V2 对照为 `-0.0748 ± 0.4520`、`+0.6753 ± 0.3335`。V1 略高但差异被样本方差覆盖；目前不能写成 V1 优于 V2，也不能把版本差异当作主要故障解释。
 
 Qwen3.5 原生 3D mRoPE 的位置诊断（V2、8 samples、240 tokens）为 `vision−shuffle=-0.0375 ± 0.4537`、`vision−blind=+0.6680 ± 0.2896`，与普通连续位置几乎相同。位置规则不是当前 paired attribution gap 的主解释；该分支标记为 `qwen_specific_not_transferable`。
+
+9B projector-only backward 还做了两次小训练修复尝试：240-token 首次 forward 触发 NVML allocator assert；修复 health graph retention 并缩到 16 tokens 后，仍在 25.88 GiB allocated / 41 MiB free 时 OOM。9B 在本机可做 forward/input-gradient 和多 probe inference gate，当前不能做多样样本 projector 训练；本地训练主线回到 3B/7B。

@@ -1,0 +1,10 @@
+{
+  "schema_version": "failure-record-v1",
+  "status": "v100_32gb_training_memory_boundary",
+  "remote_raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_9b_receiver_prior_train_ceonly_16tok_retry2_20260806",
+  "reason": "after graph-retention fix, BF16 9B projector backward still OOMed at 25.88 GiB allocated with only 41 MiB free; no optimizer step or checkpoint",
+  "optimizer_steps_completed": 0,
+  "inference_gate_remains_valid": true,
+  "capability_claim_allowed": false,
+  "next_action": "keep Qwen3.5-9B as inference/input-gradient diagnostic; use Qwen2.5-3B/7B for local projector training"
+}

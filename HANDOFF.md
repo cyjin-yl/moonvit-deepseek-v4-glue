@@ -623,3 +623,5 @@ Qwen3.5 的 native vision、merger 和 visual forward 被绕过，外部输入�
 V1 交叉检查也完成：同一 9B、8 个样本、240 token 下，V1 `vision−shuffle=+0.0620 ± 0.4185`，V2 `-0.0748 ± 0.4520`；V1 `vision−blind=+0.3780 ± 0.1962`，V2 `+0.6753 ± 0.3335`。V1 只略高于零，差异没有超过方差，不能宣称 V1 胜出。主要嫌疑移向 token 顺序/压缩、输入尺度和监督接口。
 
 Qwen3.5 native 3D mRoPE 诊断也完成：V2、8 samples、240 tokens 下 `vision−shuffle=-0.0375 ± 0.4537`、`vision−blind=+0.6680 ± 0.2896`，和普通连续位置的 `-0.0748/+0.6753` 几乎一致。mRoPE 不是当前差异缺失的主因；该分支为 `qwen_specific_not_transferable`，不能改变 DeepSeek 方案。
+
+9B projector-only training 的两次修复均撞到 V100 32GB 边界：240-token 首次 forward 是 NVML allocator assert；修复 health graph retention、缩到 16 token 后仍在约 25.9GiB allocated 时 OOM。9B 保留 inference/input-gradient gate，不再在本机强行长训；3B/7B 承担 projector 训练与正式合同筛选。
