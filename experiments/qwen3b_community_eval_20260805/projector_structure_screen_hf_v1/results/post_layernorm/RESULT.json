@@ -1,0 +1,117 @@
+{
+  "format_version": "qwen3b-projector-structure-health-result-v1",
+  "package": "15Q",
+  "run_kind": "high_frequency_health_trajectory",
+  "arm": "post_layernorm",
+  "output_norm": "layernorm",
+  "runner_git_sha": "a12f053dbe8a279dd35b62d9cf132d09226e8fb4",
+  "health_contract": "configs/qwen3b-projector-health-v1.json",
+  "probe_manifest": "experiments/qwen3b_community_eval_20260805/health_probe_v1/PROBE_MANIFEST.json",
+  "target_optimizer_steps": 100,
+  "optimizer_steps_completed": 2,
+  "examples_seen": 16,
+  "answer_tokens_seen": 145,
+  "peak_gpu_memory_bytes": 13245345280,
+  "trajectory": [
+    {
+      "step": 0,
+      "projector_output_rms": 0.6661294839044942,
+      "projector_relative_spread": 0.2679203338301409,
+      "projector_effective_rank": 13.303025735344159,
+      "projector_relative_spread_ratio": 1.0,
+      "projector_effective_rank_ratio": 1.0,
+      "projector_top1_variance_fraction": 0.17338220456416426,
+      "receiver_output_rms": 0.658643088699913,
+      "receiver_relative_spread": 0.270076714474196,
+      "receiver_effective_rank": 13.486530016605306,
+      "receiver_relative_spread_ratio": 1.0,
+      "receiver_effective_rank_ratio": 1.0,
+      "receiver_top1_variance_fraction": 0.17415571127303037,
+      "auto_stop": false
+    },
+    {
+      "step": 1,
+      "projector_output_rms": 0.9267367162233,
+      "projector_relative_spread": 0.09673867050613165,
+      "projector_effective_rank": 11.315948943146092,
+      "projector_relative_spread_ratio": 0.3610725215334462,
+      "projector_effective_rank_ratio": 0.8506297114859591,
+      "projector_top1_variance_fraction": 0.20371707117827081,
+      "receiver_output_rms": 1.18276777791726,
+      "receiver_relative_spread": 0.07804004285999815,
+      "receiver_effective_rank": 10.312692079130766,
+      "receiver_relative_spread_ratio": 0.28895509563618577,
+      "receiver_effective_rank_ratio": 0.7646660828569878,
+      "receiver_top1_variance_fraction": 0.2273254968023459,
+      "ce_loss": 4.928247198462486,
+      "projector_gradient_norm_before_clip": 346.0345153808594,
+      "auto_stop": false
+    },
+    {
+      "step": 2,
+      "projector_output_rms": 0.976640561885153,
+      "projector_relative_spread": 0.05354325840754335,
+      "projector_effective_rank": 8.583135695273196,
+      "projector_relative_spread_ratio": 0.1998476847281375,
+      "projector_effective_rank_ratio": 0.6452017658260317,
+      "projector_top1_variance_fraction": 0.2708772934691579,
+      "receiver_output_rms": 1.3210927736558478,
+      "receiver_relative_spread": 0.04210779880558819,
+      "receiver_effective_rank": 6.982932473429426,
+      "receiver_relative_spread_ratio": 0.15591051189868982,
+      "receiver_effective_rank_ratio": 0.5177708769291791,
+      "receiver_top1_variance_fraction": 0.3211985318951297,
+      "ce_loss": 3.6010504588484764,
+      "projector_gradient_norm_before_clip": 31.558490753173828,
+      "critical_reasons": [
+        "projector_rms_rising_spread_falling",
+        "receiver_rms_rising_spread_falling"
+      ],
+      "auto_stop": true
+    }
+  ],
+  "causal_probe_step_2": {
+    "sample_count": 8,
+    "vision_preference": 0.5,
+    "shuffled_preference": 0.375,
+    "blind_preference": 0.625,
+    "vision_minus_blind_correct_logp": 0.7272536942373704,
+    "vision_minus_shuffle_correct_logp": 0.43694518730317267,
+    "capability_claim_allowed": false
+  },
+  "stop_and_rollback": {
+    "status": "rolled_back_to_last_healthy_checkpoint",
+    "collapse_onset_interval": [1, 2],
+    "failed_step": 2,
+    "restored_step": 1,
+    "failure_checkpoint": "health_snapshots/checkpoints/failure-step-000002",
+    "last_healthy_checkpoint": "health_snapshots/checkpoints/healthy-step-000001",
+    "resume_from_failure_forbidden": true
+  },
+  "independent_verifier": {
+    "status": "verified",
+    "probe_steps": [0, 1, 2],
+    "guards_recomputed": 3,
+    "checkpoint_count": 3,
+    "artifact_file_count": 22,
+    "artifact_total_bytes": 1141294534,
+    "paid_resources_used": false
+  },
+  "interpretation": {
+    "supports": [
+      "parameter-free post-output LayerNorm preserves the 4096 interface and initialization contract",
+      "normalizing output scale alone does not prevent the step-1-to-2 geometry collapse"
+    ],
+    "refutes": [
+      "a fixed output scale is sufficient to keep projector and receiver image geometry healthy",
+      "CE loss decrease is sufficient evidence of image-dependent grounding"
+    ],
+    "visual_ability_established": false,
+    "previous_best_promoted": false,
+    "next_action": "run the matched post_rmsnorm arm; if it also fails, cancel 500-step expansion and preregister residual/gated-residual structure"
+  },
+  "paid_resources_used": false,
+  "final_half_scored": false,
+  "capability_claim_allowed": false,
+  "transfer_label": "directly_transferable"
+}

@@ -1,0 +1,7 @@
+{
+  "critical_checkpoint_must_not_resume": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_structure_screen_hf_v1/post_layernorm/health_snapshots/checkpoints/failure-step-000002",
+  "failed_step": 2,
+  "restored_step": 1,
+  "source": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_structure_screen_hf_v1/post_layernorm/health_snapshots/checkpoints/healthy-step-000001",
+  "status": "rolled_back_to_last_healthy_checkpoint"
+}

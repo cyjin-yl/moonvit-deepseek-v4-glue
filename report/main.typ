@@ -1784,3 +1784,9 @@ Package 15Q 已在任何新结构结果前冻结。它把一个结构变量放�
 `baseline_none` 使用新 runner 在同一 100-step/800-example 合同下重新跑 control，结果在 step 2 自动止损，collapse onset 为 `[1,2]`。CE 从 4.14400 降到 2.43802，但 projector 的 spread/rank ratio 变为 0.2690/0.5022，receiver 变为 0.2254/0.3622；两条 RMS 上升、spread 下降 critical guard 同时触发。step 0/1/2 的 3 个 probe 和 3 个 checkpoint 经独立 verifier 重算通过，完整 checkpoint/optimizer/RNG 原始目录保存在 `D:/V100-artifacts/projector_structure_screen_hf_v1/baseline_none`，Git 只保留小型日志、配置、摘要和指针。
 
 这个 control 支持“当前故障在首两步可复现，健康合同能及时止损”，同时反驳“只要 CE 继续下降就可以进入长训”。它没有产生任何真实 grounding 证据，也没有改变 previous best；下一步继续跑 matched `post_layernorm` 和 `post_rmsnorm`。
+
+== Package 15Q：post-LayerNorm 结果
+
+`post_layernorm` 只在 canonical 4096 输出后加入 affine-free LayerNorm，参数量和初始化权重保持不变。它仍在 step 2 自动止损，onset `[1,2]`；step 1/2 的 CE 为 4.92825/3.60105。projector 的 spread/rank ratio 为 0.1998/0.6452，receiver 为 0.1559/0.5178，两个 RMS-rising/spread-falling critical guard 同时触发。LayerNorm 把输出尺度限制在稳定范围，却没有保持跨图像 spread，说明当前首步更新的问题包含方向共线化，单纯输出归一化不够。
+
+该臂的 3 个 probe、3 个 checkpoint 和 22 项 health artifact 已由独立 verifier 重算通过；完整原始目录在 `D:/V100-artifacts/projector_structure_screen_hf_v1/post_layernorm`。它没有进入 ScreenSpot 或其他能力评测，也没有替代 previous best。下一步运行同预算 `post_rmsnorm`；若同样失败，取消 500-step 扩展，转向 residual/gated-residual 结构。

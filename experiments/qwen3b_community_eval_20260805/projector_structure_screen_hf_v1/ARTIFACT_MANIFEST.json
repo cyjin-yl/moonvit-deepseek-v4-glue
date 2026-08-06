@@ -1,8 +1,8 @@
 {
   "format_version": "experiment-artifact-manifest-v1",
-  "created_at_utc": "2026-08-06T07:36:02.638030+00:00",
+  "created_at_utc": "2026-08-06T07:49:16.786741+00:00",
   "root": "projector_structure_screen_hf_v1",
-  "git_base_sha": "0a05f0e87c9d252759cd0cd675fc52275a5cf659",
+  "git_base_sha": "f14790392609f16777148b251314472c42c5421b",
   "files": {
     "README.md": {
       "bytes": 816,
@@ -75,9 +75,77 @@
     "results/baseline_none/TRAINING_HISTORY.jsonl": {
       "bytes": 1266,
       "sha256": "844c5d5a1409bddf4b9ae320b644fc8634c7a72e4a8ff345f763a183ebd1b10b"
+    },
+    "results/post_layernorm/ATTEMPT.json": {
+      "bytes": 1676,
+      "sha256": "ad0ba3c770b29f82c6c10c9b8d5cd886b2572a1cffe006a2a443242045f9eedf"
+    },
+    "results/post_layernorm/CACHE_VERIFICATION.json": {
+      "bytes": 752,
+      "sha256": "989d6e1bee684233d888860a6883d91419392537ecbf387c64d20db6da16ae1b"
+    },
+    "results/post_layernorm/FAILURE.json": {
+      "bytes": 13295,
+      "sha256": "86a69715914b9345f9e1a15105c9547c2109efcfca7adbb02c5f20b77268582a"
+    },
+    "results/post_layernorm/HEALTH_ARTIFACT_MANIFEST.json": {
+      "bytes": 4558,
+      "sha256": "0dae27c977ef63e8c83f70838b8a41c1f38de5e12687eb4495a2cc8a62682c5e"
+    },
+    "results/post_layernorm/HEALTH_VERIFIER.json": {
+      "bytes": 387,
+      "sha256": "77b52eab27d0ec6c89c4cfd464441ef49c45d82393b7e236d91cbfad247660b0"
+    },
+    "results/post_layernorm/launcher.log": {
+      "bytes": 2942,
+      "sha256": "a3ea92ce143254278bdb529b476f98e05f14cf3d876c083760ed0838f312d724"
+    },
+    "results/post_layernorm/probe_metrics.jsonl": {
+      "bytes": 22827,
+      "sha256": "b0a1211d9210fcfb89395dbacb72ac999621810f032d2e57fd82026b9d4dbb9c"
+    },
+    "results/post_layernorm/RAW_ARTIFACT_POINTER.json": {
+      "bytes": 900,
+      "sha256": "bf8f3da753ea26463019c10a85d7b7a85f6ebe55fe8209439dae6a0716a1b37a"
+    },
+    "results/post_layernorm/RESULT.json": {
+      "bytes": 4822,
+      "sha256": "51e70979c4102044df2341bc2be541f4a7c040411c09c63b0f478b87ec8d00ca"
+    },
+    "results/post_layernorm/ROLLBACK.json": {
+      "bytes": 460,
+      "sha256": "2702ecec5b5ae0fbd92e615069db499e35f7f6b57178613dc5c98e194214f2f3"
+    },
+    "results/post_layernorm/run.log": {
+      "bytes": 2942,
+      "sha256": "a3ea92ce143254278bdb529b476f98e05f14cf3d876c083760ed0838f312d724"
+    },
+    "results/post_layernorm/RUN_CONFIG.json": {
+      "bytes": 13947,
+      "sha256": "31af7b0d9c1877f76a739fcf1af76e700924485e5721607a46cf5afa1aca15d8"
+    },
+    "results/post_layernorm/SUMMARY.json": {
+      "bytes": 1817,
+      "sha256": "a20af6ccb9b2ec87cfba59752fa170f50396be0b64ce9f926c5322c30962d003"
+    },
+    "results/post_layernorm/SUPERVISION_RECORDS.jsonl": {
+      "bytes": 2275709,
+      "sha256": "d90ea7515a67b2f4d77320fe061aef1cfc44ef877726d312366a309390ab5bc9"
+    },
+    "results/post_layernorm/SUPERVISION_SUMMARY.json": {
+      "bytes": 452,
+      "sha256": "b48ccd66814269906b96bebc6a5c3b48727a2d1ea0f935468e1e19ba33d94a7e"
+    },
+    "results/post_layernorm/train_health.jsonl": {
+      "bytes": 1698,
+      "sha256": "7af8d64aa95789fa0997a0d5d6919c2bf83ea1b7d28071b0770f35b4e768ad07"
+    },
+    "results/post_layernorm/TRAINING_HISTORY.jsonl": {
+      "bytes": 1272,
+      "sha256": "d557de372b643d1ed1a69fbafcff186a00842b90ddcc1f46a8c8e65747581afe"
     }
   },
-  "file_count": 18,
-  "total_bytes": 2351557,
+  "file_count": 35,
+  "total_bytes": 4702013,
   "final_half_scored": false
 }

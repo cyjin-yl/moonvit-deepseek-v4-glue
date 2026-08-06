@@ -99,6 +99,15 @@ grounding result; no ScreenSpot or capability checkpoint was promoted. The
 complete raw copy is outside Git at
 `D:/V100-artifacts/projector_structure_screen_hf_v1/baseline_none`.
 
+The matched `post_layernorm` candidate also auto-stopped at step 2 with the
+same onset and the same two critical trend guards. Its CE was `4.92825` at
+step 1 and `3.60105` at step 2; projector spread/rank ratios were
+`0.1998/0.6452`, and receiver ratios were `0.1559/0.5178`. The independent
+verifier passed all three probes/checkpoints. Output normalization held scale
+at the 4096 boundary, yet did not preserve cross-image spread, so this arm is
+not promoted to capability evaluation. Its raw copy is outside Git at
+`D:/V100-artifacts/projector_structure_screen_hf_v1/post_layernorm`.
+
 ## ⚠️ ACTIVE V100 REAL-VISION BRIDGE (2026-08-06)
 
 **Current task / hard boundary**: the engineering mainline is now a fixed real-data bridge on pure-text `Qwen/Qwen2.5-3B-Instruct`, followed by transfer of the same MoonViT-V2/projector/data/eval contract to DeepSeek-V4-Flash-0731. The 0.5B/synthetic line remains mechanism evidence. Do not rent any server, create a paid resource, run the full DeepSeek weights, or inspect final evaluation halves without explicit authorization. Exact V100 environment evidence is under `experiments/v100_perception_20260804/infra/environment/`.

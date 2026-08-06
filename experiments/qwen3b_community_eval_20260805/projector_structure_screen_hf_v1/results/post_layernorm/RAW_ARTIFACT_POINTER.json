@@ -1,0 +1,20 @@
+{
+  "format_version": "qwen3b-projector-structure-raw-pointer-v1",
+  "local_root": "D:/V100-artifacts/projector_structure_screen_hf_v1/post_layernorm",
+  "remote_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_structure_screen_hf_v1/post_layernorm",
+  "complete_raw_copy": true,
+  "local_file_count": 33,
+  "local_total_bytes": 1143600988,
+  "health_manifest": "HEALTH_ARTIFACT_MANIFEST.json",
+  "health_manifest_sha256": "0dae27c977ef63e8c83f70838b8a41c1f38de5e12687eb4495a2cc8a62682c5e",
+  "health_manifest_file_count": 22,
+  "health_manifest_total_bytes": 1141294534,
+  "local_rehash": {
+    "status": "verified",
+    "manifest_entries_checked": 22,
+    "mismatches": 0,
+    "extra_raw_log": "launcher.log"
+  },
+  "large_files_policy": "checkpoint tensors and optimizer state remain in the local raw archive and are not duplicated in Git",
+  "paid_resources_used": false
+}
