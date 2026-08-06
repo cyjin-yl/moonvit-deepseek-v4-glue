@@ -1,0 +1,29 @@
+{
+  "schema_version": "stripped-native-qwen35-receiver-smoke-v1",
+  "model_dir": "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/models/Qwen3.5-4B",
+  "config_sha256": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670",
+  "weight_manifest": "configs/qwen3.5-4b-hf-sha256.json",
+  "weight_manifest_sha256": "e79926d0793a18501315d4d197359518192536ba0b2d3e0cc0f77375838bd220",
+  "weights": {
+    "model.safetensors-00001-of-00002.safetensors": "26a93f066e1916adb13453dae5a0c707c0fbc71299ed98779571a907b8e74c61",
+    "model.safetensors-00002-of-00002.safetensors": "cb544bd9bfae93dc59b0f22b292f5933573854a7f9b97835c67060d7d910e188"
+  },
+  "model_type": "qwen3_5",
+  "architectures": [
+    "Qwen3_5ForConditionalGeneration"
+  ],
+  "text_hidden_size": 2560,
+  "native_vision_bypassed": true,
+  "native_vision_forward_calls": 0,
+  "placeholder_token_id": 248056,
+  "dtype": "float16",
+  "device": "cuda",
+  "steps": 1,
+  "learning_rate": 5e-05,
+  "feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/architecture_controls/local_v2_exact_k3/feature_cache_4k_rebound_retry1",
+  "feature_cache_manifest_sha256": "09df2f2cbd502cdf84422eabd499922e7c0cda4fb3368eb0c7cbac4ac21cc023",
+  "projector_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/architecture_controls/local_v2_exact_k3/projector_initializations/step0",
+  "sample_id": "textvqa_train_020685",
+  "shuffled_sample_id": "showui_desktop_003814",
+  "started_utc": "2026-08-06T14:10:49.418607+00:00"
+}

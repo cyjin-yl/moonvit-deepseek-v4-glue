@@ -1,0 +1,16 @@
+{
+  "schema_version": "raw-artifact-pointer-v1",
+  "status": "diagnostic_only_positive_local_signal",
+  "remote_raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_9b_stripped_receiver_bf16_16tok_20260806",
+  "files": ["RUN_CONFIG.json", "SUMMARY.json", "train_health.jsonl"],
+  "model_hf_revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "config_sha256": "d0883072e01861ed0b2d47be3c16c36a8e81c224c7ffaa310c6558fb3f932b05",
+  "weight_manifest": "configs/qwen3.5-9b-hf-sha256.json",
+  "native_vision_forward_calls": 0,
+  "dtype": "bfloat16",
+  "max_visual_tokens": 16,
+  "vision_minus_shuffle": 0.6265277862548828,
+  "sample_count": 1,
+  "capability_claim_allowed": false,
+  "deepseek_transfer_label": "transferable_with_runtime_validation"
+}

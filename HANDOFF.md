@@ -605,3 +605,11 @@ cross-attention, accepting only MoonViT-V2/projector embeddings. Such a result
 is receiver-prior evidence and cannot be promoted as a DeepSeek capability
 result. All arms keep the fixed cache, health guards and community evaluation
 contract.
+
+== Package 15S-capacity：Qwen3.5 receiver-prior 结果
+
+Qwen3.5 的 native vision、merger 和 visual forward 被绕过，外部输入来自同一份 exact-K3 V2 cache/projector；三个成功/失败运行都记录了 `native_vision_forward_calls=0`。4B BF16/16-token 能有限回传梯度，但 `vision−shuffle=-0.0597`；4B FP16 full-token 在首次更新后出现 NaN/Inf；9B BF16/16-token 使用 4096 identity receiver，得到 `vision−shuffle=+0.6265`，CE 从 1.5632 降至 0.9113。
+
+9B 的官方 revision、config 和四个权重 SHA 已冻结。这个正 margin 支持“视觉预训练过的接收器比纯文本 3B 更容易接收新的视觉塔”这一假设，也说明当前 3B 失败并非 V2 版本一个因素。它仍只有一个样本、16 个 token、一步更新，属于 receiver-prior numerical diagnostic；`capability_claim_allowed=false`，不能替代 ScreenSpot、TextVQA、DocVQA、OCRBench，也不能写成 DeepSeek 已获得视力。
+
+下一位执行者先跑 9B BF16 32/64/128/240 token 短筛选，再跑 Qwen2.5-7B 纯文本 matched control。若长 token 仍稳定且 margin 为正，才值得把相同 projector/目标带回固定 3B 社区评测；否则先处理 token 压缩和数值尺度。Qwen3.5 只作为迁移判断材料，不改变正式 DeepSeek 配方。

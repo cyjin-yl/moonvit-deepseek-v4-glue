@@ -1881,3 +1881,11 @@ Package 15Q 已在任何新结构结果前冻结。它把一个结构变量放�
 exact V2 的 projector 学习率降到 `5e-5` 后，前两步 rank/spread 几乎保持 step0，说明更新尺度参与了 geometry collapse。视觉因果信号没有随之出现。首个 paired image-shuffle margin screen 固定 `margin=0.1`、`lambda=0.1`，hinge loss 从 `0.753` 降到 `0.440`，vision-minus-shuffle correct-logp 从 `-0.240` 移到 `-0.061`；step 2 的 vision/shuffled/blind preference 为 `0.625/0.750/0.625`。训练仍由因果 guard 自动止损，独立 verifier 为 `verified`。
 
 这里有一条有限的好消息：exact V2 加小学习率保住了图像表示差异，配对目标也把错误方向推近零。坏消息更关键：模型仍没有更信任正确图片，训练还不能进入完整 ScreenSpot 或长预算。下一项用相同 MoonViT-V2、projector、cache 和 guards 做文本主干容量/接收器先验对照：优先纯文本 Qwen2.5-7B；9B/14B 先通过 V100 32GB 的显存与 input-gradient gate；Qwen3.5 只保留视觉预训练后的语言权重，绕过原生 vision tower、merger 和 cross-attention，由我们的 MoonViT/projector 直接输入。Qwen3.5 结果只回答“有视觉预训练的 receiver 是否更容易读外部视觉 token”，不能替代 DeepSeek-V4-Flash-0731 的真实 Gate D。
+
+== Package 15S-capacity：Qwen3.5 stripped-native 接收器先验
+
+本包绕过 Qwen3.5 原生视觉塔、merger 和 visual forward，只在同一 canonical 4096 projector 边界把 MoonViT-V2 特征送入视觉预训练语言接收器。hook 显示三个运行的 `native_vision_forward_calls=0`。4B BF16/16-token 运行保持 finite，但 `vision-minus-shuffle=-0.0597`；4B FP16 full-token 运行在首个更新后 NaN/Inf；9B BF16/16-token 使用 identity 4096 receiver，得到 `vision-minus-shuffle=+0.6265`，CE 从 1.5632 降到 0.9113。
+
+9B 的官方 HF revision 是 `c202236235762e1c871ad0ccb60c8ee5ba337b9a`，config SHA 是 `d0883072e01861ed0b2d47be3c16c36a8e81c224c7ffaa310c6558fb3f932b05`，权重 SHA 在 `configs/qwen3.5-9b-hf-sha256.json`。这个结果支持接收器容量和视觉预训练先验是当前 3B 失败的候选瓶颈；它没有证明 projector 获得了通用视觉能力。样本数为 1、视觉 token 数为 16、只做一步更新，不能代替固定 ScreenSpot、TextVQA、DocVQA 或 OCRBench。该方法标记为 `transferable_with_runtime_validation`，`capability_claim_allowed=false`。
+
+下一条实验先在 9B BF16 上筛选 32/64/128/240 token 的数值和局部配对稳定性，再做 Qwen2.5-7B 纯文本 matched control。Gate D 继续保持 *NO-GO*，直到 DeepSeek-V4-Flash-0731 的真实量化 input-gradient、完整图像 forward/backward、稳定 save/resume 和固定 benchmark 全部通过。

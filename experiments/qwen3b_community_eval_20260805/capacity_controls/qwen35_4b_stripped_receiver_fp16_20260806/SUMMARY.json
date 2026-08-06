@@ -1,0 +1,41 @@
+{
+  "schema_version": "stripped-native-qwen35-receiver-smoke-v1",
+  "status": "passed_input_gradient_gate",
+  "native_vision_forward_calls": 0,
+  "trajectory": [
+    {
+      "optimizer_step": 0,
+      "ce_loss": 1.2761726379394531,
+      "correct_answer_logp": NaN,
+      "shuffled_answer_logp": NaN,
+      "blind_answer_logp": -12.399547576904297,
+      "vision_minus_shuffle": NaN,
+      "projector_output_rms": NaN,
+      "projector_gradient_norm_before_clip": NaN,
+      "vision_forward_calls": 0,
+      "nan_or_inf": true
+    },
+    {
+      "optimizer_step": 1,
+      "ce_loss": NaN,
+      "correct_answer_logp": NaN,
+      "shuffled_answer_logp": NaN,
+      "blind_answer_logp": -12.399547576904297,
+      "vision_minus_shuffle": NaN,
+      "projector_output_rms": NaN,
+      "projector_gradient_norm_before_clip": null,
+      "vision_forward_calls": 0,
+      "nan_or_inf": true
+    }
+  ],
+  "projector_step0_state_keys": [
+    "linear_1.weight",
+    "linear_2.weight",
+    "output_norm.weight"
+  ],
+  "projector_trainable_parameter_count": 33558528,
+  "wall_seconds": 200.3547747740522,
+  "deepseek_transfer_label": "transferable_with_runtime_validation",
+  "capability_claim_allowed": false,
+  "qwen_proxy_conclusion": "This is a receiver-prior and input-gradient smoke only; it is not a community benchmark result."
+}

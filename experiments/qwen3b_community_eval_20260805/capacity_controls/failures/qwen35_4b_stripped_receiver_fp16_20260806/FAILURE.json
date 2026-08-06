@@ -1,0 +1,8 @@
+{
+  "schema_version": "failure-record-v1",
+  "status": "failed_nonfinite_fp16",
+  "remote_raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/failures/qwen35_4b_stripped_receiver_fp16_20260806",
+  "reason": "projector output, gradient and answer log-prob became NaN/Inf after the first update",
+  "native_vision_forward_calls": 0,
+  "capability_claim_allowed": false
+}

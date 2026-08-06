@@ -1,0 +1,8 @@
+{
+  "schema_version": "failure-record-v1",
+  "status": "timeout_before_result",
+  "remote_raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/failures/attempt02_bf16_full_tokens_timeout_20260806",
+  "reason": "full visual-token BF16 Qwen3.5-4B screen exceeded the local V100 time budget and was terminated before a valid result",
+  "optimizer_steps_completed": 0,
+  "capability_claim_allowed": false
+}

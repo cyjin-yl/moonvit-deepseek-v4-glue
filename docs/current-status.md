@@ -180,3 +180,19 @@ blind、shuffled、random projector、step0 和 previous-best 角色。
 3. 本文：唯一的 live status、证据边界和下一步队列。
 4. `docs/architecture-matrix.md`：架构身份、版本差异和比较解释。
 5. `HANDOFF.md` 与 `report/main.typ`：交接和长篇历史记录；更新时必须引用本文和矩阵，不能另造 live status。
+
+## Package 15S-capacity：Qwen3.5 stripped-native 接收器先验筛选（2026-08-06）
+
+这轮绕过 Qwen3.5 的原生视觉塔、merger 和 visual forward，只保留视觉预训练后的语言接收器，输入仍来自同一份 MoonViT-V2 → projector 的 4096 维接口；hook 显示 `native_vision_forward_calls=0`。它检验的是接收器先验，不是 Qwen3.5 原生 VLM 结果。
+
+| 模型 | 接收宽度 | dtype / token cap | 结果 | 判定 |
+|---|---:|---|---|---|
+| Qwen3.5-4B | 2560，固定 grouped signed adapter | BF16 / 16 | finite，`vision−shuffle=-0.0597` | 有梯度，未出现局部因果优势 |
+| Qwen3.5-4B | 2560，固定 grouped signed adapter | FP16 / full | 首次更新后 NaN/Inf | 数值失败 |
+| Qwen3.5-9B | 4096，identity | BF16 / 16 | finite，`vision−shuffle=+0.6265` | 首个正的接收器先验局部信号 |
+
+9B 使用官方 HF revision `c202236235762e1c871ad0ccb60c8ee5ba337b9a`，config SHA 为 `d0883072e01861ed0b2d47be3c16c36a8e81c224c7ffaa310c6558fb3f932b05`，四个权重 SHA 记录在 `configs/qwen3.5-9b-hf-sha256.json`。完整 JSONL、运行配置和远端 raw 目录指针在 `experiments/qwen3b_community_eval_20260805/capacity_controls/`。
+
+这组结果改变了问题排序：3B 的失败不能只归咎于 V2 压缩，V1 和 exact V2 都失败；9B 在相同 canonical 4096 边界出现正的正确图/打乱图局部差异，说明接收器容量与视觉预训练先验确实是可信瓶颈。证据仍然很弱：9B 只有一个样本、16 个视觉 token、一步更新，没有 ScreenSpot 或真实 VQA 能力结果，也不能宣称 projector 已经成功。Qwen3.5 诊断标记为 `transferable_with_runtime_validation`，不进入 Qwen2.5-3B 社区排行榜。
+
+下一步固定为 9B BF16 的 32/64/128/240 token 短筛选，先确定有限梯度和正向配对信号能否随 token 数保持；随后做 Qwen2.5-7B 的同样 16/240 token 纯文本 matched control。Gate D 仍为 **NO-GO**。

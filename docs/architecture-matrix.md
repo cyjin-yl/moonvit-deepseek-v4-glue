@@ -37,6 +37,8 @@ max-side、视觉 token 上限，并在 cache manifest 中记录每座塔实际�
 | `local_v2_legacy` | 从 Kimi-K3 抽取的 MoonViT-V2；`[tokens,4,1024]`，vision width 1024 | `legacy_pre_norm`：affine pre-LayerNorm；带 bias 的 `4096 → 4096 → 4096` MLP | canonical 4096；33,564,672 参数；配置 `configs/deepseek-v4-flash-0731-projector-moonvit-v2.json` | Package 15E–15R 的真实训练实现。15P geometry、15Q output norm、15R residual screen 的失败结论只适用于这一行；旧 checkpoint 不得成为 `previous_best` 或 DeepSeek 候选 | `historical_failure_only` |
 | `local_v2_exact_k3` | 同一 K3/MoonViT-V2 tower；`[tokens,4,1024]` | vendored `PatchMergerMLPV2`：无视觉侧 pre-norm；bias-free `4096 → 4096 → 4096` MLP；trainable post-RMSNorm | canonical 4096；33,558,528 参数；配置 `configs/deepseek-v4-flash-0731-projector-moonvit-v2-k3-exact.json` 与 `configs/qwen2.5-3b-projector-moonvit-v2-k3-exact.json` | state/forward parity 已有单测；尚无 Qwen3B 训练或能力结果。它是当前 V2 主实验候选 | `transferable_with_runtime_validation` |
 | `qwen35_native_diagnostic` | 原生 Qwen3.5-4B VLM，自带视觉塔和多模态对齐 | 不使用本仓库 projector | 原生模型边界 | 仅验证数据、processor、生成器和 scorer 的阳性诊断；不进入 projector 排名，也不代表 DeepSeek 迁移能力 | `diagnostic_only` |
+| `qwen35_stripped_4b` | Qwen3.5-4B 的视觉预训练语言接收器；原生 visual/merger 绕过 | 本仓库 exact V2 projector + 固定 4096→2560 grouped signed adapter | receiver 2560；BF16/16 token finite，FP16 full-token nonfinite | 接收器先验诊断；`vision−shuffle=-0.0597`，不能称能力结果 | `transferable_with_runtime_validation` |
+| `qwen35_stripped_9b` | Qwen3.5-9B 的视觉预训练语言接收器；原生 visual/merger 绕过 | 本仓库 exact V2 projector + 4096 identity | receiver 4096；BF16/16 token finite | 单样本 `vision−shuffle=+0.6265` 的首个正局部信号；不进入 projector leaderboard | `transferable_with_runtime_validation` |
 
 ### 2.1 来源锁定
 
@@ -58,6 +60,7 @@ max-side、视觉 token 上限，并在 cache manifest 中记录每座塔实际�
 3. V1 通过、exact V2 失败时，优先检查视觉塔版本、预处理、token 压缩和 projector 结构；两者都失败时，3B 纯文本 receiver、监督目标或优化动力学成为更强候选解释。
 4. 两者都通过 health 但 causal benchmark 仍失败时，继续检查训练数据、answer format、解码和 receiver 接口。health 通过只说明表示没有立刻丢失图像差异。
 5. Qwen3.5 native diagnostic 的高分只说明评测链路能产生阳性结果，不能替代 V1/V2 的 `vision − blind`、`vision − shuffled` 和 `trained − random_projector` 证据。
+6. Qwen3.5 stripped-native 运行完全绕过原生视觉路径；9B 的正 margin 只能说明视觉预训练 receiver prior 的单样本可读性，不能归因给 projector，也不能进入 Qwen2.5 社区排行榜。
 
 ## 4. 下一次架构 screen
 
@@ -65,9 +68,10 @@ max-side、视觉 token 上限，并在 cache manifest 中记录每座塔实际�
 
 1. 对 `local_v2_exact_k3` 做 CPU state/forward parity、parameter-count、save/load 和 cache-shape smoke。
 2. 用 pinned `MoonViT-SO-400M` 生成同一 probe/ScreenSpot cache，逐条记录 1152 维输出、processor revision、图像 SHA 和 token 数。
-3. 两臂均从各自冻结 scratch step0 开始，运行相同的 Qwen2.5-3B 高频 health schedule（step 0/1/2/5/10/20/30/50/75/100）。任一 critical guard 触发就保存 failure/rollback artifacts，取消该臂的 500-step 扩展。
-4. 只有健康筛选通过的臂才运行完整 ScreenSpot、TextVQA、DocVQA、OCRBench、synthetic 和 language-retention 合同。所有候选仍需七条件生成与 paired bootstrap。
-5. 结果写入独立 architecture-control manifest；V1/V2 的 checkpoint 不能互相充当 `previous_best`。
+3. 已完成 V1/V2 高频 health screen、接收器容量审计和 Qwen3.5 4B/9B 16-token stripped gate；这些结果不能直接晋升为能力。
+4. 当前下一项是 Qwen3.5-9B BF16 的 32/64/128/240 token 稳定性短筛选；随后做 Qwen2.5-7B 纯文本 matched control。14B 只保留 NF4/FP4 input-gradient gate，现有 GGUF 只可推理。
+5. 只有健康和因果筛选通过的臂才运行完整 ScreenSpot、TextVQA、DocVQA、OCRBench、synthetic 和 language-retention 合同。所有候选仍需七条件生成与 paired bootstrap。
+6. 结果写入独立 architecture-control manifest；V1/V2、纯文本 Qwen 和 stripped-native Qwen3.5 的 checkpoint 不能互相充当 `previous_best`。
 
 ## 5. 迁移门槛
 
