@@ -1,0 +1,9 @@
+{
+  "schema_version": "failure-record-v1",
+  "status": "runtime_nvml_allocator_assert_before_first_optimizer_step",
+  "remote_raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_9b_receiver_prior_train_ceonly_240tok_20260806",
+  "reason": "Qwen3.5-9B BF16 8-sample projector training hit NVML_SUCCESS allocator assert during the first forward; only RUN_CONFIG was produced",
+  "optimizer_steps_completed": 0,
+  "capability_claim_allowed": false,
+  "repair_attempt": "retry at 16 visual tokens with PYTORCH_CUDA_ALLOC_CONF=backend:cudaMallocAsync"
+}

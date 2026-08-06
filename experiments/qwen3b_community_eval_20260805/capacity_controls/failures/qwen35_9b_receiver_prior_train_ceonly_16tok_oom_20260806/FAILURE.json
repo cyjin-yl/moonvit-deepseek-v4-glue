@@ -1,0 +1,9 @@
+{
+  "schema_version": "failure-record-v1",
+  "status": "implementation_memory_retention_oom_before_first_optimizer_step",
+  "remote_raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_9b_receiver_prior_train_ceonly_16tok_20260806",
+  "reason": "health metric lists retained autograd graphs for all eight samples; allocator reached 25.92 GiB and OOMed",
+  "optimizer_steps_completed": 0,
+  "repair": "detach CE, margin and projected probe tensors before storing health rows",
+  "capability_claim_allowed": false
+}

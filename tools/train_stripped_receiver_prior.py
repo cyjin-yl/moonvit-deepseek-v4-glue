@@ -108,9 +108,9 @@ def main() -> None:
             _, shuffle_out, shuffle_labels = expanded_forward(model=model, projector=projector, receiver=receiver, features=shuffled_feature, tokenizer=tokenizer, sample=sample, placeholder_token_id=placeholder, device=device)
             vision_lp = answer_logprob_tensor(vision_out.logits, vision_labels)
             shuffle_lp = answer_logprob_tensor(shuffle_out.logits, shuffle_labels)
-            ce_values.append(vision_out.loss.float())
-            margin_values.append(vision_lp - shuffle_lp)
-            projected_values.append(projector([feature])[0])
+            ce_values.append(vision_out.loss.detach().float())
+            margin_values.append((vision_lp - shuffle_lp).detach())
+            projected_values.append(projector([feature])[0].detach())
             if step < args.steps:
                 loss = vision_out.loss + args.shuffle_margin_lambda * F.relu(args.shuffle_margin - (vision_lp - shuffle_lp))
                 loss.backward()
