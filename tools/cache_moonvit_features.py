@@ -317,8 +317,9 @@ def load_tower(args: argparse.Namespace, *, dtype: torch.dtype):
     # import 解析到 blob 哈希目录，导致 configuration_moonvit.py 丢失。正式
     # 缓存可传入一个由 ``cp -L`` 物化的 real-file snapshot，模型 ID/revision
     # 仍写入 manifest 作为社区身份，权重 snapshot 仍独立哈希。
-    model_id = str(args.moonvit_runtime_snapshot or args.moonvit_model)
-    revision = None if args.moonvit_runtime_snapshot is not None else args.moonvit_revision
+    runtime_snapshot = getattr(args, "moonvit_runtime_snapshot", None)
+    model_id = str(runtime_snapshot or args.moonvit_model)
+    revision = None if runtime_snapshot is not None else args.moonvit_revision
     return MoonViTEncoder.from_pretrained(
         model_id,
         revision=revision,
