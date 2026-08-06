@@ -655,6 +655,32 @@ def _verify_self_hash(payload: dict[str, Any], *, field: str) -> bool:
     return canonical_sha256(copy) == expected
 
 
+def load_health_contract(contract_path: Path) -> dict[str, Any]:
+    """加载共享阈值合同，并允许 architecture arm 只覆盖 probe 身份。"""
+
+    raw = json.loads(contract_path.read_text(encoding="utf-8"))
+    extends = raw.get("extends")
+    if not extends:
+        return raw
+    base_path = Path(str(extends))
+    if not base_path.is_absolute():
+        base_path = contract_path.parent / base_path
+    if not base_path.is_file():
+        raise FileNotFoundError(f"health contract base is absent: {base_path}")
+    base = load_health_contract(base_path)
+
+    def merge(left: dict[str, Any], right: dict[str, Any]) -> dict[str, Any]:
+        result = copy.deepcopy(left)
+        for key, value in right.items():
+            if isinstance(value, dict) and isinstance(result.get(key), dict):
+                result[key] = merge(result[key], value)
+            else:
+                result[key] = copy.deepcopy(value)
+        return result
+
+    return merge(base, raw)
+
+
 def load_health_setup(
     args: argparse.Namespace,
     *,
@@ -676,7 +702,7 @@ def load_health_setup(
     probe_path = args.health_probe_manifest
     cache_path = args.health_probe_feature_cache
     assert contract_path is not None and probe_path is not None and cache_path is not None
-    health_contract = json.loads(contract_path.read_text(encoding="utf-8"))
+    health_contract = load_health_contract(contract_path)
     validate_health_contract(health_contract)
     if health_contract.get("core_qwen_contract_file_sha256") != sha256_file(
         core_contract_path
