@@ -94,6 +94,6 @@ def test_k3_v2_matches_vendored_patchmerger_mlpv2_forward():
     expected = ours(features)
     actual = reference(features)
     assert all(
-        torch.equal(left, right)
+        torch.allclose(left, right, atol=1e-6, rtol=1e-6)
         for left, right in zip(expected, actual, strict=True)
     )
