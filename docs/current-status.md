@@ -214,3 +214,5 @@ Qwen2.5-7B 纯文本 matched control 使用官方 revision `a09a35458c702b33eeac
 再把 V2 的普通连续位置换成 Qwen3.5 原生 3D mRoPE，8-sample/240-token 的 `vision−shuffle` 为 `-0.0375 ± 0.4537`，`vision−blind` 为 `+0.6680 ± 0.2896`，与普通位置几乎一致。因此 Qwen-specific position rule 也没有修复 paired image attribution；该结果不具备 DeepSeek 迁移资格。
 
 9B projector-only backward 的 V100 边界也已测到：240-token 首次尝试触发 NVML allocator assert；修复训练器的 autograd graph retention、缩到 16 tokens 后，仍在 25.88 GiB allocated / 41 MiB free 时 OOM。9B 因此只保留为 inference/input-gradient receiver-prior diagnostic；需要真实多样样本训练时，V100 主线使用 3B/7B，或等待付费硬件授权。
+
+Qwen2.5-7B 反向训练已在 V100 完成一个匹配的 3-step CE-only screen。8 个样本、16 token 全部 finite，projector RMS 和 between-image RMS 基本稳定，梯度从 `137.56` 降到 `3.40`；CE 从 `0.2381` 降到 `0.0094`，但 `vision−shuffle` 从 `+0.0333` 变成 `-0.1027`。这与 3B 的故障方向一致：纯文本容量提高后，CE 更快吸收坐标格式/文本先验，仍没有形成图像归因。下一条正式训练目标必须把 paired image supervision 和 health guard 同时纳入，CE-only 不再进入候选。

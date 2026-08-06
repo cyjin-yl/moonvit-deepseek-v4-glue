@@ -35,3 +35,5 @@
 Qwen3.5 原生 3D mRoPE 的位置诊断（V2、8 samples、240 tokens）为 `vision−shuffle=-0.0375 ± 0.4537`、`vision−blind=+0.6680 ± 0.2896`，与普通连续位置几乎相同。位置规则不是当前 paired attribution gap 的主解释；该分支标记为 `qwen_specific_not_transferable`。
 
 9B projector-only backward 还做了两次小训练修复尝试：240-token 首次 forward 触发 NVML allocator assert；修复 health graph retention 并缩到 16 tokens 后，仍在 25.88 GiB allocated / 41 MiB free 时 OOM。9B 在本机可做 forward/input-gradient 和多 probe inference gate，当前不能做多样样本 projector 训练；本地训练主线回到 3B/7B。
+
+Qwen2.5-7B 的 3-step CE-only projector screen 完成且 finite：CE `0.2381→0.0094`，projector RMS `0.99775→0.99779`，between-image RMS `0.4064→0.4055`，但 `vision−shuffle` `+0.0333→-0.1027`。这是一条健康但错误方向的训练轨迹，说明 7B 也会用坐标/答案先验吸收 CE，不能把 loss 降低写成视觉 grounding 改进。
