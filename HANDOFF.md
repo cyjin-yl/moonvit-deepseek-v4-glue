@@ -1,5 +1,35 @@
 # Handoff
 
+## Projector health contract (2026-08-06, mandatory for the next V100 runs)
+
+The practical objective is easy to state: MoonViT-V2 reads the screenshot, the
+4096-wide projector translates those visual tokens, and a frozen text model must
+change its answer because of the image. A falling cross-entropy number is only an
+optimization signal. The earlier Qwen2.5-3B run showed why: projector RMS grew
+from about 0.124 to 35.74 while effective rank collapsed to about 1, and vision
+and shuffled-image conditions were indistinguishable. That run learned a common
+coordinate prompt, not image-dependent grounding.
+
+The next runs are therefore bound to
+`configs/qwen3b-projector-health-v1.json` and the immutable 50-row
+`health_probe_v1/PROBE_MANIFEST.json`. Every optimizer step writes
+`train_health.jsonl`; steps 0, 1, 2, 5, 10, 20, 30, 50, 75, 100 and then every
+50 steps write representation and eight-row teacher-forced causal probes. Both
+the canonical 4096 boundary and the Qwen receiver are measured. The fixed hard
+thresholds are spread ratio >= 0.25 and effective-rank ratio >= 0.50; top-1
+variance > 0.80 / > 0.90 and RMS ratio > 10 / > 50 are warning / critical.
+
+A critical guard now saves the failure checkpoint, optimizer/RNG state, current
+batch IDs, health/probe logs, the last healthy checkpoint and an onset interval,
+then rolls the in-memory model back to the last healthy state. The independent
+`tools/verify_qwen3b_training_health.py` recomputes guard decisions and rehashes
+the artifact tree. This is a training-safety mechanism, not a visual-ability
+claim: only full ScreenSpot click-in-box and TextVQA/DocVQA/OCRBench causal gains
+can promote a checkpoint. If all four Package-15P geometry arms fail the frozen
+health/CE screen, the 500-step expansion is cancelled and projector structure
+redesign is the next local experiment. DeepSeek-V4-Flash-0731 remains a later,
+unpaid migration target; Gate D is still NO-GO.
+
 ## ⚠️ ACTIVE V100 REAL-VISION BRIDGE (2026-08-06)
 
 **Current task / hard boundary**: the engineering mainline is now a fixed real-data bridge on pure-text `Qwen/Qwen2.5-3B-Instruct`, followed by transfer of the same MoonViT-V2/projector/data/eval contract to DeepSeek-V4-Flash-0731. The 0.5B/synthetic line remains mechanism evidence. Do not rent any server, create a paid resource, run the full DeepSeek weights, or inspect final evaluation halves without explicit authorization. Exact V100 environment evidence is under `experiments/v100_perception_20260804/infra/environment/`.

@@ -7,6 +7,7 @@ import argparse
 import gc
 import hashlib
 import json
+import math
 import os
 import random
 import subprocess
@@ -28,6 +29,7 @@ import moonvit_glue.merge as merge_module
 import moonvit_glue.model as model_module
 import moonvit_glue.projector as projector_module
 import moonvit_glue.proxy_receiver as proxy_receiver_module
+import moonvit_glue.training_health as training_health_module
 import moonvit_glue.training_order as training_order_module
 from moonvit_glue import FeatureCache
 from moonvit_glue.chat_contract import build_chat_supervision
@@ -46,6 +48,19 @@ from moonvit_glue.geometry_regularization import (
     geometry_regularization_loss,
     global_gradient_norm,
     pool_projector_batch,
+)
+from moonvit_glue.grounding_preference import build_counterfactual_targets
+from moonvit_glue.merge import expand_image_placeholders
+from moonvit_glue.paired_preference import answer_logprob_stats
+from moonvit_glue.training_health import (
+    append_jsonl,
+    evaluate_guards,
+    jsonable_probe,
+    probe_due,
+    summarize_batch_embeddings,
+    summarize_probe,
+    tensor_sha256,
+    validate_health_contract,
 )
 from moonvit_glue.model import VisionCausalLM
 from moonvit_glue.projector import PatchMergerProjector
@@ -141,7 +156,7 @@ def verify_frozen_files(root: Path, expected: list[dict], *, label: str) -> list
     return verified
 
 
-def runtime_source_files() -> list[dict[str, Any]]:
+def runtime_source_files(*, include_health: bool = False) -> list[dict[str, Any]]:
     paths = (
         Path(__file__).resolve(),
         Path(chat_contract_module.__file__).resolve(),
@@ -156,6 +171,8 @@ def runtime_source_files() -> list[dict[str, Any]]:
         Path(training_order_module.__file__).resolve(),
         Path(__file__).with_name("verify_feature_cache.py").resolve(),
     )
+    if include_health:
+        paths = (*paths, Path(training_health_module.__file__).resolve())
     return [
         {"path": str(path), "bytes": path.stat().st_size, "sha256": sha256_file(path)}
         for path in paths
@@ -201,16 +218,26 @@ def save_bound_checkpoint(
         "format_version": "qwen3b-fixed-budget-checkpoint-v1",
         **binding,
         "step": int(step),
-        "progress": {
-            key: history[-1][key]
-            for key in (
-                "optimizer_steps",
-                "examples_seen",
-                "answer_tokens_seen",
-                "effective_epochs",
-                "subset_passes",
-            )
-        },
+        "progress": (
+            {
+                key: history[-1][key]
+                for key in (
+                    "optimizer_steps",
+                    "examples_seen",
+                    "answer_tokens_seen",
+                    "effective_epochs",
+                    "subset_passes",
+                )
+            }
+            if history
+            else {
+                "optimizer_steps": 0,
+                "examples_seen": 0,
+                "answer_tokens_seen": 0,
+                "effective_epochs": 0.0,
+                "subset_passes": 0.0,
+            }
+        ),
         "files": files,
         "file_count": len(files),
         "total_bytes": sum(row["bytes"] for row in files),
@@ -262,6 +289,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--geometry-calibration", type=Path)
     parser.add_argument("--geometry-reference-projector", type=Path)
     parser.add_argument("--geometry-arm")
+    parser.add_argument("--health-contract", type=Path)
+    parser.add_argument("--health-probe-manifest", type=Path)
+    parser.add_argument("--health-probe-feature-cache", type=Path)
+    parser.add_argument(
+        "--health-auto-stop",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="health probe 触发 critical guard 时自动保存并停止",
+    )
     parser.add_argument("--allow-dirty-development-run", action="store_true")
     return parser.parse_args()
 
@@ -452,6 +488,495 @@ def prepare_supervision(
     return prepared, summary
 
 
+def _verify_self_hash(payload: dict[str, Any], *, field: str) -> bool:
+    expected = payload.get(field)
+    if not isinstance(expected, str):
+        return False
+    copy = dict(payload)
+    copy.pop(field, None)
+    return canonical_sha256(copy) == expected
+
+
+def load_health_setup(
+    args: argparse.Namespace,
+    *,
+    core_contract_path: Path,
+    core_contract: dict[str, Any],
+) -> dict[str, Any] | None:
+    """在加载模型前冻结并校验通用 projector health 合同。"""
+
+    fields = (
+        args.health_contract,
+        args.health_probe_manifest,
+        args.health_probe_feature_cache,
+    )
+    if all(value is None for value in fields):
+        return None
+    if any(value is None for value in fields):
+        raise ValueError("health arguments must be supplied together")
+    contract_path = args.health_contract
+    probe_path = args.health_probe_manifest
+    cache_path = args.health_probe_feature_cache
+    assert contract_path is not None and probe_path is not None and cache_path is not None
+    health_contract = json.loads(contract_path.read_text(encoding="utf-8"))
+    validate_health_contract(health_contract)
+    if health_contract.get("core_qwen_contract_file_sha256") != sha256_file(
+        core_contract_path
+    ):
+        raise ValueError("health contract is bound to a different core contract")
+    probe = json.loads(probe_path.read_text(encoding="utf-8"))
+    if not _verify_self_hash(probe, field="manifest_sha256"):
+        raise ValueError("health probe manifest self-hash verification failed")
+    probe_contract = health_contract["probe_manifest"]
+    if sha256_file(probe_path) != probe_contract["file_sha256"]:
+        raise ValueError("health probe manifest file SHA-256 differs")
+    if probe.get("manifest_sha256") != probe_contract["manifest_sha256"]:
+        raise ValueError("health probe manifest canonical SHA-256 differs")
+    if int(probe.get("count", -1)) != int(probe_contract["count"]):
+        raise ValueError("health probe sample count differs")
+    cache_manifest_path = cache_path / "MANIFEST.json"
+    if sha256_file(cache_manifest_path) != probe_contract[
+        "feature_cache_manifest_file_sha256"
+    ]:
+        raise ValueError("health probe feature-cache manifest SHA-256 differs")
+    cache_manifest = json.loads(cache_manifest_path.read_text(encoding="utf-8"))
+    cache = FeatureCache(cache_path)
+    cache_by_id = {str(row["id"]): row for row in cache_manifest["records"]}
+    feature_ids = []
+    for row in probe["samples"]:
+        sample_id = str(row["sample_id"])
+        cache_row = cache_by_id.get(sample_id)
+        if cache_row is None:
+            raise ValueError(f"health probe cache is missing sample: {sample_id}")
+        groups = cache.get(sample_id, device="cpu", dtype=torch.float32)
+        if list(groups[0].shape) != [int(value) for value in row["feature_shape"]]:
+            raise ValueError(f"health probe feature shape differs: {sample_id}")
+        if tensor_sha256(groups[0]) != str(row["feature_sha256"]):
+            raise ValueError(f"health probe feature SHA-256 differs: {sample_id}")
+        if str(cache_row["image_sha256"]) != str(row["image_sha256"]):
+            raise ValueError(f"health probe image SHA-256 differs: {sample_id}")
+        feature_ids.append(sample_id)
+    if feature_ids != [str(row["sample_id"]) for row in probe["samples"]]:
+        raise ValueError("health probe sample order is not stable")
+    screen_path = Path(__file__).resolve().parents[1] / health_contract["screen_contract"]["manifest_file"]
+    if sha256_file(screen_path) != health_contract["screen_contract"]["manifest_file_sha256"]:
+        raise ValueError("health probe ScreenSpot manifest file SHA-256 differs")
+    screen_manifest = json.loads(screen_path.read_text(encoding="utf-8"))
+    if screen_manifest.get("manifest_sha256") != health_contract["screen_contract"]["manifest_sha256"]:
+        raise ValueError("health probe ScreenSpot manifest SHA-256 differs")
+    if [str(row["sample_id"]) for row in screen_manifest["samples"]] != feature_ids:
+        raise ValueError("health probe IDs differ from frozen ScreenSpot order")
+    return {
+        "contract": health_contract,
+        "contract_file_sha256": sha256_file(contract_path),
+        "probe": probe,
+        "probe_file_sha256": sha256_file(probe_path),
+        "probe_cache": cache,
+        "probe_cache_root": str(cache_path.resolve()),
+        "probe_cache_manifest_file_sha256": sha256_file(cache_manifest_path),
+        "screen_manifest": screen_manifest,
+        "screen_manifest_file": str(screen_path.resolve()),
+        "screen_manifest_file_sha256": sha256_file(screen_path),
+        "teacher_ids": [
+            str(value) for value in probe["teacher_forced_sample_ids"]
+        ],
+    }
+
+
+def build_health_supervisions(
+    *,
+    tokenizer: Any,
+    prompt_contract: dict[str, Any],
+    screen_manifest: dict[str, Any],
+    teacher_ids: list[str],
+    placeholder_id: int,
+) -> dict[str, dict[str, Any]]:
+    """构造固定 teacher-forced health probe 的三种图像条件。"""
+
+    targets = build_counterfactual_targets(screen_manifest)
+    samples = {str(row["sample_id"]): row for row in screen_manifest["samples"]}
+    output: dict[str, dict[str, Any]] = {}
+    for sample_id in teacher_ids:
+        sample = samples.get(sample_id)
+        if sample is None:
+            raise ValueError(f"health teacher probe sample is absent: {sample_id}")
+        target = targets[sample_id]
+        user_prompt = prompt_contract["user_prompt"].format(
+            instruction=sample["instruction"]
+        )
+        answers = (target["correct_answer"], target["counterfactual_answer"])
+        output[sample_id] = {
+            "sample": sample,
+            "target": target,
+            "vision": [
+                build_chat_supervision(
+                    tokenizer,
+                    system_prompt=prompt_contract["system_prompt"],
+                    user_prompt=user_prompt,
+                    answer=answer,
+                    placeholder_token_id=placeholder_id,
+                    include_image=True,
+                )
+                for answer in answers
+            ],
+            "blind": [
+                build_chat_supervision(
+                    tokenizer,
+                    system_prompt=prompt_contract["system_prompt"],
+                    user_prompt=user_prompt,
+                    answer=answer,
+                    placeholder_token_id=placeholder_id,
+                    include_image=False,
+                )
+                for answer in answers
+            ],
+        }
+    return output
+
+
+def _health_supervision_batch(
+    supervisions: list[Any], *, pad_token_id: int, device: torch.device
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    max_length = max(len(row.input_ids) for row in supervisions)
+    input_ids = torch.full(
+        (len(supervisions), max_length), int(pad_token_id), dtype=torch.long, device=device
+    )
+    attention_mask = torch.zeros_like(input_ids)
+    labels = torch.full_like(input_ids, -100)
+    for index, row in enumerate(supervisions):
+        length = len(row.input_ids)
+        input_ids[index, :length] = torch.tensor(row.input_ids, dtype=torch.long, device=device)
+        attention_mask[index, :length] = 1
+        labels[index, :length] = torch.tensor(row.labels, dtype=torch.long, device=device)
+    return input_ids, attention_mask, labels
+
+
+@torch.inference_mode()
+def _score_health_condition(
+    *,
+    condition: str,
+    rows: list[dict[str, Any]],
+    language_model: torch.nn.Module,
+    projector: PatchMergerProjector,
+    receiver: FixedPairwiseReceiverAdapter,
+    feature_cache: FeatureCache,
+    placeholder_id: int,
+    pad_token_id: int,
+    device: torch.device,
+) -> list[dict[str, Any]]:
+    all_supervisions = [item[condition] for item in rows]
+    flat_supervisions = [supervision for pair in all_supervisions for supervision in pair]
+    input_ids, attention_mask, labels = _health_supervision_batch(
+        flat_supervisions, pad_token_id=pad_token_id, device=device
+    )
+    if condition == "blind":
+        outputs = language_model(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            use_cache=False,
+        )
+    else:
+        image_embeddings: list[torch.Tensor] = []
+        for item in rows:
+            image_id = str(item["sample"]["sample_id"])
+            if condition == "shuffled":
+                image_id = str(item["target"]["counterfactual_sample_id"])
+            projected = projector(
+                feature_cache.get(image_id, device=device, dtype=torch.float32)
+            )[0]
+            received = receiver(projected)
+            image_embeddings.extend((received, received))
+        text_embeddings = language_model.get_input_embeddings()(input_ids)
+        merged = expand_image_placeholders(
+            input_ids=input_ids,
+            text_embeddings=text_embeddings,
+            image_embeddings=image_embeddings,
+            placeholder_token_id=placeholder_id,
+            attention_mask=attention_mask,
+            labels=labels,
+            pad_token_id=pad_token_id,
+        )
+        outputs = language_model(
+            inputs_embeds=merged.inputs_embeds,
+            attention_mask=merged.attention_mask,
+            position_ids=merged.position_ids,
+            use_cache=False,
+        )
+        labels = merged.labels
+        if labels is None:
+            raise AssertionError("health visual labels were not expanded")
+    stats = answer_logprob_stats(outputs.logits, labels)
+    result = []
+    for index, item in enumerate(rows):
+        correct = stats[index * 2]
+        counterfactual = stats[index * 2 + 1]
+        margin = float(correct["logp_mean"]) - float(counterfactual["logp_mean"])
+        result.append(
+            {
+                "sample_id": str(item["sample"]["sample_id"]),
+                "condition": condition,
+                "correct_logp_mean": float(correct["logp_mean"]),
+                "counterfactual_logp_mean": float(counterfactual["logp_mean"]),
+                "correct_margin": margin,
+                "correct_preferred": margin > 0.0,
+            }
+        )
+    return result
+
+
+def run_health_causal_probe(
+    *,
+    rows: list[dict[str, Any]],
+    language_model: torch.nn.Module,
+    projector: PatchMergerProjector,
+    receiver: FixedPairwiseReceiverAdapter,
+    feature_cache: FeatureCache,
+    placeholder_id: int,
+    pad_token_id: int,
+    device: torch.device,
+) -> dict[str, Any]:
+    condition_rows = {
+        condition: _score_health_condition(
+            condition=condition,
+            rows=rows,
+            language_model=language_model,
+            projector=projector,
+            receiver=receiver,
+            feature_cache=feature_cache,
+            placeholder_id=placeholder_id,
+            pad_token_id=pad_token_id,
+            device=device,
+        )
+        for condition in ("vision", "shuffled", "blind")
+    }
+
+    def summary(condition: str) -> dict[str, Any]:
+        values = condition_rows[condition]
+        margins = [float(row["correct_margin"]) for row in values]
+        return {
+            "records": len(values),
+            "preference_count": sum(float(value) > 0.0 for value in margins),
+            "preference": sum(float(value) > 0.0 for value in margins) / len(values),
+            "mean_correct_margin": sum(margins) / len(margins),
+            "mean_correct_logp": sum(
+                float(row["correct_logp_mean"]) for row in values
+            )
+            / len(values),
+            "rows": values,
+        }
+
+    summaries = {condition: summary(condition) for condition in condition_rows}
+    return {
+        "vision_preference": summaries["vision"]["preference"],
+        "shuffled_preference": summaries["shuffled"]["preference"],
+        "blind_preference": summaries["blind"]["preference"],
+        "vision_minus_shuffle_correct_logp": (
+            summaries["vision"]["mean_correct_logp"]
+            - summaries["shuffled"]["mean_correct_logp"]
+        ),
+        "vision_minus_blind_correct_logp": (
+            summaries["vision"]["mean_correct_logp"]
+            - summaries["blind"]["mean_correct_logp"]
+        ),
+        "rows": summaries,
+    }
+
+
+@torch.inference_mode()
+def collect_health_representation(
+    *,
+    projector: PatchMergerProjector,
+    receiver: FixedPairwiseReceiverAdapter,
+    feature_cache: FeatureCache,
+    sample_ids: list[str],
+    device: torch.device,
+) -> tuple[list[torch.Tensor], list[torch.Tensor]]:
+    """逐图前向并立即转回 CPU，限制 V100 probe 峰值显存。"""
+
+    projector_sequences: list[torch.Tensor] = []
+    receiver_sequences: list[torch.Tensor] = []
+    for sample_id in sample_ids:
+        projected = projector(
+            feature_cache.get(sample_id, device=device, dtype=torch.float32)
+        )[0]
+        received = receiver(projected)
+        projector_sequences.append(projected.detach().cpu())
+        receiver_sequences.append(received.detach().cpu())
+        del projected, received
+    return projector_sequences, receiver_sequences
+
+
+def run_health_probe(
+    *,
+    step: int,
+    projector: PatchMergerProjector,
+    receiver: FixedPairwiseReceiverAdapter,
+    language_model: torch.nn.Module,
+    feature_cache: FeatureCache,
+    sample_ids: list[str],
+    step0_projector_sequences: list[torch.Tensor],
+    step0_receiver_sequences: list[torch.Tensor],
+    teacher_rows: list[dict[str, Any]],
+    placeholder_id: int,
+    pad_token_id: int,
+    device: torch.device,
+    training_metrics: dict[str, Any] | None,
+) -> dict[str, Any]:
+    """运行一次固定 representation 与 teacher-forced 小探针。"""
+
+    started = time.perf_counter()
+    projector_sequences, receiver_sequences = collect_health_representation(
+        projector=projector,
+        receiver=receiver,
+        feature_cache=feature_cache,
+        sample_ids=sample_ids,
+        device=device,
+    )
+    payload = summarize_probe(
+        projector_sequences,
+        receiver_sequences,
+        step0_projector_sequences=step0_projector_sequences,
+        step0_receiver_sequences=step0_receiver_sequences,
+        step=step,
+    )
+    payload["causal"] = run_health_causal_probe(
+        rows=teacher_rows,
+        language_model=language_model,
+        projector=projector,
+        receiver=receiver,
+        feature_cache=feature_cache,
+        placeholder_id=placeholder_id,
+        pad_token_id=pad_token_id,
+        device=device,
+    )
+    payload["training"] = training_metrics or {
+        "gradient_norm_before_clip": None,
+        "gradient_norm_after_clip": None,
+    }
+    payload["has_nan_or_inf"] = False
+    payload["probe_wall_seconds"] = time.perf_counter() - started
+    payload["sample_count"] = len(sample_ids)
+    payload["teacher_forced_sample_count"] = len(teacher_rows)
+    return jsonable_probe(payload)
+
+
+def save_health_stop_and_rollback(
+    *,
+    out: Path,
+    step: int,
+    projector: PatchMergerProjector,
+    optimizer: torch.optim.Optimizer,
+    history: list[dict[str, Any]],
+    rng: random.Random,
+    checkpoint_binding: dict[str, Any],
+    batch_ids: list[str],
+    health_row: dict[str, Any] | None,
+    probe: dict[str, Any],
+    guard: dict[str, Any],
+    previous_probe: dict[str, Any] | None,
+    last_healthy_checkpoint: Path | None,
+    device: torch.device,
+) -> dict[str, Any]:
+    """保存 critical 轨迹、failure checkpoint，并把内存状态回滚到健康点。"""
+
+    failure_checkpoint = (
+        out
+        / "health_snapshots"
+        / "checkpoints"
+        / f"failure-step-{int(step):06d}"
+    )
+    failure_binding = {**checkpoint_binding, "health_checkpoint_role": "failure"}
+    failure_manifest = save_bound_checkpoint(
+        directory=failure_checkpoint,
+        projector=projector,
+        optimizer=optimizer,
+        step=step,
+        history=history,
+        rng=rng,
+        binding=failure_binding,
+    )
+    onset_left = (
+        int(previous_probe["step"])
+        if previous_probe is not None
+        else max(0, int(step) - 1)
+    )
+    failure = {
+        "status": "auto_stopped_by_projector_health_guard",
+        "optimizer_step": int(step),
+        "collapse_onset_interval": [onset_left, int(step)],
+        "critical_reasons": list(guard["critical"]),
+        "warnings": list(guard["warnings"]),
+        "current_batch_ids": list(batch_ids),
+        "current_batch_ids_sha256": canonical_sha256(batch_ids),
+        "health_metrics": health_row,
+        "probe_metrics": probe,
+        "failure_checkpoint": str(failure_checkpoint),
+        "failure_checkpoint_file_count": failure_manifest["file_count"],
+        "failure_checkpoint_total_bytes": failure_manifest["total_bytes"],
+        "last_healthy_checkpoint": (
+            str(last_healthy_checkpoint) if last_healthy_checkpoint else None
+        ),
+        "resume_from_failure_forbidden": True,
+        "capability_claim_allowed": False,
+        "final_half_scored": False,
+        "paid_resources_used": False,
+    }
+    write_json(out / "FAILURE.json", failure)
+    rollback = {
+        "status": "no_healthy_checkpoint_available",
+        "source": None,
+        "restored_step": None,
+    }
+    if last_healthy_checkpoint is not None:
+        restored_step, _restored_history, _restored_rng, restored_dir = (
+            load_training_checkpoint(
+                source=last_healthy_checkpoint,
+                projector=projector,
+                optimizer=optimizer,
+                device=device,
+            )
+        )
+        rollback = {
+            "status": "rolled_back_to_last_healthy_checkpoint",
+            "source": str(restored_dir),
+            "restored_step": int(restored_step),
+            "failed_step": int(step),
+            "critical_checkpoint_must_not_resume": str(failure_checkpoint),
+        }
+    write_json(out / "ROLLBACK.json", rollback)
+    failure["rollback"] = rollback
+    return failure
+
+
+def write_health_artifact_manifest(out: Path) -> dict[str, Any]:
+    """绑定训练结束时已封闭的 health/probe/checkpoint 产物。"""
+
+    candidates = [out / "train_health.jsonl", out / "probe_metrics.jsonl"]
+    health_root = out / "health_snapshots"
+    if health_root.exists():
+        candidates.extend(path for path in health_root.rglob("*") if path.is_file())
+    candidates.extend(path for path in (out / "FAILURE.json", out / "ROLLBACK.json") if path.is_file())
+    files = []
+    for path in sorted(set(candidates)):
+        files.append(
+            {
+                "path": path.relative_to(out).as_posix(),
+                "bytes": path.stat().st_size,
+                "sha256": sha256_file(path),
+            }
+        )
+    manifest = {
+        "format_version": "projector-health-artifact-manifest-v1",
+        "files": files,
+        "file_count": len(files),
+        "total_bytes": sum(row["bytes"] for row in files),
+        "run_log": "run.log (closed after the runner returns; independently verify later)",
+        "paid_resources_used": False,
+    }
+    write_json(out / "HEALTH_ARTIFACT_MANIFEST.json", manifest)
+    return manifest
+
+
 def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
     started = time.perf_counter()
     tracked_clean = git_tracked_worktree_clean()
@@ -554,12 +1079,15 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         )
         if target_steps != expected_screen_steps:
             raise ValueError("geometry screen optimizer-step budget differs")
+    health_setup = load_health_setup(
+        args, core_contract_path=args.contract, core_contract=contract
+    )
     formal_run = (
         tracked_clean
         and not args.allow_dirty_development_run
         and target_steps == total_steps
     )
-    source_files = runtime_source_files()
+    source_files = runtime_source_files(include_health=health_setup is not None)
     contract_file_sha = sha256_file(args.contract)
     order_file_sha = sha256_file(args.training_order_manifest)
     cache_manifest_file_sha = sha256_file(cache_manifest_path)
@@ -594,6 +1122,21 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
                 "geometry_lambda": geometry_setup["geometry_lambda"],
             }
         )
+    if health_setup is not None:
+        checkpoint_binding.update(
+            {
+                "health_contract_file_sha256": health_setup[
+                    "contract_file_sha256"
+                ],
+                "health_probe_manifest_file_sha256": health_setup[
+                    "probe_file_sha256"
+                ],
+                "health_probe_cache_manifest_file_sha256": health_setup[
+                    "probe_cache_manifest_file_sha256"
+                ],
+                "health_auto_stop": bool(args.health_auto_stop),
+            }
+        )
     run_config = {
         "format_version": "qwen3b-fixed-budget-training-run-v1",
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -624,6 +1167,16 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         "resume": str(args.resume.resolve()) if args.resume else None,
         "supervision": supervision_summary,
         "geometry_setup": geometry_setup,
+        "health_setup": (
+            {
+                key: value
+                for key, value in health_setup.items()
+                if key not in {"probe_cache", "screen_manifest", "probe"}
+            }
+            if health_setup is not None
+            else None
+        ),
+        "health_auto_stop": bool(args.health_auto_stop),
     }
     write_json(args.out / "RUN_CONFIG.json", run_config)
 
@@ -678,6 +1231,27 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
             device=device,
             dtype=torch.float32,
         ).requires_grad_(False).eval()
+    health_reference_projector = None
+    health_probe_rows: list[dict[str, Any]] = []
+    if health_setup is not None:
+        health_reference_projector = (
+            reference_projector
+            if reference_projector is not None
+            else PatchMergerProjector.from_pretrained(
+                args.projector_dir, device=device, dtype=torch.float32
+            ).requires_grad_(False).eval()
+        )
+        health_supervisions = build_health_supervisions(
+            tokenizer=tokenizer,
+            prompt_contract=prompt_contract,
+            screen_manifest=health_setup["screen_manifest"],
+            teacher_ids=health_setup["teacher_ids"],
+            placeholder_id=placeholder_id,
+        )
+        health_probe_rows = [
+            health_supervisions[sample_id]
+            for sample_id in health_setup["teacher_ids"]
+        ]
     model = VisionCausalLM(
         language_model=language_model,
         projector=projector,
@@ -703,6 +1277,8 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         resume_manifest = verify_bound_checkpoint(
             args.resume, expected_binding=checkpoint_binding
         )
+        if resume_manifest.get("health_checkpoint_role") == "failure":
+            raise ValueError("resume from a critical-collapse checkpoint is forbidden")
         start_step, history, rng, restored_dir = load_training_checkpoint(
             source=args.resume,
             projector=projector,
@@ -731,6 +1307,88 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
     if answer_tokens_seen != expected_resumed_tokens:
         raise ValueError("resume answer-token count differs from frozen supervision")
 
+    health_probe_path = args.out / "probe_metrics.jsonl"
+    health_log_path = args.out / "train_health.jsonl"
+    health_state: dict[str, int] = {}
+    health_previous_probe: dict[str, Any] | None = None
+    health_last_healthy_checkpoint: Path | None = None
+    health_stop_record: dict[str, Any] | None = None
+    health_step0_projector_sequences: list[torch.Tensor] = []
+    health_step0_receiver_sequences: list[torch.Tensor] = []
+    if health_setup is not None:
+        set_stage(stage, "health_probe_step0_reference")
+        probe_cache = health_setup["probe_cache"]
+        probe_ids = [str(row["sample_id"]) for row in health_setup["probe"]["samples"]]
+        health_step0_projector_sequences, health_step0_receiver_sequences = (
+            collect_health_representation(
+                projector=health_reference_projector,
+                receiver=receiver,
+                feature_cache=probe_cache,
+                sample_ids=probe_ids,
+                device=device,
+            )
+        )
+        # step0 只记录一次；恢复运行从已有 step 之后继续，避免伪造新的 step0。
+        if start_step == 0:
+            initial_probe = run_health_probe(
+                step=0,
+                projector=projector,
+                receiver=receiver,
+                language_model=language_model,
+                feature_cache=probe_cache,
+                sample_ids=probe_ids,
+                step0_projector_sequences=health_step0_projector_sequences,
+                step0_receiver_sequences=health_step0_receiver_sequences,
+                teacher_rows=health_probe_rows,
+                placeholder_id=placeholder_id,
+                pad_token_id=int(tokenizer.pad_token_id),
+                device=device,
+                training_metrics=None,
+            )
+            guard = evaluate_guards(
+                initial_probe,
+                previous=None,
+                state=health_state,
+                contract=health_setup["contract"],
+            )
+            initial_probe["guards"] = guard
+            append_jsonl(health_probe_path, initial_probe)
+            health_previous_probe = initial_probe
+            if guard["stop"] and args.health_auto_stop:
+                health_stop_record = {
+                    "step": 0,
+                    "guard": guard,
+                    "probe": initial_probe,
+                }
+            else:
+                healthy_dir = (
+                    args.out / "health_snapshots" / "checkpoints" / "healthy-step-000000"
+                )
+                healthy_binding = {**checkpoint_binding, "health_checkpoint_role": "healthy"}
+                save_bound_checkpoint(
+                    directory=healthy_dir,
+                    projector=projector,
+                    optimizer=optimizer,
+                    step=0,
+                    history=history,
+                    rng=rng,
+                    binding=healthy_binding,
+                )
+                health_last_healthy_checkpoint = healthy_dir
+        else:
+            health_previous_probe = None
+
+    if health_setup is not None:
+        append_jsonl(
+            health_log_path,
+            {
+                "schema_version": "projector-health-step-v1",
+                "event": "run_start",
+                "optimizer_step": int(start_step),
+                "examples_seen": int(examples_seen),
+            },
+        )
+
     history_path = args.out / "TRAINING_HISTORY.jsonl"
     with history_path.open("w", encoding="utf-8") as history_stream:
         for row in history:
@@ -743,6 +1401,8 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         first_gradient_report = None
         last_gradient_report = None
         for zero_based_step in range(start_step, target_steps):
+            if health_stop_record is not None:
+                break
             one_based_step = zero_based_step + 1
             indices = fixed_batch_record_indices(
                 optimizer_step=zero_based_step,
@@ -758,6 +1418,8 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
             auxiliary_result = None
             auxiliary_gradients: tuple[torch.Tensor, ...] | None = None
             auxiliary_gradient_norm = 0.0
+            batch_projector_sequences: list[torch.Tensor] = []
+            batch_receiver_sequences: list[torch.Tensor] = []
             if geometry_setup is not None:
                 assert reference_projector is not None
                 batch_feature_groups = [
@@ -795,12 +1457,28 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
                 )
                 labels = torch.tensor([item["labels"]], dtype=torch.long, device=device)
                 attention_mask = torch.ones_like(input_ids)
-                outputs = model(
-                    input_ids=input_ids,
-                    attention_mask=attention_mask,
-                    labels=labels,
-                    image_feature_groups=feature_groups,
-                )
+                if health_setup is not None:
+                    projected_embeddings = projector(feature_groups)
+                    batch_projector_sequences.extend(
+                        value.detach().cpu() for value in projected_embeddings
+                    )
+                    batch_receiver_sequences.extend(
+                        receiver(value).detach().cpu()
+                        for value in projected_embeddings
+                    )
+                    outputs = model(
+                        input_ids=input_ids,
+                        attention_mask=attention_mask,
+                        labels=labels,
+                        image_embeddings=projected_embeddings,
+                    )
+                else:
+                    outputs = model(
+                        input_ids=input_ids,
+                        attention_mask=attention_mask,
+                        labels=labels,
+                        image_feature_groups=feature_groups,
+                    )
                 loss = outputs.loss
                 if not bool(torch.isfinite(loss)):
                     raise ValueError(
@@ -810,6 +1488,8 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
                 micro_losses.append(float(loss.detach().item()))
                 batch_answer_tokens += int(item["answer_tokens"])
                 del outputs, loss, input_ids, labels, attention_mask, feature_groups
+                if health_setup is not None:
+                    del projected_embeddings
 
             geometry_history = None
             if geometry_setup is not None:
@@ -877,6 +1557,13 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
             )
             if not bool(torch.isfinite(gradient_norm)):
                 raise ValueError("projector gradient norm is non-finite")
+            gradient_norm_after_clip = float(
+                global_gradient_norm(
+                    [parameter.grad for parameter in projector.parameters()]
+                )
+            )
+            if not math.isfinite(gradient_norm_after_clip):
+                raise ValueError("projector gradient norm after clip is non-finite")
             optimizer.step()
             if not all(
                 bool(torch.isfinite(parameter).all())
@@ -891,6 +1578,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
             gradient_report = {
                 "step": one_based_step,
                 "gradient_norm_before_clip": float(gradient_norm.detach().item()),
+                "gradient_norm_after_clip": gradient_norm_after_clip,
                 "parameter_gradients": parameter_gradients,
                 "language_parameter_gradient_tensors": language_gradient_tensors,
             }
@@ -914,6 +1602,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
                 "micro_loss_min": min(micro_losses),
                 "micro_loss_max": max(micro_losses),
                 "gradient_norm_before_clip": float(gradient_norm.detach().item()),
+                "gradient_norm_after_clip": gradient_norm_after_clip,
                 "step_wall_seconds": step_wall,
                 "examples_per_second": len(indices) / step_wall,
                 "peak_gpu_memory_bytes": int(torch.cuda.max_memory_allocated(device)),
@@ -926,6 +1615,147 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
                 json.dumps(history_row, ensure_ascii=False, sort_keys=True) + "\n"
             )
             history_stream.flush()
+            health_row: dict[str, Any] | None = None
+            if health_setup is not None:
+                if len(batch_projector_sequences) < 2:
+                    raise ValueError("health batch probe needs at least two images")
+                batch_health = summarize_batch_embeddings(
+                    batch_projector_sequences, batch_receiver_sequences
+                )
+                geometry_loss_value = (
+                    float(auxiliary_result.total.detach().item())
+                    if auxiliary_result is not None
+                    else 0.0
+                )
+                geometry_lambda_value = (
+                    float(geometry_setup["geometry_lambda"])
+                    if geometry_setup is not None
+                    else 0.0
+                )
+                ce_loss_value = float(history_row["loss"])
+                health_row = {
+                    "schema_version": "projector-health-step-v1",
+                    "optimizer_step": one_based_step,
+                    "step": one_based_step,
+                    "examples_seen": examples_seen,
+                    "answer_tokens_seen": answer_tokens_seen,
+                    "projector_output_rms": batch_health["projector_output_rms"],
+                    "receiver_output_rms": batch_health["receiver_output_rms"],
+                    "between_image_rms": batch_health["between_image_rms"],
+                    "within_image_token_rms": batch_health["within_image_token_rms"],
+                    "relative_spread": batch_health["relative_spread"],
+                    "projector_relative_spread": batch_health[
+                        "projector_relative_spread"
+                    ],
+                    "receiver_relative_spread": batch_health[
+                        "receiver_relative_spread"
+                    ],
+                    "mean_direction_fraction": batch_health[
+                        "mean_direction_fraction"
+                    ],
+                    "projector_gradient_norm_before_clip": float(
+                        gradient_norm.detach().item()
+                    ),
+                    "projector_gradient_norm_after_clip": gradient_norm_after_clip,
+                    "ce_loss": ce_loss_value,
+                    "geometry_loss": geometry_loss_value,
+                    "total_loss": ce_loss_value + geometry_lambda_value * geometry_loss_value,
+                    "has_nan_or_inf": False,
+                    "learning_rate": float(optimizer.param_groups[0]["lr"]),
+                    "optimizer_steps": one_based_step,
+                    "peak_gpu_memory_bytes": int(torch.cuda.max_memory_allocated(device)),
+                }
+                append_jsonl(health_log_path, health_row)
+
+                if probe_due(
+                    one_based_step,
+                    max_step=target_steps,
+                    every_after=int(
+                        health_setup["contract"]["probe_schedule"]["every_after_step"]
+                    ),
+                ):
+                    set_stage(stage, f"health_probe_step_{one_based_step}")
+                    probe = run_health_probe(
+                        step=one_based_step,
+                        projector=projector,
+                        receiver=receiver,
+                        language_model=language_model,
+                        feature_cache=health_setup["probe_cache"],
+                        sample_ids=probe_ids,
+                        step0_projector_sequences=health_step0_projector_sequences,
+                        step0_receiver_sequences=health_step0_receiver_sequences,
+                        teacher_rows=health_probe_rows,
+                        placeholder_id=placeholder_id,
+                        pad_token_id=int(tokenizer.pad_token_id),
+                        device=device,
+                        training_metrics={
+                            "gradient_norm_before_clip": health_row[
+                                "projector_gradient_norm_before_clip"
+                            ],
+                            "gradient_norm_after_clip": health_row[
+                                "projector_gradient_norm_after_clip"
+                            ],
+                            "ce_loss": health_row["ce_loss"],
+                            "geometry_loss": health_row["geometry_loss"],
+                            "total_loss": health_row["total_loss"],
+                            "learning_rate": health_row["learning_rate"],
+                            "examples_seen": examples_seen,
+                        },
+                    )
+                    guard = evaluate_guards(
+                        probe,
+                        previous=health_previous_probe,
+                        state=health_state,
+                        contract=health_setup["contract"],
+                    )
+                    probe["guards"] = guard
+                    append_jsonl(health_probe_path, probe)
+                    if guard["stop"] and args.health_auto_stop:
+                        health_stop_record = save_health_stop_and_rollback(
+                            out=args.out,
+                            step=one_based_step,
+                            projector=projector,
+                            optimizer=optimizer,
+                            history=history,
+                            rng=rng,
+                            checkpoint_binding=checkpoint_binding,
+                            batch_ids=[prepared[index]["id"] for index in indices],
+                            health_row=health_row,
+                            probe=probe,
+                            guard=guard,
+                            previous_probe=health_previous_probe,
+                            last_healthy_checkpoint=health_last_healthy_checkpoint,
+                            device=device,
+                        )
+                        print(
+                            f"health auto-stop at optimizer_step {one_based_step}: "
+                            f"{guard['critical']}",
+                            flush=True,
+                        )
+                    else:
+                        healthy_dir = (
+                            args.out
+                            / "health_snapshots"
+                            / "checkpoints"
+                            / f"healthy-step-{one_based_step:06d}"
+                        )
+                        healthy_binding = {
+                            **checkpoint_binding,
+                            "health_checkpoint_role": "healthy",
+                        }
+                        save_bound_checkpoint(
+                            directory=healthy_dir,
+                            projector=projector,
+                            optimizer=optimizer,
+                            step=one_based_step,
+                            history=history,
+                            rng=rng,
+                            binding=healthy_binding,
+                        )
+                        health_last_healthy_checkpoint = healthy_dir
+                    health_previous_probe = probe
+                    projector.train()
+                    model.train()
             if one_based_step == 1 or one_based_step % 10 == 0:
                 print(
                     f"optimizer_step {one_based_step}/{target_steps} "
@@ -934,6 +1764,8 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
                     f"step_wall={step_wall:.3f}s",
                     flush=True,
                 )
+            if health_stop_record is not None:
+                break
             if (
                 one_based_step % args.checkpoint_every == 0
                 or one_based_step == target_steps
@@ -962,6 +1794,63 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
     )
     if answer_tokens_seen != expected_tokens_seen:
         raise ValueError("final answer-token count differs from frozen supervision")
+    actual_steps = int(history[-1]["optimizer_steps"]) if history else int(start_step)
+    if health_stop_record is not None:
+        if health_stop_record.get("status") != "auto_stopped_by_projector_health_guard":
+            health_stop_record = save_health_stop_and_rollback(
+                out=args.out,
+                step=int(health_stop_record["step"]),
+                projector=projector,
+                optimizer=optimizer,
+                history=history,
+                rng=rng,
+                checkpoint_binding=checkpoint_binding,
+                batch_ids=[],
+                health_row=None,
+                probe=health_stop_record["probe"],
+                guard=health_stop_record["guard"],
+                previous_probe=None,
+                last_healthy_checkpoint=health_last_healthy_checkpoint,
+                device=device,
+            )
+        health_artifacts = write_health_artifact_manifest(args.out)
+        stopped_losses = [float(row["loss"]) for row in history]
+        summary = {
+            "status": "auto_stopped_by_projector_health_guard",
+            "formal_training_complete": False,
+            "capability_claim_allowed": False,
+            "visual_ability_established": False,
+            "previous_best": "step0",
+            "final_half_scored": False,
+            "paid_resources_used": False,
+            "runner_git_sha": current_git_sha,
+            "git_tracked_worktree_clean": tracked_clean,
+            "target_optimizer_steps": target_steps,
+            "optimizer_steps_completed": actual_steps,
+            "examples_seen": examples_seen,
+            "answer_tokens_seen": answer_tokens_seen,
+            "loss_first": stopped_losses[0] if stopped_losses else None,
+            "loss_last": stopped_losses[-1] if stopped_losses else None,
+            "training_wall_seconds": training_wall,
+            "total_wall_seconds": time.perf_counter() - started,
+            "peak_gpu_memory_bytes": int(torch.cuda.max_memory_allocated(device)),
+            "critical_reasons": health_stop_record["critical_reasons"],
+            "collapse_onset_interval": health_stop_record[
+                "collapse_onset_interval"
+            ],
+            "failure_checkpoint": health_stop_record["failure_checkpoint"],
+            "last_healthy_checkpoint": health_stop_record[
+                "last_healthy_checkpoint"
+            ],
+            "rollback": health_stop_record["rollback"],
+            "health_artifact_file_count": health_artifacts["file_count"],
+            "health_artifact_total_bytes": health_artifacts["total_bytes"],
+            "transfer_label": "directly_transferable",
+        }
+        set_stage(stage, "health_auto_stopped")
+        write_json(args.out / "SUMMARY.json", summary)
+        print(json.dumps(summary, ensure_ascii=False, indent=2), flush=True)
+        return summary
     final_checkpoint = args.out / "checkpoints" / f"step-{target_steps:06d}"
     final_checkpoint_manifest = json.loads(
         (final_checkpoint / "CHECKPOINT_MANIFEST.json").read_text(encoding="utf-8")
@@ -1019,6 +1908,26 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         "supervision_records_sha256": supervision_summary["records_file_sha256"],
         "transfer_label": "transferable_with_runtime_validation",
     }
+    if health_setup is not None:
+        health_artifacts = write_health_artifact_manifest(args.out)
+        summary.update(
+            {
+                "health_contract_file_sha256": health_setup[
+                    "contract_file_sha256"
+                ],
+                "health_probe_manifest_file_sha256": health_setup[
+                    "probe_file_sha256"
+                ],
+                "health_probe_count": len(health_setup["probe"]["samples"]),
+                "health_probe_schedule": health_setup["contract"][
+                    "probe_schedule"
+                ],
+                "health_artifact_file_count": health_artifacts["file_count"],
+                "health_artifact_total_bytes": health_artifacts["total_bytes"],
+                "health_auto_stop": bool(args.health_auto_stop),
+                "health_completed_without_critical": True,
+            }
+        )
     if geometry_setup is not None:
         if len(geometry_rows) != target_steps:
             raise ValueError("geometry history is missing optimizer steps")

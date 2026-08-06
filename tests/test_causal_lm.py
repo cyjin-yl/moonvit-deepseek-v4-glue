@@ -91,6 +91,65 @@ def test_parameter_free_receiver_adapts_canonical_width_and_keeps_projector_only
     assert all(parameter.grad is None for parameter in lm.parameters())
 
 
+def test_health_observation_path_preserves_exact_forward_and_projector_gradient():
+    """在线健康监控预先取得 projector 输出时不能改变训练数值路径。"""
+
+    torch.manual_seed(20260805)
+    lm = GPT2LMHeadModel(
+        GPT2Config(
+            vocab_size=32,
+            n_embd=4,
+            n_layer=1,
+            n_head=2,
+            n_positions=16,
+            bos_token_id=1,
+            eos_token_id=2,
+        )
+    )
+    projector = PatchMergerProjector(
+        ProjectorConfig(vision_width=3, language_width=8, merge_factor=2)
+    )
+    receiver = FixedPairwiseReceiverAdapter(8, 4, seed=20260805)
+    model = VisionCausalLM(
+        language_model=lm,
+        projector=projector,
+        receiver_adapter=receiver,
+        placeholder_token_id=31,
+        backbone_kind="generic",
+        freeze_language_model=True,
+    )
+    input_ids = torch.tensor([[1, 31, 7, 8, 2]])
+    labels = torch.tensor([[1, -100, 7, 8, 2]])
+    features = [torch.randn(2, 2, 3)]
+
+    internal = model(
+        input_ids=input_ids,
+        image_feature_groups=features,
+        labels=labels,
+    )
+    internal.loss.backward()
+    internal_gradients = {
+        name: parameter.grad.detach().clone()
+        for name, parameter in projector.named_parameters()
+    }
+    projector.zero_grad(set_to_none=True)
+
+    projected = projector(features)
+    observed = [value.detach().clone() for value in projected]
+    external = model(
+        input_ids=input_ids,
+        image_embeddings=projected,
+        labels=labels,
+    )
+    external.loss.backward()
+
+    assert torch.equal(internal.logits, external.logits)
+    assert torch.equal(internal.loss, external.loss)
+    assert all(torch.equal(left, right) for left, right in zip(observed, projected))
+    for name, parameter in projector.named_parameters():
+        assert torch.equal(parameter.grad, internal_gradients[name])
+
+
 def test_deepseek_adapter_keeps_routing_ids_but_overrides_lookup_embeddings():
     class RecordingLM(torch.nn.Module):
         def __init__(self):

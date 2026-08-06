@@ -27,8 +27,20 @@
       "sha256": "9d824eb3b93f08b649f5ea27286f94611f30cf84dfd9188d72cc8893f97c4c5f"
     },
     "tools/train_qwen3b_proxy.py": {
-      "bytes": 47757,
-      "sha256": "5337a126b8a7fea6724eb53ea09087df9787fbbc9bf171b93abf9e3a5b3d6240"
+      "bytes": 86167,
+      "sha256": "0d67a0a29b8106a6050ecf8e07c8f516c81b8e457d5a65bc70dd73896bfbe0b3"
+    },
+    "src/moonvit_glue/training_health.py": {
+      "bytes": 20204,
+      "sha256": "86c9df5a1715ea24b0015572ffec5fd8a5f1ae2d6d70b3193aa3f9dad41b5784"
+    },
+    "configs/qwen3b-projector-health-v1.json": {
+      "bytes": 4481,
+      "sha256": "c6b8f7c6fcefb2fcf11c4328e1cb1023b571ed36503f3d2519aeb2f257f9a325"
+    },
+    "tools/verify_qwen3b_training_health.py": {
+      "bytes": 7525,
+      "sha256": "9de826b6e3e194776e7aad3cb5541e08da434bc58880602751c1e5f2f3573b43"
     }
   },
   "calibration": {
@@ -48,6 +60,15 @@
     "selection_rule": "smallest nonzero arm passing both representation guards at projector and receiver and final20 CE/control <= 1.25",
     "no_pass_action": "do_not_spend_full_4k_budget_and_redesign_projector_structure_or_objective",
     "pass_action": "train_selected_arm_for_exact_500_steps_then_run_representation_preference_and_generation_gates"
+  },
+  "online_health": {
+    "contract": "configs/qwen3b-projector-health-v1.json",
+    "probe_manifest": "experiments/qwen3b_community_eval_20260805/health_probe_v1/PROBE_MANIFEST.json",
+    "probe_schedule": [0, 1, 2, 5, 10, 20, 30, 50, 75, 100],
+    "after_step_100_every": 50,
+    "auto_stop_and_rollback_required": true,
+    "selection_requires_no_early_collapse_then_recovery": true,
+    "capability_claim_from_health_alone": false
   },
   "hypotheses": {
     "supported_if_pass": "early common-direction and rank collapse is a preventable objective-geometry failure",

@@ -1,0 +1,20 @@
+{
+  "status": "pre_result_contract_extension",
+  "date": "2026-08-06",
+  "reason": "The user-mandated online projector health contract was added after the initial four 100-step arms had completed but before any arm was selected or expanded to 500 steps.",
+  "changes": [
+    "freeze a 50-row ScreenSpot/feature-hash probe",
+    "write per-step train_health.jsonl",
+    "add high-frequency representation and teacher-forced causal probes",
+    "add frozen collapse guards with automatic failure checkpoint and rollback",
+    "add an independent artifact/guard verifier"
+  ],
+  "training_result_created_by_repair": false,
+  "capability_result_created_by_repair": false,
+  "geometry_objective_changed": false,
+  "lambda_values_changed": false,
+  "screen_budget_changed": false,
+  "paid_resources_used": false,
+  "final_half_scored": false,
+  "next_action": "rerun all four Package 15P arms under the health contract before selection"
+}

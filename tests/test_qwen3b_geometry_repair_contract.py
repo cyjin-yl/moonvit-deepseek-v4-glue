@@ -85,6 +85,20 @@ def test_pre_result_binding_failure_is_archived_with_no_training_result():
         assert _sha256(path) == expected["sha256"]
 
 
+def test_online_health_extension_is_frozen_before_next_screen_result():
+    preregistration = _load(PACKAGE / "PREREGISTRATION.json")
+    health = preregistration["online_health"]
+    assert health["probe_schedule"] == [0, 1, 2, 5, 10, 20, 30, 50, 75, 100]
+    assert health["after_step_100_every"] == 50
+    assert health["auto_stop_and_rollback_required"] is True
+    repair = _load(
+        PACKAGE / "failures" / "attempt03_online_health_contract" / "REPAIR_RECORD.json"
+    )
+    assert repair["training_result_created_by_repair"] is False
+    assert repair["geometry_objective_changed"] is False
+    assert repair["screen_budget_changed"] is False
+
+
 def test_test_collection_failure_is_archived():
     failure_root = PACKAGE / "failures" / "attempt02_test_import"
     failure = _load(failure_root / "FAILURE.json")

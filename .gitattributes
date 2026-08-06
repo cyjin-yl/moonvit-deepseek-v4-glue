@@ -2,6 +2,13 @@
 .gitattributes text eol=lf
 configs/deepseek-v4-flash-0731-projector-moonvit-v2.json text eol=lf
 configs/qwen2.5-3b-community-eval-v1.json text eol=lf
+configs/qwen3b-projector-health-v1.json text eol=lf
+src/moonvit_glue/training_health.py text eol=lf
+tools/train_qwen3b_proxy.py text eol=lf
+tools/verify_qwen3b_training_health.py text eol=lf
+tests/test_training_health.py text eol=lf
+tests/test_qwen3b_projector_health_contract.py text eol=lf
+tests/test_qwen3b_training_health_verifier.py text eol=lf
 experiments/qwen3b_community_eval_20260805/** text eol=lf
 experiments/qwen3b_community_eval_20260805/**/*.log -whitespace
 experiments/qwen3b_community_eval_20260805/**/*.safetensors binary

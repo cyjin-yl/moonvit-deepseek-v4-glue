@@ -1,0 +1,18 @@
+{
+  "format_version": "qwen3b-projector-health-probe-artifact-v1",
+  "name": "qwen3b_projector_health_probe_v1",
+  "files": {
+    "PROBE_MANIFEST.json": {
+      "bytes": 25808,
+      "sha256": "00bc648b15edfffd5af4b8ee3e9ea1c378d941ba5462729c385a3117cdb99d2e"
+    },
+    "README.md": {
+      "bytes": 777,
+      "sha256": "9dad60b9b5e37be325e07e57184ab1e46aa4dbeb6fa15a1156a6306f79bf4074"
+    }
+  },
+  "sample_count": 50,
+  "teacher_forced_probe_count": 8,
+  "paid_resources_used": false,
+  "capability_claim_allowed": false
+}

@@ -1,0 +1,727 @@
+{
+  "count": 50,
+  "feature_cache_manifest_file_sha256": "03f35d8cee962a97996f3250e41c351978f28c0ca9a8fe74d4f8d41c411ae7f3",
+  "feature_cache_manifest_sha256": null,
+  "format_version": "qwen3b-projector-health-probe-v1",
+  "immutability_rule": "sample IDs, order, image hashes and feature hashes are frozen after commit",
+  "label": "Frozen representation probe; excluded from training",
+  "manifest_sha256": "0c8db4ebf0b822f288e6f76cf3242fcbf589a443e6913c038def41f54abc995a",
+  "name": "qwen3b_projector_health_probe_v1",
+  "paid_resources_used": false,
+  "samples": [
+    {
+      "cache_record_sha256": "640b10f997c3a8718cd0a63d0258998ee8459b4211418df6f99eb3ce19b3dfc7",
+      "feature_sha256": "440f074fd804ca9d120ada8dea467c291322cb978ee94e5c2d1f36fd25d7f107",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "f079f4ea41b82b4f46a22be3f23f5d179bd720f202ac5a273a8f2a1922a44041",
+      "platform": "Android",
+      "probe_index": 0,
+      "sample_id": "screenspot-0be08781-0472",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "eb288caf1bcfd18056a22f61212fd3d3400e7e69082f81572280ed83d8ea6584",
+      "feature_sha256": "1fc6196075c9d87a2c2de81dd408148a0fce999415a3c5bfe1e0ef9f62d79550",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "6bd1ccda81551c9a0e0f45f8cb417abbfd16b42734d05af63ed9b389b4bd7108",
+      "platform": "Android",
+      "probe_index": 1,
+      "sample_id": "screenspot-0be08781-0689",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "19df98407e1a0e2a1ad31ebfe9fa6175360d89149f4d6752099deeb9c003f5e5",
+      "feature_sha256": "be4ac10ed854d9e348b72cfc554a2e2b15f03600eb569f71eba98fbfa6bd3b86",
+      "feature_shape": [
+        777,
+        4,
+        1024
+      ],
+      "image_sha256": "5c0c2020d430a1fa1996f7589aa7d5c119a437e4725029a510ac0d611839e727",
+      "platform": "Web",
+      "probe_index": 2,
+      "sample_id": "screenspot-0be08781-0948",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "58fd72118e206092dcdeea0d282a6765f90b8cf3be78036a1b095aef2db72a90",
+      "feature_sha256": "ffd8c8231e850eda3df77325ac3da0b1c1c49acef382c077ee50add34c62da74",
+      "feature_shape": [
+        700,
+        4,
+        1024
+      ],
+      "image_sha256": "a95dc169d0b8d74a162569bdda4a47874a271edaeac41affb0882f5acea99e15",
+      "platform": "Windows",
+      "probe_index": 3,
+      "sample_id": "screenspot-0be08781-0054",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "284fcf1770bfcce3d87b8a9ea91fa9109e34a66ca2c66f22999a44ce1420040c",
+      "feature_sha256": "8756eaf1faaaede886676deeab4fc5020babfde9ab447d64f6156d14c25ddafe",
+      "feature_shape": [
+        255,
+        4,
+        1024
+      ],
+      "image_sha256": "d1392a6eaecfc9ab42a4f4318a27b54070d82bfad428dc5ac877a38aa453517f",
+      "platform": "Windows",
+      "probe_index": 4,
+      "sample_id": "screenspot-0be08781-0160",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "5cbb4a21efa7a8bebf2b86d11e9aa6246d1838a0a476f877fb5931c67746f340",
+      "feature_sha256": "83624748a7044a560c116f17d02a430ec74c74751cbb1d55cfc3d0dcf20d800d",
+      "feature_shape": [
+        888,
+        4,
+        1024
+      ],
+      "image_sha256": "de6177c16c944bf674ad646efd4fd4326f320a1ada30413967edf0761f5740cb",
+      "platform": "macOS",
+      "probe_index": 5,
+      "sample_id": "screenspot-0be08781-0194",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "196f01fd29427776816def7f2452bba47e9c64271284c354738b1965c55fc2d6",
+      "feature_sha256": "c589458b5133fe7d7631d0886799456b8e8db2306f6839745a4276f9c127caf1",
+      "feature_shape": [
+        962,
+        4,
+        1024
+      ],
+      "image_sha256": "c91bd50bc2d190e2cfb1e501f9c7951adfbc9f069c7380896a127584bd129438",
+      "platform": "iOS",
+      "probe_index": 6,
+      "sample_id": "screenspot-0be08781-0620",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "5e884c395ee9953eb0de55c3dcd8fd5089be6bdb75b23c1c259c14e4ba9d5b80",
+      "feature_sha256": "8128f664663a810aebd7b3e81fe911cfd44e59fb963bc2477c76d7d819052017",
+      "feature_shape": [
+        999,
+        4,
+        1024
+      ],
+      "image_sha256": "c672f3a2f43fb3f71388cfa3e9e122c522236ca85324d59f50a198aa1244bba6",
+      "platform": "macOS",
+      "probe_index": 7,
+      "sample_id": "screenspot-0be08781-0213",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "9a8e721366e1ee42f843230195ba8fdb0be788c9234e8edfe44fb2cd42ca11c3",
+      "feature_sha256": "2ea7235f1a8479a8e232bbe25acc55fcb29e3a561aa6845db81c7d4c856d2eb6",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "69a39654e0c81c9ac38c16e4d57e9683dab92573da26cff614a81f7f6061c27a",
+      "platform": "Android",
+      "probe_index": 8,
+      "sample_id": "screenspot-0be08781-0555",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "b0e3a1abb2b28378017347789608a9d6c04a043362758c2515ce71d1fb9038b0",
+      "feature_sha256": "f5891967af7910b961e33837fecf3357861b9ce921534cb628aad00c412070b3",
+      "feature_shape": [
+        1036,
+        4,
+        1024
+      ],
+      "image_sha256": "aefce25171027733c81ee62a8e2d7ddef760c4c7b2d5efbd50454b80a20fe268",
+      "platform": "macOS",
+      "probe_index": 9,
+      "sample_id": "screenspot-0be08781-0227",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "713f5a0b30b0ce5e4b21b7c4d0fe6161c5388bf980c81fec4c0733f788074b7f",
+      "feature_sha256": "f49fa1c1e3683b79726f81e532bc1879e0d43b0743c51e5b4dc767da7eda20ea",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "17b52672277874b1c4b140f22cd4c368643f6213b57ee749e4a530beb05a96a1",
+      "platform": "iOS",
+      "probe_index": 10,
+      "sample_id": "screenspot-0be08781-0833",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "ff5124a8c191853ab06096b40a685caf6cdb9d01e1812e429dc1c32a1ae4cf0f",
+      "feature_sha256": "9bf7a90e73554496d9c409e2d65853a4ed72ce50b6350d45e5543867cea1781b",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "ee64b1205c6d6917650b6577b930d0dae957edbf961fa48d5275322ca779aff4",
+      "platform": "Android",
+      "probe_index": 11,
+      "sample_id": "screenspot-0be08781-0596",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "f09cd17acc4153c3ff8cae4e28ff382ccfcf7619b12c76ea6492f77bb44b4637",
+      "feature_sha256": "fc326722c33f947ea25d1015d14fe49c48500774763e284c99942abd40791ec2",
+      "feature_shape": [
+        700,
+        4,
+        1024
+      ],
+      "image_sha256": "9b313894d70c16c3ce09adb404fac1bd32334fc50bf761014bf0fe44761def1c",
+      "platform": "Windows",
+      "probe_index": 12,
+      "sample_id": "screenspot-0be08781-0000",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "97f10b49a35afe9910c3ce77e850c33078c8a476fbefe3276d70d59955633827",
+      "feature_sha256": "d95afa0cbf20f0199c45708fc93d25313495f8594b573e5601c2ca2da1956a44",
+      "feature_shape": [
+        962,
+        4,
+        1024
+      ],
+      "image_sha256": "fc34c9dbdf2184cda06e3e73b9f6c25eea1de0e9ea94d147656538752be504ac",
+      "platform": "iOS",
+      "probe_index": 13,
+      "sample_id": "screenspot-0be08781-0364",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "caf4307e773bb853aab2ebae91b1e1a40906e3947da2a1ff9f42dcef7c86f31c",
+      "feature_sha256": "5bfad7444f41fe3334ac4ca96f49594fc5a142d922bb75a99e573054305a4ec5",
+      "feature_shape": [
+        700,
+        4,
+        1024
+      ],
+      "image_sha256": "9a08ccd9ff49ec98d7c9cfabec5082fc8f26219ff6a03454e5a122348565964a",
+      "platform": "Windows",
+      "probe_index": 14,
+      "sample_id": "screenspot-0be08781-0024",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "9a8bda88ef29a4197f0bfbb57926a835263c0371cab6d8b22524e114d515fe08",
+      "feature_sha256": "8ee11fc3851ea6ec837d29b39bc716108805e143824adfb058f4d140865841ff",
+      "feature_shape": [
+        962,
+        4,
+        1024
+      ],
+      "image_sha256": "4526f978acf9a96e694561d57211d0ece85af5d9506c5e5ce44037f345b68977",
+      "platform": "macOS",
+      "probe_index": 15,
+      "sample_id": "screenspot-0be08781-0267",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "0252e5f6c0b8aaa4978c6c1b751a74f22bee65ddb7b96ddb26b332e0b4cc7939",
+      "feature_sha256": "c45dfe31de01d0a26fa051c98e77e7c3fcb6e14d3a872bdc5736ca018448f2fe",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "541cf48d47cfc4e75e8c817a32c88d1be9a8ba45a853898cbc9c33be195df1b1",
+      "platform": "iOS",
+      "probe_index": 16,
+      "sample_id": "screenspot-0be08781-0813",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "03b084442fbfa33289cad85d48909a96531fe74c539038c9348610390ded41b4",
+      "feature_sha256": "0b3a10453ca3da33e4da6968f3717f4255de2ff3f67bcefdcb20bc3b79a3d69a",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "adf3d3b6f759366336aa998802c04a761bda0cdc76eff8e9e4bd6b5e499f6bd2",
+      "platform": "iOS",
+      "probe_index": 17,
+      "sample_id": "screenspot-0be08781-0656",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "8abe24fcdd210491a47ad5a47c45c9bd91a76bcbfbb8c87734fe722c780efd9e",
+      "feature_sha256": "99763c57b758488889d3d65f50602665e536282b0cf143cc0fa20aa4be5be28e",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "12c368d42fa5dd764752577dfd20dbce1842b16cb9c0d0c35ebc5af99811ede2",
+      "platform": "Android",
+      "probe_index": 18,
+      "sample_id": "screenspot-0be08781-0680",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "40fe15457f34c422d845b26acc2adf8e1fa0476dff332c6ac87c56fd8f2ce48c",
+      "feature_sha256": "b266be1eb396e7f729ed03111c0dbd81be8e3987bf4af521450bbc55e57686e9",
+      "feature_shape": [
+        777,
+        4,
+        1024
+      ],
+      "image_sha256": "b9ec93b59eda5b132cb8304d32bb1787932b6fd6280bf239c5c2e19b0837080d",
+      "platform": "Web",
+      "probe_index": 19,
+      "sample_id": "screenspot-0be08781-1012",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "c57fb4ce76f39081ef0abe115bb0aa5fe9bd94d08ef31bed8868fdea704ec662",
+      "feature_sha256": "30182d5a9e816024a24b6f04a8fa036521acaeb85f058a6ff94fd4ebfaa0ae74",
+      "feature_shape": [
+        1332,
+        4,
+        1024
+      ],
+      "image_sha256": "029ac3172cc9b85fac4b44d4b4ab79a4a3c4e6ba572bc4c6de4bf0b4b6a50349",
+      "platform": "macOS",
+      "probe_index": 20,
+      "sample_id": "screenspot-0be08781-0163",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "6d237361f9ab9d684047f7f460982327c3d083fecfc6e0ad9b4fa9dfdf5f172f",
+      "feature_sha256": "fac1fc3b23f0c8d3cbc30894b47aee3c6d9c6f265c584651ae8c52a50b7fa74b",
+      "feature_shape": [
+        777,
+        4,
+        1024
+      ],
+      "image_sha256": "34791618cd8a0fcd01b26262d7612b71507d367c4eeef00e70cfdb7113f438b9",
+      "platform": "Web",
+      "probe_index": 21,
+      "sample_id": "screenspot-0be08781-1180",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "7e5db81a4ffbcce76986c6cdc40443a606c090901b0572def561d0436314b098",
+      "feature_sha256": "026a0439e67c4e7648134c297a3aed909fde9639050c78648723b7e3dcd77db4",
+      "feature_shape": [
+        777,
+        4,
+        1024
+      ],
+      "image_sha256": "691ed685f177684b9ae22eaf2adada4ebdcaeba08544cb05a191649957b1f225",
+      "platform": "Web",
+      "probe_index": 22,
+      "sample_id": "screenspot-0be08781-1021",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "9fcc92229d4ad182adb19c54714293452faa41a2003e37e0d4fc6aa3433d8fc6",
+      "feature_sha256": "760f2602b7a5298bacf462f05ec9106a3c36436485b0dd4eebb2697bc3101b10",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "7e1b7c7ec0741ffdaa5351a573fce665c36a9b6aa31ba30f8708ae7fccf357e2",
+      "platform": "Android",
+      "probe_index": 23,
+      "sample_id": "screenspot-0be08781-0588",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "1fa599c096bb6e7d5a6a80c2b01894cec83b7af1c33b5c3b7866c1a9dafb5e2f",
+      "feature_sha256": "1a48debcd579b0fe357df8daf1c7d02e067cf120dd80187b2de7beac1802ffde",
+      "feature_shape": [
+        700,
+        4,
+        1024
+      ],
+      "image_sha256": "010593b687f79823eb4fedf06e0d47e98397ed199d77704d81c4e844e00883b5",
+      "platform": "Windows",
+      "probe_index": 24,
+      "sample_id": "screenspot-0be08781-0010",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "55c748c4dfedce4accb3d4165fd3d408bca582b74db6cce391cac17ed5670d85",
+      "feature_sha256": "021fdf6b744bfdc054a9ed2c3e88b8ce3f3dc7a53b964e98fd87d49e14bbcebd",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "0f805f8ff57f3e562c66528f8316ced9049080977e093087b346f0eedc6c5a04",
+      "platform": "iOS",
+      "probe_index": 25,
+      "sample_id": "screenspot-0be08781-0366",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "516bbff2912262faa3d0dfafc3cd70a997525557a9ea2beae3621c753045a504",
+      "feature_sha256": "5a67096d017ef676e8c765f163b50a7fb4cda0b955c548959a0d4afab0e5f83c",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "7c323e28769f6b350125a6885e7df196bddf7b1a99c15f7d39639cbfb674f5c9",
+      "platform": "Android",
+      "probe_index": 26,
+      "sample_id": "screenspot-0be08781-0743",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "9fa00142d35c415d5b7ae2d80abf221e5c6b65bc4deefedac92daedf0b5759be",
+      "feature_sha256": "5a6d0c1af070e31d0b05108dfc950a7380ff83186dd18e16900200beeeb731bb",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "c88ad62ab5ec3d3f25f3f17f7f492476e87a86bdfe371955b3afa0c23167c320",
+      "platform": "iOS",
+      "probe_index": 27,
+      "sample_id": "screenspot-0be08781-0413",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "56e93d277c157987cfb0e83999b188e471d31799bb7855112363a5c8010e3b46",
+      "feature_sha256": "a268cd433e57b5f53e274176cd56804170d2863ead88eb78797e0c8a635e5403",
+      "feature_shape": [
+        1221,
+        4,
+        1024
+      ],
+      "image_sha256": "cf62637abaaf3c4a8e2575103c70041c5c16ac4fe198b2aa2451310c2c3e7e3a",
+      "platform": "macOS",
+      "probe_index": 28,
+      "sample_id": "screenspot-0be08781-0332",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "a60df770d947765769688a37205a0aae564eff1bb473959a7073dd362bcfa615",
+      "feature_sha256": "89e578c33cc97150e5f823026bb767579881ca5cd3c9b27190ba91c9f3554e93",
+      "feature_shape": [
+        1073,
+        4,
+        1024
+      ],
+      "image_sha256": "2fa4aaed1de82f6f1538e2614e2b16fe3c4ebccfb0ba3859c3bc5f0def892c40",
+      "platform": "macOS",
+      "probe_index": 29,
+      "sample_id": "screenspot-0be08781-0295",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "bbcf9ffbba87fc09719c20b2cd785c7fc3d69993719a02a66428216e262aa4b3",
+      "feature_sha256": "317fe38c8f50d2e5bc8f3a58908528e5623d44c00636869491d6ab4bbb821972",
+      "feature_shape": [
+        1147,
+        4,
+        1024
+      ],
+      "image_sha256": "97673546955722ef7ac6afc8e57a818feee6cc45fdebff5f6e1d397da62956b5",
+      "platform": "macOS",
+      "probe_index": 30,
+      "sample_id": "screenspot-0be08781-0251",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "2c3f3494e09d1d0b643ebcd5b45b0c5d4dc64282f41a818d57d06b6dd7b00423",
+      "feature_sha256": "79b3f61bb3a7e880ee82b3e14be0e5aa1cebd4ae99887dc91aa1bc236f3d3612",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "a345af328d2e70792a8d0ed0cbbbde6e1b8508a9be9719555d51a0e94640c1d8",
+      "platform": "iOS",
+      "probe_index": 31,
+      "sample_id": "screenspot-0be08781-0633",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "96568ff28c34116abd1ddbe7dc1c755865348c911a29fb6e19bfd7a2243a9286",
+      "feature_sha256": "d84bfff41c3a0879d5d5d1dab359442cc8b7bd4e9210eba1f73093dd0f91e0df",
+      "feature_shape": [
+        840,
+        4,
+        1024
+      ],
+      "image_sha256": "f224bea2de58c2171ed5b8b8cc8d68b6e96eefa0bbcb82c5af0163bbec3a44f7",
+      "platform": "Windows",
+      "probe_index": 32,
+      "sample_id": "screenspot-0be08781-0142",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "6065afba6c98bff27e806afa1dc60f5d7baf51b4d2b9b961595280d1693e5bb9",
+      "feature_sha256": "e1d703fbadbda01306880ecf58f169f946a4aec737207debf360071737b71552",
+      "feature_shape": [
+        700,
+        4,
+        1024
+      ],
+      "image_sha256": "6a44e88e35a3a32c9aa01dde24cb8ae69a7dba2c7c3582ec11d1c88fe8926e23",
+      "platform": "Windows",
+      "probe_index": 33,
+      "sample_id": "screenspot-0be08781-0075",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "4c354a20f52696ae1a7aa6b0108c7af07de65b02af233936da53b90dbc201bb0",
+      "feature_sha256": "63d983054a51ed266aae60e4a20ce06d22b5b9d7f7157cd3d2b33b0dbe8744ae",
+      "feature_shape": [
+        620,
+        4,
+        1024
+      ],
+      "image_sha256": "21c24a9fe249da9fad64e0690c2bce2d5ae7c95b779bae851c529b661459c368",
+      "platform": "Windows",
+      "probe_index": 34,
+      "sample_id": "screenspot-0be08781-0152",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "73fc0a913e00195bd91bd14b13abd5c72fa9229d62ec71227bdf365a5cdadcc8",
+      "feature_sha256": "5070a5bd0b0d77c98ecf0d3c3e65667f4453ea5c897c025b5069780670f91e41",
+      "feature_shape": [
+        777,
+        4,
+        1024
+      ],
+      "image_sha256": "969bf4e4d006ba3dc7eaea8bead97de2d0c467e3e3f205a7db1b36bc97706c08",
+      "platform": "Web",
+      "probe_index": 35,
+      "sample_id": "screenspot-0be08781-0993",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "fafc3c9e2ced14a5609f331e5d755fdb91488eb3224eccdb4565bf71e50f18fd",
+      "feature_sha256": "feaf9ca98c67edbc1ba1a1afc6a8669a10a8daebb076a0d67ac3adc99c8d44b6",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "6c4f4906a2d3d6e3efca24889e956ea487f4ec0ffd52608fac7a500eac2a78f6",
+      "platform": "Android",
+      "probe_index": 36,
+      "sample_id": "screenspot-0be08781-0503",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "6f4161087aca30b388f5a852eadc0df07dc6ff1806d2a6c2667df379ee9ae6eb",
+      "feature_sha256": "c24e2c4512fc4a3e1b41d9fb28f7445a0c4b1fb2fc9d16788d33b2102cdc5b5c",
+      "feature_shape": [
+        777,
+        4,
+        1024
+      ],
+      "image_sha256": "62f555fc83dfc442845ab894515c443b18faa5bc129badfb2082ab6ceb848999",
+      "platform": "Web",
+      "probe_index": 37,
+      "sample_id": "screenspot-0be08781-0859",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "fa0ece87dcc34eb1d438be4e93dfeb7d2659049997432ae8076408a52bff848d",
+      "feature_sha256": "1578f8b241a8cab4d86533ab60ece67d21e585bfa129f93eaeafcf6329b9194c",
+      "feature_shape": [
+        700,
+        4,
+        1024
+      ],
+      "image_sha256": "b2fc4da6ea9af97a7235670fd428e62871f94a5478a81131de50f9ead6e58806",
+      "platform": "Windows",
+      "probe_index": 38,
+      "sample_id": "screenspot-0be08781-0086",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "df2b57ff28bead5d8417fab9fe0b5a44d07cd5cd3f541db976fd8c01974393f1",
+      "feature_sha256": "3078c718ad11f6f148cc0b0dd459d00ed693e786e115d01f1f8928a3945f1d92",
+      "feature_shape": [
+        777,
+        4,
+        1024
+      ],
+      "image_sha256": "6ee9d7d8ae24f466425efe7c72a63237de0c9d21f204b4dbaf64cdb59a42d4cf",
+      "platform": "Web",
+      "probe_index": 39,
+      "sample_id": "screenspot-0be08781-1058",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "fc10de848c92efe0bc1250171c18646d3c68e13feb864afe8a634214b237fbc4",
+      "feature_sha256": "65b0fabe2a0d9e6051526f87b89836999b5fdc6bb25aa8819bc9ba54bfc764bf",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "85aad49083497e57ff489062c65c63b6c7f5e804fc2e9c08c5db4ae371ad2f30",
+      "platform": "iOS",
+      "probe_index": 40,
+      "sample_id": "screenspot-0be08781-0384",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "dea6d60ff134d4eff55e051d191ed7ba088e596358072b72574106c056f52005",
+      "feature_sha256": "fb381d7430f885bfffc66ca07d3b1fd6ef4cc4fa7d5cf570102e18070ee70bdc",
+      "feature_shape": [
+        1147,
+        4,
+        1024
+      ],
+      "image_sha256": "739584879f4db2221e9ff068c5d7c8d42bd7b4e930a28417fa7b9c865112f7c5",
+      "platform": "macOS",
+      "probe_index": 41,
+      "sample_id": "screenspot-0be08781-0297",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "17d2c9401b13a54f69fff70205a3fb42c5a0a60d1323cd2075eb9e2b715bf587",
+      "feature_sha256": "78716e9c5cf7568e70e4c7bddcf9c6c6d1fb0be64018124ecaebcfe13a5cb3db",
+      "feature_shape": [
+        925,
+        4,
+        1024
+      ],
+      "image_sha256": "8b8689e4b70bbbbdd2f05879c6616d8d31ed4997f9e4a0eb76219dd6c7c88d79",
+      "platform": "macOS",
+      "probe_index": 42,
+      "sample_id": "screenspot-0be08781-0211",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "2daffc6ddf7ef04ad25ab0fb5d158592d0ebb782ebcda9e72387e2dfe49d3d09",
+      "feature_sha256": "56dd7ca8f12c31006358f90195fb90fd361e9aea7c66af287a4e0d32b440b7c2",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "898255dbc6557f4f7fcce430a58fe880d50ba1b100a45ea235c23a8cb8d99872",
+      "platform": "Android",
+      "probe_index": 43,
+      "sample_id": "screenspot-0be08781-0723",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "78f9b29617f9899deaa09d2bf162f8ae51b151e438cbb8276e65e19296fcfb02",
+      "feature_sha256": "3637dd1f2193638c86930d61db269d86ccd2ddb00c47bfb5649a203f3db20de7",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "ae3b71458c1838a678e68104f416c470ab074851633ce0cc3bfe66de630f0c10",
+      "platform": "iOS",
+      "probe_index": 44,
+      "sample_id": "screenspot-0be08781-0397",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "55c0f8c23baea24146fd97ce15716c925cc28af0f10ff31d9d87798da1699e22",
+      "feature_sha256": "4010a376171df2d29c095ed3b33d8cb1697198446fc4b074b297e5650c912038",
+      "feature_shape": [
+        777,
+        4,
+        1024
+      ],
+      "image_sha256": "a420897729d0f1d2d9710c923b8821d768cb3088946dfaec5e7eb8e1499a4a3f",
+      "platform": "Web",
+      "probe_index": 45,
+      "sample_id": "screenspot-0be08781-1061",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "80eab1adcdd1a30d462dbaf9fdac4864d5210556d01a1c1aa83087d3b837b4f4",
+      "feature_sha256": "43e9b5691cd4f907a4bf19e6e59ee843d26fc3faec3549906f312878f27e9422",
+      "feature_shape": [
+        644,
+        4,
+        1024
+      ],
+      "image_sha256": "76561b715bea847c0af991227f88f660f9fc3ae95380d807cf7d26f6c94d2c01",
+      "platform": "Windows",
+      "probe_index": 46,
+      "sample_id": "screenspot-0be08781-0121",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "e8c39684669134a912604b483b650e9a13bb4c40d78aade89ce734e82af80181",
+      "feature_sha256": "049ff14dc01fd2c0b0b63caf3190378631d31cc4aab569a9cf345ed7911171eb",
+      "feature_shape": [
+        629,
+        4,
+        1024
+      ],
+      "image_sha256": "4c1dcc3fac7d2429c5d947aa05608176ee1ac9b128892fdc8d15bd26cbede9fe",
+      "platform": "Android",
+      "probe_index": 47,
+      "sample_id": "screenspot-0be08781-0731",
+      "target_type": "icon/widget"
+    },
+    {
+      "cache_record_sha256": "b5c840dfb3985ae43dcc445db02ccc71b2030ad7f3696f920a12aaaa75d183f6",
+      "feature_sha256": "13f941922c4dbf0560fe56bcb81a8fe74771df4793d9f63a3c6ef208b59e79a2",
+      "feature_shape": [
+        777,
+        4,
+        1024
+      ],
+      "image_sha256": "8144c83dd02a7a9f323bda53532e38ea5d13a27328bcc76a700c407cc3bfdee8",
+      "platform": "Web",
+      "probe_index": 48,
+      "sample_id": "screenspot-0be08781-0994",
+      "target_type": "text"
+    },
+    {
+      "cache_record_sha256": "886c8cfdeca289a275edbe551b73c4e40eb34eb01f0c9c1a2533fedd3a0a813f",
+      "feature_sha256": "2adbd841846ef896888db83b33053d485eac312d11ebe6c7a287931f6de03fd9",
+      "feature_shape": [
+        777,
+        4,
+        1024
+      ],
+      "image_sha256": "60a0796857d2445266b85677f40b101ca2589f923c35ddc79991f435fb16cf95",
+      "platform": "Web",
+      "probe_index": 49,
+      "sample_id": "screenspot-0be08781-1073",
+      "target_type": "icon/widget"
+    }
+  ],
+  "seed": 20260805,
+  "source_dataset_manifest_file_sha256": "b578229e72a59a983623514f259d2f49fc46cb66c0802a622682727d88151543",
+  "source_dataset_manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+  "teacher_forced_probe_count": 8,
+  "teacher_forced_sample_ids": [
+    "screenspot-0be08781-0472",
+    "screenspot-0be08781-0689",
+    "screenspot-0be08781-0948",
+    "screenspot-0be08781-0054",
+    "screenspot-0be08781-0160",
+    "screenspot-0be08781-0194",
+    "screenspot-0be08781-0620",
+    "screenspot-0be08781-0213"
+  ]
+}

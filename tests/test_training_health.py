@@ -66,6 +66,12 @@ def test_batch_summary_separates_between_image_and_within_token_spread():
     assert summary["projector_effective_rank"] == pytest.approx(1.0)
 
 
+def test_mean_direction_fraction_is_one_for_identical_images():
+    sequences = [torch.tensor([[2.0, -1.0]]) for _ in range(3)]
+    summary = summarize_batch_embeddings(sequences, sequences)
+    assert summary["mean_direction_fraction"] == pytest.approx(1.0)
+
+
 def test_probe_ratios_and_geometry_are_one_at_step0():
     sequences = [
         torch.tensor([[1.0, 0.0], [0.0, 1.0]]),
@@ -91,6 +97,7 @@ def test_critical_top1_and_rms_stop_training():
     contract = _contract()
     state = {}
     current = {
+        "step": 1,
         "projector": {
             "relative_spread_ratio": 0.20,
             "effective_rank_ratio": 0.40,
@@ -115,6 +122,7 @@ def test_two_causal_probe_failures_stop():
     contract = _contract()
     state = {}
     current = {
+        "step": 1,
         "projector": {
             "relative_spread_ratio": 1.0,
             "effective_rank_ratio": 1.0,
@@ -135,7 +143,10 @@ def test_two_causal_probe_failures_stop():
     }
     first = evaluate_guards(current, previous=None, state=state, contract=contract)
     assert first["stop"] is False
-    second = evaluate_guards(current, previous= current, state=state, contract=contract)
+    second_current = {**current, "step": 2}
+    second = evaluate_guards(
+        second_current, previous=current, state=state, contract=contract
+    )
     assert second["stop"] is True
     assert "causal_preference_critical" in second["critical"]
 

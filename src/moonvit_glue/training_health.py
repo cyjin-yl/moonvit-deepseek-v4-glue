@@ -8,6 +8,7 @@ canonical 4096 维 projector 边界上。
 from __future__ import annotations
 
 import json
+import hashlib
 import math
 from pathlib import Path
 from typing import Any, Sequence
@@ -18,6 +19,22 @@ from torch import Tensor
 
 HEALTH_CONTRACT_FORMAT_VERSION = "projector-health-contract-v1"
 DEFAULT_PROBE_STEPS = (0, 1, 2, 5, 10, 20, 30, 50, 75, 100)
+
+
+def tensor_sha256(tensor: Tensor) -> str:
+    """按 dtype、shape 和连续内存字节计算 feature 的稳定 SHA-256。"""
+
+    value = tensor.detach().cpu().contiguous()
+    header = json.dumps(
+        {"dtype": str(value.dtype), "shape": list(value.shape)},
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    digest = hashlib.sha256()
+    digest.update(header)
+    digest.update(b"\0")
+    digest.update(value.numpy().tobytes(order="C"))
+    return digest.hexdigest()
 
 
 def append_jsonl(path: str | Path, payload: dict[str, Any]) -> None:
@@ -90,8 +107,8 @@ def _sequence_summary(sequences: Sequence[Tensor], *, name: str) -> dict[str, An
     )
     mean_vector = matrix.mean(dim=0)
     mean_direction_fraction = (
-        mean_vector.square().sum() / matrix.square().sum()
-        if float(matrix.square().sum()) > 0.0
+        mean_vector.square().mean() / matrix.square().mean()
+        if float(matrix.square().mean()) > 0.0
         else torch.tensor(0.0, dtype=torch.float64)
     )
     # 样本 Gram 的谱等于中心化表示的非零谱，避免对 50×4096 做昂贵 SVD。
@@ -333,13 +350,17 @@ def evaluate_guards(
         hard["effective_rank_ratio_min"],
         "receiver_effective_rank",
     )
-    hard_fail = not all(
+    all_hard_pass = all(
         (projector_spread_ok, receiver_spread_ok, projector_rank_ok, receiver_rank_ok)
     )
-    state["consecutive_hard_failures"] = (
-        state.get("consecutive_hard_failures", 0) + 1 if hard_fail else 0
+    joint_hard_fail = (
+        (not projector_spread_ok and not projector_rank_ok)
+        or (not receiver_spread_ok and not receiver_rank_ok)
     )
-    if hard_fail:
+    state["consecutive_hard_failures"] = (
+        state.get("consecutive_hard_failures", 0) + 1 if joint_hard_fail else 0
+    )
+    if not all_hard_pass:
         warning.append("representation_hard_guard_failed")
 
     for role in ("projector", "receiver"):
@@ -354,9 +375,12 @@ def evaluate_guards(
         if rms_ratio is not None and rms_ratio > float(guards["critical"]["output_rms_ratio"]):
             critical.append(f"{role}_output_rms_critical")
 
+    causal_active = int(current.get("step", 0)) >= int(
+        guards["critical"].get("causal_guard_start_step", 1)
+    )
     preference = _probe_value(current, ("causal", "correct_preference"))
     shuffled_preference = _probe_value(current, ("causal", "shuffled_preference"))
-    if preference is not None and shuffled_preference is not None:
+    if causal_active and preference is not None and shuffled_preference is not None:
         bad_preference = preference <= shuffled_preference
         state["consecutive_bad_preference"] = (
             state.get("consecutive_bad_preference", 0) + 1 if bad_preference else 0
@@ -369,7 +393,7 @@ def evaluate_guards(
             critical.append("causal_preference_critical")
 
     logp_delta = _probe_value(current, ("causal", "vision_minus_shuffle_correct_logp"))
-    if logp_delta is not None:
+    if causal_active and logp_delta is not None:
         bad_logp = logp_delta <= 0.0
         state["consecutive_nonpositive_logp"] = (
             state.get("consecutive_nonpositive_logp", 0) + 1 if bad_logp else 0
@@ -385,13 +409,18 @@ def evaluate_guards(
             new_rms = _probe_value(current, (role, "sample_rms_ratio"))
             old_spread = _probe_value(previous, (role, "relative_spread_ratio"))
             new_spread = _probe_value(current, (role, "relative_spread_ratio"))
-            if (
+            adverse = (
                 old_rms is not None
                 and new_rms is not None
                 and old_spread is not None
                 and new_spread is not None
                 and new_rms > old_rms
                 and new_spread < old_spread
+            )
+            state_key = f"{role}_consecutive_adverse_trend"
+            state[state_key] = state.get(state_key, 0) + 1 if adverse else 0
+            if state[state_key] >= int(
+                guards["critical"].get("adverse_trend_consecutive_intervals", 2)
             ):
                 critical.append(f"{role}_rms_rising_spread_falling")
 
@@ -415,7 +444,7 @@ def evaluate_guards(
         "stop": stop,
         "warnings": sorted(set(warning)),
         "critical": sorted(set(critical)),
-        "hard_guard_pass": not hard_fail,
+        "hard_guard_pass": all_hard_pass,
         "state": dict(state),
     }
 
@@ -425,8 +454,8 @@ def validate_health_contract(contract: dict[str, Any]) -> None:
 
     if contract.get("format_version") != HEALTH_CONTRACT_FORMAT_VERSION:
         raise ValueError("unsupported projector health contract format")
-    if int(contract.get("canonical_projector_width", 0)) <= 0:
-        raise ValueError("canonical projector width must be positive")
+    if int(contract.get("canonical_projector_width", 0)) != 4096:
+        raise ValueError("canonical projector width must remain 4096")
     schedule = contract.get("probe_schedule", {})
     if tuple(schedule.get("initial_steps", [])) != DEFAULT_PROBE_STEPS:
         raise ValueError("initial probe schedule differs from the frozen contract")

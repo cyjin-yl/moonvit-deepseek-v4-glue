@@ -1721,3 +1721,30 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
 = 下一位执行者的最短路径
 
 包 15A–15D 的 pre-result contract、3B 工程 smoke、首轮 exact 4k order/target 与完整 MoonViT cache 已完成；包 15E–15H 又完成 fixed-budget 训练、ScreenSpot50/full 与 teacher-forced preference。首个 checkpoint 被 generation 与内部正确坐标偏好共同拒绝，previous-best 保持 step0。包 15I/15J 冻结 grounding-enriched 4k exact order/cache，包 15K 完成 exact 500-step 训练与五个 checkpoint 审计；包 15L/15M 又以 paired preference 和 GLM50 generation 一致拒绝 treatment。包 15N 触发预注册 gross-collapse 双门槛并把主要塌缩定位在 projector 输出；包 15O 发现首个保存点 step100/800 examples 已塌缩；包 15P 完成固定 λ 校准后在 control 绑定检查暴露缺字段，修复已登记且没有产生训练结果。下一步重新校准并运行四臂 100-step/800-example geometry repair screen，只有表示门槛和 CE 代价同时通过才扩大到完整 500 steps，并在候选阶段补齐 TextVQA、DocVQA、OCRBench 与 language retention。正式 0731 必须通过完整权重 load、真实 FP4/FP8 input DGRAD、图像 forward/backward、20-step 稳定性和 save/resume/generate Gate D；任何付费动作等待用户明确授权。
+
+= Projector 表征健康合同与本科生版进度解释
+
+项目要做的事情可以画成一条链：
+
+```text
+截图 → MoonViT-V2 → 4096 维 projector → 文本主干 → click(start_box=[x, y])
+```
+
+3B 代理阶段只回答一个低成本问题：一个完全没有视觉模块的纯文本模型，能否在冻结语言能力的情况下，靠 MoonViT 和 projector 学会看图。它通过以后，才值得把同一套封装、数据顺序和监控迁移到 DeepSeek-V4-Flash-0731。0.6B 早期实验说明接口能运行，模型容量不足以做可靠能力判断，所以它保留为工程/机制证据，3B 成为固定代理。
+
+当前证据分成三层：
+
+#table(
+  columns: (1.5fr, 2.6fr, 2.6fr),
+  [*问题*], [*已经知道什么*], [*还缺什么*],
+  [链路能否运行], [真实 MoonViT 图像、4096 projector、Qwen2.5-3B、冻结 receiver、训练、checkpoint、恢复和生成都已跑通；梯度确实到 projector。], [DeepSeek-V4-Flash-0731 的完整权重与真实量化 input-gradient 尚未运行。],
+  [模型是否使用图像], [目前没有。ScreenSpot 的 vision 没有稳定超过 blind/shuffled；正确图与错误图的 teacher-forced preference 也没有因果差异。], [必须在修复后重新跑完整 ScreenSpot、TextVQA、DocVQA、OCRBench。],
+  [失败发生在哪里], [projector 早期输出变成几乎同一个方向：RMS 爆炸、有效秩下降、top-1 variance 接近 99%，loss 仍会下降。], [需要把 collapse onset 定位到 step 1–100，并自动停止错误轨迹。],
+  [Package 15P 修复是否有效], [λ 校准和四臂短跑已完成；几何看起来有改善的臂尚未通过高频 trajectory、CE 代价和视觉因果检查，因此没有晋升。], [先补高频 health trajectory；全臂失败就重设计 projector，不追加无判别力训练量。],
+)
+
+这轮新增的 `projector-health-v1` 合同把“训练健康”和“真实视觉能力”分开。每个 optimizer step 写 RMS、跨图 spread、图内 token spread、方向集中度、梯度、CE/geometry/total loss、NaN/Inf、学习率和 examples seen。固定 50 张 probe 在前 100 步高频检查 projector 与 receiver 的 effective/participation rank、top-1/top-5 variance、相对 step0 的 spread/rank/RMS、pairwise distance correlation、centered Gram similarity，以及 8 条样本的 vision/blind/shuffled teacher-forced preference。
+
+健康门槛触发时，训练自动保存 failure checkpoint 和最近健康 checkpoint，记录当前 batch、完整 JSONL、塌缩区间，然后回滚。这个过程只说明表示还保留了图像差异，不能单独写成“模型获得视力”。真正的能力晋升仍要求完整 ScreenSpot click-in-box 提升、vision 显著优于 blind 和 shuffled、格式没有退化，并在 TextVQA/DocVQA/OCRBench 没有未解释的严重下降。
+
+因此当前 Gate D 状态是 *NO-GO*：工程链路已经具备，视觉能力证据和 DeepSeek 真实运行证据都还不够。最短本地路径是“冻结 probe → 跑四臂高频 trajectory → 选择或否决 geometry repair → 用固定社区合同重跑真实评测 → 再做 DeepSeek runtime Gate”。

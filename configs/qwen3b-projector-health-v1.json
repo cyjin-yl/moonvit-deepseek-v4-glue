@@ -1,0 +1,121 @@
+{
+  "format_version": "projector-health-contract-v1",
+  "name": "qwen3b_projector_health_v1",
+  "purpose": "在线发现 projector 表征塌缩，并在昂贵的后续训练前自动止损",
+  "canonical_projector_width": 4096,
+  "receiver_boundary_is_optional": true,
+  "text_backbone_independent": true,
+  "core_qwen_contract_file_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+  "screen_contract": {
+    "name": "screenspot_glm50_v1",
+    "manifest_file": "experiments/qwen3b_community_eval_20260805/contract/datasets/screenspot_glm50_v1/MANIFEST.json",
+    "manifest_file_sha256": "b578229e72a59a983623514f259d2f49fc46cb66c0802a622682727d88151543",
+    "manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+    "sample_count": 50,
+    "selection_seed": "20260805",
+    "label_boundary": "GLM-format metric-aligned public subset"
+  },
+  "probe_manifest": {
+    "file": "experiments/qwen3b_community_eval_20260805/health_probe_v1/PROBE_MANIFEST.json",
+    "file_sha256": "00bc648b15edfffd5af4b8ee3e9ea1c378d941ba5462729c385a3117cdb99d2e",
+    "manifest_sha256": "0c8db4ebf0b822f288e6f76cf3242fcbf589a443e6913c038def41f54abc995a",
+    "count": 50,
+    "teacher_forced_probe_count": 8,
+    "feature_cache_manifest_file_sha256": "03f35d8cee962a97996f3250e41c351978f28c0ca9a8fe74d4f8d41c411ae7f3"
+  },
+  "probe_schedule": {
+    "initial_steps": [0, 1, 2, 5, 10, 20, 30, 50, 75, 100],
+    "every_after_step": 50,
+    "first_100_generation": "disabled; cached projector/receiver forward and fixed teacher-forced subset only",
+    "probe_order": "exact frozen PROBE_MANIFEST order"
+  },
+  "metrics": {
+    "step_health": [
+      "projector_output_rms",
+      "receiver_output_rms",
+      "between_image_rms",
+      "within_image_token_rms",
+      "relative_spread",
+      "mean_direction_fraction",
+      "projector_gradient_norm_before_clip",
+      "projector_gradient_norm_after_clip",
+      "ce_loss",
+      "geometry_loss",
+      "total_loss",
+      "has_nan_or_inf",
+      "learning_rate",
+      "examples_seen",
+      "optimizer_step"
+    ],
+    "probe_representation": [
+      "effective_rank",
+      "participation_rank",
+      "top1_variance_fraction",
+      "top5_variance_fraction",
+      "relative_spread_ratio_over_step0",
+      "effective_rank_ratio_over_step0",
+      "sample_rms_ratio_over_step0",
+      "pairwise_distance_correlation_over_step0",
+      "centered_gram_similarity_over_step0"
+    ],
+    "probe_causal": [
+      "correct_image_preference",
+      "shuffled_image_preference",
+      "blind_preference",
+      "vision_minus_shuffle_correct_logp"
+    ]
+  },
+  "guards": {
+    "hard": {
+      "relative_spread_ratio_min": 0.25,
+      "effective_rank_ratio_min": 0.50,
+      "applies_to": ["projector", "receiver"],
+      "selection_requires_all": true
+    },
+    "warning": {
+      "top1_variance_fraction": 0.80,
+      "output_rms_ratio": 10.0,
+      "correct_preference_not_above_shuffled": true
+    },
+    "critical": {
+      "top1_variance_fraction": 0.90,
+      "output_rms_ratio": 50.0,
+      "causal_consecutive_probe_points": 2,
+      "causal_guard_start_step": 1,
+      "consecutive_hard_failures": 2,
+      "adverse_trend_consecutive_intervals": 2,
+      "gradient_norm_max": 1000000.0,
+      "nan_or_inf": true,
+      "zero_gradient": true
+    }
+  },
+  "stop_policy": {
+    "auto_stop_on_any_critical": true,
+    "save_failure_checkpoint": true,
+    "save_optimizer_state": true,
+    "save_rng_state": true,
+    "save_current_batch_ids": true,
+    "save_health_and_probe_logs": true,
+    "save_last_healthy_checkpoint": true,
+    "record_collapse_onset_interval": true,
+    "rollback_target": "most_recent_probe_without_critical_guard",
+    "forbid_resume_from_critical_checkpoint": true
+  },
+  "teacher_forced": {
+    "conditions": ["vision", "blind", "shuffled"],
+    "answer_rule": "frozen ScreenSpot bbox center click(start_box=[x, y])",
+    "score": "token-normalized correct-answer log probability and strict paired preference",
+    "generation": "not run during the first 100 optimizer steps"
+  },
+  "artifact_policy": {
+    "health_jsonl": "train_health.jsonl",
+    "probe_jsonl": "probe_metrics.jsonl",
+    "snapshot_directory": "health_snapshots",
+    "failure_record": "FAILURE.json",
+    "rollback_record": "ROLLBACK.json",
+    "manifest_required": true
+  },
+  "transfer_label": "directly_transferable",
+  "paid_resources_used": false,
+  "capability_claim_allowed": false
+}
