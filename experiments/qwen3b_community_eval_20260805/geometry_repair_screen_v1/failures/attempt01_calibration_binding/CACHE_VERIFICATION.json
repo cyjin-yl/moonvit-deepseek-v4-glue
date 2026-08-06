@@ -1,0 +1,21 @@
+{
+  "aliased_records": 1987,
+  "cache": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/feature_cache_grounding_enriched_4k_v1",
+  "manifest_sha256": "1f035374a0db01c8347dfcb2fb6aa6c5e4aad7128ccaa4e169e17f784a6c8a41",
+  "records_verified": 4000,
+  "runner_git_sha": "aa933ca1cf5a9386f60cd67658083d4e79b2b376",
+  "runner_tracked_worktree_clean": true,
+  "runtime_source_files_verified": 3,
+  "shards_verified": 63,
+  "status": "valid",
+  "total_shard_bytes": 5943468912,
+  "training_order_binding": {
+    "aliased_records_matched": 1987,
+    "maximum_visual_tokens": 256,
+    "records_matched": 4000,
+    "unique_images_matched": 2013
+  },
+  "unique_feature_spans": 2013,
+  "unique_values_verified": 1485864960,
+  "values_verified": 2742976512
+}

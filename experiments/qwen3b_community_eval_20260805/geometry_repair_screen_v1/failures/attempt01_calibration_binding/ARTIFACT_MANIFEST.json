@@ -1,0 +1,39 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-06T03:26:19.654488+00:00",
+  "root": "attempt01_calibration_binding",
+  "git_base_sha": "0c7dd5299145ce57d42cc96c3f6ee073303dc448",
+  "files": {
+    "ATTEMPT.json": {
+      "bytes": 1699,
+      "sha256": "b0127bc45c80daa5cc2df286a7ab0d3f08f265cb9ea41bb7d1e3d17bb374d7db"
+    },
+    "CACHE_VERIFICATION.json": {
+      "bytes": 752,
+      "sha256": "989d6e1bee684233d888860a6883d91419392537ecbf387c64d20db6da16ae1b"
+    },
+    "FAILURE.json": {
+      "bytes": 955,
+      "sha256": "82c19f4a78957835a46adf71aeefd74249c359b1d2967ad6e374c80a652b0b06"
+    },
+    "REPAIR_RECORD.json": {
+      "bytes": 875,
+      "sha256": "55af10e7f5711526711eb9fdc3f6c685b4d33d1dd5f180396c9d0d885f6a8b97"
+    },
+    "run.log": {
+      "bytes": 1064,
+      "sha256": "79998ed474c7f4837ea72a782ad30d81847c05bcb8bb8179f8f8a68ba00a8c22"
+    },
+    "SUPERVISION_RECORDS.jsonl": {
+      "bytes": 2275709,
+      "sha256": "d90ea7515a67b2f4d77320fe061aef1cfc44ef877726d312366a309390ab5bc9"
+    },
+    "SUPERVISION_SUMMARY.json": {
+      "bytes": 452,
+      "sha256": "b48ccd66814269906b96bebc6a5c3b48727a2d1ea0f935468e1e19ba33d94a7e"
+    }
+  },
+  "file_count": 7,
+  "total_bytes": 2281506,
+  "final_half_scored": false
+}

@@ -1,0 +1,13 @@
+{
+  "format_version": "qwen3b-geometry-repair-pre-result-repair-v1",
+  "status": "repair_required_before_screen",
+  "attempt": 1,
+  "failure_path": "experiments/qwen3b_community_eval_20260805/geometry_repair_screen_v1/failures/attempt01_calibration_binding/FAILURE.json",
+  "failure": "The first short-screen invocation reached trainer binding validation and stopped before optimizer step 1 because calibration SUMMARY.json did not expose screen_contract_file_sha256.",
+  "affected_stage": "calibration-to-trainer binding",
+  "checkpoint_or_capability_result_created": false,
+  "repair": "Flatten all calibration input hashes and record_ids into SUMMARY.json; make the independent verifier compare those fields against RUN_CONFIG and the supplied inputs.",
+  "schedule_thresholds_and_objective_unchanged": true,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

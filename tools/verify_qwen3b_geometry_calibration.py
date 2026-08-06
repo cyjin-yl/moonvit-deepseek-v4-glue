@@ -84,8 +84,12 @@ def main() -> None:
     for key, expected in bindings.items():
         if config[key] != expected:
             raise ValueError(f"calibration input binding differs: {key}")
+        if summary.get(key) != expected:
+            raise ValueError(f"calibration summary binding differs: {key}")
     if config["screen_contract"] != screen:
         raise ValueError("embedded screen contract differs")
+    if summary.get("record_ids") != config["record_ids"]:
+        raise ValueError("calibration summary record IDs differ")
 
     device = torch.device(args.device)
     if device.type != "cuda" or not torch.cuda.is_available():
@@ -182,7 +186,19 @@ def main() -> None:
         "format_version": "qwen3b-geometry-calibration-verification-v1",
         "status": "verified",
         "runner_git_sha": config["runner_git_sha"],
+        "core_contract_file_sha256": bindings["core_contract_file_sha256"],
         "screen_contract_file_sha256": sha256_file(args.screen_contract),
+        "training_order_manifest_file_sha256": bindings[
+            "training_order_manifest_file_sha256"
+        ],
+        "feature_cache_manifest_file_sha256": bindings[
+            "feature_cache_manifest_file_sha256"
+        ],
+        "reference_projector_sha256": bindings["reference_projector_sha256"],
+        "checkpoint_projector_sha256": bindings["checkpoint_projector_sha256"],
+        "checkpoint_manifest_sha256": bindings["checkpoint_manifest_sha256"],
+        "training_history_sha256": bindings["training_history_sha256"],
+        "record_ids": config["record_ids"],
         "pooled_sha256": sha256_file(pooled_path),
         **recomputed,
         "capability_claim_allowed": False,

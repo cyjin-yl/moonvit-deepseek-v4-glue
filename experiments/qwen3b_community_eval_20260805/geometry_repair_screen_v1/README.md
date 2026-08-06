@@ -29,3 +29,10 @@ derived auxiliary-gradient ratios are 0.05, 0.20, and 0.80 with fixed λ values
 0.01018730507868909, 0.04074922031475636, and 0.16299688125902545. The first
 shell logging attempt is retained under `calibration/failures/`; it was an
 output-directory ordering error and did not invalidate the GPU result.
+
+The first `control` invocation was stopped before optimizer step 1 because the
+calibration summary did not expose its screen-contract hash. Its complete
+supervision and failure files are retained under
+`failures/attempt01_calibration_binding/`. The repair adds every input binding
+to the summary and makes the independent verifier check them; calibration will
+be regenerated before any arm is allowed to train.

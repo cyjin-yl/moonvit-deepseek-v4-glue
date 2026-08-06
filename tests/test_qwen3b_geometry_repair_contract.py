@@ -2,6 +2,11 @@ import hashlib
 import json
 from pathlib import Path
 
+from tools.calibrate_qwen3b_geometry_regularization import (
+    SUMMARY_BINDING_KEYS,
+    calibration_summary_bindings,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "configs" / "qwen3b-geometry-repair-screen-v1.json"
@@ -51,5 +56,28 @@ def test_geometry_preregistration_binds_runtime_source_bytes():
     preregistration = _load(PACKAGE / "PREREGISTRATION.json")
     for relative, expected in preregistration["source_files"].items():
         path = ROOT / relative
+        assert path.stat().st_size == expected["bytes"]
+        assert _sha256(path) == expected["sha256"]
+
+
+def test_calibration_summary_exposes_every_trainer_binding():
+    run_config = {key: f"value-{index}" for index, key in enumerate(SUMMARY_BINDING_KEYS)}
+
+    assert calibration_summary_bindings(run_config) == run_config
+
+
+def test_pre_result_binding_failure_is_archived_with_no_training_result():
+    failure_root = PACKAGE / "failures" / "attempt01_calibration_binding"
+    failure = _load(failure_root / "FAILURE.json")
+    manifest = _load(failure_root / "ARTIFACT_MANIFEST.json")
+
+    assert failure["status"] == "failed"
+    assert failure["stage"] == "tokenizer_config_supervision"
+    assert failure["paid_resources_used"] is False
+    assert failure["final_half_scored"] is False
+    assert manifest["file_count"] == 7
+    assert manifest["final_half_scored"] is False
+    for relative, expected in manifest["files"].items():
+        path = failure_root / relative
         assert path.stat().st_size == expected["bytes"]
         assert _sha256(path) == expected["sha256"]

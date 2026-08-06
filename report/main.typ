@@ -1413,7 +1413,7 @@ projector 与 receiver 的首个保存点均同时触发两个 guard。step100 p
   [`ratio080`], [0.80], [0.1629968813], [fixed],
 )
 
-未加权辅助梯度范数为 *3.8781849597*，记录 CE 梯度范数为 *0.7901650667*；输出、配置、日志和独立 verifier 已写入 `geometry_repair_screen_v1/calibration/`，verifier 为 *verified*。第一次日志管道因 `tee` 先于目录创建而返回 1，失败记录保留且不影响已验证 GPU 产物。此处仍禁止视觉能力或 previous-best 结论；下一步只运行预注册四臂 100-step/800-example screen。
+未加权辅助梯度范数为 *3.8781849597*，记录 CE 梯度范数为 *0.7901650667*；输出、配置、日志和独立 verifier 已写入 `geometry_repair_screen_v1/calibration/`，verifier 为 *verified*。第一次日志管道因 `tee` 先于目录创建而返回 1，失败记录保留且不影响已验证 GPU 产物。随后第一次 control 在 step 1 前暴露 SUMMARY 绑定字段缺失；完整失败原始文件位于 `failures/attempt01_calibration_binding/`，修复不改变 objective、预算或 λ。此处仍禁止视觉能力或 previous-best 结论；修复提交后重新校准，再运行预注册四臂 100-step/800-example screen。
 
 == 工程主线与 Gate D 真实缺口（2026-08-06）
 
@@ -1712,9 +1712,10 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
   [2026-08-06], [包 15O 在读取中间表示前冻结 steps 0/100/200/300/400/500、checkpoint/训练历史 SHA 与最早 onset 规则；预结果 action-key 单测失败被保存并在 GPU 分析前修复，门槛与日程未变。],
   [2026-08-06], [包 15O 发现 step100/800 examples 已 gross collapse：projector spread/rank ratio 0.1298/0.0772，sample RMS 0.124→35.74，top-1 98.76%；receiver 同步。下一训练 screen 从首步施加小 λ 的 4096 输出尺度/几何保护。],
   [2026-08-06], [包 15P 在任何 screen checkpoint 前完成 geometry-repair λ 校准：unweighted auxiliary/CE gradient norm 为 3.87818/0.79017，三档固定 λ 为 0.0101873/0.0407492/0.162997；独立 verifier 为 verified。首轮 tee 目录编排失败已保留，不影响 GPU 产物。],
+  [2026-08-06], [包 15P 的第一次 control 在 optimizer step 1 前因 calibration SUMMARY 缺少 screen-contract hash 被拒绝；完整 supervision/failure 原始文件已保存，修复只补齐绑定字段并重新校准，未产生 checkpoint 或能力结果。],
   [2026-08-05], [固定 revision 的 DeepSeek 量化 runtime 源码审计与 GPU 矩阵成稿：forward 集成缺少已确认 autograd 证据，SM120/121 受 DeepGEMM #372 weight-load blocker 影响；首个付费建议降为单卡 SM100/B200 最小 kernel gate，仍等待授权。],
 )
 
 = 下一位执行者的最短路径
 
-包 15A–15D 的 pre-result contract、3B 工程 smoke、首轮 exact 4k order/target 与完整 MoonViT cache 已完成；包 15E–15H 又完成 fixed-budget 训练、ScreenSpot50/full 与 teacher-forced preference。首个 checkpoint 被 generation 与内部正确坐标偏好共同拒绝，previous-best 保持 step0。包 15I/15J 冻结 grounding-enriched 4k exact order/cache，包 15K 完成 exact 500-step 训练与五个 checkpoint 审计；包 15L/15M 又以 paired preference 和 GLM50 generation 一致拒绝 treatment。包 15N 触发预注册 gross-collapse 双门槛并把主要塌缩定位在 projector 输出；包 15O 发现首个保存点 step100/800 examples 已塌缩；包 15P 已完成固定 λ 校准。下一步运行四臂 100-step/800-example geometry repair screen，只有表示门槛和 CE 代价同时通过才扩大到完整 500 steps，并在候选阶段补齐 TextVQA、DocVQA、OCRBench 与 language retention。正式 0731 必须通过完整权重 load、真实 FP4/FP8 input DGRAD、图像 forward/backward、20-step 稳定性和 save/resume/generate Gate D；任何付费动作等待用户明确授权。
+包 15A–15D 的 pre-result contract、3B 工程 smoke、首轮 exact 4k order/target 与完整 MoonViT cache 已完成；包 15E–15H 又完成 fixed-budget 训练、ScreenSpot50/full 与 teacher-forced preference。首个 checkpoint 被 generation 与内部正确坐标偏好共同拒绝，previous-best 保持 step0。包 15I/15J 冻结 grounding-enriched 4k exact order/cache，包 15K 完成 exact 500-step 训练与五个 checkpoint 审计；包 15L/15M 又以 paired preference 和 GLM50 generation 一致拒绝 treatment。包 15N 触发预注册 gross-collapse 双门槛并把主要塌缩定位在 projector 输出；包 15O 发现首个保存点 step100/800 examples 已塌缩；包 15P 完成固定 λ 校准后在 control 绑定检查暴露缺字段，修复已登记且没有产生训练结果。下一步重新校准并运行四臂 100-step/800-example geometry repair screen，只有表示门槛和 CE 代价同时通过才扩大到完整 500 steps，并在候选阶段补齐 TextVQA、DocVQA、OCRBench 与 language retention。正式 0731 必须通过完整权重 load、真实 FP4/FP8 input DGRAD、图像 forward/backward、20-step 稳定性和 save/resume/generate Gate D；任何付费动作等待用户明确授权。

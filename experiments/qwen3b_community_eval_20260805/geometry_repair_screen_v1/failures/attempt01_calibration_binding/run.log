@@ -1,0 +1,13 @@
+stage: contract_order_cache_verification
+stage: frozen_file_verification
+stage: tokenizer_config_supervision
+{
+  "status": "failed",
+  "stage": "tokenizer_config_supervision",
+  "exception_type": "ValueError",
+  "exception": "geometry calibration is bound to a different screen contract",
+  "traceback": "Traceback (most recent call last):\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15p/tools/train_qwen3b_proxy.py\", line 1069, in main\n    _run(args, stage)\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15p/tools/train_qwen3b_proxy.py\", line 548, in _run\n    geometry_setup = load_geometry_setup(\n                     ^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-package15p/tools/train_qwen3b_proxy.py\", line 298, in load_geometry_setup\n    raise ValueError(\"geometry calibration is bound to a different screen contract\")\nValueError: geometry calibration is bound to a different screen contract\n",
+  "capability_claim_allowed": false,
+  "final_half_scored": false,
+  "paid_resources_used": false
+}

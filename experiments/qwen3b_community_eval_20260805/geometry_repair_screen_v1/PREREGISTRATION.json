@@ -19,12 +19,12 @@
       "sha256": "cc720346f091befd1b1fb6c3b1ee5dfaa283fbf2235a8e7620f67e54d95a36f1"
     },
     "tools/calibrate_qwen3b_geometry_regularization.py": {
-      "bytes": 13953,
-      "sha256": "6e3994043e8471605b874d8e76118afbe704c50510349db65eb3cd4f4bad6e57"
+      "bytes": 14657,
+      "sha256": "2da58b60afdb1c50958859423bed5c02c4d6df476b7a8dc7901bd75e6cb00038"
     },
     "tools/verify_qwen3b_geometry_calibration.py": {
-      "bytes": 8226,
-      "sha256": "b274af1088919e753f976fb05ea78c8bf225ef22e7fe216de06b6dae1305641d"
+      "bytes": 9129,
+      "sha256": "9d824eb3b93f08b649f5ea27286f94611f30cf84dfd9188d72cc8893f97c4c5f"
     },
     "tools/train_qwen3b_proxy.py": {
       "bytes": 47757,
@@ -58,5 +58,12 @@
   "paid_resources_used": false,
   "final_half_scored": false,
   "calibration_result_exists_at_freeze": false,
-  "screen_result_exists_at_freeze": false
+  "screen_result_exists_at_freeze": false,
+  "pre_result_repairs": [
+    {
+      "path": "failures/attempt01_calibration_binding/REPAIR_RECORD.json",
+      "reason": "Calibration SUMMARY did not expose the hashes required by the trainer binding check; no optimizer step or capability result existed.",
+      "schedule_thresholds_and_objective_unchanged": true
+    }
+  ]
 }

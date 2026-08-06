@@ -60,6 +60,26 @@ def runtime_source_files() -> list[dict[str, Any]]:
     ]
 
 
+SUMMARY_BINDING_KEYS = (
+    "runner_git_sha",
+    "core_contract_file_sha256",
+    "screen_contract_file_sha256",
+    "training_order_manifest_file_sha256",
+    "feature_cache_manifest_file_sha256",
+    "reference_projector_sha256",
+    "checkpoint_projector_sha256",
+    "checkpoint_manifest_sha256",
+    "training_history_sha256",
+    "record_ids",
+)
+
+
+def calibration_summary_bindings(run_config: dict[str, Any]) -> dict[str, Any]:
+    """抽取训练器可独立验证的校准输入绑定。"""
+
+    return {key: run_config[key] for key in SUMMARY_BINDING_KEYS}
+
+
 def _geometry_kwargs(screen_contract: dict[str, Any]) -> dict[str, float]:
     objective = screen_contract["geometry_objective"]
     weights = objective["component_weights"]
@@ -282,6 +302,8 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
         "format_version": "qwen3b-geometry-calibration-summary-v1",
         "status": "valid",
         "formal_calibration_complete": run_config["formal_run"],
+        # 训练器不信任外部 RUN_CONFIG，直接从 SUMMARY 拒绝错配。
+        **calibration_summary_bindings(run_config),
         **payload,
         "pooled": {
             "path": str(pooled_path),
