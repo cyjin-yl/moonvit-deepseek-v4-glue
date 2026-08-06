@@ -1978,3 +1978,13 @@ receiver-prior diagnostic does not support an automatic capacity or
 visual-pretraining rescue. The next variables are placeholder semantics,
 projector scale, position encoding and receiver-distribution alignment; the
 result remains outside formal Qwen and DeepSeek capability claims.
+
+== DeepSeek Gate D local input-gradient preflight
+
+The reference input-only DGRAD harness passed on the V100: a frozen ordinary
+Linear produced finite, non-zero input gradients while weights stayed without
+gradients. The candidate mathematical interface matched the reference and was
+recorded as `hardware_pending`. No complete DeepSeek-V4-Flash-0731 weights,
+real FP4/FP8 kernel or Hash-MoE routing was executed, so Gate D remains NO-GO.
+The next local task is a placeholder/position/routing/save-resume verifier;
+real quantized targets wait for explicitly authorized hardware.

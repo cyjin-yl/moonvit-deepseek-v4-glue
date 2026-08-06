@@ -339,3 +339,12 @@ decoding-contract failure，不能当作视觉能力负例。修复模板后用
 后续重点转向 placeholder/token 语义、projector 输出尺度、位置编码和与 receiver
 训练分布的对齐。该结果仍不进入 Qwen 社区排行榜，也不改变 DeepSeek 最终配置，
 原始 JSONL 和失败目录保留在 V100 artifact 路径。
+
+### DeepSeek Gate D 本地 input-gradient 预检（2026-08-07）
+
+`tools/gate_d_dgrad.py` 的 reference 模式在 V100 工作站通过：普通 Linear 的
+input-only autograd 有 finite/non-zero input gradient，冻结权重没有梯度。candidate
+模式也通过了同一数学接口，结果明确标记为 `hardware_pending`，因为没有真实 FP4/FP8
+forward kernel、DeepSeek 权重或 Hash-MoE routing 被调用。这个结果把软件 harness
+推进了一步，Gate D 仍为 **NO-GO**；下一项本地任务是继续完善 placeholder/position/
+routing/save-resume verifier，付费硬件阶段才运行真实量化目标。

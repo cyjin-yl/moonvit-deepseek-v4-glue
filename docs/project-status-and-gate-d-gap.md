@@ -152,3 +152,11 @@ vision-shuffled center distance 为 `+88.69 [+3.00,+199.15]`，vision-blind 为
 `-42.74 [-127.74,+13.77]`。这个 receiver-prior 结果不支持视觉预训练 receiver
 或模型规模可以自动修复外部 projector；后续主变量收敛为 placeholder/token 语义、
 projector 尺度、位置编码以及 receiver 训练分布的对齐。
+
+## DeepSeek Gate D 本地预检（2026-08-07）
+
+reference input-only DGRAD harness 在 V100 上通过，candidate 数学接口结果为
+`hardware_pending`；两者都没有加载完整 DeepSeek-V4-Flash-0731，也没有执行真实
+FP4/FP8 kernel 或 Hash-MoE routing。该结果只证明自动微分边界可验证，不能关闭
+量化 Gate D。剩余硬门槛仍是权重加载、真实量化 input-DGRAD、完整 forward/backward/
+generate、20-step stability、精确 save/resume 和固定视觉 benchmark。

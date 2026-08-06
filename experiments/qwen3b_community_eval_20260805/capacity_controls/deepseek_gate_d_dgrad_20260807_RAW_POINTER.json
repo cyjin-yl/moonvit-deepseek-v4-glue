@@ -1,0 +1,26 @@
+{
+  "schema_version": "deepseek-gate-d-dgrad-pointer-v1",
+  "runtime": {
+    "python": "3.12.11",
+    "torch": "2.10.0+cu128",
+    "transformers": "5.12.1",
+    "gpu": "Tesla V100-PCIE-32GB",
+    "compute_capability": [7, 0]
+  },
+  "reference": {
+    "mode": "reference",
+    "status": "pass",
+    "output_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/deepseek_gate_d_reference_20260807",
+    "summary_sha256": "eaf2a10690e9b73595e6fed88a2b450d2ce206c16367e7c7576b5085d9b96906",
+    "interpretation": "ordinary Linear input-only gradient harness passes; quantized path not exercised"
+  },
+  "candidate": {
+    "mode": "candidate",
+    "status": "hardware_pending",
+    "output_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/deepseek_gate_d_candidate_20260807",
+    "summary_sha256": "57c52cb613204b3997c1279e8eeee088474e64a04a81f36947f6aab6068bd964",
+    "interpretation": "input-only autograd boundary matches reference; actual FP4/FP8 forward and DGRAD adapter still absent"
+  },
+  "gate_d_status": "NO-GO",
+  "paid_hardware_required": true
+}
