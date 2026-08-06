@@ -702,3 +702,12 @@ No complete DeepSeek-V4-Flash-0731 weights, real FP4/FP8 kernel, or Hash-MoE
 routing was executed. Gate D remains NO-GO. The next local work is the
 placeholder/position/routing/save-resume verifier; real quantized targets wait
 for explicitly authorized hardware.
+
+The tiny DeepSeek-V4 end-to-end retry then passed on the V100. It used the real
+Transformers `DeepseekV4ForCausalLM` implementation with batch 2 and 20
+projector-only optimizer steps. Projector gradients were finite and non-zero,
+language gradients stayed `None`, greedy generation returned shape `[2, 8]`,
+and step-10 save/resume matched an uninterrupted run with projector and loss
+maximum absolute deltas both `0.0`. The initial grouped-feature shape failure
+was preserved before retry. This closes the software tiny seam, while complete
+0731 weights and real FP4/FP8 input-DGRAD remain pending.

@@ -1,0 +1,11 @@
+{
+  "schema_version": "deepseek-v4-tiny-e2e-failure-v1",
+  "status": "failed_before_optimizer_step",
+  "experiment": "deepseek_gate_d_tiny_e2e_20260807",
+  "device": "cuda",
+  "failure_class": "feature_shape_contract",
+  "exception": "ValueError: feature_groups[0] expected [tokens, 1, 3], got [2, 3]",
+  "cause": "The first test fixture omitted the explicit merge_factor axis for a grouped MoonViT feature.",
+  "optimizer_steps": 0,
+  "artifact_policy": "preserved before retry; retry uses a fresh output directory and corrected [T, M, W] shape"
+}

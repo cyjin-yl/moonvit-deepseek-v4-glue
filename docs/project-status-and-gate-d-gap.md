@@ -160,3 +160,12 @@ reference input-only DGRAD harness 在 V100 上通过，candidate 数学接口�
 FP4/FP8 kernel 或 Hash-MoE routing。该结果只证明自动微分边界可验证，不能关闭
 量化 Gate D。剩余硬门槛仍是权重加载、真实量化 input-DGRAD、完整 forward/backward/
 generate、20-step stability、精确 save/resume 和固定视觉 benchmark。
+
+## tiny DeepSeek-V4 软件闭环（2026-08-07）
+
+真实 Transformers `DeepseekV4ForCausalLM` tiny config 已完成 batch=2、20-step
+projector-only forward/backward、冻结主干检查、step10 save/resume 和 greedy generate。
+projector 梯度 finite/non-zero，语言梯度全 None；恢复后 projector 和 loss 的最大
+绝对差均为 `0.0`。首轮 grouped feature shape 错误在任何 optimizer step 前停止并
+单独归档，修复后 retry 通过。该结果关闭软件 tiny seam 风险，不能关闭完整 0731、
+真实 FP4/FP8 DGRAD 或大规模显存 Gate。

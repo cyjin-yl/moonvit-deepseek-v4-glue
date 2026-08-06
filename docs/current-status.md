@@ -348,3 +348,13 @@ input-only autograd 有 finite/non-zero input gradient，冻结权重没有梯�
 forward kernel、DeepSeek 权重或 Hash-MoE routing 被调用。这个结果把软件 harness
 推进了一步，Gate D 仍为 **NO-GO**；下一项本地任务是继续完善 placeholder/position/
 routing/save-resume verifier，付费硬件阶段才运行真实量化目标。
+
+### tiny DeepSeek-V4 软件闭环（2026-08-07）
+
+在 Transformers 的真实 `DeepseekV4ForCausalLM`（1 layer、4 routed experts）上，
+batch=2、20 optimizer steps 的 tiny 闭环通过：projector 梯度全程 finite/non-zero，
+语言主干梯度全为 None；step 10 checkpoint 恢复后最终 projector 与 uninterrupted
+run 的最大绝对差为 `0.0`，loss 差为 `0.0`；扩展图像 token 后的 greedy generate
+形状为 `[2, 8]`。第一次运行因 grouped feature 少了 `[T, M, W]` 的显式 `M=1` 轴
+而在 step 0 前失败，失败 JSON 已保留，修复后的 retry 使用独立目录。该结果证明
+软件级 DeepSeek seam 已经能跑通，完整 0731 权重和 FP4/FP8 kernel 证据仍缺。

@@ -1988,3 +1988,13 @@ recorded as `hardware_pending`. No complete DeepSeek-V4-Flash-0731 weights,
 real FP4/FP8 kernel or Hash-MoE routing was executed, so Gate D remains NO-GO.
 The next local task is a placeholder/position/routing/save-resume verifier;
 real quantized targets wait for explicitly authorized hardware.
+
+== Tiny DeepSeek-V4 software loop
+
+The real Transformers `DeepseekV4ForCausalLM` tiny implementation passed a
+batch-2, 20-step projector-only loop on the V100. Projector gradients were
+finite and non-zero, language gradients stayed `None`, greedy generation
+returned shape [2, 8], and step-10 save/resume matched an uninterrupted run
+with maximum absolute projector and loss deltas of 0.0. The first grouped
+feature-shape failure was preserved before retry. This closes the tiny software
+seam; complete 0731 weights and real FP4/FP8 input-DGRAD remain pending.
