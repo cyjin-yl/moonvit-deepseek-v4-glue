@@ -399,3 +399,17 @@ run 的最大绝对差为 `0.0`，loss 差为 `0.0`；扩展图像 token 后的 
 同一 tiny 闭环在 V100 `bfloat16` 下也通过 20 steps、batch=2、save/resume 和 generate，
 恢复后的 projector/loss delta 仍为 `0.0`。这覆盖了当前工作站可验证的 BF16 数值路径；
 它不等价于目标 0731 的真实 FP4/FP8 input-DGRAD。
+
+### 真实 DeepSeek placeholder ID 软件 seam（2026-08-07）
+
+为排除低 token ID 假象，把 tiny Transformers DeepSeek 的 placeholder 从测试值
+`63` 换成目标路径真实的 `<｜image｜>` ID `129279`，并把 tiny vocab 扩到
+`129280`。V100 BF16 上 20 步 batch-2 projector-only forward/backward、冻结
+语言主干、step-10 精确 save/resume 和 greedy generate 全部通过；projector/loss
+resume delta 均为 `0.0`，生成前缀保留两个 `129279` routing ID。完整 raw 目录和
+SHA pointer 位于
+`capacity_controls/deepseek_gate_d_tiny_e2e_placeholder129279_20260807_RAW_POINTER.json`。
+
+这条结果补上了“目标 placeholder 数值是否能进入路由接口”的软件证据，仍然只覆盖
+tiny DeepSeek 和 BF16。它没有覆盖完整 0731 词表、43 层 Hash-MoE、真实 FP4/FP8
+kernels 或输入梯度，因此 Gate D 继续 **NO-GO**。

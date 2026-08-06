@@ -24,9 +24,9 @@ from moonvit_glue.model import VisionCausalLM
 from moonvit_glue.projector import PatchMergerProjector, ProjectorConfig
 
 
-def _tiny_config() -> DeepseekV4Config:
+def _tiny_config(*, vocab_size: int = 64) -> DeepseekV4Config:
     return DeepseekV4Config(
-        vocab_size=64,
+        vocab_size=vocab_size,
         hidden_size=32,
         moe_intermediate_size=16,
         num_hidden_layers=1,
@@ -48,33 +48,51 @@ def _tiny_config() -> DeepseekV4Config:
     )
 
 
-def _build(seed: int, device: torch.device, dtype: torch.dtype) -> VisionCausalLM:
+def _build(
+    seed: int,
+    device: torch.device,
+    dtype: torch.dtype,
+    *,
+    placeholder_token_id: int,
+) -> VisionCausalLM:
     torch.manual_seed(seed)
     if device.type == "cuda":
         torch.cuda.manual_seed_all(seed)
-    language_model = DeepseekV4ForCausalLM(_tiny_config()).to(device=device, dtype=dtype)
+    language_model = DeepseekV4ForCausalLM(
+        _tiny_config(vocab_size=max(64, placeholder_token_id + 1))
+    ).to(device=device, dtype=dtype)
     projector = PatchMergerProjector(
         ProjectorConfig(vision_width=3, language_width=32, merge_factor=1, projector_width=8)
     ).to(device=device, dtype=dtype)
     return VisionCausalLM(
         language_model=language_model,
         projector=projector,
-        placeholder_token_id=63,
+        placeholder_token_id=placeholder_token_id,
         backbone_kind="deepseek_v4",
         freeze_language_model=True,
         pad_token_id=0,
     ).to(device)
 
 
-def _batch(seed: int, device: torch.device, dtype: torch.dtype) -> tuple[torch.Tensor, torch.Tensor, list[torch.Tensor]]:
+def _batch(
+    seed: int,
+    device: torch.device,
+    dtype: torch.dtype,
+    *,
+    placeholder_token_id: int,
+) -> tuple[torch.Tensor, torch.Tensor, list[torch.Tensor]]:
     torch.manual_seed(seed)
     if device.type == "cuda":
         torch.cuda.manual_seed_all(seed)
     input_ids = torch.tensor(
-        [[1, 63, 5, 7, 2], [1, 63, 8, 9, 2]], dtype=torch.long, device=device
+        [[1, placeholder_token_id, 5, 7, 2], [1, placeholder_token_id, 8, 9, 2]],
+        dtype=torch.long,
+        device=device,
     )
     labels = torch.tensor(
-        [[1, -100, 5, 7, 2], [1, -100, 8, 9, 2]], dtype=torch.long, device=device
+        [[1, -100, 5, 7, 2], [1, -100, 8, 9, 2]],
+        dtype=torch.long,
+        device=device,
     )
     # projector 的 merge_factor=1 仍要求显式保留 grouped patch 轴 [T, M, W]。
     features = [torch.randn(2, 1, 3, device=device, dtype=dtype), torch.randn(2, 1, 3, device=device, dtype=dtype)]
@@ -168,6 +186,12 @@ def main() -> None:
     parser.add_argument("--split-step", type=int, default=10)
     parser.add_argument("--seed", type=int, default=20260805)
     parser.add_argument("--dtype", choices=("float32", "float16", "bfloat16"), default="float32")
+    parser.add_argument(
+        "--placeholder-token-id",
+        type=int,
+        default=63,
+        help="Existing image placeholder ID to exercise in the tiny routing path",
+    )
     args = parser.parse_args()
     if args.steps <= 1 or not 0 < args.split_step < args.steps:
         raise ValueError("steps must be > 1 and split-step must be inside the run")
@@ -176,16 +200,33 @@ def main() -> None:
     if device.type == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("CUDA requested but unavailable")
     dtype = getattr(torch, args.dtype)
-    input_ids, labels, features = _batch(args.seed + 1, device, dtype)
+    if args.placeholder_token_id < 1:
+        raise ValueError("placeholder-token-id must be positive")
+    input_ids, labels, features = _batch(
+        args.seed + 1,
+        device,
+        dtype,
+        placeholder_token_id=args.placeholder_token_id,
+    )
 
-    uninterrupted = _build(args.seed, device, dtype)
+    uninterrupted = _build(
+        args.seed,
+        device,
+        dtype,
+        placeholder_token_id=args.placeholder_token_id,
+    )
     uninterrupted_optimizer = torch.optim.AdamW(uninterrupted.projector.parameters(), lr=1e-3)
     uninterrupted_trace = _run_steps(
         uninterrupted, uninterrupted_optimizer, input_ids, labels, features, args.steps, start_step=0
     )
     uninterrupted_state = _projector_state(uninterrupted)
 
-    split = _build(args.seed, device, dtype)
+    split = _build(
+        args.seed,
+        device,
+        dtype,
+        placeholder_token_id=args.placeholder_token_id,
+    )
     split_optimizer = torch.optim.AdamW(split.projector.parameters(), lr=1e-3)
     split_trace_a = _run_steps(
         split, split_optimizer, input_ids, labels, features, args.split_step, start_step=0
@@ -194,7 +235,12 @@ def main() -> None:
     checkpoint_path = args.out / f"checkpoint_step{args.split_step:04d}.pt"
     _save_checkpoint(checkpoint_path, split, split_optimizer, args.split_step)
 
-    resumed = _build(args.seed, device, dtype)
+    resumed = _build(
+        args.seed,
+        device,
+        dtype,
+        placeholder_token_id=args.placeholder_token_id,
+    )
     resumed_optimizer = torch.optim.AdamW(resumed.projector.parameters(), lr=1e-3)
     restored_step = _restore_checkpoint(checkpoint_path, resumed, resumed_optimizer)
     split_trace_b = _run_steps(
@@ -239,7 +285,8 @@ def main() -> None:
             "hidden_size": 32,
             "layers": 1,
             "routing_experts": 4,
-            "placeholder_token_id": 63,
+            "placeholder_token_id": args.placeholder_token_id,
+            "vocab_size": max(64, args.placeholder_token_id + 1),
             "batch_size": int(input_ids.shape[0]),
             "raw_sequence_length": int(input_ids.shape[1]),
             "expanded_sequence_length": int(generated.shape[1] - 2),

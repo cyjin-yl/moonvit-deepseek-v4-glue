@@ -745,3 +745,15 @@ was preserved before retry. This closes the software tiny seam, while complete
 The same tiny loop also passed in `bfloat16` on the V100 with batch 2, 20 steps,
 exact save/resume deltas of `0.0`, and successful generation. This covers the
 local BF16 seam only; it is not evidence for the target 0731 FP4/FP8 kernels.
+
+## Exact DeepSeek placeholder-ID seam (2026-08-07)
+
+The tiny software loop was rerun with the target `<｜image｜>` placeholder ID
+`129279` rather than the earlier low test ID `63`; the tiny vocabulary was grown
+only for this fixture. On the V100 in BF16, 20 batch-2 projector-only steps had
+finite non-zero projector gradients and no language gradients, exact step-10
+save/resume (`0.0` projector and loss deltas), and generation retained the two
+expanded `129279` routing IDs. The raw pointer is
+`experiments/qwen3b_community_eval_20260805/capacity_controls/deepseek_gate_d_tiny_e2e_placeholder129279_20260807_RAW_POINTER.json`.
+This closes a numeric placeholder/routing software check; it does not pass the
+full 0731, FP4/FP8 or Gate D requirements.

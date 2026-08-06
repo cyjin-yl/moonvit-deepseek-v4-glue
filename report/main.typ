@@ -2023,3 +2023,13 @@ resume, and causal ScreenSpot/TextVQA/DocVQA/OCRBench gains must be recorded.
 Local software validation is estimated at 1--2 working days; an explicitly
 authorized paid-hardware pilot is roughly 2--5 working days, conditional on
 kernel and weight availability.
+
+== Exact DeepSeek placeholder-ID seam
+
+The tiny software loop was rerun with the target `<｜image｜>` ID `129279`,
+expanding the fixture vocabulary to `129280`. On the V100 in BF16, 20 batch-2
+projector-only steps had finite non-zero projector gradients and no language
+gradients; step-10 save/resume matched exactly and generation retained the two
+expanded placeholder routing IDs. This closes the low-ID software seam concern.
+The full 0731 vocabulary, 43-layer Hash-MoE, FP4/FP8 kernels and input-DGRAD
+remain unverified, so this result does not change Gate D's **NO-GO** status.
