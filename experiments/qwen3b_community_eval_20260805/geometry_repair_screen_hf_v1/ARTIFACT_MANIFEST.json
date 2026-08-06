@@ -1,8 +1,8 @@
 {
   "format_version": "experiment-artifact-manifest-v1",
-  "created_at_utc": "2026-08-06T05:58:27.199313+00:00",
+  "created_at_utc": "2026-08-06T06:13:17.386780+00:00",
   "root": "geometry_repair_screen_hf_v1",
-  "git_base_sha": "7343e333aaf5ece237c53263468718fcc88d3e01",
+  "git_base_sha": "575431120529b77ad33184ba34958dd3af9ed231",
   "files": {
     "control/ATTEMPT.json": {
       "bytes": 2048,
@@ -220,12 +220,120 @@
       "bytes": 2821,
       "sha256": "5c70101c70d6be0616a7307d371d7e194d88667cec643c876e7ae098feb337a0"
     },
+    "ratio020/ATTEMPT.json": {
+      "bytes": 2050,
+      "sha256": "e62918b8ee561095f8e392c97100b8b547e08576981015e88f15ae0f7f4b2e1f"
+    },
+    "ratio020/CACHE_VERIFICATION.json": {
+      "bytes": 752,
+      "sha256": "989d6e1bee684233d888860a6883d91419392537ecbf387c64d20db6da16ae1b"
+    },
+    "ratio020/FAILURE.json": {
+      "bytes": 13309,
+      "sha256": "b01eb57853eb91dee2b6e26ea2803f55b89bc2c0f8bf6326e0d4f5ef17346d51"
+    },
+    "ratio020/HEALTH_ARTIFACT_MANIFEST.json": {
+      "bytes": 4559,
+      "sha256": "4a7857867cefff3500defddab7771226866d55b98557a0d1262f4dfa5aaa4505"
+    },
+    "ratio020/health_snapshots/checkpoints/failure-step-000002/CHECKPOINT_MANIFEST.json": {
+      "bytes": 2889,
+      "sha256": "93baea1352a09ef82c9417583686e0df4c9ffe36e54db0e3d2841e82fbd22198"
+    },
+    "ratio020/health_snapshots/checkpoints/failure-step-000002/history.json": {
+      "bytes": 3438,
+      "sha256": "19622bc2f3f4b1e90ff860828bf048af696957c37486a718f07e2c8ad7bb5287"
+    },
+    "ratio020/health_snapshots/checkpoints/failure-step-000002/projector_config.json": {
+      "bytes": 128,
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    "ratio020/health_snapshots/checkpoints/healthy-step-000000/CHECKPOINT_MANIFEST.json": {
+      "bytes": 2859,
+      "sha256": "6be9d7b7f1141968590f46d21804bcd90f80376dd28b7b31d915a41256116bed"
+    },
+    "ratio020/health_snapshots/checkpoints/healthy-step-000000/history.json": {
+      "bytes": 33,
+      "sha256": "14a770dff8ee1382261970572c8e0c62554c19e22c3ea97513c5315e13909387"
+    },
+    "ratio020/health_snapshots/checkpoints/healthy-step-000000/projector_config.json": {
+      "bytes": 128,
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    "ratio020/health_snapshots/checkpoints/healthy-step-000001/CHECKPOINT_MANIFEST.json": {
+      "bytes": 2887,
+      "sha256": "2c67ba463a0888deca2bca382329187505a368c5fcbebcda9fd413d3e13b6d2a"
+    },
+    "ratio020/health_snapshots/checkpoints/healthy-step-000001/history.json": {
+      "bytes": 1662,
+      "sha256": "fe177e517cfcfa6ee1541bf209dfb6e1bbd587ed2fdc0fab8eea0ea105896c18"
+    },
+    "ratio020/health_snapshots/checkpoints/healthy-step-000001/projector_config.json": {
+      "bytes": 128,
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    "ratio020/HEALTH_VERIFIER.json": {
+      "bytes": 377,
+      "sha256": "962e82cd4c55c2f925deed477f40dccd695eb876478dad1295b1df748976b992"
+    },
+    "ratio020/probe_metrics.jsonl": {
+      "bytes": 22866,
+      "sha256": "b073878e42fd29d29a3a92a5e9ff44ad82a692c385b804f5bd55d39c6de0520b"
+    },
+    "ratio020/ratio020.launcher.log": {
+      "bytes": 2969,
+      "sha256": "aaeb49c01573b8b475114a4c049ead9407a6dab3e541bfa595b87d1c2c20f7cb"
+    },
+    "ratio020/RAW_ARTIFACT_POINTER.json": {
+      "bytes": 876,
+      "sha256": "672859a3e9e925e3743705ea23edf877edfe3dd5f83e5e5ada24b0133edbe1d5"
+    },
+    "ratio020/README.md": {
+      "bytes": 580,
+      "sha256": "33b7a86b9ff12f9617516b41d9f4e4e426dcae201c0735fdd4fb7bdefd9768c5"
+    },
+    "ratio020/RESULT.json": {
+      "bytes": 4109,
+      "sha256": "5a1a0f085269f2211194a0e4b35841ac10107a29b16fb66fff4f3e155373af89"
+    },
+    "ratio020/ROLLBACK.json": {
+      "bytes": 440,
+      "sha256": "9f6401cf50b6371c6e742b6a910d99f02df7d2db4b21f6f6e358ce9c2e127737"
+    },
+    "ratio020/run.log": {
+      "bytes": 2969,
+      "sha256": "aaeb49c01573b8b475114a4c049ead9407a6dab3e541bfa595b87d1c2c20f7cb"
+    },
+    "ratio020/RUN_CONFIG.json": {
+      "bytes": 23461,
+      "sha256": "be2e6061be1a857e4d0d36aeb1f0e00e62df6d70380f29f08f0bd051febc8c36"
+    },
+    "ratio020/SUMMARY.json": {
+      "bytes": 1776,
+      "sha256": "6373cbd59306b262772c6fce16a9bf67beba0cb65b35298c0e786f560025844b"
+    },
+    "ratio020/SUPERVISION_RECORDS.jsonl": {
+      "bytes": 2275709,
+      "sha256": "d90ea7515a67b2f4d77320fe061aef1cfc44ef877726d312366a309390ab5bc9"
+    },
+    "ratio020/SUPERVISION_SUMMARY.json": {
+      "bytes": 452,
+      "sha256": "b48ccd66814269906b96bebc6a5c3b48727a2d1ea0f935468e1e19ba33d94a7e"
+    },
+    "ratio020/train_health.jsonl": {
+      "bytes": 1727,
+      "sha256": "3f55c16e49fcadaaf4f2aa442b879d7b2196315b58e5f3850aaa82b5fe5b2ddc"
+    },
+    "ratio020/TRAINING_HISTORY.jsonl": {
+      "bytes": 2817,
+      "sha256": "d2c6c3e2cf01767d5c21db37bb841ba2288bbf887c4239926490836918fd1b39"
+    },
     "README.md": {
-      "bytes": 1638,
-      "sha256": "b237624d03170a5e1b96d900585a91fa784ce409a497ebf22debcd797edca575"
+      "bytes": 1862,
+      "sha256": "f9b0f62739cd60982626ec85c1baa55175ff8ec8de08be22ae45f2e07bf9f2c2"
     }
   },
-  "file_count": 55,
-  "total_bytes": 4755020,
+  "file_count": 82,
+  "total_bytes": 7131194,
   "final_half_scored": false
 }

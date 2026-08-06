@@ -1,0 +1,20 @@
+{
+  "format_version": "v100-raw-artifact-pointer-v1",
+  "local_root": "D:/V100-artifacts/geometry_repair_screen_hf_v1/ratio020/ratio020",
+  "remote_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/geometry_repair_screen_hf_v1/ratio020",
+  "complete_raw_copy": true,
+  "local_file_count": 33,
+  "local_total_bytes": 1143618104,
+  "health_manifest": "HEALTH_ARTIFACT_MANIFEST.json",
+  "health_manifest_sha256": "4a7857867cefff3500defddab7771226866d55b98557a0d1262f4dfa5aaa4505",
+  "health_manifest_file_count": 22,
+  "health_manifest_total_bytes": 1141300213,
+  "local_rehash": {
+    "status": "verified",
+    "manifest_entries_checked": 22,
+    "mismatches": 0,
+    "extra_raw_log": "launcher.log"
+  },
+  "large_files_policy": "checkpoint tensors and optimizer state remain in the local raw archive and are not duplicated in Git",
+  "paid_resources_used": false
+}

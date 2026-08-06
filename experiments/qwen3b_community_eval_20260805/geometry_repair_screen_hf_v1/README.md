@@ -23,6 +23,10 @@ The matched `ratio005` arm is now also archived here. It stops at the same
 `[1,2]` onset, so the smallest pre-registered geometry dose does not rescue the
 early trajectory. Its raw pointer and result are under `ratio005/`.
 
+The `ratio020` arm is archived under `ratio020/` and also stops at `[1,2]`.
+The 5% and 20% doses therefore fail the same early health test; only the
+pre-registered `ratio080` arm remains before the lambda screen is closed.
+
 This result keeps Gate D at `NO-GO`, leaves `previous_best=step0`, and requires
 the matched `ratio005`, `ratio020`, and `ratio080` arms to run under the same
 early-stop contract before any 500-step expansion or capability evaluation.
