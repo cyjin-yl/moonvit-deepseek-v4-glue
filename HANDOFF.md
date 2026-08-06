@@ -1,6 +1,6 @@
 # Handoff
 
-## Current authority (2026-08-06)
+## Current authority (2026-08-07)
 
 Read [`docs/current-status.md`](docs/current-status.md) first for the live state and
 [`docs/architecture-matrix.md`](docs/architecture-matrix.md) for architecture IDs.

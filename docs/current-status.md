@@ -43,6 +43,10 @@ Qwen2.5-3B 代理的真实图像 glue、projector 梯度、checkpoint 保存恢�
 
 后续报告同时保存训练健康和真实能力两条轨迹。当前已经观察到：CE 可以下降而视觉归因不升；V1/V2 都会遇到早期 receiver-facing 几何退化；降低学习率能保住 rank/spread，却不能自行产生正确图像优势；token 数量和压缩方式会改变 grounding margin；Qwen3.5 的视觉预训练 receiver 对外部 MoonViT token 有局部响应，但多样样本上仍无法稳定区分正确图与打乱图。这些结果决定下一轮优先检查监督接口、视觉 token 覆盖/尺度和 receiver 解码能力，避免把 projector norm 或 synthetic preference 当作能力提升。
 
+## 回归修复后的验证状态（2026-08-07）
+
+第一次完整回归暴露了 5 项问题：旧评测调用方缺少可选 `moonvit_revision`、Git 中缺少一个已在 raw archive 校验过的紧凑 checkpoint manifest，以及三项历史实验 source hash 随共享训练器演进而漂移。问题全部写入 `capacity_controls/full_pytest_regression_20260807_FAILURE.json`；历史 preregistration 本身没有被改写，三份 `PREREGISTRATION_SOURCE_DRIFT_20260807.json` 只记录当前源码与冻结源码的对应关系。兼容性修复、manifest 恢复和 pointer-aware verifier 调整后，`PYTHONPATH=src:tools python -m pytest -q` 全部通过，只有已有 skip 和 NVML/Pillow deprecation warnings。这个绿色回归说明安全链路可维护，不增加任何视觉能力结论。
+
 ## 当前状态表
 
 | 问题 | 当前证据 | 状态 | 允许的结论 |
