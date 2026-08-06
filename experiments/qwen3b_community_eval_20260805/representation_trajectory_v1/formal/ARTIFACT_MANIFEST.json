@@ -1,0 +1,51 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-06T02:24:34.403804+00:00",
+  "root": "formal",
+  "git_base_sha": "3358223eabdb250cac62a6effb39a61739edae2d",
+  "files": {
+    "BOUND_TRAINING_HISTORY.jsonl": {
+      "bytes": 298627,
+      "sha256": "c22a01631598d4ca4850347474f39171853cc9ba22da4176e0a0fac6067df3a8"
+    },
+    "full_suite_final.log": {
+      "bytes": 2330,
+      "sha256": "8a5f65b9d2f3b1fc0d4e491a65e098b58d8747c912d034816e33624747d29b06"
+    },
+    "INDEPENDENT_VERIFICATION.json": {
+      "bytes": 6576,
+      "sha256": "02bb35068014878f6a7b013ea46659ffd85c0b5349239268ad81c802f560c7da"
+    },
+    "PAIRWISE_GEOMETRY.jsonl": {
+      "bytes": 3807140,
+      "sha256": "7b75ac68099f3e4cb44289aca32d0e23a1a2091aa138eeaf64dd8a96d52bbe10"
+    },
+    "PER_SAMPLE.jsonl": {
+      "bytes": 86224,
+      "sha256": "5b929cc5d4a6e026389dd18e896b57c4c330846628b7cbfb13d0e7755df0a116"
+    },
+    "POOLED_REPRESENTATIONS.safetensors": {
+      "bytes": 16385304,
+      "sha256": "d40b093731d57ca25db03383345244c70710909f3c926dfdd355409673539a0c"
+    },
+    "run.log": {
+      "bytes": 29945,
+      "sha256": "3f5c4d8dd11f1cc7fb10ab5b74dc4a2e18c3f500d43120cdb005be11e0770733"
+    },
+    "RUN_CONFIG.json": {
+      "bytes": 10355,
+      "sha256": "f6a2c4b5b2d29a13962bb61717f02699bedb1465fc0944f93dc032bfafc64a44"
+    },
+    "SUMMARY.json": {
+      "bytes": 29660,
+      "sha256": "068f15ed073d1332f739a6953dbc7bf4e8253054fa93f6826426afc7dca2769e"
+    },
+    "verify.log": {
+      "bytes": 6576,
+      "sha256": "3d936a11b0a8612de5588ef6fd0578f499ca176987c880006cb836fc14ded532"
+    }
+  },
+  "file_count": 10,
+  "total_bytes": 20662737,
+  "final_half_scored": false
+}

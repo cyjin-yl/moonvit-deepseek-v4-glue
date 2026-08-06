@@ -1,0 +1,79 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-06T02:24:34.768544+00:00",
+  "root": "representation_trajectory_v1",
+  "git_base_sha": "3358223eabdb250cac62a6effb39a61739edae2d",
+  "files": {
+    "charts/01-collapse-trajectory.svg": {
+      "bytes": 5163,
+      "sha256": "d4807b667f7e879f095fdf056f508f5fb2b97d12fd17980f2c98ef9d1874f17d"
+    },
+    "DECISION.json": {
+      "bytes": 2307,
+      "sha256": "5e003ceec317b2e9aef8f6f77dc78936bf777685a08af7e97c747da0da9a33ab"
+    },
+    "formal/ARTIFACT_MANIFEST.json": {
+      "bytes": 1707,
+      "sha256": "f790837f57385db543d8322e1b26f9002a183f360ef2ce3d939a891f515b9aee"
+    },
+    "formal/BOUND_TRAINING_HISTORY.jsonl": {
+      "bytes": 298627,
+      "sha256": "c22a01631598d4ca4850347474f39171853cc9ba22da4176e0a0fac6067df3a8"
+    },
+    "formal/full_suite_final.log": {
+      "bytes": 2330,
+      "sha256": "8a5f65b9d2f3b1fc0d4e491a65e098b58d8747c912d034816e33624747d29b06"
+    },
+    "formal/INDEPENDENT_VERIFICATION.json": {
+      "bytes": 6576,
+      "sha256": "02bb35068014878f6a7b013ea46659ffd85c0b5349239268ad81c802f560c7da"
+    },
+    "formal/PAIRWISE_GEOMETRY.jsonl": {
+      "bytes": 3807140,
+      "sha256": "7b75ac68099f3e4cb44289aca32d0e23a1a2091aa138eeaf64dd8a96d52bbe10"
+    },
+    "formal/PER_SAMPLE.jsonl": {
+      "bytes": 86224,
+      "sha256": "5b929cc5d4a6e026389dd18e896b57c4c330846628b7cbfb13d0e7755df0a116"
+    },
+    "formal/POOLED_REPRESENTATIONS.safetensors": {
+      "bytes": 16385304,
+      "sha256": "d40b093731d57ca25db03383345244c70710909f3c926dfdd355409673539a0c"
+    },
+    "formal/run.log": {
+      "bytes": 29945,
+      "sha256": "3f5c4d8dd11f1cc7fb10ab5b74dc4a2e18c3f500d43120cdb005be11e0770733"
+    },
+    "formal/RUN_CONFIG.json": {
+      "bytes": 10355,
+      "sha256": "f6a2c4b5b2d29a13962bb61717f02699bedb1465fc0944f93dc032bfafc64a44"
+    },
+    "formal/SUMMARY.json": {
+      "bytes": 29660,
+      "sha256": "068f15ed073d1332f739a6953dbc7bf4e8253054fa93f6826426afc7dca2769e"
+    },
+    "formal/verify.log": {
+      "bytes": 6576,
+      "sha256": "3d936a11b0a8612de5588ef6fd0578f499ca176987c880006cb836fc14ded532"
+    },
+    "PRE_RESULT_IMPLEMENTATION_REPAIR.json": {
+      "bytes": 1395,
+      "sha256": "c6fd37835d0b3f23aec44ba413e368327d37c3138f9e076648855c05a355af5a"
+    },
+    "pre_result_unit_failure_attempt_01.log": {
+      "bytes": 6302,
+      "sha256": "f792f19d4c3e8e062c86f958b581c8c7d383c276b3c46eedd665252b1bcfdec1"
+    },
+    "PREREGISTRATION.json": {
+      "bytes": 2198,
+      "sha256": "6e5406357de85958f6950dc408691a2c22dc08d01c2f9ebed93069c5921835d5"
+    },
+    "README.md": {
+      "bytes": 1855,
+      "sha256": "0b05b66f966bbec16570983c8e23976f72cdedc217ba9b6add1cc60cc60afdba"
+    }
+  },
+  "file_count": 17,
+  "total_bytes": 20683664,
+  "final_half_scored": false
+}

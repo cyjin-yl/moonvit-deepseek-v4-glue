@@ -1,0 +1,50 @@
+{
+  "format_version": "qwen3b-representation-trajectory-decision-v1",
+  "status": "valid_verified",
+  "registered_decision_stage": "fixed_receiver_2048",
+  "registered_onset": {
+    "condition": "step100",
+    "optimizer_step": 100,
+    "examples_seen": 800,
+    "answer_tokens_seen": 7362,
+    "last_saved_precollapse_condition": "step0"
+  },
+  "projector_step100_over_step0": {
+    "relative_spread_ratio": 0.12984915495775887,
+    "effective_rank_ratio": 0.07720574719395511,
+    "sample_rms_ratio": 289.2939986991707,
+    "sample_rms": 35.740097890246744,
+    "top1_variance_fraction": 0.9875544517314816
+  },
+  "receiver_step100_over_step0": {
+    "relative_spread_ratio": 0.1287329647038954,
+    "effective_rank_ratio": 0.07596080894828218,
+    "sample_rms_ratio": 413.4325084987718,
+    "sample_rms": 50.50558940544818,
+    "top1_variance_fraction": 0.9888531750375767
+  },
+  "training_window_step1_to_100": {
+    "loss_mean": 3.916363775571808,
+    "loss_last": 2.275717318058014,
+    "gradient_norm_before_clip_mean": 36.74854892283678,
+    "gradient_norm_before_clip_last": 0.7901650667190552
+  },
+  "registered_action": "apply_geometry_protection_from_initial_step_and_run_matched_lambda_screen",
+  "supported_hypotheses": [
+    "the current CE-only objective drives a large common-direction and near-rank-one cross-image geometry very early",
+    "the primary collapse occurs before the fixed Qwen receiver",
+    "geometry protection must act from the start of optimization"
+  ],
+  "refuted_hypotheses": [
+    "gross collapse is only a late overtraining effect",
+    "continuing the unchanged CE-only run is likely to recover representation diversity",
+    "the fixed 4096-to-2048 receiver is the primary source of collapse"
+  ],
+  "resolution_limit": "The first saved trained checkpoint is step100, so the exact onset within optimizer steps 1 through 100 remains unresolved.",
+  "visual_ability_established": false,
+  "previous_best_advanced": false,
+  "transfer_label": "directly_transferable",
+  "deepseek_migration_judgment": "The diagnosis and the next output-geometry regularizer operate at the canonical 4096 projector boundary and do not depend on Qwen tokenizer, chat template, native visual modules, or cross-attention.",
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

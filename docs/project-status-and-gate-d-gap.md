@@ -55,7 +55,9 @@ Package 15I–15L 把显式 grounding 从 339/4,000 提高到 2,000/4,000，同�
 
 Package 15M 已补完 generation 合同。vision/blind/shuffled 的 click-in-box 为 6%/12%/6%，mean distance 为 502.06/392.59/502.08；vision-minus-blind mean-distance improvement 为 `-109.47 [-171.64, -44.59]`，vision-minus-shuffled 为 `0.018 [-3.544, 3.213]`。vision 31/50 输出 `[125,345]`，而 2,000 个 grounding labels 有 1,066 个 unique coordinate pairs 且从未出现该点。free generation 与 preference 一致拒绝 checkpoint，并揭示非 label-mode 的窄坐标塌缩。
 
-Package 15N 随后触发预注册的两个 gross-collapse guards。projector current/step0 relative-spread ratio 为 `0.1384`，participation-rank ratio 为 `0.0859`；effective rank 从 13.28 降到 1.14，top-1 variance fraction 从 17.48% 升到 93.46%。同时 sample RMS 从 0.124 放大到 97.31、within-image token RMS 从 0.139 放大到 18.45。绝对跨图距离没有消失，表示变成巨大、近共线的 common-direction soft prompt，跨图差异接近 rank one。receiver 的两项 ratio 为 `0.1372/0.0846`，与 projector 一致，排除 fixed receiver 是主要塌缩源。下一步先定位 steps 0/100/200/300/400/500 的塌缩起点，再冻结最小 scale/geometry-preservation treatment；counterfactual margin 暂缓。
+Package 15N 随后触发预注册的两个 gross-collapse guards。projector current/step0 relative-spread ratio 为 `0.1384`，participation-rank ratio 为 `0.0859`；effective rank 从 13.28 降到 1.14，top-1 variance fraction 从 17.48% 升到 93.46%。同时 sample RMS 从 0.124 放大到 97.31、within-image token RMS 从 0.139 放大到 18.45。绝对跨图距离没有消失，表示变成巨大、近共线的 common-direction soft prompt，跨图差异接近 rank one。receiver 的两项 ratio 为 `0.1372/0.0846`，与 projector 一致，排除 fixed receiver 是主要塌缩源。
+
+Package 15O 把同一诊断扩到 steps 0/100/200/300/400/500。第一个保存的训练状态 step100/800 examples 已同时触发两个 guard：projector spread/rank ratio 为 `0.12985/0.07721`，sample RMS 从 0.124 放大到 35.74，top-1 variance 达 98.76%；receiver ratio 为 `0.12873/0.07596`。所有后续保存点仍塌缩。首个 100-step 窗口 loss 均值仍为 3.916，末步 loss 为 2.276，因此该失败属于早期优化动力学，继续相同 CE-only 训练没有恢复几何。精确 onset 只能限定在 steps 1–100。下一训练 screen 从首个 optimizer step 施加最小 scale/geometry-preservation treatment；counterfactual margin 暂缓。
 
 ## 5. Replay 与 sentinel 的收束结论
 
@@ -104,8 +106,8 @@ Package 15N 随后触发预注册的两个 gross-collapse guards。projector cur
 16. **已完成（Package 15L）**：GLM-format public-50 teacher-forced correct-vs-counterfactual preference；vision/blind/shuffled 为 52%/56%/54%，correct-NLL 相对 step0 显著降低，图像身份依赖仍未建立，checkpoint 被拒绝。
 17. **已完成（Package 15M）**：同 checkpoint 的 GLM-format public-50 七条件 generation 与 2,000 bootstrap；vision/blind/shuffled click 为 6%/12%/6%，vision 与 shuffled distance 无差异，候选不扩大 full/三 seed。
 18. **已完成（Package 15N）**：projector/receiver 两个 gross-collapse guards 同时触发；projector effective rank 13.28→1.14、top-1 variance 17.48%→93.46%，receiver ratio 近似不变。pooled tensors、6,125 pair rows、50 per-sample rows及两项失败修复全部保留；17 files / 8,120,202 bytes，V100 full suite 347/347。
-19. **当前零训练诊断**：对 steps 0/100/200/300/400/500 重复同一 frozen representation screen，定位 scale/rank collapse 首次跨阈值的 checkpoint，并关联 loss/NLL 轨迹。
-20. **下一训练 screen**：冻结最小 projector scale/geometry-preservation treatment，保留匹配 CE-only control、exact step0、记录/顺序、500 steps 和 4,000 examples；counterfactual margin 等表示修复后再评。
+19. **已完成（Package 15O）**：steps 0/100/200/300/400/500 的 frozen representation trajectory；首个保存点 step100 已 gross collapse，13 个 pooled tensors、15,925 pair rows、50 per-sample rows与 500 行训练历史由独立 verifier 重算。
+20. **下一训练 screen**：从 optimizer step one 生效的最小 projector scale/geometry-preservation treatment，保留匹配 CE-only control、exact step0、记录/顺序、500 steps 和 4,000 examples；先跑固定小 λ/短预算筛选，counterfactual margin 等表示修复后再评。
 21. **并行工程缺口**：补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 240-row language-retention evaluator；任何候选替换 previous-best 前必须跑完。
 
 在完成以上本地证据后，若剩余阻塞只来自完整权重容量和量化 DGRAD，再提交最小付费 Gate D 的硬件、时价、GPU-hour、存储与止损上限，等待单独授权。

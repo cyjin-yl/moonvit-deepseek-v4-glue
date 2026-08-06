@@ -1,0 +1,171 @@
+{
+  "collapse_onsets": {
+    "fixed_receiver_2048": {
+      "collapse_detected": true,
+      "decisions": {
+        "step100": {
+          "action": "gross_collapse",
+          "effective_rank_guard_triggered": true,
+          "effective_rank_ratio": 0.07596080894828218,
+          "gross_collapse": true,
+          "relative_spread_guard_triggered": true,
+          "relative_spread_ratio": 0.1287329647038954
+        },
+        "step200": {
+          "action": "gross_collapse",
+          "effective_rank_guard_triggered": true,
+          "effective_rank_ratio": 0.07737063562724003,
+          "gross_collapse": true,
+          "relative_spread_guard_triggered": true,
+          "relative_spread_ratio": 0.12302574685356882
+        },
+        "step300": {
+          "action": "gross_collapse",
+          "effective_rank_guard_triggered": true,
+          "effective_rank_ratio": 0.08243941325322315,
+          "gross_collapse": true,
+          "relative_spread_guard_triggered": true,
+          "relative_spread_ratio": 0.12157153969075497
+        },
+        "step400": {
+          "action": "gross_collapse",
+          "effective_rank_guard_triggered": true,
+          "effective_rank_ratio": 0.08429432071204178,
+          "gross_collapse": true,
+          "relative_spread_guard_triggered": true,
+          "relative_spread_ratio": 0.1473978840257199
+        },
+        "step500": {
+          "action": "gross_collapse",
+          "effective_rank_guard_triggered": true,
+          "effective_rank_ratio": 0.08457489147863204,
+          "gross_collapse": true,
+          "relative_spread_guard_triggered": true,
+          "relative_spread_ratio": 0.1372408079249148
+        }
+      },
+      "last_precollapse_condition": "step0",
+      "last_precollapse_step": 0,
+      "onset_condition": "step100",
+      "onset_examples_seen": 800,
+      "onset_step": 100,
+      "registered_action": "apply_geometry_protection_from_initial_step_and_run_matched_lambda_screen"
+    },
+    "projector_4096": {
+      "collapse_detected": true,
+      "decisions": {
+        "step100": {
+          "action": "gross_collapse",
+          "effective_rank_guard_triggered": true,
+          "effective_rank_ratio": 0.07720574719395511,
+          "gross_collapse": true,
+          "relative_spread_guard_triggered": true,
+          "relative_spread_ratio": 0.12984915495775887
+        },
+        "step200": {
+          "action": "gross_collapse",
+          "effective_rank_guard_triggered": true,
+          "effective_rank_ratio": 0.07864767827694734,
+          "gross_collapse": true,
+          "relative_spread_guard_triggered": true,
+          "relative_spread_ratio": 0.12409283678089164
+        },
+        "step300": {
+          "action": "gross_collapse",
+          "effective_rank_guard_triggered": true,
+          "effective_rank_ratio": 0.0838130249029175,
+          "gross_collapse": true,
+          "relative_spread_guard_triggered": true,
+          "relative_spread_ratio": 0.12263268725599683
+        },
+        "step400": {
+          "action": "gross_collapse",
+          "effective_rank_guard_triggered": true,
+          "effective_rank_ratio": 0.08560880745183957,
+          "gross_collapse": true,
+          "relative_spread_guard_triggered": true,
+          "relative_spread_ratio": 0.1486561379445018
+        },
+        "step500": {
+          "action": "gross_collapse",
+          "effective_rank_guard_triggered": true,
+          "effective_rank_ratio": 0.08585614520107673,
+          "gross_collapse": true,
+          "relative_spread_guard_triggered": true,
+          "relative_spread_ratio": 0.13839551812134085
+        }
+      },
+      "last_precollapse_condition": "step0",
+      "last_precollapse_step": 0,
+      "onset_condition": "step100",
+      "onset_examples_seen": 800,
+      "onset_step": 100,
+      "registered_action": "apply_geometry_protection_from_initial_step_and_run_matched_lambda_screen"
+    }
+  },
+  "final_half_scored": false,
+  "format_version": "qwen3b-representation-trajectory-verification-v1",
+  "paid_resources_used": false,
+  "pairwise_rows": 15925,
+  "pairwise_sha256": "7b75ac68099f3e4cb44289aca32d0e23a1a2091aa138eeaf64dd8a96d52bbe10",
+  "per_sample_rows": 50,
+  "per_sample_sha256": "5b929cc5d4a6e026389dd18e896b57c4c330846628b7cbfb13d0e7755df0a116",
+  "pooled_representations_sha256": "d40b093731d57ca25db03383345244c70710909f3c926dfdd355409673539a0c",
+  "pooled_tensor_count": 13,
+  "registered_action": "apply_geometry_protection_from_initial_step_and_run_matched_lambda_screen",
+  "registered_onset": {
+    "collapse_detected": true,
+    "decisions": {
+      "step100": {
+        "action": "gross_collapse",
+        "effective_rank_guard_triggered": true,
+        "effective_rank_ratio": 0.07596080894828218,
+        "gross_collapse": true,
+        "relative_spread_guard_triggered": true,
+        "relative_spread_ratio": 0.1287329647038954
+      },
+      "step200": {
+        "action": "gross_collapse",
+        "effective_rank_guard_triggered": true,
+        "effective_rank_ratio": 0.07737063562724003,
+        "gross_collapse": true,
+        "relative_spread_guard_triggered": true,
+        "relative_spread_ratio": 0.12302574685356882
+      },
+      "step300": {
+        "action": "gross_collapse",
+        "effective_rank_guard_triggered": true,
+        "effective_rank_ratio": 0.08243941325322315,
+        "gross_collapse": true,
+        "relative_spread_guard_triggered": true,
+        "relative_spread_ratio": 0.12157153969075497
+      },
+      "step400": {
+        "action": "gross_collapse",
+        "effective_rank_guard_triggered": true,
+        "effective_rank_ratio": 0.08429432071204178,
+        "gross_collapse": true,
+        "relative_spread_guard_triggered": true,
+        "relative_spread_ratio": 0.1473978840257199
+      },
+      "step500": {
+        "action": "gross_collapse",
+        "effective_rank_guard_triggered": true,
+        "effective_rank_ratio": 0.08457489147863204,
+        "gross_collapse": true,
+        "relative_spread_guard_triggered": true,
+        "relative_spread_ratio": 0.1372408079249148
+      }
+    },
+    "last_precollapse_condition": "step0",
+    "last_precollapse_step": 0,
+    "onset_condition": "step100",
+    "onset_examples_seen": 800,
+    "onset_step": 100,
+    "registered_action": "apply_geometry_protection_from_initial_step_and_run_matched_lambda_screen"
+  },
+  "runner_git_sha": "3358223eabdb250cac62a6effb39a61739edae2d",
+  "status": "verified",
+  "training_history_rows": 500,
+  "training_history_sha256": "c22a01631598d4ca4850347474f39171853cc9ba22da4176e0a0fac6067df3a8"
+}

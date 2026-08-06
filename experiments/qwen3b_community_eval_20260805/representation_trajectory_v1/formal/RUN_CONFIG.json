@@ -1,0 +1,215 @@
+{
+  "analysis_contract": {
+    "actions": {
+      "first_checkpoint_collapsed": "apply_geometry_protection_from_initial_step_and_run_matched_lambda_screen",
+      "later_checkpoint_collapsed": "use_last_precollapse_checkpoint_to_localize_then_apply_geometry_protection",
+      "never_collapsed": "run_matched_training_only_counterfactual_margin_auxiliary"
+    },
+    "conditions": [
+      {
+        "answer_tokens_seen": 0,
+        "checkpoint_manifest_sha256": null,
+        "examples_seen": 0,
+        "name": "step0",
+        "step": 0,
+        "weights_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0"
+      },
+      {
+        "answer_tokens_seen": 7362,
+        "checkpoint_manifest_sha256": "99bef0b084bba8a17f0ae960d6a73d4aea0f36457c04dfde8112e61c845113fc",
+        "examples_seen": 800,
+        "name": "step100",
+        "step": 100,
+        "weights_sha256": "08bdda72d5f984edbf7931dc4eb3dad8f3b296b05c18afa0364071dd1fdc19b1"
+      },
+      {
+        "answer_tokens_seen": 14591,
+        "checkpoint_manifest_sha256": "4e6a3aab077259eca56119304a8a7941ff2784cc103097a68daf1d15acd6e29b",
+        "examples_seen": 1600,
+        "name": "step200",
+        "step": 200,
+        "weights_sha256": "2964c1b63c6a28cd00caacadda81f412d2a346568afe2b691dc43181fdf6c7ce"
+      },
+      {
+        "answer_tokens_seen": 21972,
+        "checkpoint_manifest_sha256": "055f4c23db751c0b7aead3bc91f90db14da5bf7bae4ad5cdda58764d443ed5d7",
+        "examples_seen": 2400,
+        "name": "step300",
+        "step": 300,
+        "weights_sha256": "41c23b5f69aae4a8c9ea6bfaa0d097b1a81379d43d4aa1084a9b181b3a04095f"
+      },
+      {
+        "answer_tokens_seen": 29287,
+        "checkpoint_manifest_sha256": "1b874b8743f19823e52a334dce2d0b9d90bd9029f6b63b09d904590aca3e5d25",
+        "examples_seen": 3200,
+        "name": "step400",
+        "step": 400,
+        "weights_sha256": "96e5ddc17cad1de8443e46c7ef842702446ae440419e113adb847c01df66b5a9"
+      },
+      {
+        "answer_tokens_seen": 36589,
+        "checkpoint_manifest_sha256": "19219dee0c22efa84a4b54e352075840cd725a2bb2f7bad0b63c395efc38774b",
+        "examples_seen": 4000,
+        "name": "step500",
+        "step": 500,
+        "weights_sha256": "62f69393dd3d157446db05a7060942bdfbd23f834bbe2e6782560431b5773df4"
+      }
+    ],
+    "dataset_manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+    "dataset_name": "screenspot_glm50_v1",
+    "decision_stage": "fixed_receiver_2048",
+    "final_half_allowed": false,
+    "format_version": "qwen3b-representation-trajectory-contract-v1",
+    "frozen_before_result": true,
+    "gross_collapse_rule": {
+      "current_over_step0_effective_rank_below": 0.5,
+      "current_over_step0_relative_spread_below": 0.25,
+      "requires_all": true
+    },
+    "interpretation_boundary": "This trajectory localizes gross cross-image diversity collapse at saved checkpoints only. It cannot establish instruction-conditioned grounding or visual ability.",
+    "loss_window_rule": "disjoint intervals previous_checkpoint_step < step <= checkpoint_step",
+    "onset_rule": "earliest saved checkpoint where both preregistered gross-collapse guards fire",
+    "paid_resources_allowed": false,
+    "pooling": "concatenate all feature groups, then arithmetic mean across visual tokens",
+    "sample_count": 50,
+    "stages": [
+      "moonvit_flattened",
+      "projector_4096",
+      "fixed_receiver_2048"
+    ],
+    "token_variance": "per-image RMS around that image's token mean, averaged over images",
+    "training_history_sha256": "c22a01631598d4ca4850347474f39171853cc9ba22da4176e0a0fac6067df3a8"
+  },
+  "analysis_contract_file_sha256": "cd6e42bc28f2c6ae3bcb3867b5982374f21d6a796d55f0e040a19a1c8898aabe",
+  "binding_sha256": "64b8e8264f5ef4ee4be9a0b7cd7649ad93ebd80a5a4576e935cf67ab1528e5e9",
+  "cache_binding": {
+    "aliased_records": 0,
+    "maximum_visual_tokens": 1332,
+    "records": 50,
+    "unique_feature_spans": 50
+  },
+  "cache_verification": {
+    "aliased_records": 0,
+    "cache": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_features_1024_v1",
+    "manifest_sha256": "03f35d8cee962a97996f3250e41c351978f28c0ca9a8fe74d4f8d41c411ae7f3",
+    "records_verified": 50,
+    "runner_git_sha": "fbbd81f7dc77c146642b678fe84605f62615f58c",
+    "runner_tracked_worktree_clean": true,
+    "runtime_source_files_verified": 3,
+    "shards_verified": 50,
+    "status": "valid",
+    "total_shard_bytes": 627596320,
+    "training_order_binding": null,
+    "unique_feature_spans": 50,
+    "unique_values_verified": 156897280,
+    "values_verified": 156897280
+  },
+  "contract_file_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+  "dataset_manifest_file_sha256": "b578229e72a59a983623514f259d2f49fc46cb66c0802a622682727d88151543",
+  "dataset_manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+  "dataset_name": "screenspot_glm50_v1",
+  "feature_cache_manifest_file_sha256": "03f35d8cee962a97996f3250e41c351978f28c0ca9a8fe74d4f8d41c411ae7f3",
+  "final_half_scored": false,
+  "formal_run": true,
+  "format_version": "qwen3b-representation-trajectory-run-v1",
+  "git_tracked_worktree_clean": true,
+  "paid_resources_used": false,
+  "projector_sources": {
+    "step0": {
+      "answer_tokens_seen": 0,
+      "checkpoint_manifest_sha256": null,
+      "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+      "directory": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_initializations_v1/step0",
+      "examples_seen": 0,
+      "step": 0,
+      "weights_bytes": 134259248,
+      "weights_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0"
+    },
+    "step100": {
+      "answer_tokens_seen": 7362,
+      "checkpoint_manifest_sha256": "99bef0b084bba8a17f0ae960d6a73d4aea0f36457c04dfde8112e61c845113fc",
+      "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+      "directory": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_grounding_enriched_4k_v1/checkpoints/step-000100",
+      "examples_seen": 800,
+      "step": 100,
+      "weights_bytes": 134259248,
+      "weights_sha256": "08bdda72d5f984edbf7931dc4eb3dad8f3b296b05c18afa0364071dd1fdc19b1"
+    },
+    "step200": {
+      "answer_tokens_seen": 14591,
+      "checkpoint_manifest_sha256": "4e6a3aab077259eca56119304a8a7941ff2784cc103097a68daf1d15acd6e29b",
+      "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+      "directory": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_grounding_enriched_4k_v1/checkpoints/step-000200",
+      "examples_seen": 1600,
+      "step": 200,
+      "weights_bytes": 134259248,
+      "weights_sha256": "2964c1b63c6a28cd00caacadda81f412d2a346568afe2b691dc43181fdf6c7ce"
+    },
+    "step300": {
+      "answer_tokens_seen": 21972,
+      "checkpoint_manifest_sha256": "055f4c23db751c0b7aead3bc91f90db14da5bf7bae4ad5cdda58764d443ed5d7",
+      "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+      "directory": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_grounding_enriched_4k_v1/checkpoints/step-000300",
+      "examples_seen": 2400,
+      "step": 300,
+      "weights_bytes": 134259248,
+      "weights_sha256": "41c23b5f69aae4a8c9ea6bfaa0d097b1a81379d43d4aa1084a9b181b3a04095f"
+    },
+    "step400": {
+      "answer_tokens_seen": 29287,
+      "checkpoint_manifest_sha256": "1b874b8743f19823e52a334dce2d0b9d90bd9029f6b63b09d904590aca3e5d25",
+      "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+      "directory": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_grounding_enriched_4k_v1/checkpoints/step-000400",
+      "examples_seen": 3200,
+      "step": 400,
+      "weights_bytes": 134259248,
+      "weights_sha256": "96e5ddc17cad1de8443e46c7ef842702446ae440419e113adb847c01df66b5a9"
+    },
+    "step500": {
+      "answer_tokens_seen": 36589,
+      "checkpoint_manifest_sha256": "19219dee0c22efa84a4b54e352075840cd725a2bb2f7bad0b63c395efc38774b",
+      "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+      "directory": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_grounding_enriched_4k_v1/checkpoints/step-000500",
+      "examples_seen": 4000,
+      "step": 500,
+      "weights_bytes": 134259248,
+      "weights_sha256": "62f69393dd3d157446db05a7060942bdfbd23f834bbe2e6782560431b5773df4"
+    }
+  },
+  "receiver_sha256": "1cecc883394edc51a30c151ff955e92b6abfb9b7bf512f91a7644071551a6d47",
+  "runner_git_sha": "3358223eabdb250cac62a6effb39a61739edae2d",
+  "runtime_source_files": [
+    {
+      "bytes": 19968,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/analyze_qwen3b_representation_trajectory.py",
+      "sha256": "a77cd889c42fd9266d218eb434fee242818aa2ec02b7a4c1268feede54d3eaa2"
+    },
+    {
+      "bytes": 8841,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/src/moonvit_glue/representation_retention.py",
+      "sha256": "fb2b313368ffd2de68761257fcf7c1092bcbc98b7ed2eb653250f46acfdde7bf"
+    },
+    {
+      "bytes": 5842,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/src/moonvit_glue/representation_trajectory.py",
+      "sha256": "f2606248bac5e22986a6ede51c53f0cc12a80d9f73e82cc90ff4d65f8df4fd57"
+    },
+    {
+      "bytes": 27478,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/eval_qwen3b_screenspot.py",
+      "sha256": "8188b6bc078f66a6536437731a5874a03d358683de7fab8e0ee475002ff1be9a"
+    },
+    {
+      "bytes": 36385,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/train_qwen3b_proxy.py",
+      "sha256": "957f59005913638874ee0a87f7d98863382d87c53c1bac25461fb4ac020ba19e"
+    },
+    {
+      "bytes": 9032,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/verify_feature_cache.py",
+      "sha256": "8aeea8d316298470a7a984b7acd9d25c7a3dc62e72d223447d9d76f0c4b204b7"
+    }
+  ],
+  "training_history_sha256": "c22a01631598d4ca4850347474f39171853cc9ba22da4176e0a0fac6067df3a8",
+  "training_history_source": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_grounding_enriched_4k_v1/TRAINING_HISTORY.jsonl"
+}
