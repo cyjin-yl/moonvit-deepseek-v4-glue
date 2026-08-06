@@ -1,0 +1,39 @@
+{
+  "format_version": "qwen3b-representation-trajectory-contract-v1",
+  "frozen_before_result": true,
+  "dataset_name": "screenspot_glm50_v1",
+  "dataset_manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+  "sample_count": 50,
+  "conditions": [
+    {"name": "step0", "step": 0, "examples_seen": 0, "answer_tokens_seen": 0, "weights_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0", "checkpoint_manifest_sha256": null},
+    {"name": "step100", "step": 100, "examples_seen": 800, "answer_tokens_seen": 7362, "weights_sha256": "08bdda72d5f984edbf7931dc4eb3dad8f3b296b05c18afa0364071dd1fdc19b1", "checkpoint_manifest_sha256": "99bef0b084bba8a17f0ae960d6a73d4aea0f36457c04dfde8112e61c845113fc"},
+    {"name": "step200", "step": 200, "examples_seen": 1600, "answer_tokens_seen": 14591, "weights_sha256": "2964c1b63c6a28cd00caacadda81f412d2a346568afe2b691dc43181fdf6c7ce", "checkpoint_manifest_sha256": "4e6a3aab077259eca56119304a8a7941ff2784cc103097a68daf1d15acd6e29b"},
+    {"name": "step300", "step": 300, "examples_seen": 2400, "answer_tokens_seen": 21972, "weights_sha256": "41c23b5f69aae4a8c9ea6bfaa0d097b1a81379d43d4aa1084a9b181b3a04095f", "checkpoint_manifest_sha256": "055f4c23db751c0b7aead3bc91f90db14da5bf7bae4ad5cdda58764d443ed5d7"},
+    {"name": "step400", "step": 400, "examples_seen": 3200, "answer_tokens_seen": 29287, "weights_sha256": "96e5ddc17cad1de8443e46c7ef842702446ae440419e113adb847c01df66b5a9", "checkpoint_manifest_sha256": "1b874b8743f19823e52a334dce2d0b9d90bd9029f6b63b09d904590aca3e5d25"},
+    {"name": "step500", "step": 500, "examples_seen": 4000, "answer_tokens_seen": 36589, "weights_sha256": "62f69393dd3d157446db05a7060942bdfbd23f834bbe2e6782560431b5773df4", "checkpoint_manifest_sha256": "19219dee0c22efa84a4b54e352075840cd725a2bb2f7bad0b63c395efc38774b"}
+  ],
+  "training_history_sha256": "c22a01631598d4ca4850347474f39171853cc9ba22da4176e0a0fac6067df3a8",
+  "stages": [
+    "moonvit_flattened",
+    "projector_4096",
+    "fixed_receiver_2048"
+  ],
+  "pooling": "concatenate all feature groups, then arithmetic mean across visual tokens",
+  "token_variance": "per-image RMS around that image's token mean, averaged over images",
+  "decision_stage": "fixed_receiver_2048",
+  "gross_collapse_rule": {
+    "requires_all": true,
+    "current_over_step0_relative_spread_below": 0.25,
+    "current_over_step0_effective_rank_below": 0.5
+  },
+  "onset_rule": "earliest saved checkpoint where both preregistered gross-collapse guards fire",
+  "loss_window_rule": "disjoint intervals previous_checkpoint_step < step <= checkpoint_step",
+  "actions": {
+    "first_checkpoint_collapsed": "apply_geometry_protection_from_initial_step_and_run_matched_lambda_screen",
+    "later_checkpoint_collapsed": "use_last_precollapse_checkpoint_to_localize_then_apply_geometry_protection",
+    "never_collapsed": "run_matched_training_only_counterfactual_margin_auxiliary"
+  },
+  "interpretation_boundary": "This trajectory localizes gross cross-image diversity collapse at saved checkpoints only. It cannot establish instruction-conditioned grounding or visual ability.",
+  "paid_resources_allowed": false,
+  "final_half_allowed": false
+}

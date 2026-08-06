@@ -1,0 +1,52 @@
+{
+  "format_version": "qwen3b-representation-trajectory-preregistration-v1",
+  "frozen_before_trajectory_result": true,
+  "known_endpoint_evidence_at_freeze": {
+    "package": "representation_retention_v1",
+    "step": 500,
+    "gross_collapse_at_projector": true,
+    "gross_collapse_at_receiver": true
+  },
+  "unknown_at_freeze": [
+    "step100_representation",
+    "step200_representation",
+    "step300_representation",
+    "step400_representation",
+    "earliest_saved_collapse_checkpoint",
+    "relationship_between_collapse_onset_and_training_loss"
+  ],
+  "dataset_name": "screenspot_glm50_v1",
+  "dataset_manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+  "sample_count": 50,
+  "checkpoint_steps": [0, 100, 200, 300, 400, 500],
+  "training_history_sha256": "c22a01631598d4ca4850347474f39171853cc9ba22da4176e0a0fac6067df3a8",
+  "source_files": {
+    "configs/qwen3b-representation-trajectory-v1.json": {
+      "bytes": 3208,
+      "sha256": "cd6e42bc28f2c6ae3bcb3867b5982374f21d6a796d55f0e040a19a1c8898aabe"
+    },
+    "src/moonvit_glue/representation_trajectory.py": {
+      "bytes": 5521,
+      "sha256": "da325d1da349716ea5f71040d6acef8df4eaab6cd8cd37cace148774748e945d"
+    },
+    "tools/analyze_qwen3b_representation_trajectory.py": {
+      "bytes": 19968,
+      "sha256": "a77cd889c42fd9266d218eb434fee242818aa2ec02b7a4c1268feede54d3eaa2"
+    },
+    "tools/verify_qwen3b_representation_trajectory.py": {
+      "bytes": 8009,
+      "sha256": "c5c2026ae4921c397eb29140e6e3231d491eb0d579b7741b19adf59179b586ae"
+    }
+  },
+  "decision_stage": "fixed_receiver_2048",
+  "onset_rule": "earliest saved checkpoint where both preregistered gross-collapse guards fire",
+  "gross_collapse_rule": {
+    "requires_all": true,
+    "current_over_step0_relative_spread_below": 0.25,
+    "current_over_step0_effective_rank_below": 0.5
+  },
+  "interpretation_boundary": "The endpoint collapse was known before freeze. Intermediate representations and onset were not. This package localizes saved-checkpoint onset only and cannot establish visual ability.",
+  "paid_resources_used": false,
+  "final_half_scored": false,
+  "trajectory_result_exists_at_freeze": false
+}
