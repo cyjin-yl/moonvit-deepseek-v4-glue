@@ -1,0 +1,35 @@
+# Community GLM-5.2V V1 architecture control
+
+这条对照臂固定使用 `moonshotai/MoonViT-SO-400M` 的 resolved revision
+`a889d399ff2306053e4e28d499d3b8f97d3e5007`。它代表社区 GLM-5.2V 采用的
+Kimi-K2.6/MoonViT-3d 视觉塔家族，不使用 Qwen 原生视觉模块。
+
+社区卡片的结构是：
+
+```text
+MoonViT-3d [1152] -> 2x2 merge -> LayerNorm(1152)
+  -> Linear(4608, 4608, bias=True) -> GELU
+  -> Linear(4608, receiver_hidden, bias=True)
+```
+
+社区 GLM-5.2V 的 receiver width 是 6144；Qwen2.5-3B control 将最后一层
+输出改为冻结 Qwen 的 2048 hidden size，并从相同 seed 的 projector scratch
+初始化。公开 GLM projector 权重不能直接装入 Qwen 或 DeepSeek，因为目标宽度
+不同。
+
+缓存入口现在支持：
+
+```bash
+python tools/cache_moonvit_features.py \
+  --vision-tower v1 \
+  --moonvit-model moonshotai/MoonViT-SO-400M \
+  --moonvit-revision a889d399ff2306053e4e28d499d3b8f97d3e5007 \
+  --data ... --out ...
+```
+
+`--vision-tower v2` 保持原有 Kimi-K3/MoonViT-V2 默认行为。两种塔共享 cache
+行格式和后续 projector/评测接口，但 cache、projector 初始化和结果不能混用。
+
+V1 只作为结构对照。只有在相同 examples-seen、相同 prompt、图像处理和
+ScreenSpot/TextVQA/DocVQA/OCRBench 合同下跑完 matched control，才会判断它是否
+比当前 V2 候选更接近社区路线；V1 的高分也不能直接改写 DeepSeek 正式配置。

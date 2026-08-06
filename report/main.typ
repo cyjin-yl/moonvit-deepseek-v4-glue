@@ -41,7 +41,7 @@ MoonViT-V2 有 401.2M 参数，抽取后的 BF16 权重约 802 MB，相对于约
 
 这次审计还修正了我们对本地 V2 的表述。当前 `PatchMergerProjector` 在 `[tokens,4,1024]` 上使用 affine pre-LayerNorm 和带 bias 的两层 MLP；它属于 V1-style PatchMerger 家族。vendored Kimi-K3/MoonViT-V2 的 `PatchMergerMLPV2` 则是 bias-free 两层 MLP 加 trainable post-RMSNorm。因而 Package 15P 的早期塌缩结论只适用于已训练的本地实现，不能写成对官方 K3 V2 结构的否定。详细来源、resolved revision、文件哈希与张量形状见 `experiments/qwen3b_community_eval_20260805/community_architecture_audit_v1/COMMUNITY_SOURCES.json`。
 
-下一步固定为两条匹配控制：一条实现精确 K3 V2 projector，另一条使用公开 #link("https://huggingface.co/moonshotai/MoonViT-SO-400M")[MoonViT-SO-400M] V1 在 Qwen2.5-3B 上复现。两条都沿用相同图像预处理、训练预算、在线 collapse guards 和 ScreenSpot/TextVQA/DocVQA/OCRBench 合同；旧的 legacy-V2 checkpoint 不再自动成为 `previous_best`。Gate D 仍为 NO-GO。
+下一步固定为两条匹配控制：一条实现精确 K3 V2 projector，另一条使用公开 #link("https://huggingface.co/moonshotai/MoonViT-SO-400M")[MoonViT-SO-400M] V1 在 Qwen2.5-3B 上复现。两条都沿用相同图像预处理、训练预算、在线 collapse guards 和 ScreenSpot/TextVQA/DocVQA/OCRBench 合同；旧的 legacy-V2 checkpoint 不再自动成为 `previous_best`。缓存入口已支持 `--vision-tower v1` 与 pinned revision，V1 的 projector 输出宽度按 Qwen hidden size 重新初始化，不能直接挪用 GLM-5.2V 的 6144-wide 权重。Gate D 仍为 NO-GO。
 
 = 权重与张量合同
 

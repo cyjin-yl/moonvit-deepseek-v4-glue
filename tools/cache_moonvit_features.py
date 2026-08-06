@@ -18,7 +18,7 @@ from PIL import Image
 
 import moonvit_glue.feature_cache as feature_cache_module
 import moonvit_glue.training_order as training_order_module
-from moonvit_glue import FeatureCacheWriter, load_moonvit_v2_encoder
+from moonvit_glue import FeatureCacheWriter, MoonViTEncoder, load_moonvit_v2_encoder
 from moonvit_glue.training_order import (
     load_ordered_records,
     verify_training_order_manifest,
@@ -196,7 +196,27 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)
-    parser.add_argument("--moonvit-v2-weights", required=True, type=Path)
+    parser.add_argument(
+        "--vision-tower",
+        choices=["v1", "v2"],
+        default="v2",
+        help=(
+            "v1 loads the standalone MoonViT-SO-400M tower used by the "
+            "community GLM-5.2V path; v2 loads the vendored Kimi-K3 tower."
+        ),
+    )
+    parser.add_argument(
+        "--moonvit-model",
+        default="moonshotai/MoonViT-SO-400M",
+        help="HF model ID or local snapshot for --vision-tower v1",
+    )
+    parser.add_argument("--moonvit-revision", default=None)
+    parser.add_argument(
+        "--moonvit-v2-weights",
+        type=Path,
+        default=None,
+        help="Extracted MoonViT-V2 safetensors (required with --vision-tower v2)",
+    )
     parser.add_argument("--moonvit-v2-attn", default="eager",
                         choices=["eager", "sdpa", "flash_attention_2"])
     parser.add_argument("--dtype", default="float32")
@@ -213,6 +233,30 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--shard-size", type=int, default=32)
     parser.add_argument("--require-clean-git", action="store_true")
     return parser.parse_args()
+
+
+def load_tower(args: argparse.Namespace, *, dtype: torch.dtype):
+    """Load either frozen tower while keeping one cache format.
+
+    The V1 and V2 encoders deliberately expose the same ``preprocess`` and
+    ``[tokens, merge, width]`` interface.  Keeping the branch here prevents
+    downstream trainers from silently changing their cache reader or image
+    order when comparing the community V1 structure with our V2 path.
+    """
+
+    if args.vision_tower == "v2":
+        if args.moonvit_v2_weights is None:
+            raise ValueError("--vision-tower v2 requires --moonvit-v2-weights")
+        return load_moonvit_v2_encoder(
+            args.moonvit_v2_weights,
+            attn_implementation=args.moonvit_v2_attn,
+            torch_dtype=dtype,
+        )
+    return MoonViTEncoder.from_pretrained(
+        args.moonvit_model,
+        revision=args.moonvit_revision,
+        torch_dtype=dtype,
+    )
 
 
 def main() -> None:
@@ -234,7 +278,16 @@ def main() -> None:
         raise ValueError("feature cache selection is empty")
     dtype = getattr(torch, args.dtype)
     device = torch.device(args.device)
-    weights_sha256 = sha256_file(args.moonvit_v2_weights)
+    if args.vision_tower == "v2":
+        if args.moonvit_v2_weights is None:
+            raise ValueError("--vision-tower v2 requires --moonvit-v2-weights")
+        weights_path = args.moonvit_v2_weights
+    else:
+        # For a remote-code V1 tower the resolved model snapshot is recorded in
+        # the cache metadata by Transformers.  The model file itself may be a
+        # multi-gigabyte blob, so the cache runner does not duplicate it.
+        weights_path = None
+    weights_sha256 = sha256_file(weights_path) if weights_path is not None else None
     if training_order is not None:
         validate_training_order_cache_contract(
             training_order,
@@ -242,11 +295,7 @@ def main() -> None:
             moonvit_weights_sha256=weights_sha256,
         )
     args.out.mkdir(parents=True)
-    tower = load_moonvit_v2_encoder(
-        args.moonvit_v2_weights,
-        attn_implementation=args.moonvit_v2_attn,
-        torch_dtype=dtype,
-    ).to(device)
+    tower = load_tower(args, dtype=dtype).to(device)
     config_json = json.dumps(
         tower.model.config.to_dict(), sort_keys=True, separators=(",", ":"), default=str
     ).encode("utf-8")
@@ -292,9 +341,12 @@ def main() -> None:
             if training_order
             else None
         ),
+        "vision_tower": args.vision_tower,
+        "moonvit_model": args.moonvit_model if args.vision_tower == "v1" else None,
+        "moonvit_revision": args.moonvit_revision if args.vision_tower == "v1" else None,
         "moonvit_architecture": type(tower.model).__name__,
         "moonvit_config_sha256": hashlib.sha256(config_json).hexdigest(),
-        "moonvit_weights_path": str(args.moonvit_v2_weights.resolve()),
+        "moonvit_weights_path": str(weights_path.resolve()) if weights_path else None,
         "moonvit_weights_sha256": weights_sha256,
         "moonvit_attention": args.moonvit_v2_attn,
         "vision_width": tower.vision_width,

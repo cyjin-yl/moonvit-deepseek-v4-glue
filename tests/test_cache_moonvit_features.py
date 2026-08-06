@@ -2,6 +2,7 @@
 
 import hashlib
 import sys
+from argparse import Namespace
 from pathlib import Path
 
 import pytest
@@ -18,6 +19,42 @@ def test_progress_broken_pipe_does_not_fail_a_cache_record(monkeypatch):
     monkeypatch.setattr("builtins.print", broken_print)
 
     cache_moonvit_features.emit("valid row")
+
+
+def test_load_tower_requires_v2_weights(monkeypatch):
+    args = Namespace(
+        vision_tower="v2",
+        moonvit_v2_weights=None,
+        moonvit_v2_attn="eager",
+        moonvit_model="unused",
+        moonvit_revision=None,
+    )
+    with pytest.raises(ValueError, match="requires --moonvit-v2-weights"):
+        cache_moonvit_features.load_tower(args, dtype=cache_moonvit_features.torch.float32)
+
+
+def test_load_tower_routes_v1_to_standalone_loader(monkeypatch):
+    sentinel = object()
+    seen = {}
+
+    def fake_loader(model_id, *, revision, torch_dtype):
+        seen.update(model_id=model_id, revision=revision, torch_dtype=torch_dtype)
+        return sentinel
+
+    monkeypatch.setattr(cache_moonvit_features.MoonViTEncoder, "from_pretrained", fake_loader)
+    args = Namespace(
+        vision_tower="v1",
+        moonvit_v2_weights=None,
+        moonvit_v2_attn="eager",
+        moonvit_model="moonshotai/MoonViT-SO-400M",
+        moonvit_revision="a889d399ff2306053e4e28d499d3b8f97d3e5007",
+    )
+    assert cache_moonvit_features.load_tower(args, dtype=cache_moonvit_features.torch.float32) is sentinel
+    assert seen == {
+        "model_id": "moonshotai/MoonViT-SO-400M",
+        "revision": "a889d399ff2306053e4e28d499d3b8f97d3e5007",
+        "torch_dtype": cache_moonvit_features.torch.float32,
+    }
 
 
 def test_training_order_mode_rejects_secondary_selection(tmp_path):

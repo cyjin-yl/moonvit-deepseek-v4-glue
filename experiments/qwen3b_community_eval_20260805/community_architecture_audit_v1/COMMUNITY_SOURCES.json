@@ -80,6 +80,30 @@
     "vision_width": 1152,
     "merge_factor": 4,
     "projector_contract_for_qwen3b": "LayerNorm(1152) -> flatten(4608) -> Linear(4608,4608) -> GELU -> Linear(4608,2048)",
+    "snapshot_files": {
+      "model.safetensors": {
+        "bytes": 833765656,
+        "sha256": "a375216ea19430d70c8f68d4d205fae011f1b2ad9a124238bcd7006324e1fdde"
+      },
+      "config.json": {
+        "sha256": "97fd0c47279c9e624f7b14010d0bba2726f4c52e89818d9b69e052ef612609a3"
+      },
+      "preprocessor_config.json": {
+        "sha256": "4f6a550d57c8d4d72fddfaaf298ea249b77d33876fa732e49513933635ff45d6"
+      },
+      "configuration_moonvit.py": {
+        "sha256": "ab2557ba6e169b370a5136915f91264c1d694678d0f7fe40854c7325986b7a12"
+      },
+      "modeling_moonvit.py": {
+        "sha256": "3bad36cabba8740f9545be8d8dc6459c3ec92499c30f286ea1f45de58d1d688d"
+      },
+      "image_processing_moonvit.py": {
+        "sha256": "2efcb89b53171214ccdd70092071d930abc0d81d7bdc39cca818126fc17cc7f1"
+      },
+      "README.md": {
+        "sha256": "275a92f879147318629804a1347eed79c1736f64d3bbfd073c5e88454b4d2399"
+      }
+    },
     "source_files": {
       "README.md": "275a92f879147318629804a1347eed79c1736f64d3bbfd073c5e88454b4d2399",
       "config.json": "97fd0c47279c9e624f7b14010d0bba2726f4c52e89818d9b69e052ef612609a3"

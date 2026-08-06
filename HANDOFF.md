@@ -28,6 +28,13 @@ Gate D remains NO-GO. Before promoting any checkpoint, the next matched screen
 must compare an exact K3-V2 projector variant with a MoonViT-SO-400M V1
 projector on Qwen2.5-3B under the same fixed evaluation contract.
 
+The V1 control is now explicit in `configs/qwen2.5-3b-projector-moonvit-v1-community.json`.
+`tools/cache_moonvit_features.py` accepts `--vision-tower v1` with the pinned
+MoonViT-SO-400M revision, while the existing `--vision-tower v2` path remains
+the default K3 cache route. V1 and V2 caches/projector checkpoints are kept
+separate; the V1 run is an architecture control and cannot become the
+DeepSeek candidate without the same causal evaluation evidence.
+
 ## Projector health contract (2026-08-06, mandatory for the next V100 runs)
 
 The practical objective is easy to state: MoonViT-V2 reads the screenshot, the
