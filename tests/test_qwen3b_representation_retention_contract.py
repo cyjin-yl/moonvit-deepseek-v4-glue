@@ -40,12 +40,24 @@ def test_representation_retention_rule_is_frozen_before_results():
     assert preregistration["final_half_scored"] is False
 
 
-def test_preregistration_binds_every_runtime_source_byte():
+def test_preregistration_and_post_result_repair_bind_runtime_source_bytes():
     preregistration = _load(PACKAGE / "PREREGISTRATION.json")
+    repair = _load(PACKAGE / "POST_RESULT_VERIFIER_REPAIR.json")
     for relative, expected in preregistration["source_files"].items():
         path = ROOT / relative
-        assert path.stat().st_size == expected["bytes"]
-        assert _sha256(path) == expected["sha256"]
+        if relative == "tools/verify_qwen3b_representation_retention.py":
+            assert repair["failed_verifier"] == {
+                **expected,
+                "failure": repair["failed_verifier"]["failure"],
+            }
+            assert path.stat().st_size == repair["corrected_verifier"]["bytes"]
+            assert _sha256(path) == repair["corrected_verifier"]["sha256"]
+        else:
+            assert path.stat().st_size == expected["bytes"]
+            assert _sha256(path) == expected["sha256"]
+    assert repair["analysis_source_changed"] is False
+    assert repair["analysis_result_changed"] is False
+    assert repair["decision_rule_changed"] is False
 
 
 def test_preresult_package_manifest_rehashes_every_declared_artifact():

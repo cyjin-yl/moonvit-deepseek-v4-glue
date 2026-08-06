@@ -33,6 +33,16 @@ def canonical(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
 
+def pairwise_row_key(row: dict[str, Any]) -> tuple[str, int, int]:
+    """消除 safetensors 键枚举顺序对逐行复算的影响。"""
+
+    return (
+        str(row["representation"]),
+        int(row["left_index"]),
+        int(row["right_index"]),
+    )
+
+
 def main() -> None:
     args = parse_args()
     config = json.loads((args.run / "RUN_CONFIG.json").read_text(encoding="utf-8"))
@@ -120,7 +130,9 @@ def main() -> None:
                     **row,
                 }
             )
-    if canonical(pairwise_rows) != canonical(expected_pairwise_rows):
+    if canonical(sorted(pairwise_rows, key=pairwise_row_key)) != canonical(
+        sorted(expected_pairwise_rows, key=pairwise_row_key)
+    ):
         raise ValueError("pairwise geometry rows differ from pooled tensors")
 
     representation_names = set(tensors)

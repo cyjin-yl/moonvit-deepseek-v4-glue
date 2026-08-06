@@ -1,0 +1,21 @@
+{
+  "format_version": "qwen3b-representation-retention-verifier-repair-v1",
+  "frozen_contract_commit": "e27195ecee9c2d9c4337fa9f7550512e800bec3f",
+  "formal_analysis_runner_git_sha": "e27195ecee9c2d9c4337fa9f7550512e800bec3f",
+  "failed_verifier": {
+    "bytes": 6921,
+    "sha256": "f5776d1a1db6b84d15a5a79af81d2fc002d4947b20a65e6a9effc7093e35a6e0",
+    "failure": "PAIRWISE_GEOMETRY rows were compared in safetensors tensor-key enumeration order rather than by stable row identity."
+  },
+  "corrected_verifier": {
+    "bytes": 7257,
+    "sha256": "74cb16c422f38b0ba5834d8af4335b07eabf6750b79109bb999729a4c304a68c",
+    "change": "Sort declared and recomputed rows by representation, left_index and right_index before exact canonical comparison."
+  },
+  "analysis_source_changed": false,
+  "analysis_result_changed": false,
+  "decision_rule_changed": false,
+  "failure_artifact": "formal/verification_failed_order_attempt_01.log",
+  "paid_resources_used": false,
+  "final_half_scored": false
+}
