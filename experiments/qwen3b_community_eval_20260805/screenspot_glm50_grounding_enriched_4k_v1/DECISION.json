@@ -1,0 +1,95 @@
+{
+  "format_version": "qwen3b-grounding-generation-decision-v1",
+  "dataset_name": "screenspot_glm50_v1",
+  "dataset_label": "GLM-format metric-aligned public subset",
+  "sample_count": 50,
+  "current_candidate": "train_grounding_enriched_4k_v1/step-000500",
+  "current_projector_sha256": "62f69393dd3d157446db05a7060942bdfbd23f834bbe2e6782560431b5773df4",
+  "decision": "reject_current_candidate",
+  "previous_best_after_decision": "step0",
+  "vision": {
+    "parse_rate": 1.0,
+    "accuracy_at_50_all": 0.02,
+    "accuracy_at_100_all": 0.02,
+    "accuracy_at_200_all": 0.14,
+    "click_in_box_all": 0.06,
+    "mean_center_distance_all_penalized": 502.0642943579057,
+    "median_center_distance_all_penalized": 494.941741240205
+  },
+  "blind": {
+    "parse_rate": 1.0,
+    "accuracy_at_50_all": 0.06,
+    "accuracy_at_100_all": 0.06,
+    "accuracy_at_200_all": 0.16,
+    "click_in_box_all": 0.12,
+    "mean_center_distance_all_penalized": 392.59222390519733,
+    "median_center_distance_all_penalized": 343.5676265962753
+  },
+  "shuffled": {
+    "parse_rate": 1.0,
+    "accuracy_at_50_all": 0.02,
+    "accuracy_at_100_all": 0.02,
+    "accuracy_at_200_all": 0.10,
+    "click_in_box_all": 0.06,
+    "mean_center_distance_all_penalized": 502.0818103055902,
+    "median_center_distance_all_penalized": 494.941741240205
+  },
+  "step0": {
+    "parse_rate": 1.0,
+    "accuracy_at_50_all": 0.04,
+    "accuracy_at_100_all": 0.06,
+    "accuracy_at_200_all": 0.14,
+    "click_in_box_all": 0.10,
+    "mean_center_distance_all_penalized": 398.59368591268066,
+    "median_center_distance_all_penalized": 388.6597223361498
+  },
+  "vision_minus_blind": {
+    "click_in_box_all": -0.06,
+    "click_in_box_all_ci95": [-0.16, 0.020000000000000004],
+    "mean_center_distance_all_penalized_improvement": -109.47207045270835,
+    "mean_center_distance_all_penalized_improvement_ci95": [-171.64269963295538, -44.58921650586644]
+  },
+  "vision_minus_shuffled": {
+    "accuracy_at_200_all": 0.04000000000000001,
+    "accuracy_at_200_all_ci95": [0.0, 0.1],
+    "click_in_box_all": 0.0,
+    "click_in_box_all_ci95": [0.0, 0.0],
+    "mean_center_distance_all_penalized_improvement": 0.017515947684501043,
+    "mean_center_distance_all_penalized_improvement_ci95": [-3.543580960072036, 3.2127602607886194]
+  },
+  "current_candidate_minus_previous_best": {
+    "click_in_box_all": -0.04000000000000001,
+    "click_in_box_all_ci95": [-0.12, 0.039999999999999994],
+    "mean_center_distance_all_penalized_improvement": -103.47060844522503,
+    "mean_center_distance_all_penalized_improvement_ci95": [-168.27574264917038, -38.909929438033295]
+  },
+  "community_metric_aligned_baseline_reached": false,
+  "community_thresholds": {
+    "parse_rate_pass": true,
+    "accuracy_at_50_pass": false,
+    "accuracy_at_100_pass": false,
+    "accuracy_at_200_pass": false,
+    "mean_distance_pass": true,
+    "vision_significantly_better_than_blind": false,
+    "vision_significantly_better_than_shuffled": false
+  },
+  "paired_preference_gate_passed": false,
+  "generation_causal_gate_passed": false,
+  "visual_ability_established": false,
+  "advance_to_full_screenspot_or_three_seeds": false,
+  "checkpoint_enters_deepseek_candidate_list": false,
+  "hypotheses_supported": [
+    "The grounding-enriched CE treatment improves format compliance and shifts the learned coordinate prior.",
+    "Free generation remains insensitive to whether the correct or shuffled image is supplied.",
+    "The checkpoint collapses onto a small coordinate vocabulary that is not the empirical mode of the 2,000 grounding labels."
+  ],
+  "hypotheses_refuted": [
+    "The paired-preference failure is hidden by a successful free-generation grounding policy.",
+    "Increasing grounding to half of the fixed budget is sufficient for causal click grounding.",
+    "Meeting parse and mean-distance community thresholds is sufficient to claim the metric-aligned baseline."
+  ],
+  "method_transfer_label": "directly_transferable",
+  "next_experiment": "projector_and_fixed_receiver_information_retention_screen_then_matched_counterfactual_margin_auxiliary",
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

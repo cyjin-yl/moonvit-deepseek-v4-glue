@@ -1,0 +1,165 @@
+stage: cache_and_frozen_file_verification
+stage: model_and_prompt_load
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading weights:   0%|          | 0/434 [00:00<?, ?it/s]Loading weights:   0%|          | 1/434 [00:00<01:19,  5.46it/s]Loading weights:  24%|##4       | 105/434 [00:00<00:00, 444.00it/s]Loading weights:  38%|###7      | 163/434 [00:00<00:00, 440.85it/s]Loading weights:  50%|#####     | 219/434 [00:00<00:00, 468.77it/s]Loading weights:  62%|######2   | 271/434 [00:00<00:00, 473.87it/s]Loading weights:  74%|#######4  | 322/434 [00:00<00:00, 477.97it/s]Loading weights:  86%|########5 | 372/434 [00:00<00:00, 438.75it/s]Loading weights:  96%|#########6| 418/434 [00:01<00:00, 220.48it/s]Loading weights: 100%|##########| 434/434 [00:01<00:00, 318.57it/s]
+stage: condition_generation
+blind [5/50] parsed=5
+blind [10/50] parsed=10
+blind [15/50] parsed=15
+blind [20/50] parsed=20
+blind [25/50] parsed=25
+blind [30/50] parsed=30
+blind [35/50] parsed=35
+blind [40/50] parsed=40
+blind [45/50] parsed=45
+blind [50/50] parsed=50
+current_candidate [5/50] parsed=5
+current_candidate [10/50] parsed=10
+current_candidate [15/50] parsed=15
+current_candidate [20/50] parsed=20
+current_candidate [25/50] parsed=25
+current_candidate [30/50] parsed=30
+current_candidate [35/50] parsed=35
+current_candidate [40/50] parsed=40
+current_candidate [45/50] parsed=45
+current_candidate [50/50] parsed=50
+shuffled [5/50] parsed=5
+shuffled [10/50] parsed=10
+shuffled [15/50] parsed=15
+shuffled [20/50] parsed=20
+shuffled [25/50] parsed=25
+shuffled [30/50] parsed=30
+shuffled [35/50] parsed=35
+shuffled [40/50] parsed=40
+shuffled [45/50] parsed=45
+shuffled [50/50] parsed=50
+step0 [5/50] parsed=5
+step0 [10/50] parsed=10
+step0 [15/50] parsed=15
+step0 [20/50] parsed=20
+step0 [25/50] parsed=25
+step0 [30/50] parsed=30
+step0 [35/50] parsed=35
+step0 [40/50] parsed=40
+step0 [45/50] parsed=45
+step0 [50/50] parsed=50
+random_projector [5/50] parsed=4
+random_projector [10/50] parsed=9
+random_projector [15/50] parsed=13
+random_projector [20/50] parsed=18
+random_projector [25/50] parsed=23
+random_projector [30/50] parsed=26
+random_projector [35/50] parsed=31
+random_projector [40/50] parsed=36
+random_projector [45/50] parsed=41
+random_projector [50/50] parsed=46
+stage: complete
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+{
+  "status": "valid",
+  "formal_generation_complete": true,
+  "capability_claim_allowed_before_scoring": false,
+  "dataset_name": "screenspot_glm50_v1",
+  "records": 50,
+  "condition_summaries": [
+    {
+      "condition": "blind",
+      "records": 50,
+      "parse_count": 50,
+      "wall_seconds": 15.630792128387839,
+      "reused_complete": false,
+      "file": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/blind.jsonl",
+      "file_sha256": "bb3bad506e73165be53128d549afc1effa42ddeeeec1f0d6776b25a7fa89b296"
+    },
+    {
+      "condition": "current_candidate",
+      "records": 50,
+      "parse_count": 50,
+      "wall_seconds": 21.480348049663007,
+      "reused_complete": false,
+      "file": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/current_candidate.jsonl",
+      "file_sha256": "cc40d9f3753129872b2abfad43449986c684c8e2f7fa4f408fff72bc1f5183e1"
+    },
+    {
+      "condition": "shuffled",
+      "records": 50,
+      "parse_count": 50,
+      "wall_seconds": 21.52043231204152,
+      "reused_complete": false,
+      "file": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/shuffled.jsonl",
+      "file_sha256": "93baa22c47214f9832a09be7cb5a77a8c6f3f6d09c2e1953bbd5c42ab72b3567"
+    },
+    {
+      "condition": "step0",
+      "records": 50,
+      "parse_count": 50,
+      "wall_seconds": 21.575156745966524,
+      "reused_complete": false,
+      "file": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/step0.jsonl",
+      "file_sha256": "13c9cc0b0b9888f093ffbb50c87f19a1ed18fee276d7db49c41efd65688b6e45"
+    },
+    {
+      "condition": "random_projector",
+      "records": 50,
+      "parse_count": 46,
+      "wall_seconds": 21.489452423062176,
+      "reused_complete": false,
+      "file": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/random_projector.jsonl",
+      "file_sha256": "553fe837cebb1b0a2d3e8aaaaaf12f82b35720c785a6cc8447778a4bac2b620c"
+    }
+  ],
+  "condition_aliases": {
+    "vision": "current_candidate",
+    "previous_best": "step0"
+  },
+  "prediction_files": {
+    "blind": {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/blind.jsonl",
+      "bytes": 18206,
+      "sha256": "bb3bad506e73165be53128d549afc1effa42ddeeeec1f0d6776b25a7fa89b296"
+    },
+    "current_candidate": {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/current_candidate.jsonl",
+      "bytes": 22511,
+      "sha256": "cc40d9f3753129872b2abfad43449986c684c8e2f7fa4f408fff72bc1f5183e1"
+    },
+    "previous_best": {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/previous_best.jsonl",
+      "bytes": 22514,
+      "sha256": "13c9cc0b0b9888f093ffbb50c87f19a1ed18fee276d7db49c41efd65688b6e45"
+    },
+    "random_projector": {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/random_projector.jsonl",
+      "bytes": 22536,
+      "sha256": "553fe837cebb1b0a2d3e8aaaaaf12f82b35720c785a6cc8447778a4bac2b620c"
+    },
+    "shuffled": {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/shuffled.jsonl",
+      "bytes": 22503,
+      "sha256": "93baa22c47214f9832a09be7cb5a77a8c6f3f6d09c2e1953bbd5c42ab72b3567"
+    },
+    "step0": {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/step0.jsonl",
+      "bytes": 22514,
+      "sha256": "13c9cc0b0b9888f093ffbb50c87f19a1ed18fee276d7db49c41efd65688b6e45"
+    },
+    "vision": {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/vision.jsonl",
+      "bytes": 22511,
+      "sha256": "cc40d9f3753129872b2abfad43449986c684c8e2f7fa4f408fff72bc1f5183e1"
+    }
+  },
+  "transformers_version": "5.12.1",
+  "gpu_name": "Tesla V100-PCIE-32GB",
+  "peak_gpu_memory_bytes": 7245852672,
+  "qwen_parameter_count": 3085938688,
+  "qwen_runtime_dtypes": [
+    "torch.float16"
+  ],
+  "qwen_trainable_parameter_count": 0,
+  "total_wall_seconds": 121.54639598214999,
+  "paid_resources_used": false,
+  "transfer_label": "directly_transferable"
+}

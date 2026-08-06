@@ -1,0 +1,52 @@
+{
+  "format_version": "qwen3b-grounding-output-collapse-analysis-v1",
+  "prediction_source_sha256": {
+    "vision": "cc40d9f3753129872b2abfad43449986c684c8e2f7fa4f408fff72bc1f5183e1",
+    "shuffled": "93baa22c47214f9832a09be7cb5a77a8c6f3f6d09c2e1953bbd5c42ab72b3567",
+    "blind": "bb3bad506e73165be53128d549afc1effa42ddeeeec1f0d6776b25a7fa89b296",
+    "step0": "13c9cc0b0b9888f093ffbb50c87f19a1ed18fee276d7db49c41efd65688b6e45"
+  },
+  "training_supervision_source_sha256": "d90ea7515a67b2f4d77320fe061aef1cfc44ef877726d312366a309390ab5bc9",
+  "prediction_records": 50,
+  "vision": {
+    "unique_prediction_count": 6,
+    "mode_prediction": "click(start_box=[125, 345])",
+    "mode_count": 31
+  },
+  "shuffled": {
+    "unique_prediction_count": 9,
+    "mode_prediction": "click(start_box=[125, 345])",
+    "mode_count": 23
+  },
+  "blind": {
+    "unique_prediction_count": 7,
+    "mode_prediction": "click(start_box=[500, 300])",
+    "mode_count": 33
+  },
+  "step0": {
+    "unique_prediction_count": 6,
+    "mode_prediction": "click(start_box=[500, 300])",
+    "mode_count": 23
+  },
+  "vision_vs_shuffled": {
+    "exact_prediction_matches": 30,
+    "different_predictions": 20
+  },
+  "grounding_training_targets": {
+    "records": 2000,
+    "unique_coordinate_pairs": 1066,
+    "unique_x_values": 575,
+    "unique_y_values": 516,
+    "x_mean": 503.234,
+    "x_median": 513.0,
+    "y_mean": 386.231,
+    "y_median": 320.0,
+    "exact_125_345_count": 0,
+    "x_125_count": 2,
+    "y_345_count": 4,
+    "within_x20_y40_of_125_345_count": 3
+  },
+  "interpretation": "The generated [125,345] mode is not a copied majority label. Image identity perturbs outputs within a narrow coordinate family, but those changes are not target-aligned.",
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

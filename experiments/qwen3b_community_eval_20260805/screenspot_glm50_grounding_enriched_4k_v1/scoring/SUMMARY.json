@@ -1,0 +1,5493 @@
+{
+  "bootstrap": {
+    "samples": 2000,
+    "scope": "overall; category point estimates are reported without category CIs",
+    "seed": 20260805
+  },
+  "comparisons": {
+    "current-candidate-minus-previous-best": {
+      "confidence_level": 0.95,
+      "method": "paired percentile bootstrap; type-7 quantiles",
+      "metrics": {
+        "accuracy_at_100_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.12,
+            0.020000000000000004
+          ],
+          "first": 0.02,
+          "improvement": -0.039999999999999994,
+          "raw_first_minus_second": -0.039999999999999994,
+          "second": 0.06
+        },
+        "accuracy_at_100_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.12,
+            0.020000000000000004
+          ],
+          "first": 0.02,
+          "improvement": -0.039999999999999994,
+          "raw_first_minus_second": -0.039999999999999994,
+          "second": 0.06
+        },
+        "accuracy_at_200_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.14,
+            0.14
+          ],
+          "first": 0.14,
+          "improvement": 0.0,
+          "raw_first_minus_second": 0.0,
+          "second": 0.14
+        },
+        "accuracy_at_200_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.14,
+            0.14
+          ],
+          "first": 0.14,
+          "improvement": 0.0,
+          "raw_first_minus_second": 0.0,
+          "second": 0.14
+        },
+        "accuracy_at_50_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.09999999999999999,
+            0.04
+          ],
+          "first": 0.02,
+          "improvement": -0.02,
+          "raw_first_minus_second": -0.02,
+          "second": 0.04
+        },
+        "accuracy_at_50_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.09999999999999999,
+            0.04
+          ],
+          "first": 0.02,
+          "improvement": -0.02,
+          "raw_first_minus_second": -0.02,
+          "second": 0.04
+        },
+        "click_in_box_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.12,
+            0.039999999999999994
+          ],
+          "first": 0.06,
+          "improvement": -0.04000000000000001,
+          "raw_first_minus_second": -0.04000000000000001,
+          "second": 0.1
+        },
+        "click_in_box_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.12,
+            0.039999999999999994
+          ],
+          "first": 0.06,
+          "improvement": -0.04000000000000001,
+          "raw_first_minus_second": -0.04000000000000001,
+          "second": 0.1
+        },
+        "mean_center_distance_all_penalized": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -168.27574264917038,
+            -38.909929438033295
+          ],
+          "first": 502.0642943579057,
+          "improvement": -103.47060844522503,
+          "raw_first_minus_second": 103.47060844522503,
+          "second": 398.59368591268066
+        },
+        "mean_center_distance_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -168.27574264917038,
+            -38.909929438033295
+          ],
+          "first": 502.0642943579057,
+          "improvement": -103.47060844522503,
+          "raw_first_minus_second": 103.47060844522503,
+          "second": 398.59368591268066
+        },
+        "median_center_distance_all_penalized": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -258.825182331117,
+            51.31809727565292
+          ],
+          "first": 494.941741240205,
+          "improvement": -106.28201890405518,
+          "raw_first_minus_second": 106.28201890405518,
+          "second": 388.6597223361498
+        },
+        "median_center_distance_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -258.825182331117,
+            51.31809727565292
+          ],
+          "first": 494.941741240205,
+          "improvement": -106.28201890405518,
+          "raw_first_minus_second": 106.28201890405518,
+          "second": 388.6597223361498
+        },
+        "parse_rate": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "first": 1.0,
+          "improvement": 0.0,
+          "raw_first_minus_second": 0.0,
+          "second": 1.0
+        }
+      },
+      "orientation": "positive_means_first_condition_better",
+      "sample_count": 50,
+      "schema_version": "paired-grounding-bootstrap-v1",
+      "seed": 20260805
+    },
+    "trained-minus-random-projector": {
+      "confidence_level": 0.95,
+      "method": "paired percentile bootstrap; type-7 quantiles",
+      "metrics": {
+        "accuracy_at_100_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.12000000000000001,
+            0.039999999999999994
+          ],
+          "first": 0.02,
+          "improvement": -0.039999999999999994,
+          "raw_first_minus_second": -0.039999999999999994,
+          "second": 0.06
+        },
+        "accuracy_at_100_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.13333333333333333,
+            0.03305460060667335
+          ],
+          "first": 0.02,
+          "improvement": -0.04521739130434782,
+          "raw_first_minus_second": -0.04521739130434782,
+          "second": 0.06521739130434782
+        },
+        "accuracy_at_200_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.12000000000000001,
+            0.16
+          ],
+          "first": 0.14,
+          "improvement": 0.020000000000000018,
+          "raw_first_minus_second": 0.020000000000000018,
+          "second": 0.12
+        },
+        "accuracy_at_200_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.1391521739130435,
+            0.15349158832261256
+          ],
+          "first": 0.14,
+          "improvement": 0.009565217391304365,
+          "raw_first_minus_second": 0.009565217391304365,
+          "second": 0.13043478260869565
+        },
+        "accuracy_at_50_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.09999999999999999,
+            0.04
+          ],
+          "first": 0.02,
+          "improvement": -0.02,
+          "raw_first_minus_second": -0.02,
+          "second": 0.04
+        },
+        "accuracy_at_50_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.10249192176870747,
+            0.04
+          ],
+          "first": 0.02,
+          "improvement": -0.023478260869565216,
+          "raw_first_minus_second": -0.023478260869565216,
+          "second": 0.043478260869565216
+        },
+        "click_in_box_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.1,
+            0.060000000000000005
+          ],
+          "first": 0.06,
+          "improvement": -0.020000000000000004,
+          "raw_first_minus_second": -0.020000000000000004,
+          "second": 0.08
+        },
+        "click_in_box_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.12000000000000001,
+            0.05918749999999989
+          ],
+          "first": 0.06,
+          "improvement": -0.026956521739130435,
+          "raw_first_minus_second": -0.026956521739130435,
+          "second": 0.08695652173913043
+        },
+        "mean_center_distance_all_penalized": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -141.82794623680059,
+            79.16465336641265
+          ],
+          "first": 502.0642943579057,
+          "improvement": -33.5040046201492,
+          "raw_first_minus_second": 33.5040046201492,
+          "second": 468.5602897377565
+        },
+        "mean_center_distance_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -181.10990163434042,
+            -46.880838843118745
+          ],
+          "first": 502.0642943579057,
+          "improvement": -115.6117488873636,
+          "raw_first_minus_second": 115.6117488873636,
+          "second": 386.4525454705421
+        },
+        "median_center_distance_all_penalized": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -244.2463729515687,
+            61.35348621991857
+          ],
+          "first": 494.941741240205,
+          "improvement": -91.01377632537645,
+          "raw_first_minus_second": 91.01377632537645,
+          "second": 403.9279649148285
+        },
+        "median_center_distance_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -253.52014572032294,
+            29.80005824429233
+          ],
+          "first": 494.941741240205,
+          "improvement": -142.57920664878242,
+          "raw_first_minus_second": 142.57920664878242,
+          "second": 352.36253459142256
+        },
+        "parse_rate": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            0.020000000000000018,
+            0.16000000000000003
+          ],
+          "first": 1.0,
+          "improvement": 0.07999999999999996,
+          "raw_first_minus_second": 0.07999999999999996,
+          "second": 0.92
+        }
+      },
+      "orientation": "positive_means_first_condition_better",
+      "sample_count": 50,
+      "schema_version": "paired-grounding-bootstrap-v1",
+      "seed": 20260805
+    },
+    "vision-minus-blind": {
+      "confidence_level": 0.95,
+      "method": "paired percentile bootstrap; type-7 quantiles",
+      "metrics": {
+        "accuracy_at_100_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.12000000000000001,
+            0.039999999999999994
+          ],
+          "first": 0.02,
+          "improvement": -0.039999999999999994,
+          "raw_first_minus_second": -0.039999999999999994,
+          "second": 0.06
+        },
+        "accuracy_at_100_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.12000000000000001,
+            0.039999999999999994
+          ],
+          "first": 0.02,
+          "improvement": -0.039999999999999994,
+          "raw_first_minus_second": -0.039999999999999994,
+          "second": 0.06
+        },
+        "accuracy_at_200_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.18,
+            0.12000000000000001
+          ],
+          "first": 0.14,
+          "improvement": -0.01999999999999999,
+          "raw_first_minus_second": -0.01999999999999999,
+          "second": 0.16
+        },
+        "accuracy_at_200_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.18,
+            0.12000000000000001
+          ],
+          "first": 0.14,
+          "improvement": -0.01999999999999999,
+          "raw_first_minus_second": -0.01999999999999999,
+          "second": 0.16
+        },
+        "accuracy_at_50_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.12000000000000001,
+            0.039999999999999994
+          ],
+          "first": 0.02,
+          "improvement": -0.039999999999999994,
+          "raw_first_minus_second": -0.039999999999999994,
+          "second": 0.06
+        },
+        "accuracy_at_50_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.12000000000000001,
+            0.039999999999999994
+          ],
+          "first": 0.02,
+          "improvement": -0.039999999999999994,
+          "raw_first_minus_second": -0.039999999999999994,
+          "second": 0.06
+        },
+        "click_in_box_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.16,
+            0.020000000000000004
+          ],
+          "first": 0.06,
+          "improvement": -0.06,
+          "raw_first_minus_second": -0.06,
+          "second": 0.12
+        },
+        "click_in_box_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -0.16,
+            0.020000000000000004
+          ],
+          "first": 0.06,
+          "improvement": -0.06,
+          "raw_first_minus_second": -0.06,
+          "second": 0.12
+        },
+        "mean_center_distance_all_penalized": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -171.64269963295538,
+            -44.58921650586644
+          ],
+          "first": 502.0642943579057,
+          "improvement": -109.47207045270835,
+          "raw_first_minus_second": 109.47207045270835,
+          "second": 392.59222390519733
+        },
+        "mean_center_distance_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -171.64269963295538,
+            -44.58921650586644
+          ],
+          "first": 502.0642943579057,
+          "improvement": -109.47207045270835,
+          "raw_first_minus_second": 109.47207045270835,
+          "second": 392.59222390519733
+        },
+        "median_center_distance_all_penalized": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -274.6116182137231,
+            -1.7780179419053184
+          ],
+          "first": 494.941741240205,
+          "improvement": -151.37411464392966,
+          "raw_first_minus_second": 151.37411464392966,
+          "second": 343.5676265962753
+        },
+        "median_center_distance_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -274.6116182137231,
+            -1.7780179419053184
+          ],
+          "first": 494.941741240205,
+          "improvement": -151.37411464392966,
+          "raw_first_minus_second": 151.37411464392966,
+          "second": 343.5676265962753
+        },
+        "parse_rate": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "first": 1.0,
+          "improvement": 0.0,
+          "raw_first_minus_second": 0.0,
+          "second": 1.0
+        }
+      },
+      "orientation": "positive_means_first_condition_better",
+      "sample_count": 50,
+      "schema_version": "paired-grounding-bootstrap-v1",
+      "seed": 20260805
+    },
+    "vision-minus-shuffled": {
+      "confidence_level": 0.95,
+      "method": "paired percentile bootstrap; type-7 quantiles",
+      "metrics": {
+        "accuracy_at_100_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "first": 0.02,
+          "improvement": 0.0,
+          "raw_first_minus_second": 0.0,
+          "second": 0.02
+        },
+        "accuracy_at_100_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "first": 0.02,
+          "improvement": 0.0,
+          "raw_first_minus_second": 0.0,
+          "second": 0.02
+        },
+        "accuracy_at_200_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            0.0,
+            0.1
+          ],
+          "first": 0.14,
+          "improvement": 0.04000000000000001,
+          "raw_first_minus_second": 0.04000000000000001,
+          "second": 0.1
+        },
+        "accuracy_at_200_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            0.0,
+            0.1
+          ],
+          "first": 0.14,
+          "improvement": 0.04000000000000001,
+          "raw_first_minus_second": 0.04000000000000001,
+          "second": 0.1
+        },
+        "accuracy_at_50_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "first": 0.02,
+          "improvement": 0.0,
+          "raw_first_minus_second": 0.0,
+          "second": 0.02
+        },
+        "accuracy_at_50_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "first": 0.02,
+          "improvement": 0.0,
+          "raw_first_minus_second": 0.0,
+          "second": 0.02
+        },
+        "click_in_box_all": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "first": 0.06,
+          "improvement": 0.0,
+          "raw_first_minus_second": 0.0,
+          "second": 0.06
+        },
+        "click_in_box_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "first": 0.06,
+          "improvement": 0.0,
+          "raw_first_minus_second": 0.0,
+          "second": 0.06
+        },
+        "mean_center_distance_all_penalized": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -3.543580960072036,
+            3.2127602607886194
+          ],
+          "first": 502.0642943579057,
+          "improvement": 0.017515947684501043,
+          "raw_first_minus_second": -0.017515947684501043,
+          "second": 502.0818103055902
+        },
+        "mean_center_distance_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -3.543580960072036,
+            3.2127602607886194
+          ],
+          "first": 502.0642943579057,
+          "improvement": 0.017515947684501043,
+          "raw_first_minus_second": -0.017515947684501043,
+          "second": 502.0818103055902
+        },
+        "median_center_distance_all_penalized": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -2.6263058741965906,
+            1.4743513834758915
+          ],
+          "first": 494.941741240205,
+          "improvement": 0.0,
+          "raw_first_minus_second": 0.0,
+          "second": 494.941741240205
+        },
+        "median_center_distance_parsed": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            -2.6263058741965906,
+            1.4743513834758915
+          ],
+          "first": 494.941741240205,
+          "improvement": 0.0,
+          "raw_first_minus_second": 0.0,
+          "second": 494.941741240205
+        },
+        "parse_rate": {
+          "bootstrap_samples_requested": 2000,
+          "bootstrap_samples_valid": 2000,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "first": 1.0,
+          "improvement": 0.0,
+          "raw_first_minus_second": 0.0,
+          "second": 1.0
+        }
+      },
+      "orientation": "positive_means_first_condition_better",
+      "sample_count": 50,
+      "schema_version": "paired-grounding-bootstrap-v1",
+      "seed": 20260805
+    }
+  },
+  "condition_order": [
+    "vision",
+    "blind",
+    "shuffled",
+    "random_projector",
+    "step0",
+    "previous_best",
+    "current_candidate"
+  ],
+  "conditions": {
+    "blind": {
+      "breakdowns": {
+        "overall": {
+          "accuracy_at_100": {
+            "all_accuracy": 0.06,
+            "all_denominator": 50,
+            "hit_count": 3,
+            "parsed_accuracy": 0.06,
+            "parsed_denominator": 50
+          },
+          "accuracy_at_200": {
+            "all_accuracy": 0.16,
+            "all_denominator": 50,
+            "hit_count": 8,
+            "parsed_accuracy": 0.16,
+            "parsed_denominator": 50
+          },
+          "accuracy_at_50": {
+            "all_accuracy": 0.06,
+            "all_denominator": 50,
+            "hit_count": 3,
+            "parsed_accuracy": 0.06,
+            "parsed_denominator": 50
+          },
+          "center_distance": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 392.59222390519733,
+              "median": 343.5676265962753,
+              "minimum": 12.405705104532547,
+              "p90": 656.0276526974894
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 392.59222390519733,
+              "median": 343.5676265962753,
+              "minimum": 12.405705104532547,
+              "p90": 656.0276526974894
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "click_in_box_accuracy": {
+            "all_accuracy": 0.12,
+            "all_denominator": 50,
+            "hit_count": 6,
+            "parsed_accuracy": 0.12,
+            "parsed_denominator": 50
+          },
+          "parse_count": 50,
+          "parse_rate": 1.0,
+          "point_to_bbox_l1": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 400.4457043543901,
+              "median": 339.9085053845255,
+              "minimum": 0.0,
+              "p90": 850.7039076740795
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 400.4457043543901,
+              "median": 339.9085053845255,
+              "minimum": 0.0,
+              "p90": 850.7039076740795
+            },
+            "unparsed_penalty": 1998.0
+          },
+          "point_to_bbox_l2": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 313.5833631940103,
+              "median": 280.11957816085066,
+              "minimum": 0.0,
+              "p90": 614.1804476488185
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 313.5833631940103,
+              "median": 280.11957816085066,
+              "minimum": 0.0,
+              "p90": 614.1804476488185
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "total_count": 50
+        },
+        "platform": {
+          "Android": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.4,
+              "all_denominator": 10,
+              "hit_count": 4,
+              "parsed_accuracy": 0.4,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 299.7074208235989,
+                "median": 234.40476501372387,
+                "minimum": 12.405705104532547,
+                "p90": 589.4479161724299
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 299.7074208235989,
+                "median": 234.40476501372387,
+                "minimum": 12.405705104532547,
+                "p90": 589.4479161724299
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.2,
+              "all_denominator": 10,
+              "hit_count": 2,
+              "parsed_accuracy": 0.2,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 272.628125,
+                "median": 145.6875,
+                "minimum": 0.0,
+                "p90": 666.937375
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 272.628125,
+                "median": 145.6875,
+                "minimum": 0.0,
+                "p90": 666.937375
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 206.6623362957377,
+                "median": 145.6875,
+                "minimum": 0.0,
+                "p90": 489.44506343143445
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 206.6623362957377,
+                "median": 145.6875,
+                "minimum": 0.0,
+                "p90": 489.44506343143445
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "Web": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 333.0677163297526,
+                "median": 288.8737985006976,
+                "minimum": 223.57464324025233,
+                "p90": 508.8517586248778
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 333.0677163297526,
+                "median": 288.8737985006976,
+                "minimum": 223.57464324025233,
+                "p90": 508.8517586248778
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 271.474375,
+                "median": 267.46269531250005,
+                "minimum": 0.0,
+                "p90": 506.7365624999999
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 271.474375,
+                "median": 267.46269531250005,
+                "minimum": 0.0,
+                "p90": 506.7365624999999
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 225.4147457158339,
+                "median": 223.95833530551482,
+                "minimum": 0.0,
+                "p90": 403.8860306476198
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 225.4147457158339,
+                "median": 223.95833530551482,
+                "minimum": 0.0,
+                "p90": 403.8860306476198
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "Windows": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.2,
+              "all_denominator": 10,
+              "hit_count": 2,
+              "parsed_accuracy": 0.2,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 456.9937999882316,
+                "median": 477.7037963760249,
+                "minimum": 31.880892040397004,
+                "p90": 742.8187040976097
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 456.9937999882316,
+                "median": 477.7037963760249,
+                "minimum": 31.880892040397004,
+                "p90": 742.8187040976097
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 522.3458714845731,
+                "median": 542.1997119752943,
+                "minimum": 0.0,
+                "p90": 948.640625
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 522.3458714845731,
+                "median": 542.1997119752943,
+                "minimum": 0.0,
+                "p90": 948.640625
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 381.140616523147,
+                "median": 411.2215451454854,
+                "minimum": 0.0,
+                "p90": 700.5568329214464
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 381.140616523147,
+                "median": 411.2215451454854,
+                "minimum": 0.0,
+                "p90": 700.5568329214464
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "iOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 439.1504402005151,
+                "median": 462.8286407064288,
+                "minimum": 12.779926889455846,
+                "p90": 653.5979237310281
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 439.1504402005151,
+                "median": 462.8286407064288,
+                "minimum": 12.779926889455846,
+                "p90": 653.5979237310281
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 468.3575245930225,
+                "median": 439.4666059059424,
+                "minimum": 0.0,
+                "p90": 716.7045370032811
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 468.3575245930225,
+                "median": 439.4666059059424,
+                "minimum": 0.0,
+                "p90": 716.7045370032811
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 386.60016959101176,
+                "median": 415.47235065790596,
+                "minimum": 0.0,
+                "p90": 608.2845853823601
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 386.60016959101176,
+                "median": 415.47235065790596,
+                "minimum": 0.0,
+                "p90": 608.2845853823601
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "macOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 434.04174218388823,
+                "median": 406.41561825682936,
+                "minimum": 123.45408922827738,
+                "p90": 778.1389789275122
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 434.04174218388823,
+                "median": 406.41561825682936,
+                "minimum": 123.45408922827738,
+                "p90": 778.1389789275122
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 467.4226256943548,
+                "median": 421.6911027768764,
+                "minimum": 0.0,
+                "p90": 1026.794710156987
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 467.4226256943548,
+                "median": 421.6911027768764,
+                "minimum": 0.0,
+                "p90": 1026.794710156987
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 368.0989478443211,
+                "median": 349.3289040150819,
+                "minimum": 0.0,
+                "p90": 735.6413301903594
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 368.0989478443211,
+                "median": 349.3289040150819,
+                "minimum": 0.0,
+                "p90": 735.6413301903594
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          }
+        },
+        "target_type": {
+          "icon/widget": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 25,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 25,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 25
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 473.46770072291065,
+                "median": 478.8396008553027,
+                "minimum": 106.04016932165668,
+                "p90": 746.8824792626318
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 473.46770072291065,
+                "median": 478.8396008553027,
+                "minimum": 106.04016932165668,
+                "p90": 746.8824792626318
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.08,
+              "all_denominator": 25,
+              "hit_count": 2,
+              "parsed_accuracy": 0.08,
+              "parsed_denominator": 25
+            },
+            "parse_count": 25,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 529.1874264556308,
+                "median": 580.08125,
+                "minimum": 0.0,
+                "p90": 974.3750000000001
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 529.1874264556308,
+                "median": 580.08125,
+                "minimum": 0.0,
+                "p90": 974.3750000000001
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 398.86625435174784,
+                "median": 422.3608391844141,
+                "minimum": 0.0,
+                "p90": 703.7612235091516
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 398.86625435174784,
+                "median": 422.3608391844141,
+                "minimum": 0.0,
+                "p90": 703.7612235091516
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 25
+          },
+          "text": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.12,
+              "all_denominator": 25,
+              "hit_count": 3,
+              "parsed_accuracy": 0.12,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.28,
+              "all_denominator": 25,
+              "hit_count": 7,
+              "parsed_accuracy": 0.28,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.12,
+              "all_denominator": 25,
+              "hit_count": 3,
+              "parsed_accuracy": 0.12,
+              "parsed_denominator": 25
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 311.7167470874839,
+                "median": 274.61462247332327,
+                "minimum": 12.405705104532547,
+                "p90": 574.8224781388371
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 311.7167470874839,
+                "median": 274.61462247332327,
+                "minimum": 12.405705104532547,
+                "p90": 574.8224781388371
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.16,
+              "all_denominator": 25,
+              "hit_count": 4,
+              "parsed_accuracy": 0.16,
+              "parsed_denominator": 25
+            },
+            "parse_count": 25,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 271.70398225314943,
+                "median": 260.0762331838565,
+                "minimum": 0.0,
+                "p90": 595.281022247123
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 271.70398225314943,
+                "median": 260.0762331838565,
+                "minimum": 0.0,
+                "p90": 595.281022247123
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 228.30047203627274,
+                "median": 212.35798660857324,
+                "minimum": 0.0,
+                "p90": 482.68860759949587
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 228.30047203627274,
+                "median": 212.35798660857324,
+                "minimum": 0.0,
+                "p90": 482.68860759949587
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 25
+          }
+        }
+      }
+    },
+    "current_candidate": {
+      "breakdowns": {
+        "overall": {
+          "accuracy_at_100": {
+            "all_accuracy": 0.02,
+            "all_denominator": 50,
+            "hit_count": 1,
+            "parsed_accuracy": 0.02,
+            "parsed_denominator": 50
+          },
+          "accuracy_at_200": {
+            "all_accuracy": 0.14,
+            "all_denominator": 50,
+            "hit_count": 7,
+            "parsed_accuracy": 0.14,
+            "parsed_denominator": 50
+          },
+          "accuracy_at_50": {
+            "all_accuracy": 0.02,
+            "all_denominator": 50,
+            "hit_count": 1,
+            "parsed_accuracy": 0.02,
+            "parsed_denominator": 50
+          },
+          "center_distance": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 502.0642943579057,
+              "median": 494.941741240205,
+              "minimum": 43.33410985081499,
+              "p90": 866.3035537903946
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 502.0642943579057,
+              "median": 494.941741240205,
+              "minimum": 43.33410985081499,
+              "p90": 866.3035537903946
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "click_in_box_accuracy": {
+            "all_accuracy": 0.06,
+            "all_denominator": 50,
+            "hit_count": 3,
+            "parsed_accuracy": 0.06,
+            "parsed_denominator": 50
+          },
+          "parse_count": 50,
+          "parse_rate": 1.0,
+          "point_to_bbox_l1": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 487.386583899612,
+              "median": 405.70625,
+              "minimum": 0.0,
+              "p90": 1058.597911392405
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 487.386583899612,
+              "median": 405.70625,
+              "minimum": 0.0,
+              "p90": 1058.597911392405
+            },
+            "unparsed_penalty": 1998.0
+          },
+          "point_to_bbox_l2": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 400.3284056141271,
+              "median": 393.8094082430076,
+              "minimum": 0.0,
+              "p90": 834.3181672822355
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 400.3284056141271,
+              "median": 393.8094082430076,
+              "minimum": 0.0,
+              "p90": 834.3181672822355
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "total_count": 50
+        },
+        "platform": {
+          "Android": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.2,
+              "all_denominator": 10,
+              "hit_count": 2,
+              "parsed_accuracy": 0.2,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 407.9897469094334,
+                "median": 394.2900933935921,
+                "minimum": 43.33410985081499,
+                "p90": 638.0244545445198
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 407.9897469094334,
+                "median": 394.2900933935921,
+                "minimum": 43.33410985081499,
+                "p90": 638.0244545445198
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 282.23137499999996,
+                "median": 187.003125,
+                "minimum": 0.0,
+                "p90": 544.5827499999998
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 282.23137499999996,
+                "median": 187.003125,
+                "minimum": 0.0,
+                "p90": 544.5827499999998
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 234.4368947400682,
+                "median": 187.003125,
+                "minimum": 0.0,
+                "p90": 430.2201989105867
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 234.4368947400682,
+                "median": 187.003125,
+                "minimum": 0.0,
+                "p90": 430.2201989105867
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "Web": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 356.0056081230187,
+                "median": 330.0748576160732,
+                "minimum": 173.0723069810884,
+                "p90": 573.4253098704963
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 356.0056081230187,
+                "median": 330.0748576160732,
+                "minimum": 173.0723069810884,
+                "p90": 573.4253098704963
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 305.2244921875,
+                "median": 313.5880859375,
+                "minimum": 0.0,
+                "p90": 651.26828125
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 305.2244921875,
+                "median": 313.5880859375,
+                "minimum": 0.0,
+                "p90": 651.26828125
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 269.2341342367596,
+                "median": 273.1127921136011,
+                "minimum": 0.0,
+                "p90": 550.0994091574769
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 269.2341342367596,
+                "median": 273.1127921136011,
+                "minimum": 0.0,
+                "p90": 550.0994091574769
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "Windows": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.3,
+              "all_denominator": 10,
+              "hit_count": 3,
+              "parsed_accuracy": 0.3,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 591.8686709741789,
+                "median": 710.0840812720809,
+                "minimum": 106.75855273950256,
+                "p90": 908.1171098086493
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 591.8686709741789,
+                "median": 710.0840812720809,
+                "minimum": 106.75855273950256,
+                "p90": 908.1171098086493
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 644.4052933263085,
+                "median": 737.071875,
+                "minimum": 0.0,
+                "p90": 1188.340625
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 644.4052933263085,
+                "median": 737.071875,
+                "minimum": 0.0,
+                "p90": 1188.340625
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 509.81866104727914,
+                "median": 643.8076971516315,
+                "minimum": 0.0,
+                "p90": 874.7205734036166
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 509.81866104727914,
+                "median": 643.8076971516315,
+                "minimum": 0.0,
+                "p90": 874.7205734036166
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "iOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 492.6391130157941,
+                "median": 522.6341686077194,
+                "minimum": 156.7392685334581,
+                "p90": 737.0861155261783
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 492.6391130157941,
+                "median": 522.6341686077194,
+                "minimum": 156.7392685334581,
+                "p90": 737.0861155261783
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 482.5263359587793,
+                "median": 497.5752005103901,
+                "minimum": 55.79502369668245,
+                "p90": 761.8329037550127
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 482.5263359587793,
+                "median": 497.5752005103901,
+                "minimum": 55.79502369668245,
+                "p90": 761.8329037550127
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 411.9316911062542,
+                "median": 453.4110461847612,
+                "minimum": 55.79502369668245,
+                "p90": 670.2712763493365
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 411.9316911062542,
+                "median": 453.4110461847612,
+                "minimum": 55.79502369668245,
+                "p90": 670.2712763493365
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "macOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 661.8183327671034,
+                "median": 640.9239500019792,
+                "minimum": 356.596189101322,
+                "p90": 890.9258524247407
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 661.8183327671034,
+                "median": 640.9239500019792,
+                "minimum": 356.596189101322,
+                "p90": 890.9258524247407
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 722.5454230254721,
+                "median": 668.0835239856457,
+                "minimum": 113.74099999999999,
+                "p90": 1087.3319075401162
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 722.5454230254721,
+                "median": 668.0835239856457,
+                "minimum": 113.74099999999999,
+                "p90": 1087.3319075401162
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 576.2206469402743,
+                "median": 583.6129736053751,
+                "minimum": 113.74099999999999,
+                "p90": 845.6257430516949
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 576.2206469402743,
+                "median": 583.6129736053751,
+                "minimum": 113.74099999999999,
+                "p90": 845.6257430516949
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          }
+        },
+        "target_type": {
+          "icon/widget": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.16,
+              "all_denominator": 25,
+              "hit_count": 4,
+              "parsed_accuracy": 0.16,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 565.7208443336765,
+                "median": 597.5526913334426,
+                "minimum": 43.33410985081499,
+                "p90": 891.6704551809925
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 565.7208443336765,
+                "median": 597.5526913334426,
+                "minimum": 43.33410985081499,
+                "p90": 891.6704551809925
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "parse_count": 25,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 606.5637625133231,
+                "median": 647.273828125,
+                "minimum": 0.0,
+                "p90": 1134.9012500000003
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 606.5637625133231,
+                "median": 647.273828125,
+                "minimum": 0.0,
+                "p90": 1134.9012500000003
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 496.57930052433426,
+                "median": 551.7573795826538,
+                "minimum": 0.0,
+                "p90": 856.5983805000869
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 496.57930052433426,
+                "median": 551.7573795826538,
+                "minimum": 0.0,
+                "p90": 856.5983805000869
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 25
+          },
+          "text": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 25,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.12,
+              "all_denominator": 25,
+              "hit_count": 3,
+              "parsed_accuracy": 0.12,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 25,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 25
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 438.40774438213487,
+                "median": 393.3272076589231,
+                "minimum": 106.75855273950256,
+                "p90": 648.1615544653012
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 438.40774438213487,
+                "median": 393.3272076589231,
+                "minimum": 106.75855273950256,
+                "p90": 648.1615544653012
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.08,
+              "all_denominator": 25,
+              "hit_count": 2,
+              "parsed_accuracy": 0.08,
+              "parsed_denominator": 25
+            },
+            "parse_count": 25,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 368.2094052859009,
+                "median": 334.83671875000005,
+                "minimum": 0.0,
+                "p90": 714.5160845789283
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 368.2094052859009,
+                "median": 334.83671875000005,
+                "minimum": 0.0,
+                "p90": 714.5160845789283
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 304.0775107039199,
+                "median": 296.9178821342344,
+                "minimum": 0.0,
+                "p90": 588.7096269170472
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 304.0775107039199,
+                "median": 296.9178821342344,
+                "minimum": 0.0,
+                "p90": 588.7096269170472
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 25
+          }
+        }
+      }
+    },
+    "previous_best": {
+      "breakdowns": {
+        "overall": {
+          "accuracy_at_100": {
+            "all_accuracy": 0.06,
+            "all_denominator": 50,
+            "hit_count": 3,
+            "parsed_accuracy": 0.06,
+            "parsed_denominator": 50
+          },
+          "accuracy_at_200": {
+            "all_accuracy": 0.14,
+            "all_denominator": 50,
+            "hit_count": 7,
+            "parsed_accuracy": 0.14,
+            "parsed_denominator": 50
+          },
+          "accuracy_at_50": {
+            "all_accuracy": 0.04,
+            "all_denominator": 50,
+            "hit_count": 2,
+            "parsed_accuracy": 0.04,
+            "parsed_denominator": 50
+          },
+          "center_distance": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 398.59368591268066,
+              "median": 388.6597223361498,
+              "minimum": 33.89762174202819,
+              "p90": 641.5686997603541
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 398.59368591268066,
+              "median": 388.6597223361498,
+              "minimum": 33.89762174202819,
+              "p90": 641.5686997603541
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "click_in_box_accuracy": {
+            "all_accuracy": 0.1,
+            "all_denominator": 50,
+            "hit_count": 5,
+            "parsed_accuracy": 0.1,
+            "parsed_denominator": 50
+          },
+          "parse_count": 50,
+          "parse_rate": 1.0,
+          "point_to_bbox_l1": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 414.362247339337,
+              "median": 405.4478125,
+              "minimum": 0.0,
+              "p90": 802.4666538217907
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 414.362247339337,
+              "median": 405.4478125,
+              "minimum": 0.0,
+              "p90": 802.4666538217907
+            },
+            "unparsed_penalty": 1998.0
+          },
+          "point_to_bbox_l2": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 322.9514482254065,
+              "median": 298.53730892372437,
+              "minimum": 0.0,
+              "p90": 591.2726329012447
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 322.9514482254065,
+              "median": 298.53730892372437,
+              "minimum": 0.0,
+              "p90": 591.2726329012447
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "total_count": 50
+        },
+        "platform": {
+          "Android": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.2,
+              "all_denominator": 10,
+              "hit_count": 2,
+              "parsed_accuracy": 0.2,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.4,
+              "all_denominator": 10,
+              "hit_count": 4,
+              "parsed_accuracy": 0.4,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 296.38088615384737,
+                "median": 286.20139628732187,
+                "minimum": 33.89762174202819,
+                "p90": 589.9798576204863
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 296.38088615384737,
+                "median": 286.20139628732187,
+                "minimum": 33.89762174202819,
+                "p90": 589.9798576204863
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.2,
+              "all_denominator": 10,
+              "hit_count": 2,
+              "parsed_accuracy": 0.2,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 271.625875,
+                "median": 164.36125,
+                "minimum": 0.0,
+                "p90": 749.237125
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 271.625875,
+                "median": 164.36125,
+                "minimum": 0.0,
+                "p90": 749.237125
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 213.2244483165322,
+                "median": 152.35498318473628,
+                "minimum": 0.0,
+                "p90": 531.8927328279502
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 213.2244483165322,
+                "median": 152.35498318473628,
+                "minimum": 0.0,
+                "p90": 531.8927328279502
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "Web": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 316.7165140438165,
+                "median": 312.9551939695975,
+                "minimum": 35.99528469146388,
+                "p90": 510.19966183747607
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 316.7165140438165,
+                "median": 312.9551939695975,
+                "minimum": 35.99528469146388,
+                "p90": 510.19966183747607
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.2,
+              "all_denominator": 10,
+              "hit_count": 2,
+              "parsed_accuracy": 0.2,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 276.994375,
+                "median": 300.4251953125,
+                "minimum": 0.0,
+                "p90": 511.7365624999999
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 276.994375,
+                "median": 300.4251953125,
+                "minimum": 0.0,
+                "p90": 511.7365624999999
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 217.37246613626877,
+                "median": 231.65731513744555,
+                "minimum": 0.0,
+                "p90": 405.2005627306973
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 217.37246613626877,
+                "median": 231.65731513744555,
+                "minimum": 0.0,
+                "p90": 405.2005627306973
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "Windows": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 467.2824041680051,
+                "median": 492.65962787470517,
+                "minimum": 199.93096291380337,
+                "p90": 742.8187040976097
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 467.2824041680051,
+                "median": 492.65962787470517,
+                "minimum": 199.93096291380337,
+                "p90": 742.8187040976097
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 519.3392635550578,
+                "median": 542.1997119752943,
+                "minimum": 69.72920407668045,
+                "p90": 948.640625
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 519.3392635550578,
+                "median": 542.1997119752943,
+                "minimum": 69.72920407668045,
+                "p90": 948.640625
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 390.9736120623716,
+                "median": 421.76489732174497,
+                "minimum": 55.58510190400727,
+                "p90": 700.5568329214464
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 390.9736120623716,
+                "median": 421.76489732174497,
+                "minimum": 55.58510190400727,
+                "p90": 700.5568329214464
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "iOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 480.9090588011667,
+                "median": 487.4608630193345,
+                "minimum": 237.23038473444424,
+                "p90": 648.9711879096475
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 480.9090588011667,
+                "median": 487.4608630193345,
+                "minimum": 237.23038473444424,
+                "p90": 648.9711879096475
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 529.4370269626908,
+                "median": 515.8700054684653,
+                "minimum": 210.79502369668245,
+                "p90": 711.7045370032812
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 529.4370269626908,
+                "median": 515.8700054684653,
+                "minimum": 210.79502369668245,
+                "p90": 711.7045370032812
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 427.9071525527851,
+                "median": 440.23324871363604,
+                "minimum": 210.79502369668245,
+                "p90": 603.5287009403381
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 427.9071525527851,
+                "median": 440.23324871363604,
+                "minimum": 210.79502369668245,
+                "p90": 603.5287009403381
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "macOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 431.67956639656785,
+                "median": 388.46437763902134,
+                "minimum": 120.89055921590122,
+                "p90": 655.1754978817123
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 431.67956639656785,
+                "median": 388.46437763902134,
+                "minimum": 120.89055921590122,
+                "p90": 655.1754978817123
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 474.41469617893625,
+                "median": 391.17687093949803,
+                "minimum": 0.0,
+                "p90": 855.7866562199911
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 474.41469617893625,
+                "median": 391.17687093949803,
+                "minimum": 0.0,
+                "p90": 855.7866562199911
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 365.2795620590749,
+                "median": 354.4691251964998,
+                "minimum": 0.0,
+                "p90": 606.3389685925176
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 365.2795620590749,
+                "median": 354.4691251964998,
+                "minimum": 0.0,
+                "p90": 606.3389685925176
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          }
+        },
+        "target_type": {
+          "icon/widget": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 486.42629820603753,
+                "median": 506.44941230745104,
+                "minimum": 33.89762174202819,
+                "p90": 717.2763044706394
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 486.42629820603753,
+                "median": 506.44941230745104,
+                "minimum": 33.89762174202819,
+                "p90": 717.2763044706394
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.08,
+              "all_denominator": 25,
+              "hit_count": 2,
+              "parsed_accuracy": 0.08,
+              "parsed_denominator": 25
+            },
+            "parse_count": 25,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 550.7035264556308,
+                "median": 618.8365564809995,
+                "minimum": 0.0,
+                "p90": 899.9486550632912
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 550.7035264556308,
+                "median": 618.8365564809995,
+                "minimum": 0.0,
+                "p90": 899.9486550632912
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 417.0401093937869,
+                "median": 457.78074017316675,
+                "minimum": 0.0,
+                "p90": 672.4270378656547
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 417.0401093937869,
+                "median": 457.78074017316675,
+                "minimum": 0.0,
+                "p90": 672.4270378656547
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 25
+          },
+          "text": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.08,
+              "all_denominator": 25,
+              "hit_count": 2,
+              "parsed_accuracy": 0.08,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.24,
+              "all_denominator": 25,
+              "hit_count": 6,
+              "parsed_accuracy": 0.24,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 310.7610736193239,
+                "median": 274.61462247332327,
+                "minimum": 35.99528469146388,
+                "p90": 522.9531841266648
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 310.7610736193239,
+                "median": 274.61462247332327,
+                "minimum": 35.99528469146388,
+                "p90": 522.9531841266648
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.12,
+              "all_denominator": 25,
+              "hit_count": 3,
+              "parsed_accuracy": 0.12,
+              "parsed_denominator": 25
+            },
+            "parse_count": 25,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 278.02096822304316,
+                "median": 274.54564907275324,
+                "minimum": 0.0,
+                "p90": 540.8529390977382
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 278.02096822304316,
+                "median": 274.54564907275324,
+                "minimum": 0.0,
+                "p90": 540.8529390977382
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 228.8627870570261,
+                "median": 212.35798660857324,
+                "minimum": 0.0,
+                "p90": 442.35310075332984
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 228.8627870570261,
+                "median": 212.35798660857324,
+                "minimum": 0.0,
+                "p90": 442.35310075332984
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 25
+          }
+        }
+      }
+    },
+    "random_projector": {
+      "breakdowns": {
+        "overall": {
+          "accuracy_at_100": {
+            "all_accuracy": 0.06,
+            "all_denominator": 50,
+            "hit_count": 3,
+            "parsed_accuracy": 0.06521739130434782,
+            "parsed_denominator": 46
+          },
+          "accuracy_at_200": {
+            "all_accuracy": 0.12,
+            "all_denominator": 50,
+            "hit_count": 6,
+            "parsed_accuracy": 0.13043478260869565,
+            "parsed_denominator": 46
+          },
+          "accuracy_at_50": {
+            "all_accuracy": 0.04,
+            "all_denominator": 50,
+            "hit_count": 2,
+            "parsed_accuracy": 0.043478260869565216,
+            "parsed_denominator": 46
+          },
+          "center_distance": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 468.5602897377565,
+              "median": 403.9279649148285,
+              "minimum": 33.89762174202819,
+              "p90": 642.5073606145718
+            },
+            "parsed": {
+              "count": 46,
+              "mean": 386.4525454705421,
+              "median": 352.36253459142256,
+              "minimum": 33.89762174202819,
+              "p90": 617.8464327627391
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "click_in_box_accuracy": {
+            "all_accuracy": 0.08,
+            "all_denominator": 50,
+            "hit_count": 4,
+            "parsed_accuracy": 0.08695652173913043,
+            "parsed_denominator": 46
+          },
+          "parse_count": 46,
+          "parse_rate": 0.92,
+          "point_to_bbox_l1": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 535.7384525823761,
+              "median": 405.4478125,
+              "minimum": 0.0,
+              "p90": 850.5873687474163
+            },
+            "parsed": {
+              "count": 46,
+              "mean": 408.585274546061,
+              "median": 392.40012838076467,
+              "minimum": 0.0,
+              "p90": 809.8012307385561
+            },
+            "unparsed_penalty": 1998.0
+          },
+          "point_to_bbox_l2": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 402.2111256327507,
+              "median": 318.1196116788483,
+              "minimum": 0.0,
+              "p90": 601.5550574783126
+            },
+            "parsed": {
+              "count": 46,
+              "mean": 314.3338888346662,
+              "median": 293.9353465766743,
+              "minimum": 0.0,
+              "p90": 582.4704232185898
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "total_count": 50
+        },
+        "platform": {
+          "Android": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.2,
+              "all_denominator": 10,
+              "hit_count": 2,
+              "parsed_accuracy": 0.25,
+              "parsed_denominator": 8
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.3,
+              "all_denominator": 10,
+              "hit_count": 3,
+              "parsed_accuracy": 0.375,
+              "parsed_denominator": 8
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.125,
+              "parsed_denominator": 8
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 503.41405391046766,
+                "median": 335.4249968688946,
+                "minimum": 33.89762174202819,
+                "p90": 1412.799348810722
+              },
+              "parsed": {
+                "count": 8,
+                "mean": 276.067730185404,
+                "median": 286.20139628732187,
+                "minimum": 33.89762174202819,
+                "p90": 474.03691145110724
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.125,
+              "parsed_denominator": 8
+            },
+            "parse_count": 8,
+            "parse_rate": 0.8,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 583.21775,
+                "median": 212.16750000000002,
+                "minimum": 0.0,
+                "p90": 1998.0
+              },
+              "parsed": {
+                "count": 8,
+                "mean": 229.52218749999997,
+                "median": 156.33625,
+                "minimum": 0.0,
+                "p90": 509.46462499999984
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 430.4741762892577,
+                "median": 200.1612331847363,
+                "minimum": 0.0,
+                "p90": 1412.799348810722
+              },
+              "parsed": {
+                "count": 8,
+                "mean": 184.8928831588916,
+                "median": 144.3299831847363,
+                "minimum": 0.0,
+                "p90": 362.85880932514823
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "Web": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 319.6130906271757,
+                "median": 327.8044054118501,
+                "minimum": 35.99528469146388,
+                "p90": 447.07125952935786
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 319.6130906271757,
+                "median": 327.8044054118501,
+                "minimum": 35.99528469146388,
+                "p90": 447.07125952935786
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.2,
+              "all_denominator": 10,
+              "hit_count": 2,
+              "parsed_accuracy": 0.2,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 299.494375,
+                "median": 294.296484375,
+                "minimum": 0.0,
+                "p90": 547.5776562499999
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 299.494375,
+                "median": 294.296484375,
+                "minimum": 0.0,
+                "p90": 547.5776562499999
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 239.29658470679828,
+                "median": 241.96685015763873,
+                "minimum": 0.0,
+                "p90": 403.96046682911543
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 239.29658470679828,
+                "median": 241.96685015763873,
+                "minimum": 0.0,
+                "p90": 403.96046682911543
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "Windows": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 456.8528038679586,
+                "median": 497.6892286590037,
+                "minimum": 230.6280528606141,
+                "p90": 611.3539804062938
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 456.8528038679586,
+                "median": 497.6892286590037,
+                "minimum": 230.6280528606141,
+                "p90": 611.3539804062938
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 523.1171815361303,
+                "median": 594.0622119752943,
+                "minimum": 141.37499999999994,
+                "p90": 800.1962500000001
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 523.1171815361303,
+                "median": 594.0622119752943,
+                "minimum": 141.37499999999994,
+                "p90": 800.1962500000001
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 383.8156367441777,
+                "median": 421.02406880362173,
+                "minimum": 117.1742886217656,
+                "p90": 570.7832923638981
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 383.8156367441777,
+                "median": 421.02406880362173,
+                "minimum": 117.1742886217656,
+                "p90": 570.7832923638981
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "iOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 8
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.125,
+              "parsed_denominator": 8
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 8
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 639.1586108406551,
+                "median": 510.2914610278152,
+                "minimum": 137.2307686973712,
+                "p90": 1412.799348810722
+              },
+              "parsed": {
+                "count": 8,
+                "mean": 445.74842634813837,
+                "median": 439.0577883640629,
+                "minimum": 137.2307686973712,
+                "p90": 621.0116582599624
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 8
+            },
+            "parse_count": 8,
+            "parse_rate": 0.8,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 799.3697484355307,
+                "median": 575.992499088589,
+                "minimum": 110.79502369668245,
+                "p90": 1998.0
+              },
+              "parsed": {
+                "count": 8,
+                "mean": 499.71218554441333,
+                "median": 520.4158904201563,
+                "minimum": 110.79502369668245,
+                "p90": 755.3776275692632
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 597.3475245591703,
+                "median": 465.199848188846,
+                "minimum": 110.79502369668245,
+                "p90": 1412.799348810722
+              },
+              "parsed": {
+                "count": 8,
+                "mean": 393.48456849628246,
+                "median": 392.31522103908867,
+                "minimum": 110.79502369668245,
+                "p90": 546.6901319748788
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "macOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 423.7628894425252,
+                "median": 407.65775644623653,
+                "minimum": 123.45408922827738,
+                "p90": 630.3477257943132
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 423.7628894425252,
+                "median": 407.65775644623653,
+                "minimum": 123.45408922827738,
+                "p90": 630.3477257943132
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 473.4932079402196,
+                "median": 427.45824061493454,
+                "minimum": 0.0,
+                "p90": 835.7866562199912
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 473.4932079402196,
+                "median": 427.45824061493454,
+                "minimum": 0.0,
+                "p90": 835.7866562199912
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 360.1217058643494,
+                "median": 360.8857179273932,
+                "minimum": 0.0,
+                "p90": 591.0723607820104
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 360.1217058643494,
+                "median": 360.8857179273932,
+                "minimum": 0.0,
+                "p90": 591.0723607820104
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          }
+        },
+        "target_type": {
+          "icon/widget": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.045454545454545456,
+              "parsed_denominator": 22
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.045454545454545456,
+              "parsed_denominator": 22
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.045454545454545456,
+              "parsed_denominator": 22
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 578.8113368005661,
+                "median": 533.1202274478643,
+                "minimum": 33.89762174202819,
+                "p90": 1109.6355878818285
+              },
+              "parsed": {
+                "count": 22,
+                "mean": 465.0856987991812,
+                "median": 502.42170812210315,
+                "minimum": 33.89762174202819,
+                "p90": 632.5381753815511
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.08,
+              "all_denominator": 25,
+              "hit_count": 2,
+              "parsed_accuracy": 0.09090909090909091,
+              "parsed_denominator": 22
+            },
+            "parse_count": 22,
+            "parse_rate": 0.88,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 711.3933650447667,
+                "median": 657.0125,
+                "minimum": 0.0,
+                "p90": 1550.8694749896667
+              },
+              "parsed": {
+                "count": 22,
+                "mean": 535.9470057326895,
+                "median": 631.1651532404998,
+                "minimum": 0.0,
+                "p90": 845.0318047140987
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 524.0686352405394,
+                "median": 496.92656414831566,
+                "minimum": 0.0,
+                "p90": 1096.6511965068678
+              },
+              "parsed": {
+                "count": 22,
+                "mean": 402.87808339006,
+                "median": 456.39989944143394,
+                "minimum": 0.0,
+                "p90": 597.6321246512364
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 25
+          },
+          "text": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.08,
+              "all_denominator": 25,
+              "hit_count": 2,
+              "parsed_accuracy": 0.08333333333333333,
+              "parsed_denominator": 24
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.2,
+              "all_denominator": 25,
+              "hit_count": 5,
+              "parsed_accuracy": 0.20833333333333334,
+              "parsed_denominator": 24
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.041666666666666664,
+              "parsed_denominator": 24
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 358.30924267494674,
+                "median": 333.0277024505887,
+                "minimum": 35.99528469146388,
+                "p90": 528.4063301277065
+              },
+              "parsed": {
+                "count": 24,
+                "mean": 314.37215491928947,
+                "median": 319.93824088952704,
+                "minimum": 35.99528469146388,
+                "p90": 484.7008562659183
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.08,
+              "all_denominator": 25,
+              "hit_count": 2,
+              "parsed_accuracy": 0.08333333333333333,
+              "parsed_denominator": 24
+            },
+            "parse_count": 24,
+            "parse_rate": 0.96,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 360.08354011998546,
+                "median": 287.47265625,
+                "minimum": 0.0,
+                "p90": 549.2248105937243
+              },
+              "parsed": {
+                "count": 24,
+                "mean": 291.8370209583182,
+                "median": 283.35421912026067,
+                "minimum": 0.0,
+                "p90": 541.7973728109508
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 280.353616024962,
+                "median": 274.54564907275324,
+                "minimum": 0.0,
+                "p90": 455.379255155494
+              },
+              "parsed": {
+                "count": 24,
+                "mean": 233.16837715888866,
+                "median": 257.89249348250075,
+                "minimum": 0.0,
+                "p90": 386.5126124064741
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 25
+          }
+        }
+      }
+    },
+    "shuffled": {
+      "breakdowns": {
+        "overall": {
+          "accuracy_at_100": {
+            "all_accuracy": 0.02,
+            "all_denominator": 50,
+            "hit_count": 1,
+            "parsed_accuracy": 0.02,
+            "parsed_denominator": 50
+          },
+          "accuracy_at_200": {
+            "all_accuracy": 0.1,
+            "all_denominator": 50,
+            "hit_count": 5,
+            "parsed_accuracy": 0.1,
+            "parsed_denominator": 50
+          },
+          "accuracy_at_50": {
+            "all_accuracy": 0.02,
+            "all_denominator": 50,
+            "hit_count": 1,
+            "parsed_accuracy": 0.02,
+            "parsed_denominator": 50
+          },
+          "center_distance": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 502.0818103055902,
+              "median": 494.941741240205,
+              "minimum": 43.33410985081499,
+              "p90": 863.9816542070248
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 502.0818103055902,
+              "median": 494.941741240205,
+              "minimum": 43.33410985081499,
+              "p90": 863.9816542070248
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "click_in_box_accuracy": {
+            "all_accuracy": 0.06,
+            "all_denominator": 50,
+            "hit_count": 3,
+            "parsed_accuracy": 0.06,
+            "parsed_denominator": 50
+          },
+          "parse_count": 50,
+          "parse_rate": 1.0,
+          "point_to_bbox_l1": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 484.010583899612,
+              "median": 405.70625,
+              "minimum": 0.0,
+              "p90": 976.0549762658229
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 484.010583899612,
+              "median": 405.70625,
+              "minimum": 0.0,
+              "p90": 976.0549762658229
+            },
+            "unparsed_penalty": 1998.0
+          },
+          "point_to_bbox_l2": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 400.742396026575,
+              "median": 393.8094082430076,
+              "minimum": 0.0,
+              "p90": 834.9799320579091
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 400.742396026575,
+              "median": 393.8094082430076,
+              "minimum": 0.0,
+              "p90": 834.9799320579091
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "total_count": 50
+        },
+        "platform": {
+          "Android": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.2,
+              "all_denominator": 10,
+              "hit_count": 2,
+              "parsed_accuracy": 0.2,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 411.4234965551515,
+                "median": 392.63140571906126,
+                "minimum": 43.33410985081499,
+                "p90": 638.1641285374777
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 411.4234965551515,
+                "median": 392.63140571906126,
+                "minimum": 43.33410985081499,
+                "p90": 638.1641285374777
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 286.23137499999996,
+                "median": 205.503125,
+                "minimum": 0.0,
+                "p90": 544.8827499999998
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 286.23137499999996,
+                "median": 205.503125,
+                "minimum": 0.0,
+                "p90": 544.8827499999998
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 238.27976501819506,
+                "median": 199.4364968522667,
+                "minimum": 0.0,
+                "p90": 430.36306918871355
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 238.27976501819506,
+                "median": 199.4364968522667,
+                "minimum": 0.0,
+                "p90": 430.36306918871355
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "Web": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 356.01025262694856,
+                "median": 331.1686582692032,
+                "minimum": 174.46118391709973,
+                "p90": 573.4253098704963
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 356.01025262694856,
+                "median": 331.1686582692032,
+                "minimum": 174.46118391709973,
+                "p90": 573.4253098704963
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 305.52449218749996,
+                "median": 313.5880859375,
+                "minimum": 0.0,
+                "p90": 651.26828125
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 305.52449218749996,
+                "median": 313.5880859375,
+                "minimum": 0.0,
+                "p90": 651.26828125
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 269.76223069034285,
+                "median": 274.25327438151726,
+                "minimum": 0.0,
+                "p90": 550.0994091574769
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 269.76223069034285,
+                "median": 274.25327438151726,
+                "minimum": 0.0,
+                "p90": 550.0994091574769
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "Windows": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 589.9781702206267,
+                "median": 704.6595525660205,
+                "minimum": 106.75855273950256,
+                "p90": 893.1038533391866
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 589.9781702206267,
+                "median": 704.6595525660205,
+                "minimum": 106.75855273950256,
+                "p90": 893.1038533391866
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 623.1252933263086,
+                "median": 669.79375,
+                "minimum": 0.0,
+                "p90": 1184.7406250000001
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 623.1252933263086,
+                "median": 669.79375,
+                "minimum": 0.0,
+                "p90": 1184.7406250000001
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 508.9114031956061,
+                "median": 640.9435447318187,
+                "minimum": 0.0,
+                "p90": 860.8763303142539
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 508.9114031956061,
+                "median": 640.9435447318187,
+                "minimum": 0.0,
+                "p90": 860.8763303142539
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "iOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 489.94739643145675,
+                "median": 524.1085199911953,
+                "minimum": 156.7392685334581,
+                "p90": 737.0861155261783
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 489.94739643145675,
+                "median": 524.1085199911953,
+                "minimum": 156.7392685334581,
+                "p90": 737.0861155261783
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 479.12633595877935,
+                "median": 499.0752005103901,
+                "minimum": 58.79502369668245,
+                "p90": 761.8329037550127
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 479.12633595877935,
+                "median": 499.0752005103901,
+                "minimum": 58.79502369668245,
+                "p90": 761.8329037550127
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 409.42945500095277,
+                "median": 453.4110461847612,
+                "minimum": 58.79502369668245,
+                "p90": 670.2712763493365
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 409.42945500095277,
+                "median": 453.4110461847612,
+                "minimum": 58.79502369668245,
+                "p90": 670.2712763493365
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "macOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 663.0497356937676,
+                "median": 640.9239500019792,
+                "minimum": 356.596189101322,
+                "p90": 904.0824105668914
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 663.0497356937676,
+                "median": 640.9239500019792,
+                "minimum": 356.596189101322,
+                "p90": 904.0824105668914
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 726.0454230254721,
+                "median": 666.5835239856457,
+                "minimum": 113.74099999999999,
+                "p90": 1121.531907540116
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 726.0454230254721,
+                "median": 666.5835239856457,
+                "minimum": 113.74099999999999,
+                "p90": 1121.531907540116
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 577.329126227778,
+                "median": 583.6129736053751,
+                "minimum": 113.74099999999999,
+                "p90": 858.0169714938546
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 577.329126227778,
+                "median": 583.6129736053751,
+                "minimum": 113.74099999999999,
+                "p90": 858.0169714938546
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          }
+        },
+        "target_type": {
+          "icon/widget": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.16,
+              "all_denominator": 25,
+              "hit_count": 4,
+              "parsed_accuracy": 0.16,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 566.8616394070991,
+                "median": 597.5526913334426,
+                "minimum": 43.33410985081499,
+                "p90": 888.1375208092129
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 566.8616394070991,
+                "median": 597.5526913334426,
+                "minimum": 43.33410985081499,
+                "p90": 888.1375208092129
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "parse_count": 25,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 601.1717625133231,
+                "median": 647.273828125,
+                "minimum": 0.0,
+                "p90": 1146.61625
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 601.1717625133231,
+                "median": 647.273828125,
+                "minimum": 0.0,
+                "p90": 1146.61625
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 498.39472115251397,
+                "median": 554.7478503679828,
+                "minimum": 0.0,
+                "p90": 848.855263125324
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 498.39472115251397,
+                "median": 554.7478503679828,
+                "minimum": 0.0,
+                "p90": 848.855263125324
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 25
+          },
+          "text": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 25,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 25,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 25
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 437.3019812040813,
+                "median": 393.3272076589231,
+                "minimum": 106.75855273950256,
+                "p90": 643.7089512096745
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 437.3019812040813,
+                "median": 393.3272076589231,
+                "minimum": 106.75855273950256,
+                "p90": 643.7089512096745
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.08,
+              "all_denominator": 25,
+              "hit_count": 2,
+              "parsed_accuracy": 0.08,
+              "parsed_denominator": 25
+            },
+            "parse_count": 25,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 366.84940528590096,
+                "median": 331.83671875000005,
+                "minimum": 0.0,
+                "p90": 693.5160845789283
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 366.84940528590096,
+                "median": 331.83671875000005,
+                "minimum": 0.0,
+                "p90": 693.5160845789283
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 303.090070900636,
+                "median": 296.52129557770235,
+                "minimum": 0.0,
+                "p90": 575.40690123667
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 303.090070900636,
+                "median": 296.52129557770235,
+                "minimum": 0.0,
+                "p90": 575.40690123667
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 25
+          }
+        }
+      }
+    },
+    "step0": {
+      "breakdowns": {
+        "overall": {
+          "accuracy_at_100": {
+            "all_accuracy": 0.06,
+            "all_denominator": 50,
+            "hit_count": 3,
+            "parsed_accuracy": 0.06,
+            "parsed_denominator": 50
+          },
+          "accuracy_at_200": {
+            "all_accuracy": 0.14,
+            "all_denominator": 50,
+            "hit_count": 7,
+            "parsed_accuracy": 0.14,
+            "parsed_denominator": 50
+          },
+          "accuracy_at_50": {
+            "all_accuracy": 0.04,
+            "all_denominator": 50,
+            "hit_count": 2,
+            "parsed_accuracy": 0.04,
+            "parsed_denominator": 50
+          },
+          "center_distance": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 398.59368591268066,
+              "median": 388.6597223361498,
+              "minimum": 33.89762174202819,
+              "p90": 641.5686997603541
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 398.59368591268066,
+              "median": 388.6597223361498,
+              "minimum": 33.89762174202819,
+              "p90": 641.5686997603541
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "click_in_box_accuracy": {
+            "all_accuracy": 0.1,
+            "all_denominator": 50,
+            "hit_count": 5,
+            "parsed_accuracy": 0.1,
+            "parsed_denominator": 50
+          },
+          "parse_count": 50,
+          "parse_rate": 1.0,
+          "point_to_bbox_l1": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 414.362247339337,
+              "median": 405.4478125,
+              "minimum": 0.0,
+              "p90": 802.4666538217907
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 414.362247339337,
+              "median": 405.4478125,
+              "minimum": 0.0,
+              "p90": 802.4666538217907
+            },
+            "unparsed_penalty": 1998.0
+          },
+          "point_to_bbox_l2": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 322.9514482254065,
+              "median": 298.53730892372437,
+              "minimum": 0.0,
+              "p90": 591.2726329012447
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 322.9514482254065,
+              "median": 298.53730892372437,
+              "minimum": 0.0,
+              "p90": 591.2726329012447
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "total_count": 50
+        },
+        "platform": {
+          "Android": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.2,
+              "all_denominator": 10,
+              "hit_count": 2,
+              "parsed_accuracy": 0.2,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.4,
+              "all_denominator": 10,
+              "hit_count": 4,
+              "parsed_accuracy": 0.4,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 296.38088615384737,
+                "median": 286.20139628732187,
+                "minimum": 33.89762174202819,
+                "p90": 589.9798576204863
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 296.38088615384737,
+                "median": 286.20139628732187,
+                "minimum": 33.89762174202819,
+                "p90": 589.9798576204863
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.2,
+              "all_denominator": 10,
+              "hit_count": 2,
+              "parsed_accuracy": 0.2,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 271.625875,
+                "median": 164.36125,
+                "minimum": 0.0,
+                "p90": 749.237125
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 271.625875,
+                "median": 164.36125,
+                "minimum": 0.0,
+                "p90": 749.237125
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 213.2244483165322,
+                "median": 152.35498318473628,
+                "minimum": 0.0,
+                "p90": 531.8927328279502
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 213.2244483165322,
+                "median": 152.35498318473628,
+                "minimum": 0.0,
+                "p90": 531.8927328279502
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "Web": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 316.7165140438165,
+                "median": 312.9551939695975,
+                "minimum": 35.99528469146388,
+                "p90": 510.19966183747607
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 316.7165140438165,
+                "median": 312.9551939695975,
+                "minimum": 35.99528469146388,
+                "p90": 510.19966183747607
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.2,
+              "all_denominator": 10,
+              "hit_count": 2,
+              "parsed_accuracy": 0.2,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 276.994375,
+                "median": 300.4251953125,
+                "minimum": 0.0,
+                "p90": 511.7365624999999
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 276.994375,
+                "median": 300.4251953125,
+                "minimum": 0.0,
+                "p90": 511.7365624999999
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 217.37246613626877,
+                "median": 231.65731513744555,
+                "minimum": 0.0,
+                "p90": 405.2005627306973
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 217.37246613626877,
+                "median": 231.65731513744555,
+                "minimum": 0.0,
+                "p90": 405.2005627306973
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "Windows": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 467.2824041680051,
+                "median": 492.65962787470517,
+                "minimum": 199.93096291380337,
+                "p90": 742.8187040976097
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 467.2824041680051,
+                "median": 492.65962787470517,
+                "minimum": 199.93096291380337,
+                "p90": 742.8187040976097
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 519.3392635550578,
+                "median": 542.1997119752943,
+                "minimum": 69.72920407668045,
+                "p90": 948.640625
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 519.3392635550578,
+                "median": 542.1997119752943,
+                "minimum": 69.72920407668045,
+                "p90": 948.640625
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 390.9736120623716,
+                "median": 421.76489732174497,
+                "minimum": 55.58510190400727,
+                "p90": 700.5568329214464
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 390.9736120623716,
+                "median": 421.76489732174497,
+                "minimum": 55.58510190400727,
+                "p90": 700.5568329214464
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "iOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 480.9090588011667,
+                "median": 487.4608630193345,
+                "minimum": 237.23038473444424,
+                "p90": 648.9711879096475
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 480.9090588011667,
+                "median": 487.4608630193345,
+                "minimum": 237.23038473444424,
+                "p90": 648.9711879096475
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 529.4370269626908,
+                "median": 515.8700054684653,
+                "minimum": 210.79502369668245,
+                "p90": 711.7045370032812
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 529.4370269626908,
+                "median": 515.8700054684653,
+                "minimum": 210.79502369668245,
+                "p90": 711.7045370032812
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 427.9071525527851,
+                "median": 440.23324871363604,
+                "minimum": 210.79502369668245,
+                "p90": 603.5287009403381
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 427.9071525527851,
+                "median": 440.23324871363604,
+                "minimum": 210.79502369668245,
+                "p90": 603.5287009403381
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "macOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 431.67956639656785,
+                "median": 388.46437763902134,
+                "minimum": 120.89055921590122,
+                "p90": 655.1754978817123
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 431.67956639656785,
+                "median": 388.46437763902134,
+                "minimum": 120.89055921590122,
+                "p90": 655.1754978817123
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 474.41469617893625,
+                "median": 391.17687093949803,
+                "minimum": 0.0,
+                "p90": 855.7866562199911
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 474.41469617893625,
+                "median": 391.17687093949803,
+                "minimum": 0.0,
+                "p90": 855.7866562199911
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 365.2795620590749,
+                "median": 354.4691251964998,
+                "minimum": 0.0,
+                "p90": 606.3389685925176
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 365.2795620590749,
+                "median": 354.4691251964998,
+                "minimum": 0.0,
+                "p90": 606.3389685925176
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          }
+        },
+        "target_type": {
+          "icon/widget": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 486.42629820603753,
+                "median": 506.44941230745104,
+                "minimum": 33.89762174202819,
+                "p90": 717.2763044706394
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 486.42629820603753,
+                "median": 506.44941230745104,
+                "minimum": 33.89762174202819,
+                "p90": 717.2763044706394
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.08,
+              "all_denominator": 25,
+              "hit_count": 2,
+              "parsed_accuracy": 0.08,
+              "parsed_denominator": 25
+            },
+            "parse_count": 25,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 550.7035264556308,
+                "median": 618.8365564809995,
+                "minimum": 0.0,
+                "p90": 899.9486550632912
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 550.7035264556308,
+                "median": 618.8365564809995,
+                "minimum": 0.0,
+                "p90": 899.9486550632912
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 417.0401093937869,
+                "median": 457.78074017316675,
+                "minimum": 0.0,
+                "p90": 672.4270378656547
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 417.0401093937869,
+                "median": 457.78074017316675,
+                "minimum": 0.0,
+                "p90": 672.4270378656547
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 25
+          },
+          "text": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.08,
+              "all_denominator": 25,
+              "hit_count": 2,
+              "parsed_accuracy": 0.08,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.24,
+              "all_denominator": 25,
+              "hit_count": 6,
+              "parsed_accuracy": 0.24,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 310.7610736193239,
+                "median": 274.61462247332327,
+                "minimum": 35.99528469146388,
+                "p90": 522.9531841266648
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 310.7610736193239,
+                "median": 274.61462247332327,
+                "minimum": 35.99528469146388,
+                "p90": 522.9531841266648
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.12,
+              "all_denominator": 25,
+              "hit_count": 3,
+              "parsed_accuracy": 0.12,
+              "parsed_denominator": 25
+            },
+            "parse_count": 25,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 278.02096822304316,
+                "median": 274.54564907275324,
+                "minimum": 0.0,
+                "p90": 540.8529390977382
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 278.02096822304316,
+                "median": 274.54564907275324,
+                "minimum": 0.0,
+                "p90": 540.8529390977382
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 228.8627870570261,
+                "median": 212.35798660857324,
+                "minimum": 0.0,
+                "p90": 442.35310075332984
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 228.8627870570261,
+                "median": 212.35798660857324,
+                "minimum": 0.0,
+                "p90": 442.35310075332984
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 25
+          }
+        }
+      }
+    },
+    "vision": {
+      "breakdowns": {
+        "overall": {
+          "accuracy_at_100": {
+            "all_accuracy": 0.02,
+            "all_denominator": 50,
+            "hit_count": 1,
+            "parsed_accuracy": 0.02,
+            "parsed_denominator": 50
+          },
+          "accuracy_at_200": {
+            "all_accuracy": 0.14,
+            "all_denominator": 50,
+            "hit_count": 7,
+            "parsed_accuracy": 0.14,
+            "parsed_denominator": 50
+          },
+          "accuracy_at_50": {
+            "all_accuracy": 0.02,
+            "all_denominator": 50,
+            "hit_count": 1,
+            "parsed_accuracy": 0.02,
+            "parsed_denominator": 50
+          },
+          "center_distance": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 502.0642943579057,
+              "median": 494.941741240205,
+              "minimum": 43.33410985081499,
+              "p90": 866.3035537903946
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 502.0642943579057,
+              "median": 494.941741240205,
+              "minimum": 43.33410985081499,
+              "p90": 866.3035537903946
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "click_in_box_accuracy": {
+            "all_accuracy": 0.06,
+            "all_denominator": 50,
+            "hit_count": 3,
+            "parsed_accuracy": 0.06,
+            "parsed_denominator": 50
+          },
+          "parse_count": 50,
+          "parse_rate": 1.0,
+          "point_to_bbox_l1": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 487.386583899612,
+              "median": 405.70625,
+              "minimum": 0.0,
+              "p90": 1058.597911392405
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 487.386583899612,
+              "median": 405.70625,
+              "minimum": 0.0,
+              "p90": 1058.597911392405
+            },
+            "unparsed_penalty": 1998.0
+          },
+          "point_to_bbox_l2": {
+            "all_penalized": {
+              "count": 50,
+              "mean": 400.3284056141271,
+              "median": 393.8094082430076,
+              "minimum": 0.0,
+              "p90": 834.3181672822355
+            },
+            "parsed": {
+              "count": 50,
+              "mean": 400.3284056141271,
+              "median": 393.8094082430076,
+              "minimum": 0.0,
+              "p90": 834.3181672822355
+            },
+            "unparsed_penalty": 1412.799348810722
+          },
+          "total_count": 50
+        },
+        "platform": {
+          "Android": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.2,
+              "all_denominator": 10,
+              "hit_count": 2,
+              "parsed_accuracy": 0.2,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 407.9897469094334,
+                "median": 394.2900933935921,
+                "minimum": 43.33410985081499,
+                "p90": 638.0244545445198
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 407.9897469094334,
+                "median": 394.2900933935921,
+                "minimum": 43.33410985081499,
+                "p90": 638.0244545445198
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 282.23137499999996,
+                "median": 187.003125,
+                "minimum": 0.0,
+                "p90": 544.5827499999998
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 282.23137499999996,
+                "median": 187.003125,
+                "minimum": 0.0,
+                "p90": 544.5827499999998
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 234.4368947400682,
+                "median": 187.003125,
+                "minimum": 0.0,
+                "p90": 430.2201989105867
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 234.4368947400682,
+                "median": 187.003125,
+                "minimum": 0.0,
+                "p90": 430.2201989105867
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "Web": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 356.0056081230187,
+                "median": 330.0748576160732,
+                "minimum": 173.0723069810884,
+                "p90": 573.4253098704963
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 356.0056081230187,
+                "median": 330.0748576160732,
+                "minimum": 173.0723069810884,
+                "p90": 573.4253098704963
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 305.2244921875,
+                "median": 313.5880859375,
+                "minimum": 0.0,
+                "p90": 651.26828125
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 305.2244921875,
+                "median": 313.5880859375,
+                "minimum": 0.0,
+                "p90": 651.26828125
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 269.2341342367596,
+                "median": 273.1127921136011,
+                "minimum": 0.0,
+                "p90": 550.0994091574769
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 269.2341342367596,
+                "median": 273.1127921136011,
+                "minimum": 0.0,
+                "p90": 550.0994091574769
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "Windows": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.3,
+              "all_denominator": 10,
+              "hit_count": 3,
+              "parsed_accuracy": 0.3,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 591.8686709741789,
+                "median": 710.0840812720809,
+                "minimum": 106.75855273950256,
+                "p90": 908.1171098086493
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 591.8686709741789,
+                "median": 710.0840812720809,
+                "minimum": 106.75855273950256,
+                "p90": 908.1171098086493
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 644.4052933263085,
+                "median": 737.071875,
+                "minimum": 0.0,
+                "p90": 1188.340625
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 644.4052933263085,
+                "median": 737.071875,
+                "minimum": 0.0,
+                "p90": 1188.340625
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 509.81866104727914,
+                "median": 643.8076971516315,
+                "minimum": 0.0,
+                "p90": 874.7205734036166
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 509.81866104727914,
+                "median": 643.8076971516315,
+                "minimum": 0.0,
+                "p90": 874.7205734036166
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "iOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.1,
+              "all_denominator": 10,
+              "hit_count": 1,
+              "parsed_accuracy": 0.1,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 492.6391130157941,
+                "median": 522.6341686077194,
+                "minimum": 156.7392685334581,
+                "p90": 737.0861155261783
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 492.6391130157941,
+                "median": 522.6341686077194,
+                "minimum": 156.7392685334581,
+                "p90": 737.0861155261783
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 482.5263359587793,
+                "median": 497.5752005103901,
+                "minimum": 55.79502369668245,
+                "p90": 761.8329037550127
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 482.5263359587793,
+                "median": 497.5752005103901,
+                "minimum": 55.79502369668245,
+                "p90": 761.8329037550127
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 411.9316911062542,
+                "median": 453.4110461847612,
+                "minimum": 55.79502369668245,
+                "p90": 670.2712763493365
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 411.9316911062542,
+                "median": 453.4110461847612,
+                "minimum": 55.79502369668245,
+                "p90": 670.2712763493365
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          },
+          "macOS": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 661.8183327671034,
+                "median": 640.9239500019792,
+                "minimum": 356.596189101322,
+                "p90": 890.9258524247407
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 661.8183327671034,
+                "median": 640.9239500019792,
+                "minimum": 356.596189101322,
+                "p90": 890.9258524247407
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.0,
+              "all_denominator": 10,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 10
+            },
+            "parse_count": 10,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 722.5454230254721,
+                "median": 668.0835239856457,
+                "minimum": 113.74099999999999,
+                "p90": 1087.3319075401162
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 722.5454230254721,
+                "median": 668.0835239856457,
+                "minimum": 113.74099999999999,
+                "p90": 1087.3319075401162
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 10,
+                "mean": 576.2206469402743,
+                "median": 583.6129736053751,
+                "minimum": 113.74099999999999,
+                "p90": 845.6257430516949
+              },
+              "parsed": {
+                "count": 10,
+                "mean": 576.2206469402743,
+                "median": 583.6129736053751,
+                "minimum": 113.74099999999999,
+                "p90": 845.6257430516949
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 10
+          }
+        },
+        "target_type": {
+          "icon/widget": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.16,
+              "all_denominator": 25,
+              "hit_count": 4,
+              "parsed_accuracy": 0.16,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 565.7208443336765,
+                "median": 597.5526913334426,
+                "minimum": 43.33410985081499,
+                "p90": 891.6704551809925
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 565.7208443336765,
+                "median": 597.5526913334426,
+                "minimum": 43.33410985081499,
+                "p90": 891.6704551809925
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.04,
+              "all_denominator": 25,
+              "hit_count": 1,
+              "parsed_accuracy": 0.04,
+              "parsed_denominator": 25
+            },
+            "parse_count": 25,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 606.5637625133231,
+                "median": 647.273828125,
+                "minimum": 0.0,
+                "p90": 1134.9012500000003
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 606.5637625133231,
+                "median": 647.273828125,
+                "minimum": 0.0,
+                "p90": 1134.9012500000003
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 496.57930052433426,
+                "median": 551.7573795826538,
+                "minimum": 0.0,
+                "p90": 856.5983805000869
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 496.57930052433426,
+                "median": 551.7573795826538,
+                "minimum": 0.0,
+                "p90": 856.5983805000869
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 25
+          },
+          "text": {
+            "accuracy_at_100": {
+              "all_accuracy": 0.0,
+              "all_denominator": 25,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_200": {
+              "all_accuracy": 0.12,
+              "all_denominator": 25,
+              "hit_count": 3,
+              "parsed_accuracy": 0.12,
+              "parsed_denominator": 25
+            },
+            "accuracy_at_50": {
+              "all_accuracy": 0.0,
+              "all_denominator": 25,
+              "hit_count": 0,
+              "parsed_accuracy": 0.0,
+              "parsed_denominator": 25
+            },
+            "center_distance": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 438.40774438213487,
+                "median": 393.3272076589231,
+                "minimum": 106.75855273950256,
+                "p90": 648.1615544653012
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 438.40774438213487,
+                "median": 393.3272076589231,
+                "minimum": 106.75855273950256,
+                "p90": 648.1615544653012
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "click_in_box_accuracy": {
+              "all_accuracy": 0.08,
+              "all_denominator": 25,
+              "hit_count": 2,
+              "parsed_accuracy": 0.08,
+              "parsed_denominator": 25
+            },
+            "parse_count": 25,
+            "parse_rate": 1.0,
+            "point_to_bbox_l1": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 368.2094052859009,
+                "median": 334.83671875000005,
+                "minimum": 0.0,
+                "p90": 714.5160845789283
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 368.2094052859009,
+                "median": 334.83671875000005,
+                "minimum": 0.0,
+                "p90": 714.5160845789283
+              },
+              "unparsed_penalty": 1998.0
+            },
+            "point_to_bbox_l2": {
+              "all_penalized": {
+                "count": 25,
+                "mean": 304.0775107039199,
+                "median": 296.9178821342344,
+                "minimum": 0.0,
+                "p90": 588.7096269170472
+              },
+              "parsed": {
+                "count": 25,
+                "mean": 304.0775107039199,
+                "median": 296.9178821342344,
+                "minimum": 0.0,
+                "p90": 588.7096269170472
+              },
+              "unparsed_penalty": 1412.799348810722
+            },
+            "total_count": 25
+          }
+        }
+      }
+    }
+  },
+  "dataset_manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+  "dataset_name": "screenspot_glm50_v1",
+  "formal_complete": true,
+  "inputs": {
+    "manifest": {
+      "bytes": 65403,
+      "path": "experiments/qwen3b_community_eval_20260805/contract/datasets/screenspot_glm50_v1/MANIFEST.json",
+      "sha256": "b578229e72a59a983623514f259d2f49fc46cb66c0802a622682727d88151543"
+    },
+    "predictions": {
+      "blind": {
+        "bytes": 18206,
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/blind.jsonl",
+        "sha256": "bb3bad506e73165be53128d549afc1effa42ddeeeec1f0d6776b25a7fa89b296"
+      },
+      "current_candidate": {
+        "bytes": 22511,
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/current_candidate.jsonl",
+        "sha256": "cc40d9f3753129872b2abfad43449986c684c8e2f7fa4f408fff72bc1f5183e1"
+      },
+      "previous_best": {
+        "bytes": 22514,
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/previous_best.jsonl",
+        "sha256": "13c9cc0b0b9888f093ffbb50c87f19a1ed18fee276d7db49c41efd65688b6e45"
+      },
+      "random_projector": {
+        "bytes": 22536,
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/random_projector.jsonl",
+        "sha256": "553fe837cebb1b0a2d3e8aaaaaf12f82b35720c785a6cc8447778a4bac2b620c"
+      },
+      "shuffled": {
+        "bytes": 22503,
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/shuffled.jsonl",
+        "sha256": "93baa22c47214f9832a09be7cb5a77a8c6f3f6d09c2e1953bbd5c42ab72b3567"
+      },
+      "step0": {
+        "bytes": 22514,
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/step0.jsonl",
+        "sha256": "13c9cc0b0b9888f093ffbb50c87f19a1ed18fee276d7db49c41efd65688b6e45"
+      },
+      "vision": {
+        "bytes": 22511,
+        "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_eval_grounding_enriched_4k_v1/predictions/vision.jsonl",
+        "sha256": "cc40d9f3753129872b2abfad43449986c684c8e2f7fa4f408fff72bc1f5183e1"
+      }
+    }
+  },
+  "sample_count": 50,
+  "schema_version": "community-grounding-evaluation-v1"
+}
