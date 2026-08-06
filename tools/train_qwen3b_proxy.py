@@ -314,6 +314,18 @@ def parse_args() -> argparse.Namespace:
         type=float,
         help="探索用 projector 学习率覆盖；examples/steps/order 仍绑定主合同",
     )
+    parser.add_argument(
+        "--causal-shuffle-margin-lambda",
+        type=float,
+        default=0.0,
+        help="探索用 paired image-vs-shuffle hinge loss 权重；默认关闭",
+    )
+    parser.add_argument(
+        "--causal-shuffle-margin",
+        type=float,
+        default=0.10,
+        help="paired hinge 要求的 shuffled-loss 减 correct-loss 最小间隔",
+    )
     parser.add_argument("--geometry-screen-contract", type=Path)
     parser.add_argument("--geometry-calibration", type=Path)
     parser.add_argument("--geometry-reference-projector", type=Path)
@@ -1411,6 +1423,8 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
             if args.projector_learning_rate is not None
             else None
         ),
+        "causal_shuffle_margin_lambda": float(args.causal_shuffle_margin_lambda),
+        "causal_shuffle_margin": float(args.causal_shuffle_margin),
         "checkpoint_every": args.checkpoint_every,
         "resume": str(args.resume.resolve()) if args.resume else None,
         "supervision": supervision_summary,
@@ -1516,6 +1530,10 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
     )
     if learning_rate <= 0.0:
         raise ValueError("projector learning rate must be positive")
+    causal_shuffle_lambda = float(args.causal_shuffle_margin_lambda)
+    causal_shuffle_margin = float(args.causal_shuffle_margin)
+    if causal_shuffle_lambda < 0.0 or causal_shuffle_margin < 0.0:
+        raise ValueError("causal shuffle lambda and margin must be non-negative")
     optimizer = torch.optim.AdamW(
         projector.parameters(),
         lr=learning_rate,
@@ -1666,6 +1684,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
             step_started = time.perf_counter()
             optimizer.zero_grad(set_to_none=True)
             micro_losses = []
+            causal_shuffle_losses = []
             batch_answer_tokens = 0
             batch_feature_groups = None
             auxiliary_result = None
@@ -1673,14 +1692,15 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
             auxiliary_gradient_norm = 0.0
             batch_projector_sequences: list[torch.Tensor] = []
             batch_receiver_sequences: list[torch.Tensor] = []
-            if geometry_setup is not None:
-                assert reference_projector is not None
+            if geometry_setup is not None or causal_shuffle_lambda > 0.0:
                 batch_feature_groups = [
                     cache.get(
                         prepared[index]["id"], device=device, dtype=torch.float32
                     )
                     for index in indices
                 ]
+            if geometry_setup is not None:
+                assert reference_projector is not None
                 (
                     auxiliary_result,
                     auxiliary_gradients,
@@ -1710,15 +1730,16 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
                 )
                 labels = torch.tensor([item["labels"]], dtype=torch.long, device=device)
                 attention_mask = torch.ones_like(input_ids)
-                if health_setup is not None:
+                if health_setup is not None or causal_shuffle_lambda > 0.0:
                     projected_embeddings = projector(feature_groups)
-                    batch_projector_sequences.extend(
-                        value.detach().cpu() for value in projected_embeddings
-                    )
-                    batch_receiver_sequences.extend(
-                        receiver(value).detach().cpu()
-                        for value in projected_embeddings
-                    )
+                    if health_setup is not None:
+                        batch_projector_sequences.extend(
+                            value.detach().cpu() for value in projected_embeddings
+                        )
+                        batch_receiver_sequences.extend(
+                            receiver(value).detach().cpu()
+                            for value in projected_embeddings
+                        )
                     outputs = model(
                         input_ids=input_ids,
                         attention_mask=attention_mask,
@@ -1737,11 +1758,36 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
                     raise ValueError(
                         f"non-finite Qwen3B training loss: {item['id']}"
                     )
-                (loss / binding_summary["gradient_accumulation"]).backward()
+                causal_penalty = torch.zeros((), device=device, dtype=loss.dtype)
+                if causal_shuffle_lambda > 0.0:
+                    assert batch_feature_groups is not None
+                    shuffled_groups = batch_feature_groups[
+                        (micro_index + 1) % len(batch_feature_groups)
+                    ]
+                    shuffled_embeddings = projector(shuffled_groups)
+                    shuffled_outputs = model(
+                        input_ids=input_ids,
+                        attention_mask=attention_mask,
+                        labels=labels,
+                        image_embeddings=shuffled_embeddings,
+                    )
+                    shuffled_loss = shuffled_outputs.loss
+                    if not bool(torch.isfinite(shuffled_loss)):
+                        raise ValueError(
+                            f"non-finite shuffled Qwen3B loss: {item['id']}"
+                        )
+                    causal_penalty = torch.relu(
+                        torch.as_tensor(causal_shuffle_margin, device=device, dtype=loss.dtype)
+                        - (shuffled_loss - loss)
+                    )
+                    causal_shuffle_losses.append(float(causal_penalty.detach().item()))
+                    del shuffled_outputs, shuffled_embeddings, shuffled_loss, shuffled_groups
+                loss_for_backward = loss + causal_shuffle_lambda * causal_penalty
+                (loss_for_backward / binding_summary["gradient_accumulation"]).backward()
                 micro_losses.append(float(loss.detach().item()))
                 batch_answer_tokens += int(item["answer_tokens"])
-                del outputs, loss, input_ids, labels, attention_mask, feature_groups
-                if health_setup is not None:
+                del outputs, loss, loss_for_backward, input_ids, labels, attention_mask, feature_groups
+                if health_setup is not None or causal_shuffle_lambda > 0.0:
                     del projected_embeddings
 
             geometry_history = None
@@ -1838,6 +1884,11 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
             if first_gradient_report is None:
                 first_gradient_report = gradient_report
             last_gradient_report = gradient_report
+            causal_shuffle_loss_value = (
+                sum(causal_shuffle_losses) / len(causal_shuffle_losses)
+                if causal_shuffle_losses
+                else 0.0
+            )
             history_row = {
                 "step": one_based_step,
                 "optimizer_steps": one_based_step,
@@ -1860,6 +1911,9 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
                 "examples_per_second": len(indices) / step_wall,
                 "peak_gpu_memory_bytes": int(torch.cuda.max_memory_allocated(device)),
                 "learning_rate": float(optimizer.param_groups[0]["lr"]),
+                "causal_shuffle_hinge_loss": causal_shuffle_loss_value,
+                "causal_shuffle_margin_lambda": causal_shuffle_lambda,
+                "causal_shuffle_margin": causal_shuffle_margin,
             }
             if geometry_history is not None:
                 history_row["geometry"] = geometry_history
@@ -1886,6 +1940,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
                     else 0.0
                 )
                 ce_loss_value = float(history_row["loss"])
+                causal_lambda_value = causal_shuffle_lambda
                 health_row = {
                     "schema_version": "projector-health-step-v1",
                     "optimizer_step": one_based_step,
@@ -1912,7 +1967,14 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
                     "projector_gradient_norm_after_clip": gradient_norm_after_clip,
                     "ce_loss": ce_loss_value,
                     "geometry_loss": geometry_loss_value,
-                    "total_loss": ce_loss_value + geometry_lambda_value * geometry_loss_value,
+                    "causal_shuffle_hinge_loss": causal_shuffle_loss_value,
+                    "causal_shuffle_margin_lambda": causal_lambda_value,
+                    "causal_shuffle_margin": causal_shuffle_margin,
+                    "total_loss": (
+                        ce_loss_value
+                        + geometry_lambda_value * geometry_loss_value
+                        + causal_lambda_value * causal_shuffle_loss_value
+                    ),
                     "has_nan_or_inf": False,
                     "learning_rate": float(optimizer.param_groups[0]["lr"]),
                     "optimizer_steps": one_based_step,
