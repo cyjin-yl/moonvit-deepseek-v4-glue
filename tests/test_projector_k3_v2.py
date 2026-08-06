@@ -1,4 +1,5 @@
 import json
+from types import SimpleNamespace
 
 import pytest
 import torch
@@ -66,3 +67,33 @@ def test_k3_v2_rejects_legacy_normalization_or_residual_options():
             residual_mode="gated",
         )
 
+
+def test_k3_v2_matches_vendored_patchmerger_mlpv2_forward():
+    from moonvit_glue.vendor.kimi_k3.modeling_moonvit_v2 import PatchMergerMLPV2
+
+    torch.manual_seed(123)
+    config = ProjectorConfig(
+        vision_width=3,
+        language_width=8,
+        merge_factor=4,
+        projector_variant="kimi_k3_v2",
+    )
+    ours = PatchMergerProjector(config)
+    reference = PatchMergerMLPV2(
+        SimpleNamespace(
+            mm_hidden_size=3,
+            merge_kernel_size=(2, 2),
+            hidden_size=8,
+            projector_ln_eps=1e-5,
+        )
+    )
+    reference.proj[0].weight.data.copy_(ours.linear_1.weight.data)
+    reference.proj[2].weight.data.copy_(ours.linear_2.weight.data)
+    reference.post_norm.weight.data.copy_(ours.output_norm.weight.data)
+    features = _features()
+    expected = ours(features)
+    actual = reference(features)
+    assert all(
+        torch.equal(left, right)
+        for left, right in zip(expected, actual, strict=True)
+    )
