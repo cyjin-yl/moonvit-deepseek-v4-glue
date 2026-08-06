@@ -358,6 +358,22 @@ def build_training_order_manifest(
     }
     selection.update(metadata)
 
+    cache_binding = contract.get("feature_cache_binding", {})
+    if not isinstance(cache_binding, dict):
+        raise ValueError("feature_cache_binding must be an object when provided")
+    feature_cache = {
+        "vision_tower": contract["vision_tower"].get("name"),
+        "moonvit_weights_sha256": contract["vision_tower"].get(
+            "extracted_weights_sha256"
+        ),
+        "max_image_side": int(contract["image_preprocessing"]["train_max_image_side"]),
+        "max_visual_tokens": int(contract["image_preprocessing"]["train_max_visual_tokens"]),
+        "storage_dtype": "float32",
+        "content_address_field": "image_sha256",
+    }
+    for key in ("moonvit_model", "moonvit_revision", "vision_width", "merge_factor"):
+        if key in cache_binding and cache_binding[key] is not None:
+            feature_cache[key] = cache_binding[key]
     manifest: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "contract_sha256": str(contract_sha256),
@@ -368,20 +384,7 @@ def build_training_order_manifest(
             "total_records": len(records),
         },
         "selection": selection,
-        "feature_cache": {
-            "vision_tower": contract["vision_tower"]["name"],
-            "moonvit_weights_sha256": contract["vision_tower"][
-                "extracted_weights_sha256"
-            ],
-            "max_image_side": int(
-                contract["image_preprocessing"]["train_max_image_side"]
-            ),
-            "max_visual_tokens": int(
-                contract["image_preprocessing"]["train_max_visual_tokens"]
-            ),
-            "storage_dtype": "float32",
-            "content_address_field": "image_sha256",
-        },
+        "feature_cache": feature_cache,
         "source_counts": dict(sorted(source_counts.items())),
         "prompt_route_counts": dict(sorted(route_counts.items())),
         "target_transform_counts": dict(sorted(target_transform_counts.items())),

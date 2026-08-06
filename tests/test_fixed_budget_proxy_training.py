@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 import random
 import sys
@@ -6,6 +7,7 @@ import pytest
 import torch
 
 from moonvit_glue.fixed_budget import (
+    feature_cache_contract,
     fixed_batch_record_indices,
     route_training_example,
     validate_fixed_budget_contract,
@@ -16,7 +18,11 @@ from moonvit_glue.projector import PatchMergerProjector, ProjectorConfig
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
 
-from train_qwen3b_proxy import save_bound_checkpoint, verify_bound_checkpoint
+from train_qwen3b_proxy import (
+    load_architecture_overlay,
+    save_bound_checkpoint,
+    verify_bound_checkpoint,
+)
 
 
 def _contract() -> dict:
@@ -134,6 +140,80 @@ def test_fixed_budget_contract_binds_model_order_cache_and_budget():
     broken["records"][0]["feature_shape"] = [257, 4, 1024]
     with pytest.raises(ValueError, match="visual-token budget"):
         validate_fixed_budget_contract(_contract(), _order(), broken)
+
+
+def test_feature_cache_contract_resolves_explicit_v1_architecture_binding():
+    contract = _contract()
+    contract["vision_tower"] = {"frozen": True}
+    contract["feature_cache_binding"] = {
+        "vision_tower": "v1",
+        "moonvit_model": "moonshotai/MoonViT-SO-400M",
+        "moonvit_revision": "a" * 40,
+        "vision_width": 1152,
+        "merge_factor": 4,
+        "require_tower_identity": True,
+    }
+    resolved = feature_cache_contract(contract)
+    assert resolved == {
+        "vision_tower": "v1",
+        "moonvit_model": "moonshotai/MoonViT-SO-400M",
+        "moonvit_revision": "a" * 40,
+        "moonvit_weights_sha256": None,
+        "vision_width": 1152,
+        "merge_factor": 4,
+        "require_tower_identity": True,
+    }
+
+
+def test_architecture_overlay_keeps_qwen_budget_and_rebinds_v1_interface(tmp_path: Path):
+    core = _contract()
+    core_path = tmp_path / "core.json"
+    core_path.write_text(json.dumps(core), encoding="utf-8")
+    sidecar = {
+        "base_contract": {
+            "path": "core.json",
+            "sha256": __import__("hashlib").sha256(core_path.read_bytes()).hexdigest(),
+        },
+        "arms": {
+            "v1": {
+                "vision_tower": {
+                    "name": "MoonViT-SO-400M",
+                    "cache_tower_id": "v1",
+                    "model": "moonshotai/MoonViT-SO-400M",
+                    "revision": "a" * 40,
+                    "vision_width": 1152,
+                    "merge_factor": 4,
+                    "weights_sha256": "b" * 64,
+                    "require_tower_identity": True,
+                },
+                "projector": {
+                    "config_path": "configs/v1.json",
+                    "config_sha256": "c" * 64,
+                    "variant": "legacy_pre_norm",
+                    "output_width": 4096,
+                    "parameter_count": 40_000_000,
+                    "initialization": {
+                        "step0": {"seed": 20260805, "weights_sha256": "d" * 64},
+                        "random_projector": {"seed": 20260806, "weights_sha256": "e" * 64},
+                    },
+                },
+            }
+        },
+    }
+    sidecar_path = tmp_path / "architecture.json"
+    sidecar_path.write_text(json.dumps(sidecar), encoding="utf-8")
+    effective, metadata = load_architecture_overlay(
+        core_contract_path=core_path,
+        core_contract=core,
+        architecture_control_path=sidecar_path,
+        architecture_arm="v1",
+    )
+    assert metadata is not None
+    assert effective["vision_tower"]["vision_width"] == 1152
+    assert effective["feature_cache_binding"]["require_tower_identity"] is True
+    assert effective["canonical_projector"]["output_width"] == 4096
+    assert effective["canonical_projector"]["initialization_seed"] == 20260805
+    assert effective["training_budget"] == core["training_budget"]
 
 
 def test_fixed_batch_indices_and_resume_history_never_wrap_or_skip():

@@ -1,0 +1,91 @@
+{
+  "schema_version": "qwen25-3b-community-architecture-screen-v1",
+  "status": "preregistered",
+  "frozen_on": "2026-08-06",
+  "purpose": "Matched architecture screen for K2.6-lineage V1 versus exact K3/MoonViT-V2; this sidecar does not replace the immutable Qwen community evaluation contract.",
+  "base_contract": {
+    "path": "configs/qwen2.5-3b-community-eval-v1.json",
+    "sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7"
+  },
+  "shared_boundary": {
+    "canonical_projector_output_width": 4096,
+    "qwen_receiver_input_width": 4096,
+    "qwen_receiver_output_width": 2048,
+    "receiver_is_parameter_free": true,
+    "receiver_artifact": "experiments/qwen3b_community_eval_20260805/contract/proxy_receiver",
+    "same_receiver_for_all_arms": true,
+    "deepseek_action": "discard_qwen_receiver"
+  },
+  "shared_evaluation": {
+    "screen_spot_glm50_manifest": "experiments/qwen3b_community_eval_20260805/contract/datasets/screenspot_glm50_v1/MANIFEST.json",
+    "screen_spot_full_manifest": "experiments/qwen3b_community_eval_20260805/contract/datasets/screenspot_public_test_v1/MANIFEST.json",
+    "training_order_rule": "same record IDs, order, targets and examples_seen for both arms",
+    "health_schedule": [0, 1, 2, 5, 10, 20, 30, 50, 75, 100],
+    "critical_guard_action": "save failure artifacts, rollback to latest healthy checkpoint, stop arm",
+    "screen_expansion_rule": "only an arm with no critical guard through step100 may expand to 500 steps/4000 examples",
+    "preprocessing_rule": "same original image bytes, max side and visual-token cap; retain each tower's native processor and hash it",
+    "generation_rule": "inherit all parser, prompt, seven-condition and bootstrap fields from base_contract"
+  },
+  "arms": {
+    "local_v1_family_proxy": {
+      "architecture_id": "local_v1_family_proxy",
+      "vision_tower": {
+        "name": "v1",
+        "model": "moonshotai/MoonViT-SO-400M",
+        "resolved_revision": "a889d399ff2306053e4e28d499d3b8f97d3e5007",
+        "revision": "a889d399ff2306053e4e28d499d3b8f97d3e5007",
+        "vision_width": 1152,
+        "merge_factor": 4,
+        "weights_sha256": "pending_snapshot_manifest_hash",
+        "require_tower_identity": true
+      },
+      "projector": {
+        "config_path": "configs/qwen2.5-3b-projector-moonvit-v1-community.json",
+        "config_sha256": "4b618111141bea324cdaf5f71cad101d3d68f1c7ef5bbed36e68c003187c54c5",
+        "variant": "legacy_pre_norm",
+        "vision_width": 1152,
+        "merge_factor": 4,
+        "projector_width": 4608,
+        "output_width": 4096,
+        "parameter_count": 40119040,
+        "initialization_seed": 20260805,
+        "random_projector_seed": 20260806,
+        "initialization_manifest": "experiments/qwen3b_community_eval_20260805/architecture_controls/local_v1_family_proxy/projector_initializations/MANIFEST.json"
+      },
+      "transfer_status": "transferable_with_runtime_validation"
+    },
+    "local_v2_exact_k3": {
+      "architecture_id": "local_v2_exact_k3",
+      "vision_tower": {
+        "name": "v2",
+        "model": "moonshotai/Kimi-K3",
+        "resolved_revision": "9f62e4e9fffbd0a83ddd60e1c209d828994b3569",
+        "revision": "9f62e4e9fffbd0a83ddd60e1c209d828994b3569",
+        "vision_width": 1024,
+        "merge_factor": 4,
+        "weights_sha256": "01436a95939965185bb853ddf984e09c00f597b9c2f6708ba302ffbaf75ced24",
+        "require_tower_identity": false
+      },
+      "projector": {
+        "config_path": "configs/qwen2.5-3b-projector-moonvit-v2-k3-exact.json",
+        "config_sha256": "7bc4bb82cb4b834bf2f2c62ea646518e9e8f9a74277400fb6c08293ef6f701d4",
+        "variant": "kimi_k3_v2",
+        "vision_width": 1024,
+        "merge_factor": 4,
+        "projector_width": 4096,
+        "output_width": 4096,
+        "parameter_count": 33558528,
+        "initialization_seed": 20260805,
+        "random_projector_seed": 20260806,
+        "initialization_manifest": "experiments/qwen3b_community_eval_20260805/architecture_controls/local_v2_exact_k3/projector_initializations/MANIFEST.json"
+      },
+      "transfer_status": "transferable_with_runtime_validation"
+    }
+  },
+  "decision_rule": {
+    "v1_causal_positive_v2_causal_zero": "investigate V2 representation/compression or processor mismatch before changing receiver",
+    "both_causal_zero_with_healthy_geometry": "investigate frozen pure-text receiver/interface and supervision",
+    "both_early_collapse": "stop data/replay expansion and test initialization/scale/receiver-safe structure",
+    "promotion": "no arm becomes previous_best or DeepSeek candidate from this screen alone; full fixed contract is required"
+  }
+}

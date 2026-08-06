@@ -1,0 +1,93 @@
+{
+  "schema_version": "tokenizer-receiver-audit-v1",
+  "audited_on": "2026-08-06",
+  "purpose": "Separate token-interface availability from learned visual receiver capability before the V1/V2 architecture screen.",
+  "models": {
+    "qwen25_3b_pure_text": {
+      "repo": "Qwen/Qwen2.5-3B-Instruct",
+      "resolved_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "config_sha256": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+      "tokenizer_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "architecture": "Qwen2ForCausalLM",
+      "has_vision_config": false,
+      "hidden_size": 2048,
+      "vocab_size": 151936,
+      "special_tokens": {
+        "<|vision_start|>": 151652,
+        "<|vision_end|>": 151653,
+        "<|vision_pad|>": 151654,
+        "<|image_pad|>": 151655,
+        "<|video_pad|>": 151656
+      },
+      "embedding_audit": {
+        "shard": "model-00001-of-00002.safetensors",
+        "key": "model.embed_tokens.weight",
+        "dtype": "bfloat16",
+        "rows": {
+          "151652": {"norm": 0.404856205, "mean": -0.000047493, "row_sha256": "9854f6cf2d52983bfcfb57ad79e3826b7a33f6a230e75d0994e662859cc6deea"},
+          "151653": {"norm": 0.404856265, "mean": -0.000047500, "row_sha256": "131d183c05895b681e5987ca9cdc65172ca8dbe48a180590f05d593dae890b32"},
+          "151654": {"norm": 0.404856205, "mean": -0.000047493, "row_sha256": "9854f6cf2d52983bfcfb57ad79e3826b7a33f6a230e75d0994e662859cc6deea"},
+          "151655": {"norm": 0.404856205, "mean": -0.000047493, "row_sha256": "9854f6cf2d52983bfcfb57ad79e3826b7a33f6a230e75d0994e662859cc6deea"},
+          "151656": {"norm": 0.404856205, "mean": -0.000047493, "row_sha256": "9854f6cf2d52983bfcfb57ad79e3826b7a33f6a230e75d0994e662859cc6deea"}
+        },
+        "interpretation": "Reserved rows are near-identical dummy pure-text initialization; the projector path replaces the image placeholder embedding, so token reservation is an interface slot and not visual pretraining evidence."
+      },
+      "transfer_label": "primary_pure_text_proxy"
+    },
+    "qwen35_4b_native_diagnostic": {
+      "repo": "Qwen/Qwen3.5-4B",
+      "resolved_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "config_sha256": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670",
+      "tokenizer_sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+      "architecture": "Qwen3_5ForConditionalGeneration",
+      "has_native_vision_module": true,
+      "text_hidden_size": 2560,
+      "vision_hidden_size": 1024,
+      "special_tokens": {
+        "<|vision_start|>": 248053,
+        "<|vision_end|>": 248054,
+        "<|vision_pad|>": 248055,
+        "<|image_pad|>": 248056,
+        "<|video_pad|>": 248057
+      },
+      "embedding_audit": {
+        "shard": "model.safetensors-00001-of-00002.safetensors",
+        "key": "model.language_model.embed_tokens.weight",
+        "dtype": "bfloat16",
+        "rows": {
+          "248053": {"norm": 0.486786127, "mean": -0.000023043, "row_sha256": "918db354f4d40636ba1990897f3bc9a38761eb225a3a4174be5b6fbcf8130999"},
+          "248054": {"norm": 0.475846916, "mean": -0.000007329, "row_sha256": "eca376a7b47f9be0168cbf02df33eba34cf38c31fa177a524a3cce5b0dc0d6cb"},
+          "248055": {"norm": 0.445189267, "mean": -0.000017643, "row_sha256": "c973e56898117093479b9f4b1f183a40fa2f5fcb6ff53bac11c948429dca71f2"},
+          "248056": {"norm": 0.442277968, "mean": -0.000023412, "row_sha256": "dc17284f615c0543cf9bccd3456d0b246e525e8101efdb7618122a5fccc882f0"},
+          "248057": {"norm": 0.445207208, "mean": -0.000021223, "row_sha256": "835178e5e8672fb3fefd4346dab0742856f96b0abb955ad4425f30981c13b8ed"}
+        },
+        "interpretation": "Special rows are distinct trained-looking values and the model has a native visual module; a stripped-language-model external-projector run is diagnostic only."
+      },
+      "transfer_label": "qwen_specific_not_transferable"
+    },
+    "deepseek_v4_flash_0731": {
+      "repo": "deepseek-ai/DeepSeek-V4-Flash-0731",
+      "resolved_revision": "7872f01b1d1fe23eabc4c98b48bffcef5a386062",
+      "config_sha256": "6c8f3d2d3b48707541b88f32f22ef3f0f8a6b57d8523281e2b8d3cdb0ae9a023",
+      "tokenizer_sha256": "8f9f37ca37fdc4f5fd36d5cf4d3b0e8392edb4e894fd10cc0d70b4957c8633cf",
+      "architecture": "DeepseekV4ForCausalLM",
+      "hidden_size": 4096,
+      "vocab_size": 129280,
+      "has_vision_config": false,
+      "special_tokens": {
+        "<｜rl_image_pad｜>": 129262,
+        "<｜rl_image_start｜>": 129263,
+        "<｜image2｜>": 129264,
+        "<｜image｜>": 129279
+      },
+      "integration_rule": "Keep the legal image placeholder IDs for Hash-MoE routing and replace the embedding lookup output with projector embeddings; do not resize the vocabulary.",
+      "transfer_label": "final_target_pending_paid_hardware_gate"
+    }
+  },
+  "conclusion": [
+    "Qwen2.5 has an image-token interface slot but no learned visual receiver prior.",
+    "Qwen3.5 can serve as a positive receiver-prior diagnostic after discarding its native visual module, but it is not a fair pure-text baseline.",
+    "DeepSeek already reserves image IDs and has the required 4096 hidden boundary; the remaining blocker is full-model runtime/input-gradient validation, not vocabulary extension."
+  ],
+  "paid_resources_used": false
+}

@@ -4,6 +4,7 @@ import pytest
 
 from moonvit_glue.screenspot_runtime import (
     shuffled_image_mapping,
+    validate_feature_cache_interface,
     validate_screenspot_feature_cache,
 )
 
@@ -113,4 +114,57 @@ def test_screenspot_cache_is_bound_to_exact_order_images_and_budget():
             max_image_side=1024,
             max_visual_tokens=1369,
             moonvit_weights_sha256="v" * 64,
+        )
+
+
+def test_screenspot_cache_supports_v1_width_and_pinned_identity():
+    dataset = _dataset()
+    cache = _cache()
+    cache["vision_tower"] = "v1"
+    cache["moonvit_model"] = "moonshotai/MoonViT-SO-400M"
+    cache["moonvit_revision"] = "a" * 40
+    cache["moonvit_weights_sha256"] = None
+    cache["vision_width"] = 1152
+    for row in cache["records"]:
+        row["feature_shape"] = [row["feature_shape"][0], 4, 1152]
+
+    result = validate_screenspot_feature_cache(
+        dataset,
+        cache,
+        dataset_manifest_file_sha256="f" * 64,
+        max_image_side=1024,
+        max_visual_tokens=1369,
+        vision_width=1152,
+        merge_factor=4,
+        vision_tower="v1",
+        moonvit_model="moonshotai/MoonViT-SO-400M",
+        moonvit_revision="a" * 40,
+        require_tower_identity=True,
+    )
+    assert result["maximum_visual_tokens"] == 40
+
+
+def test_feature_cache_interface_rejects_mismatched_v1_shape_or_revision():
+    cache = _cache()
+    cache["vision_width"] = 1152
+    with pytest.raises(ValueError, match="shape differs"):
+        validate_feature_cache_interface(
+            cache,
+            vision_width=1152,
+            merge_factor=4,
+            max_visual_tokens=1369,
+        )
+
+    cache["vision_tower"] = "v1"
+    cache["moonvit_revision"] = "a" * 40
+    for row in cache["records"]:
+        row["feature_shape"] = [row["feature_shape"][0], 4, 1152]
+    with pytest.raises(ValueError, match="binding differs: moonvit_revision"):
+        validate_feature_cache_interface(
+            cache,
+            vision_width=1152,
+            merge_factor=4,
+            vision_tower="v1",
+            moonvit_revision="b" * 40,
+            require_tower_identity=True,
         )

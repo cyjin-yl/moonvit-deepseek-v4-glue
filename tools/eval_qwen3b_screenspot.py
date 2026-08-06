@@ -102,6 +102,101 @@ def git_tracked_worktree_clean() -> bool:
     return unstaged.returncode == 0 and staged.returncode == 0
 
 
+def load_architecture_spec(
+    *,
+    contract: dict[str, Any],
+    contract_path: Path,
+    architecture_control_path: Path | None,
+    architecture_arm: str | None,
+) -> dict[str, Any]:
+    """Resolve the optional V1/V2 sidecar while preserving the V2 default."""
+
+    root = Path(__file__).resolve().parents[1]
+    if architecture_control_path is None:
+        vision = contract["vision_tower"]
+        projector = contract["canonical_projector"]
+        return {
+            "source": None,
+            "source_sha256": None,
+            "arm": None,
+            "vision": {
+                "name": vision.get("name", "MoonViT-V2"),
+                "cache_tower_id": "v2",
+                "model": vision.get("source_repo"),
+                "revision": vision.get("source_resolved_revision"),
+                "vision_width": int(vision.get("vision_width", 1024)),
+                "merge_factor": int(vision.get("merge_factor", 4)),
+                "weights_sha256": vision.get("extracted_weights_sha256"),
+                "require_tower_identity": False,
+            },
+            "projector": {
+                "config_path": contract["canonical_projector"].get("config"),
+                "config_sha256": projector.get("config_sha256"),
+                "variant": projector.get("projector_variant", "legacy_pre_norm"),
+                "output_width": int(projector["output_width"]),
+                "parameter_count": int(projector["parameter_count"]),
+                "initialization": projector.get("initialization_contract", {}),
+            },
+        }
+
+    sidecar = json.loads(architecture_control_path.read_text(encoding="utf-8"))
+    if architecture_arm is None:
+        raise ValueError("--architecture-arm is required with --architecture-control")
+    arms = sidecar.get("arms")
+    if not isinstance(arms, dict) or architecture_arm not in arms:
+        raise ValueError(f"architecture arm is absent: {architecture_arm}")
+    base = sidecar.get("base_contract")
+    if isinstance(base, dict):
+        raw_base_path = Path(str(base.get("path", "")))
+        base_path = raw_base_path if raw_base_path.is_absolute() else root / raw_base_path
+        if not base_path.is_file():
+            candidate = architecture_control_path.parent / raw_base_path
+            if candidate.is_file():
+                base_path = candidate
+        if not base_path.is_file():
+            raise FileNotFoundError(f"architecture base contract is absent: {base_path}")
+        expected_sha = base.get("sha256")
+        if expected_sha and sha256_file(base_path) != str(expected_sha):
+            raise ValueError("architecture base contract SHA-256 differs")
+        if base_path.resolve() != contract_path.resolve():
+            raise ValueError("architecture sidecar is bound to a different core contract")
+    arm = arms[architecture_arm]
+    vision = arm.get("vision_tower")
+    projector = arm.get("projector")
+    if not isinstance(vision, dict) or not isinstance(projector, dict):
+        raise ValueError("architecture arm requires vision_tower and projector objects")
+    required_vision = ("name", "vision_width", "merge_factor")
+    if any(key not in vision for key in required_vision):
+        raise ValueError("architecture arm vision_tower is missing interface fields")
+    required_projector = ("config_path", "config_sha256", "output_width", "parameter_count")
+    if any(key not in projector for key in required_projector):
+        raise ValueError("architecture arm projector is missing binding fields")
+    return {
+        "source": str(architecture_control_path.resolve()),
+        "source_sha256": sha256_file(architecture_control_path),
+        "arm": architecture_arm,
+        "vision": {
+            **vision,
+            "cache_tower_id": vision.get(
+                "cache_tower_id",
+                "v1"
+                if "MoonViT-SO-400M" in str(vision.get("model", ""))
+                else "v2",
+            ),
+            "vision_width": int(vision["vision_width"]),
+            "merge_factor": int(vision["merge_factor"]),
+            "revision": vision.get("revision", vision.get("resolved_revision")),
+            "require_tower_identity": bool(vision.get("require_tower_identity", True)),
+        },
+        "projector": {
+            **projector,
+            "output_width": int(projector["output_width"]),
+            "parameter_count": int(projector["parameter_count"]),
+            "initialization": projector.get("initialization", {}),
+        },
+    }
+
+
 def runtime_source_files() -> list[dict[str, Any]]:
     paths = (
         Path(__file__).resolve(),
@@ -125,16 +220,26 @@ def verify_projector(
     role: str,
     contract: dict[str, Any],
     expected_training_runner_git_sha: str,
+    architecture_spec: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     config_path = directory / "projector_config.json"
     weights_path = directory / "projector.safetensors"
-    if sha256_file(config_path) != contract["canonical_projector"]["config_sha256"]:
+    projector_spec = (
+        architecture_spec["projector"]
+        if architecture_spec is not None
+        else contract["canonical_projector"]
+    )
+    expected_config_sha = projector_spec.get("config_sha256")
+    if expected_config_sha and sha256_file(config_path) != str(expected_config_sha):
         raise ValueError(f"{role} projector config differs from the contract")
     weights_sha = sha256_file(weights_path)
-    initialization = contract["canonical_projector"]["initialization_contract"]
+    initialization = projector_spec.get(
+        "initialization",
+        projector_spec.get("initialization_contract", {}),
+    )
     if role in ("step0", "random_projector"):
-        expected = initialization[role]["weights_sha256"]
-        if weights_sha != expected:
+        expected = initialization.get(role, {}).get("weights_sha256")
+        if expected is not None and weights_sha != str(expected):
             raise ValueError(f"{role} projector weights differ from the contract")
 
     checkpoint_manifest = None
@@ -152,6 +257,22 @@ def verify_projector(
                 raise ValueError("current candidate is not the bound formal 4k checkpoint")
     elif role == "current_candidate":
         raise ValueError("current candidate checkpoint manifest is absent")
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    if int(config.get("language_width", -1)) != int(projector_spec["output_width"]):
+        raise ValueError(
+            f"{role} projector output width differs from the architecture contract"
+        )
+    from safetensors.torch import load_file
+
+    state = load_file(str(weights_path), device="cpu")
+    parameter_count = int(sum(int(value.numel()) for value in state.values()))
+    del state
+    if parameter_count != int(projector_spec["parameter_count"]):
+        raise ValueError(f"{role} projector parameter count differs from the architecture contract")
+    variant = str(config.get("projector_variant", "legacy_pre_norm"))
+    expected_variant = projector_spec.get("variant")
+    if expected_variant is not None and variant != str(expected_variant):
+        raise ValueError(f"{role} projector variant differs from the architecture contract")
     return {
         "role": role,
         "directory": str(directory.resolve()),
@@ -164,6 +285,8 @@ def verify_projector(
         "checkpoint_step": (
             int(checkpoint_manifest["step"]) if checkpoint_manifest else 0
         ),
+        "projector_variant": variant,
+        "parameter_count": parameter_count,
     }
 
 
@@ -195,6 +318,15 @@ def read_partial(path: Path, expected_ids: list[str]) -> list[dict[str, Any]]:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--contract", type=Path, required=True)
+    parser.add_argument(
+        "--architecture-control",
+        type=Path,
+        help="Optional sidecar V1/V2 architecture-control contract",
+    )
+    parser.add_argument(
+        "--architecture-arm",
+        help="Arm name in --architecture-control (for example v1_community or v2_k3_exact)",
+    )
     parser.add_argument("--model-dir", type=Path, required=True)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--feature-cache", type=Path, required=True)
@@ -326,6 +458,12 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
     if not tracked_clean and not args.allow_dirty_development_run:
         raise RuntimeError("tracked Git worktree is dirty; formal evaluation is refused")
     contract = json.loads(args.contract.read_text(encoding="utf-8"))
+    architecture_spec = load_architecture_spec(
+        contract=contract,
+        contract_path=args.contract,
+        architecture_control_path=args.architecture_control,
+        architecture_arm=args.architecture_arm,
+    )
     manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
     if not verify_manifest(manifest):
         raise ValueError("ScreenSpot manifest self-hash verification failed")
@@ -364,7 +502,15 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         dataset_manifest_file_sha256=sha256_file(args.manifest),
         max_image_side=int(preprocessing["eval_max_image_side"]),
         max_visual_tokens=int(preprocessing["eval_max_visual_tokens"]),
-        moonvit_weights_sha256=contract["vision_tower"]["extracted_weights_sha256"],
+        moonvit_weights_sha256=architecture_spec["vision"].get("weights_sha256"),
+        vision_width=int(architecture_spec["vision"]["vision_width"]),
+        merge_factor=int(architecture_spec["vision"]["merge_factor"]),
+        vision_tower=architecture_spec["vision"].get("cache_tower_id"),
+        moonvit_model=architecture_spec["vision"].get("model"),
+        moonvit_revision=architecture_spec["vision"].get("revision"),
+        require_tower_identity=bool(
+            architecture_spec["vision"].get("require_tower_identity", False)
+        ),
     )
     model_files = verify_frozen_files(
         args.model_dir, contract["proxy_model"]["files"], label="Qwen contract"
@@ -379,6 +525,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
             role=role,
             contract=contract,
             expected_training_runner_git_sha=args.expected_training_runner_git_sha,
+            architecture_spec=architecture_spec,
         )
         for role, path in (
             ("current_candidate", args.current_projector),
@@ -394,6 +541,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
             role="previous_best",
             contract=contract,
             expected_training_runner_git_sha=args.expected_training_runner_git_sha,
+            architecture_spec=architecture_spec,
         )
     else:
         projector_sources["previous_best"] = {
@@ -408,6 +556,13 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         "git_tracked_worktree_clean": tracked_clean,
         "formal_run": formal_run,
         "contract_file_sha256": sha256_file(args.contract),
+        "architecture_control": {
+            "path": architecture_spec["source"],
+            "sha256": architecture_spec["source_sha256"],
+            "arm": architecture_spec["arm"],
+        },
+        "vision_tower_binding": architecture_spec["vision"],
+        "projector_binding": architecture_spec["projector"],
         "dataset_name": manifest["name"],
         "dataset_manifest_file_sha256": sha256_file(args.manifest),
         "dataset_manifest_sha256": manifest["manifest_sha256"],
@@ -618,6 +773,13 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         "formal_generation_complete": formal_run,
         "capability_claim_allowed_before_scoring": False,
         "dataset_name": manifest["name"],
+        "architecture_control": {
+            "path": architecture_spec["source"],
+            "sha256": architecture_spec["source_sha256"],
+            "arm": architecture_spec["arm"],
+            "vision": architecture_spec["vision"],
+            "projector": architecture_spec["projector"],
+        },
         "records": len(samples),
         "condition_summaries": summaries,
         "condition_aliases": aliases,

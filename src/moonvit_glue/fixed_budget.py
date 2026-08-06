@@ -20,6 +20,58 @@ def _require_equal(actual: Any, expected: Any, message: str) -> None:
         raise ValueError(message)
 
 
+def feature_cache_contract(contract: dict[str, Any]) -> dict[str, Any]:
+    """Resolve the expected frozen-tower/cache interface from a contract.
+
+    The original Qwen3B contract only described the K3 V2 tower in prose, so
+    the historical validator used ``1024`` and ``4`` literals.  Architecture
+    controls can now provide a ``feature_cache_binding`` block (or equivalent
+    fields under ``vision_tower``) without changing the training-order schema.
+    Missing optional fields retain the legacy V2 defaults.
+    """
+
+    tower = contract.get("vision_tower", {})
+    binding = contract.get("feature_cache_binding", {})
+    if not isinstance(tower, dict) or not isinstance(binding, dict):
+        raise ValueError("vision_tower and feature_cache_binding must be objects")
+
+    def first(*values: Any) -> Any:
+        for value in values:
+            if value is not None:
+                return value
+        return None
+
+    width = first(
+        binding.get("vision_width"),
+        tower.get("vision_width"),
+        # Legacy K3 V2 is the only contract that predates explicit width.
+        1024,
+    )
+    merge = first(binding.get("merge_factor"), tower.get("merge_factor"), 4)
+    weight_sha = first(
+        binding.get("moonvit_weights_sha256"),
+        tower.get("extracted_weights_sha256"),
+        tower.get("weights_sha256"),
+        tower.get("model_weights_sha256"),
+    )
+    revision = first(
+        binding.get("moonvit_revision"),
+        tower.get("resolved_revision"),
+        tower.get("source_resolved_revision"),
+    )
+    name = first(binding.get("vision_tower"), tower.get("name"))
+    model = first(binding.get("moonvit_model"), tower.get("source_repo"))
+    return {
+        "vision_tower": str(name) if name is not None else None,
+        "moonvit_model": str(model) if model is not None else None,
+        "moonvit_revision": str(revision) if revision is not None else None,
+        "moonvit_weights_sha256": str(weight_sha) if weight_sha is not None else None,
+        "vision_width": int(width),
+        "merge_factor": int(merge),
+        "require_tower_identity": bool(binding.get("require_tower_identity", False)),
+    }
+
+
 def validate_fixed_budget_contract(
     contract: dict[str, Any],
     order_manifest: dict[str, Any],
@@ -35,6 +87,7 @@ def validate_fixed_budget_contract(
     if contract["vision_tower"].get("frozen") is not True:
         raise ValueError("MoonViT-V2 must remain frozen")
 
+    cache_contract = feature_cache_contract(contract)
     projector = contract["canonical_projector"]
     receiver = contract["qwen_proxy_receiver"]
     _require_equal(
@@ -109,11 +162,39 @@ def validate_fixed_budget_contract(
         order_manifest.get("records_sha256"),
         "cache training-order record binding differs",
     )
-    _require_equal(
-        cache_manifest.get("moonvit_weights_sha256"),
-        contract["vision_tower"]["extracted_weights_sha256"],
-        "cache MoonViT weight identity differs",
-    )
+    expected_cache_hash = cache_contract["moonvit_weights_sha256"]
+    expected_cache_revision = cache_contract["moonvit_revision"]
+    if expected_cache_hash is None and expected_cache_revision is None:
+        raise ValueError("contract must pin a MoonViT revision or weight hash")
+    if expected_cache_hash is not None:
+        _require_equal(
+            cache_manifest.get("moonvit_weights_sha256"),
+            expected_cache_hash,
+            "cache MoonViT weight identity differs",
+        )
+        _require_equal(
+            order_manifest["feature_cache"].get("moonvit_weights_sha256"),
+            expected_cache_hash,
+            "training-order MoonViT weight identity differs",
+        )
+    if expected_cache_revision is not None and cache_contract["require_tower_identity"]:
+        _require_equal(
+            cache_manifest.get("moonvit_revision"),
+            expected_cache_revision,
+            "cache MoonViT resolved revision differs",
+        )
+        _require_equal(
+            order_manifest["feature_cache"].get("moonvit_revision"),
+            expected_cache_revision,
+            "training-order MoonViT resolved revision differs",
+        )
+    if cache_contract["require_tower_identity"]:
+        for source, label in ((cache_manifest, "cache"), (order_manifest["feature_cache"], "training-order")):
+            _require_equal(
+                source.get("vision_tower"),
+                cache_contract["vision_tower"],
+                f"{label} vision tower identity differs",
+            )
     preprocessing = contract["image_preprocessing"]
     for source, label in (
         (order_manifest["feature_cache"], "training order"),
@@ -129,8 +210,16 @@ def validate_fixed_budget_contract(
             int(preprocessing["train_max_visual_tokens"]),
             f"{label} visual-token budget differs",
         )
-    _require_equal(int(cache_manifest["vision_width"]), 1024, "cache vision width differs")
-    _require_equal(int(cache_manifest["merge_factor"]), 4, "cache merge factor differs")
+    _require_equal(
+        int(cache_manifest["vision_width"]),
+        cache_contract["vision_width"],
+        "cache vision width differs",
+    )
+    _require_equal(
+        int(cache_manifest["merge_factor"]),
+        cache_contract["merge_factor"],
+        "cache merge factor differs",
+    )
 
     maximum_tokens = 0
     aliases = 0
@@ -143,7 +232,11 @@ def validate_fixed_budget_contract(
             f"cache order differs at row {index}",
         )
         shape = [int(value) for value in cache_row["feature_shape"]]
-        if len(shape) != 3 or shape[1:] != [4, 1024] or shape[0] <= 0:
+        if (
+            len(shape) != 3
+            or shape[1:] != [cache_contract["merge_factor"], cache_contract["vision_width"]]
+            or shape[0] <= 0
+        ):
             raise ValueError(f"cache feature shape differs at row {index}")
         maximum_tokens = max(maximum_tokens, shape[0])
         if shape[0] > int(preprocessing["train_max_visual_tokens"]):

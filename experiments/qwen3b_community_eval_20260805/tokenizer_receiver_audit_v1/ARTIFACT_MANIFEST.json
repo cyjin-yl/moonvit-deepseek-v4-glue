@@ -1,0 +1,13 @@
+{
+  "schema_version": "tokenizer-receiver-audit-artifact-manifest-v1",
+  "summary": {
+    "path": "SUMMARY.json",
+    "bytes": 5397,
+    "sha256": "e45eed6ad519a749efe442afd93732b618480290651be17a31c1a6cd1366aa64"
+  },
+  "readme": {
+    "path": "README.md"
+  },
+  "raw_model_weights_committed": false,
+  "paid_resources_used": false
+}

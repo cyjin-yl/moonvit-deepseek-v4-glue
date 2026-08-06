@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import gc
 import hashlib
 import json
@@ -276,6 +277,15 @@ def verify_bound_checkpoint(
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--contract", type=Path, required=True)
+    parser.add_argument(
+        "--architecture-control",
+        type=Path,
+        help="Optional V1/V2 architecture-control sidecar contract",
+    )
+    parser.add_argument(
+        "--architecture-arm",
+        help="Arm name in --architecture-control",
+    )
     parser.add_argument("--model-dir", type=Path, required=True)
     parser.add_argument("--data", type=Path, required=True)
     parser.add_argument("--training-order-manifest", type=Path, required=True)
@@ -314,6 +324,118 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--allow-dirty-development-run", action="store_true")
     return parser.parse_args()
+
+
+def load_architecture_overlay(
+    *,
+    core_contract_path: Path,
+    core_contract: dict[str, Any],
+    architecture_control_path: Path | None,
+    architecture_arm: str | None,
+) -> tuple[dict[str, Any], dict[str, Any] | None]:
+    """Overlay one sidecar V1/V2 arm onto the shared Qwen contract.
+
+    The sidecar changes only the frozen vision/cache interface and projector
+    initialization.  Qwen, receiver, prompts, data order and budget remain
+    inherited from the core contract.  Omitting the sidecar returns the exact
+    historical contract object and metadata ``None``.
+    """
+
+    if architecture_control_path is None:
+        if architecture_arm is not None:
+            raise ValueError("--architecture-arm requires --architecture-control")
+        return core_contract, None
+    if architecture_arm is None:
+        raise ValueError("--architecture-arm is required with --architecture-control")
+
+    root = Path(__file__).resolve().parents[1]
+    sidecar = json.loads(architecture_control_path.read_text(encoding="utf-8"))
+    base = sidecar.get("base_contract")
+    if isinstance(base, dict):
+        raw_base_path = Path(str(base.get("path", "")))
+        base_path = raw_base_path if raw_base_path.is_absolute() else root / raw_base_path
+        if not base_path.is_file():
+            candidate = architecture_control_path.parent / raw_base_path
+            if candidate.is_file():
+                base_path = candidate
+        if not base_path.is_file():
+            raise FileNotFoundError(f"architecture base contract is absent: {base_path}")
+        expected_sha = base.get("sha256")
+        if expected_sha and sha256_file(base_path) != str(expected_sha):
+            raise ValueError("architecture base contract SHA-256 differs")
+        if base_path.resolve() != core_contract_path.resolve():
+            raise ValueError("architecture sidecar is bound to a different core contract")
+    arms = sidecar.get("arms")
+    if not isinstance(arms, dict) or architecture_arm not in arms:
+        raise ValueError(f"architecture arm is absent: {architecture_arm}")
+    arm = arms[architecture_arm]
+    vision = arm.get("vision_tower")
+    projector = arm.get("projector")
+    if not isinstance(vision, dict) or not isinstance(projector, dict):
+        raise ValueError("architecture arm requires vision_tower and projector objects")
+    for key in ("vision_width", "merge_factor"):
+        if key not in vision:
+            raise ValueError(f"architecture arm vision_tower is missing {key}")
+    for key in ("config_path", "config_sha256", "output_width", "parameter_count"):
+        if key not in projector:
+            raise ValueError(f"architecture arm projector is missing {key}")
+
+    effective = copy.deepcopy(core_contract)
+    effective_vision = effective["vision_tower"]
+    effective_vision.update(
+        {
+            "name": vision.get("name", effective_vision.get("name")),
+            "source_repo": vision.get("model", effective_vision.get("source_repo")),
+            "source_resolved_revision": vision.get(
+                "revision",
+                vision.get("resolved_revision", effective_vision.get("source_resolved_revision")),
+            ),
+            "vision_width": int(vision["vision_width"]),
+            "merge_factor": int(vision["merge_factor"]),
+            "frozen": True,
+        }
+    )
+    if vision.get("weights_sha256") is not None:
+        effective_vision["extracted_weights_sha256"] = str(vision["weights_sha256"])
+    else:
+        effective_vision.pop("extracted_weights_sha256", None)
+    effective["feature_cache_binding"] = {
+        "vision_tower": vision.get("cache_tower_id", vision.get("name")),
+        "moonvit_model": vision.get("model"),
+        "moonvit_revision": vision.get("revision", vision.get("resolved_revision")),
+        "moonvit_weights_sha256": vision.get("weights_sha256"),
+        "vision_width": int(vision["vision_width"]),
+        "merge_factor": int(vision["merge_factor"]),
+        "require_tower_identity": bool(vision.get("require_tower_identity", True)),
+    }
+    effective_projector = effective["canonical_projector"]
+    effective_projector.update(
+        {
+            "config": str(projector["config_path"]),
+            "config_sha256": str(projector["config_sha256"]),
+            "projector_variant": projector.get(
+                "variant", effective_projector.get("projector_variant", "legacy_pre_norm")
+            ),
+            "output_width": int(projector["output_width"]),
+            "parameter_count": int(projector["parameter_count"]),
+        }
+    )
+    initialization = projector.get("initialization")
+    if not isinstance(initialization, dict) or "step0" not in initialization:
+        raise ValueError("architecture arm projector initialization is incomplete")
+    effective_projector["initialization_contract"] = copy.deepcopy(initialization)
+    effective_projector["initialization_seed"] = int(
+        initialization["step0"]["seed"]
+    )
+    metadata = {
+        "path": str(architecture_control_path.resolve()),
+        "sha256": sha256_file(architecture_control_path),
+        "arm": str(architecture_arm),
+        "effective_contract_sha256": canonical_sha256(effective),
+        "vision_tower": copy.deepcopy(vision),
+        "projector": copy.deepcopy(projector),
+    }
+    return effective, metadata
 
 
 def load_geometry_setup(
@@ -1002,7 +1124,13 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         raise ValueError("checkpoint-every must be positive")
 
     set_stage(stage, "contract_order_cache_verification")
-    contract = json.loads(args.contract.read_text(encoding="utf-8"))
+    core_contract = json.loads(args.contract.read_text(encoding="utf-8"))
+    contract, architecture_metadata = load_architecture_overlay(
+        core_contract_path=args.contract,
+        core_contract=core_contract,
+        architecture_control_path=args.architecture_control,
+        architecture_arm=args.architecture_arm,
+    )
     order_manifest = json.loads(
         args.training_order_manifest.read_text(encoding="utf-8")
     )
@@ -1144,6 +1272,17 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         "projector_binding": projector_binding,
         "proxy_receiver_sha256": expected_receiver_sha,
     }
+    if architecture_metadata is not None:
+        checkpoint_binding.update(
+            {
+                "architecture_control_path": architecture_metadata["path"],
+                "architecture_control_sha256": architecture_metadata["sha256"],
+                "architecture_arm": architecture_metadata["arm"],
+                "architecture_effective_contract_sha256": architecture_metadata[
+                    "effective_contract_sha256"
+                ],
+            }
+        )
     if geometry_setup is not None:
         checkpoint_binding.update(
             {
@@ -1191,6 +1330,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         "transformers_version": transformers.__version__,
         "contract": str(args.contract.resolve()),
         "contract_file_sha256": contract_file_sha,
+        "architecture_control": architecture_metadata,
         "model_dir": str(args.model_dir.resolve()),
         "model_files": model_files,
         "data": str(args.data.resolve()),
@@ -1864,6 +2004,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
             "final_half_scored": False,
             "paid_resources_used": False,
             "runner_git_sha": current_git_sha,
+            "architecture_control": architecture_metadata,
             "projector_binding": projector_binding,
             "git_tracked_worktree_clean": tracked_clean,
             "target_optimizer_steps": target_steps,
@@ -1909,6 +2050,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         "final_half_scored": False,
         "paid_resources_used": False,
         "runner_git_sha": current_git_sha,
+        "architecture_control": architecture_metadata,
         "projector_binding": projector_binding,
         "git_tracked_worktree_clean": tracked_clean,
         "optimizer_steps": target_steps,

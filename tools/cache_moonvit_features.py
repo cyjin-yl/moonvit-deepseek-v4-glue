@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import io
 import json
+import os
 import random
 import subprocess
 import time
@@ -42,6 +43,50 @@ def sha256_file(path: str | Path, chunk_size: int = 8 * 1024 * 1024) -> str:
         while chunk := stream.read(chunk_size):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def resolve_v1_snapshot(model_id: str, revision: str | None) -> tuple[Path, dict[str, str]]:
+    """Resolve and hash the pinned V1 snapshot before loading remote code.
+
+    A cache used for an architecture comparison must carry a weight identity,
+    even when the model was loaded through ``AutoModel``.  The snapshot itself
+    is never copied into the repository; only its deterministic file hashes are
+    written to the cache manifest.
+    """
+
+    candidate = Path(model_id)
+    if candidate.is_dir():
+        snapshot = candidate.resolve()
+    else:
+        from huggingface_hub import snapshot_download
+
+        snapshot = Path(
+            snapshot_download(
+                model_id,
+                revision=revision,
+                local_files_only=bool(os.environ.get("HF_HUB_OFFLINE")),
+            )
+        ).resolve()
+    files = {}
+    for path in sorted(snapshot.rglob("*")):
+        if not path.is_file() or path.name.endswith(".lock"):
+            continue
+        relative = path.relative_to(snapshot).as_posix()
+        files[relative] = sha256_file(path)
+    weight_files = [
+        name for name in files
+        if name.endswith(".safetensors") or name.endswith(".bin")
+    ]
+    if not weight_files:
+        raise FileNotFoundError(f"no V1 weight file in snapshot: {snapshot}")
+    digest = hashlib.sha256()
+    for name in weight_files:
+        digest.update(name.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(files[name].encode("ascii"))
+        digest.update(b"\n")
+    files["__weights_manifest__"] = digest.hexdigest()
+    return snapshot, files
 
 
 def git_sha() -> str | None:
@@ -212,6 +257,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--moonvit-revision", default=None)
     parser.add_argument(
+        "--moonvit-snapshot",
+        type=Path,
+        default=None,
+        help="Optional already-resolved V1 snapshot; avoids re-resolving a HF repo",
+    )
+    parser.add_argument(
         "--moonvit-v2-weights",
         type=Path,
         default=None,
@@ -252,8 +303,9 @@ def load_tower(args: argparse.Namespace, *, dtype: torch.dtype):
             attn_implementation=args.moonvit_v2_attn,
             torch_dtype=dtype,
         )
+    model_id = str(getattr(args, "moonvit_snapshot", None) or args.moonvit_model)
     return MoonViTEncoder.from_pretrained(
-        args.moonvit_model,
+        model_id,
         revision=args.moonvit_revision,
         torch_dtype=dtype,
     )
@@ -283,11 +335,18 @@ def main() -> None:
             raise ValueError("--vision-tower v2 requires --moonvit-v2-weights")
         weights_path = args.moonvit_v2_weights
     else:
-        # For a remote-code V1 tower the resolved model snapshot is recorded in
-        # the cache metadata by Transformers.  The model file itself may be a
-        # multi-gigabyte blob, so the cache runner does not duplicate it.
+        # Resolve the snapshot explicitly so a formal V1 cache carries a
+        # reproducible weight identity instead of the old null placeholder.
+        snapshot_path, snapshot_files = resolve_v1_snapshot(
+            str(args.moonvit_snapshot or args.moonvit_model), args.moonvit_revision
+        )
         weights_path = None
-    weights_sha256 = sha256_file(weights_path) if weights_path is not None else None
+        if args.moonvit_snapshot is None:
+            args.moonvit_snapshot = snapshot_path
+        weights_sha256 = snapshot_files["__weights_manifest__"]
+    if args.vision_tower == "v2":
+        snapshot_files = {}
+        weights_sha256 = sha256_file(weights_path)
     if training_order is not None:
         validate_training_order_cache_contract(
             training_order,
@@ -344,6 +403,10 @@ def main() -> None:
         "vision_tower": args.vision_tower,
         "moonvit_model": args.moonvit_model if args.vision_tower == "v1" else None,
         "moonvit_revision": args.moonvit_revision if args.vision_tower == "v1" else None,
+        "moonvit_snapshot": str(args.moonvit_snapshot.resolve())
+        if args.moonvit_snapshot is not None
+        else None,
+        "moonvit_snapshot_files": snapshot_files if args.vision_tower == "v1" else None,
         "moonvit_architecture": type(tower.model).__name__,
         "moonvit_config_sha256": hashlib.sha256(config_json).hexdigest(),
         "moonvit_weights_path": str(weights_path.resolve()) if weights_path else None,

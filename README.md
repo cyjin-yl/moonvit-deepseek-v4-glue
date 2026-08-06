@@ -1,6 +1,14 @@
-# MoonViT-V2 (Kimi K3) → DeepSeek-V4 glue prototype
+# MoonViT projector → DeepSeek-V4 glue prototype
 
-这是一个训练前的接口与权重合同原型。当前主线视觉塔是从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）；旧的 `MoonViT-SO-400M` 路径仅保留作工程回归和历史对照。项目把视觉塔、projector、文本主干保持为三个独立 checkpoint，并实现：
+这是一个训练前的接口与权重合同原型。最终路径固定为
+`MoonViT-V2 → 4096 维 projector → DeepSeek-V4-Flash-0731`。
+仓库当前同时注册两条 Qwen2.5-3B 架构控制：精确 K3/MoonViT-V2
+(`kimi_k3_v2`) 和 K2.6-lineage 的 MoonViT-SO-400M V1 family proxy。
+旧的 `legacy_pre_norm` V2 结果只保留为失败记录，不能当作精确 K3 V2
+的结论。当前状态和下一步以 [`docs/current-status.md`](docs/current-status.md)
+与 [`docs/architecture-matrix.md`](docs/architecture-matrix.md) 为准；固定评测规则见
+[`docs/qwen2.5-3b-community-eval-contract.md`](docs/qwen2.5-3b-community-eval-contract.md)。
+项目把视觉塔、projector、文本主干保持为三个独立 checkpoint，并实现：
 
 - Kimi 风格的 2×2 PatchMerger projector；
 - 一个 image placeholder 扩展为可变数量视觉 token；
@@ -17,14 +25,14 @@
 |---|---|---|
 | MoonViT-V2 | Kimi K3 的 MoonViT3d，401.2M 参数；抽取 BF16 权重约 802 MB | 冻结 |
 | MoonViT-V2 输出 | 每张图 `[视觉 token 数, 4, 1024]` | — |
-| Projector | `LN(1024) → flatten(4×1024) → 4096 → GELU → 4096` | 训练 |
-| Projector 参数 | 33,564,672 | 训练 |
+| Projector | 精确 K3 V2：无 pre-norm、bias-free `4096 → 4096 → 4096`、post-RMSNorm；legacy 变体另行标识 | 训练 |
+| Projector 参数 | 精确 K3 V2 为 33,558,528；legacy V2 为 33,564,672 | 训练 |
 | DeepSeek | `deepseek-ai/DeepSeek-V4-Flash-0731`，hidden size 4096 | 冻结 |
 | Placeholder | 已有 `<｜image｜>`，token ID 129279 | 不扩 vocab |
 
 主线配置在 `configs/deepseek-v4-flash-0731-projector-moonvit-v2.json`。Projector 权重单独保存为 `projector.safetensors`，不会复制或修改 MoonViT-V2/DeepSeek 权重。
 
-V2 权重由 Kimi K3 的单个视觉分片抽取并 strict-load 验证，仓库内 vendor 的 vision-only 代码不依赖完整 K3 模型。`MoonViT-SO-400M`（V1，1152 维）仍可用于轻量 smoke，但它与 V2 的特征分布和 projector 形状不同；两者的 projector checkpoint 绝不能混用。
+V2 权重由 Kimi K3 的单个视觉分片抽取并 strict-load 验证，仓库内 vendor 的 vision-only 代码不依赖完整 K3 模型。`MoonViT-SO-400M`（V1，1152 维）现在承担 K2.6-lineage family control。它与 Kimi-K2.6 的塔没有 byte-identical 证明，必须在同一 benchmark 合同下单独缓存、训练和评测；V1/V2 projector checkpoint 绝不能混用。
 
 ## 为什么 DeepSeek 需要特殊路径
 
@@ -102,11 +110,18 @@ python -m pip install -e ".[large-model]"
 
 证据必须分层解读：原生 Qwen3.5 VLM 使用自己的视觉塔与既有多模态对齐，只能作为“数据/processor/评分器正常”的阳性对照，不能证明本项目的 MoonViT-V2 projector 能接入纯文本 DeepSeek。真正的租前接口实验使用 `Qwen2ForCausalLM`（无 `vision_config`）等纯文本主干；训练器会默认拒绝带原生视觉配置的 `--text-model`。即使纯文本小主干上学出对齐，也仍只证明接口可学习；完整 DeepSeek-V4 权重的可微加载、训练和最终 benchmark 才是目标能力证据。
 
-2026-08-05 起，中间尺度代理固定为纯文本 `Qwen/Qwen2.5-3B-Instruct` revision `aa8e7253…04d1`。完整合同见 [`docs/qwen2.5-3b-community-eval-contract.md`](docs/qwen2.5-3b-community-eval-contract.md)：模型 9 个文件逐 SHA 固定；公开 ScreenSpot 1,272 条与十 strata 各 5 条的 `screenspot_glm50_v1` 已在任何 3B 结果前冻结；严格输出为 `click(start_box=[x, y])`；vision/blind/shuffled/random/step0/previous/current 全部进入统一评分。Qwen 的 2048 hidden width 通过无参数 fixed receiver 读取 canonical 4096 projector，训练参数仍只有 33,564,672-parameter projector。
+2026-08-05 起，中间尺度代理固定为纯文本 `Qwen/Qwen2.5-3B-Instruct` revision `aa8e7253…04d1`。完整合同见 [`docs/qwen2.5-3b-community-eval-contract.md`](docs/qwen2.5-3b-community-eval-contract.md)：模型 9 个文件逐 SHA 固定；公开 ScreenSpot 1,272 条与十 strata 各 5 条的 `screenspot_glm50_v1` 已在任何 3B 结果前冻结；严格输出为 `click(start_box=[x, y])`；vision/blind/shuffled/random/step0/previous/current 全部进入统一评分。Qwen 的 2048 hidden width 通过无参数 fixed receiver 读取 canonical 4096 projector；exact K3 V2、V1 和 legacy V2 的参数量分别记录在架构矩阵中，不能混写。
+
+Qwen2.5 词表虽预留 `<|image_pad|>`（ID 151655），但该纯文本 checkpoint 的
+视觉相关 special-token 行是同一类 dummy 初始化，不能当作视觉预训练证据。
+DeepSeek-V4-Flash-0731 的 pinned tokenizer 预留 `<｜image｜>`（ID 129279）；
+glue 通过 placeholder 注入 embedding，不扩充词表。Qwen3.5-4B 的 special-token
+行已经带有原生 VLM 训练痕迹，剥离其 native visual module 后可作为 receiver-prior
+诊断，结果标签固定为 `qwen_specific_not_transferable`，不能进入 Qwen3B 主排名。
 
 横向实验还必须加载同一份 exact FP32 step0（SHA-256 `efd942e0…b06b0`）；固定 random-projector control 为 `7bd4aacf…fc44`。两份 134,259,248-byte 权重已在首个 3B 输出前发布到 HF immutable commit `65639da5…a010` 并按 LFS SHA 回查，seed 只承担 provenance，不能替代权重身份。
 
-现有 Gate B 的 `Qwen2.5-0.5B-Instruct` 虽然是纯文本模型，但 0.5B 容量会压低 OCR、推理和格式遵从上限，也不能代表 DeepSeek Hash-MoE 的优化难度。因此其 shuffle/随机/blind 差异只作工程与信号证据，绝对分数和收敛速度都不得外推 0731。尚未完成的中间尺度对照应使用无 `vision_config` 的纯文本约 3B 主干，在相同数据、seen-record 数、分辨率、scratch projector 和 selection 评测下复测；原生 Qwen2.5-VL/Qwen3.5 VLM 不属于该实验。
+现有 Gate B 的 `Qwen2.5-0.5B-Instruct` 虽然是纯文本模型，但 0.5B 容量会压低 OCR、推理和格式遵从上限，也不能代表 DeepSeek Hash-MoE 的优化难度。因此其 shuffle/随机/blind 差异只作工程与信号证据，绝对分数和收敛速度都不得外推 0731。3B 代理已经接替容量对照；首轮 legacy V2 结果被拒绝，当前要在 exact K3 V2 与 V1 family control 上重跑 matched screen。原生 Qwen2.5-VL/Qwen3.5 VLM 不属于 Qwen3B 主实验。
 
 此外，full-mix Gate B 的 `2000 steps × batch 8` 实际是 `micro_batch_size=1` 下串行累积 8 个样本：共见过 16,000 个样本，只约为 59,198 条 mix 的 **0.27 epoch**。因此它应称为 early-alignment / 接口可学习性运行，而不是充分训练后的能力评测；TextVQA 8.1%、DocVQA 3.9%、OCRBench 0% 不能当作架构上限。训练器现已分别记录 optimizer steps、examples、答案 token、effective epochs、micro batch 与梯度累积，并把固定分层验证、10 组 derangement 及多答案 canonical/random 监督落盘。完整的租前归因顺序见 [`docs/ablation-protocol.md`](docs/ablation-protocol.md)。在真正的多样本 forward 与真实 step-time 基准完成前，不再把“global batch 64”直接换算成租期时长。
 

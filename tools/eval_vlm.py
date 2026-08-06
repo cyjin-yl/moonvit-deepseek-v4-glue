@@ -51,7 +51,9 @@ from moonvit_glue import (
     VisionCausalLM,
     load_moonvit_v2_encoder,
     resolve_placeholder_token_id,
+    seeded_projector,
 )
+from moonvit_glue.screenspot_runtime import validate_feature_cache_interface
 from moonvit_glue.metrics import score_record, summarize
 from tools_common import build_prompt_ids, encode_image, load_records
 from training_protocol import records_manifest_sha256
@@ -61,6 +63,11 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--text-model", required=True, help="HF id or local path of the text backbone")
     parser.add_argument("--moonvit-model", default="moonshotai/MoonViT-SO-400M")
+    parser.add_argument(
+        "--moonvit-revision",
+        default=None,
+        help="Pinned Hugging Face revision for the standalone V1 tower",
+    )
     parser.add_argument("--vision-tower", choices=["v1", "v2"], default="v1",
                         help="v1 = MoonViT-SO-400M from HF; v2 = Kimi K3 MoonViT-V2 from extracted weights")
     parser.add_argument("--moonvit-v2-weights", default=None,
@@ -69,6 +76,18 @@ def parse_args() -> argparse.Namespace:
                         choices=["eager", "sdpa", "flash_attention_2"])
     parser.add_argument("--projector", help="Directory with projector_config.json + projector.safetensors")
     parser.add_argument("--random-projector", action="store_true", help="Use a freshly initialized projector (smoke runs)")
+    parser.add_argument(
+        "--projector-variant",
+        choices=["legacy_pre_norm", "kimi_k3_v2"],
+        default="legacy_pre_norm",
+        help="Projector structure for --random-projector; loaded checkpoints carry their own variant",
+    )
+    parser.add_argument(
+        "--random-projector-seed",
+        type=int,
+        default=None,
+        help="Optional isolated seed for a reproducible random-projector control",
+    )
     parser.add_argument("--data", required=True, type=Path, help="Benchmark JSONL file")
     parser.add_argument("--feature-cache", type=Path, default=None,
                         help="Frozen MoonViT feature cache for image-bearing passes")
@@ -112,6 +131,18 @@ def build_model(args: argparse.Namespace, feature_cache=None):
         moonvit = None
         vision_width = int(feature_cache.manifest["vision_width"])
         merge_factor = int(feature_cache.manifest["merge_factor"])
+        # A cache is a frozen tower boundary.  Check the explicit identity when
+        # it is available; legacy V2 caches may omit the remote-code fields.
+        validate_feature_cache_interface(
+            feature_cache.manifest,
+            vision_width=vision_width,
+            merge_factor=merge_factor,
+            max_image_side=args.max_image_side,
+            vision_tower=args.vision_tower,
+            moonvit_model=(args.moonvit_model if args.vision_tower == "v1" else None),
+            moonvit_revision=args.moonvit_revision,
+            require_tower_identity=args.moonvit_revision is not None,
+        )
     else:
         if args.vision_tower == "v2":
             if not args.moonvit_v2_weights:
@@ -123,7 +154,9 @@ def build_model(args: argparse.Namespace, feature_cache=None):
             )
         else:
             moonvit = MoonViTEncoder.from_pretrained(
-                args.moonvit_model, torch_dtype=dtype
+                args.moonvit_model,
+                revision=args.moonvit_revision,
+                torch_dtype=dtype,
             )
         moonvit.to(device)
         vision_width = moonvit.vision_width
@@ -138,15 +171,23 @@ def build_model(args: argparse.Namespace, feature_cache=None):
         placeholder_token_id = resolve_placeholder_token_id(tokenizer, args.image_token)
 
     if args.random_projector:
-        projector = PatchMergerProjector(
-            ProjectorConfig(
-                vision_width=vision_width,
-                language_width=int(language_model.config.hidden_size),
-                merge_factor=merge_factor,
-            )
+        projector_config = ProjectorConfig(
+            vision_width=vision_width,
+            language_width=int(language_model.config.hidden_size),
+            merge_factor=merge_factor,
+            projector_variant=args.projector_variant,
+        )
+        projector = (
+            seeded_projector(projector_config, seed=args.random_projector_seed)
+            if args.random_projector_seed is not None
+            else PatchMergerProjector(projector_config)
         )
     else:
         projector = PatchMergerProjector.from_pretrained(args.projector, device=device, dtype=dtype)
+        if int(projector.config.vision_width) != vision_width or int(
+            projector.config.merge_factor
+        ) != merge_factor:
+            raise ValueError("projector and feature-cache vision interfaces differ")
     projector.to(device=device, dtype=dtype)
 
     pad_token_id = tokenizer.pad_token_id if tokenizer.pad_token_id is not None else 0
@@ -194,7 +235,10 @@ def build_metadata(
         "text_model": args.text_model,
         "vision_tower": args.vision_tower,
         "vision_weights": args.moonvit_v2_weights if args.vision_tower == "v2" else args.moonvit_model,
+        "vision_revision": args.moonvit_revision,
         "projector": args.projector or "random",
+        "projector_variant": getattr(args, "projector_variant", None),
+        "random_projector_seed": getattr(args, "random_projector_seed", None),
         "data": args.data.name,
         "limit": args.limit,
         "max_new_tokens": args.max_new_tokens,

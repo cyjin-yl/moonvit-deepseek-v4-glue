@@ -1,5 +1,22 @@
 # Handoff
 
+## Current authority (2026-08-06)
+
+Read [`docs/current-status.md`](docs/current-status.md) first for the live state and
+[`docs/architecture-matrix.md`](docs/architecture-matrix.md) for architecture IDs.
+The immutable evaluation rules remain in
+[`docs/qwen2.5-3b-community-eval-contract.md`](docs/qwen2.5-3b-community-eval-contract.md).
+The final target is `MoonViT-V2 → 4096 projector → DeepSeek-V4-Flash-0731`.
+Qwen2.5-3B is a low-cost pure-text proxy; exact K3 V2 and V1 family controls are
+the current local comparison. Gate D is **NO-GO**. The dedicated workstation
+pane is `moonvit:0.0`; use it for the next V100 screen and capture its logs.
+
+Token boundary already audited: Qwen2.5 `<|image_pad|>` is ID 151655 and its
+reserved rows are dummy pure-text initialization; DeepSeek `<｜image｜>` is ID
+129279 and is retained for Hash-MoE routing. Neither path extends the vocabulary.
+Qwen3.5 native token rows belong to a diagnostic receiver-prior control and never
+replace the pure-text Qwen contract.
+
 ## Community GLM-5.2V architecture audit (2026-08-06)
 
 The public `baseten/GLM-5.2-Vision-NVFP4` page has now been checked against
@@ -29,6 +46,9 @@ must compare an exact K3-V2 projector variant with a MoonViT-SO-400M V1
 projector on Qwen2.5-3B under the same fixed evaluation contract.
 
 The V1 control is now explicit in `configs/qwen2.5-3b-projector-moonvit-v1-community.json`.
+Its projector emits canonical 4096 and reuses the same frozen Qwen 4096-to-2048
+receiver as V2; an earlier draft emitted 2048 directly, was rejected as
+non-comparable, and is not a valid result.
 `tools/cache_moonvit_features.py` accepts `--vision-tower v1` with the pinned
 MoonViT-SO-400M revision, while the existing `--vision-tower v2` path remains
 the default K3 cache route. V1 and V2 caches/projector checkpoints are kept
@@ -234,7 +254,7 @@ fixed. The candidate will be relaunched after this repair is committed.
 
 **Current task / hard boundary**: the engineering mainline is a fixed real-data bridge on pure-text `Qwen/Qwen2.5-3B-Instruct`, followed by transfer of a validated MoonViT/projector/data/eval contract to DeepSeek-V4-Flash-0731. The 0.5B/synthetic line remains mechanism evidence. The public GLM-5.2V audit now requires two architecture controls before any checkpoint promotion: exact Kimi-K3/MoonViT-V2 `PatchMergerMLPV2`, and MoonViT-SO-400M/K2.6-lineage V1. Do not rent any server, create a paid resource, run the full DeepSeek weights, or inspect final evaluation halves without explicit authorization. Exact V100 environment evidence is under `experiments/v100_perception_20260804/infra/environment/`.
 
-**Experiment packages 1–14 COMPLETE; Packages 15A–15R establish, diagnose and redirect the 3B bridge**: packages 1–12 established auditable caching and mechanism controls. Package 13 fixes preventive replay; Package 14 fixes the smallest reliable sentinel and V100 cost. Package 15A freezes the Qwen2.5-3B model/data/generation/scoring/budget contract before any 3B output. Package 15B closes the real-image load/gradient/optimizer/checkpoint smoke. Package 15C freezes the exact first-4,000 training prefix and teacher targets. Package 15D independently verifies the content-addressed MoonViT cache. Package 15E completes exact 4k projector-only training. Package 15F rejects the first GLM-format ScreenSpot50 candidate. Package 15G confirms the failure on all 1,272 public ScreenSpot rows. Package 15H shows that training raises coordinate-answer probability without learning correct-image coordinate preference. Package 15I preregisters the matched 2,000-grounding/2,000-short-answer treatment before its cache or training result exists. Package 15J independently verifies its content-addressed MoonViT cache. Package 15K completes the exact matched-budget training and checkpoint audit. Packages 15L/15M reject it by preference and free generation: vision/blind/shuffled preference is 52%/56%/54%, while click is 6%/12%/6%. Package 15N localizes a scale/rank collapse at the projector output; Package 15O shows that both collapse guards already fire at the first saved checkpoint, step 100/800 examples. Package 15P freezes a directly transferable step-one geometry repair and completes its independent λ calibration. Package 15Q tests output LayerNorm/RMSNorm and cancels its 500-step expansion after all three arms stop at step 2. Package 15R freezes the residual/gated-residual screen; baseline and zero-init both stop at step 2, and gated is next. The architecture audit now marks the old V2 label as legacy-pre-norm and blocks promotion until exact K3-V2 and V1 controls are run.
+**Experiment packages 1–14 COMPLETE; Packages 15A–15R establish, diagnose and redirect the 3B bridge**: packages 1–12 established auditable caching and mechanism controls. Package 13 fixes preventive replay; Package 14 fixes the smallest reliable sentinel and V100 cost. Package 15A freezes the Qwen2.5-3B model/data/generation/scoring/budget contract before any 3B output. Package 15B closes the real-image load/gradient/optimizer/checkpoint smoke. Package 15C freezes the exact first-4,000 training prefix and teacher targets. Package 15D independently verifies the content-addressed MoonViT cache. Package 15E completes exact 4k projector-only training. Package 15F rejects the first GLM-format ScreenSpot50 candidate. Package 15G confirms the failure on all 1,272 public ScreenSpot rows. Package 15H shows that training raises coordinate-answer probability without learning correct-image coordinate preference. Package 15I preregisters the matched 2,000-grounding/2,000-short-answer treatment before its cache or training result exists. Package 15J independently verifies its content-addressed MoonViT cache. Package 15K completes the exact matched-budget training and checkpoint audit. Packages 15L/15M reject it by preference and free generation: vision/blind/shuffled preference is 52%/56%/54%, while click is 6%/12%/6%. Package 15N localizes a scale/rank collapse at the projector output; Package 15O shows that both collapse guards already fire at the first saved checkpoint, step 100/800 examples. Package 15P is a calibration and health-only screen: all four geometry arms stop at steps 1–2, so no repair arm is promoted and the 500-step expansion is cancelled. Package 15Q tests output LayerNorm/RMSNorm and stops all three arms early. Package 15R records the residual screen; its historical baseline and zero-init arms also stop early. The architecture audit now marks the old V2 label as legacy-pre-norm and blocks promotion until exact K3-V2 and V1 controls are run.
 
 **Pre-rental go/no-go (authoritative top-level table)**:
 
@@ -276,7 +296,7 @@ fixed. The candidate will be relaunched after this repair is committed.
 
 **Package 15A V100 precision decision**: official Qwen shards remain byte-exact BF16 source artifacts. A fixed 4096×4096 GEMM probe on the Tesla V100-PCIE-32GB found BF16 callable and finite, but its median time was 9.16× FP16 (FP32 was 6.82× FP16). The preregistered runtime therefore loads Qwen in FP16, keeps projector master weights FP32, casts only at the embedding splice, and fails on any non-finite loss/gradient. Raw timings are under `contract/hardware/`.
 
-**4096 boundary decision**: the DeepSeek-shaped projector remains `LN/MLP -> 4096`, 33,564,672 trainable parameters. Qwen receives it through a parameter-free signed-pair orthogonal 4096→2048 readout; all 4096 inputs receive gradient, buffers are frozen in a 37,072-byte safetensors (`1cecc883…a6d47`) and every control shares them. The readout is discarded for DeepSeek, so Qwen checkpoint transfer is `transferable_with_runtime_validation`. No 2048 projector is allowed to replace the canonical result.
+**4096 boundary decision**: the exact K3 V2 projector is bias-free `4096 → 4096 → 4096` with trainable post-RMSNorm and 33,558,528 parameters; the historical legacy V2 projector has 33,564,672. Qwen receives either canonical output through a parameter-free signed-pair orthogonal 4096→2048 readout; all 4096 inputs receive gradient, buffers are frozen in a 37,072-byte safetensors (`1cecc883…a6d47`) and every architecture control shares them. The readout is discarded for DeepSeek, so Qwen checkpoint transfer is `transferable_with_runtime_validation`. No direct-2048 projector is a formal result.
 
 **Package 15A failures retained**: aria2 multi-range produced a correct-size corrupt ScreenSpot blob (`0c793b…e534` versus expected `ff06d3…aa8fb`) after cross-shard range responses/403; retry used `HF_HUB_DISABLE_XET=1`, one worker, and all shards verified. The first Qwen command fetched only config and was replaced by the same single-worker method. Language manifest construction hit two Python/JSON boolean spelling errors; the first V100 precision probe had a Python syntax error. No partial model result was written; corrected runs succeeded. Logs and summaries are under `contract/failures/`; the corrupt 134.5 MB blob remains only on HDD.
 

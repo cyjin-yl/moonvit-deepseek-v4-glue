@@ -15,7 +15,27 @@
 #outline()
 #pagebreak()
 
-= 执行摘要
+= 当前状态（2026-08-06，唯一 live 入口）
+
+当前唯一权威状态页是 `docs/current-status.md`，架构身份矩阵是
+`docs/architecture-matrix.md`。最终目标固定为
+`MoonViT-V2 → 4096 维 projector → DeepSeek-V4-Flash-0731`。
+Qwen2.5-3B 只承担冻结纯文本 receiver 的低成本代理角色。
+
+社区审计确认：公开 GLM-5.2V 页面使用 Kimi-K2.6/MoonViT-3d 家族的
+1152 维视觉塔；GLM projector 在自己的 6144 维语言空间重新训练。仓库当前
+注册 `local_v1_family_proxy` 与 `local_v2_exact_k3` 两条 matched control。
+Package 15P–15R 测试的是 `local_v2_legacy`，其 early-collapse 结果不能外推
+到 exact K3 V2。V1 cache 已通过 4 张图的 V100 接口 smoke，正式 benchmark 尚未
+开始。Gate D 仍为 **NO-GO**。
+
+下一步只做最小高频 screen：两条 control 使用相同样本顺序、预算、receiver、
+health guards 和 parser，在 step 0/1/2/5/10/20/30/50/75/100 观察 collapse
+与 vision-minus-shuffled；通过健康筛选的 arm 才进入完整 ScreenSpot、TextVQA、
+DocVQA、OCRBench 和 language-retention 合同。没有真实 causal gain 的结果不替换
+`previous_best`，也不进入 DeepSeek 付费阶段。
+
+= 历史执行摘要
 
 本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段冻结视觉塔和语言模型，只训练 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证。包 3–12 依次建立 synthetic paired preference/generation、逐层 probe、activation patching、projector/LoRA 轨迹、任务干扰、checkpoint averaging、anchoring 与 batch-order 证据。包 13 在相同 1,200-example 预算内用 preventive replay 恢复 count/shape，包 14 把可靠 Tiny sentinel 固定为 25 pairs/task 并测得 V100 teacher-only 中位开销 22.501 秒。这条机制支线已收束为默认保护配方。包 15A–15D 冻结纯文本 `Qwen/Qwen2.5-3B-Instruct` 的模型、真实数据、评测、4,000-example 顺序和 MoonViT cache；包 15E 完成 500-step projector-only 训练与独立 checkpoint 验证；包 15F–15G 在 GLM-format public-50 和完整 1,272-row ScreenSpot 上一致拒绝首个 checkpoint。完整集 trained vision/blind/step0 的 click-in-box 为 2.67%/3.07%/3.30%，vision−blind 平均距离显著恶化 169.66。包 15H 的 paired preference 又显示 trained vision/blind/shuffled 为 46%/56%/52%；训练把坐标答案 NLL 从 2.51 降到 1.22，却没有正确图相对错误图的选择优势。容量切换稳定了真实链路，当前数据/目标仍只学到 image-agnostic coordinate prior。包 15I/15J 已在结果产生前冻结 2,000-grounding/2,000-short-answer 严格交替顺序与 cache；包 15K 完成相同 4,000-example/500-step 训练和 checkpoint 复核。包 15L/15M 的 preference 与 generation 均拒绝新 checkpoint：vision/blind/shuffled preference 为 52%/56%/54%，generation click 为 6%/12%/6%。包 15N 又把失败定位到 projector 输出的 scale/rank collapse：effective rank 13.28→1.14，top-1 variance 17.48%→93.46%，fixed receiver 保留相同塌缩比。包 15O 进一步发现第一个保存点 step 100/800 examples 已经塌缩，projector spread/rank 只剩 step0 的 0.1298/0.0772；包 15P 已完成从首步生效的 geometry-repair λ 校准，三档 λ 固定为 0.0101873/0.0407492/0.162997，下一项是四臂 100-step 短筛选。完整 DeepSeek-V4-Flash-0731 尚未完成图像前向、量化 input DGRAD、训练、恢复和生成闭环，Gate D 当前未通过。
 
@@ -41,7 +61,7 @@ MoonViT-V2 有 401.2M 参数，抽取后的 BF16 权重约 802 MB，相对于约
 
 这次审计还修正了我们对本地 V2 的表述。当前 `PatchMergerProjector` 在 `[tokens,4,1024]` 上使用 affine pre-LayerNorm 和带 bias 的两层 MLP；它属于 V1-style PatchMerger 家族。vendored Kimi-K3/MoonViT-V2 的 `PatchMergerMLPV2` 则是 bias-free 两层 MLP 加 trainable post-RMSNorm。因而 Package 15P 的早期塌缩结论只适用于已训练的本地实现，不能写成对官方 K3 V2 结构的否定。详细来源、resolved revision、文件哈希与张量形状见 `experiments/qwen3b_community_eval_20260805/community_architecture_audit_v1/COMMUNITY_SOURCES.json`。
 
-下一步固定为两条匹配控制：一条实现精确 K3 V2 projector，另一条使用公开 #link("https://huggingface.co/moonshotai/MoonViT-SO-400M")[MoonViT-SO-400M] V1 在 Qwen2.5-3B 上复现。两条都沿用相同图像预处理、训练预算、在线 collapse guards 和 ScreenSpot/TextVQA/DocVQA/OCRBench 合同；旧的 legacy-V2 checkpoint 不再自动成为 `previous_best`。缓存入口已支持 `--vision-tower v1` 与 pinned revision，V1 的 projector 输出宽度按 Qwen hidden size 重新初始化，不能直接挪用 GLM-5.2V 的 6144-wide 权重。Gate D 仍为 NO-GO。
+下一步固定为两条匹配控制：一条实现精确 K3 V2 projector，另一条使用公开 #link("https://huggingface.co/moonshotai/MoonViT-SO-400M")[MoonViT-SO-400M] V1 在 Qwen2.5-3B 上复现。两条都沿用 canonical 4096 输出、同一 frozen 4096→2048 Qwen receiver、相同样本顺序、训练预算、在线 collapse guards 和 ScreenSpot/TextVQA/DocVQA/OCRBench 合同；旧的 legacy-V2 checkpoint 不再自动成为 `previous_best`。缓存入口已支持 `--vision-tower v1` 与 pinned revision，V1 不能直接挪用 GLM-5.2V 的 6144-wide 权重。Gate D 仍为 NO-GO。
 
 = 权重与张量合同
 
@@ -49,13 +69,13 @@ MoonViT-V2 有 401.2M 参数，抽取后的 BF16 权重约 802 MB，相对于约
   columns: (1.4fr, 2.4fr, 1fr),
   [*组件*], [*合同*], [*状态*],
   [MoonViT-V2], [`[tokens, 4, 1024]`], [冻结],
-  [PatchMerger], [`LN(1024) → flatten → 4096 → GELU → 4096`], [训练],
+  [PatchMerger], [exact K3 V2: bias-free `4096 → 4096 → 4096` + post-RMSNorm；legacy 变体单列], [训练],
   [DeepSeek embedding], [`vocab → 4096`], [冻结],
   [Placeholder], [`<｜image｜>` / ID 129279], [现有词表],
   [Hash-MoE routing], [扩展后的 placeholder IDs], [冻结],
 )
 
-V2  projector 精确参数量是 33,564,672（fp32 约 134 MB，bf16 约 67 MB；配置见 `configs/deepseek-v4-flash-0731-projector-moonvit-v2.json`）。备选的 V1 塔（MoonViT-SO-400M，1152 维）projector 为 40,119,040 参数，两条配置不得混用。保存格式由 `projector_config.json` 与 `projector.safetensors` 组成，加载时使用 strict state-dict 校验。MoonViT、DeepSeek 与 projector 始终保留为三个可独立哈希和升级的来源，不把大权重复制到自有仓库。
+exact K3 V2 projector 参数量是 33,558,528（fp32 约 134 MB）；legacy V2 为 33,564,672。备选的 V1 塔（MoonViT-SO-400M，1152 维）projector 为 40,119,040 参数，两条配置不得混用。保存格式由 `projector_config.json` 与 `projector.safetensors` 组成，加载时使用 strict state-dict 校验。MoonViT、DeepSeek 与 projector 始终保留为三个可独立哈希和升级的来源，不把大权重复制到自有仓库。
 
 = DeepSeek-V4 特殊适配
 

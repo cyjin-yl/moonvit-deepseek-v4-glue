@@ -1,0 +1,126 @@
+# 当前工程状态与下一步
+
+更新日期：2026-08-06
+
+## 一句话结论
+
+Qwen2.5-3B 代理的真实图像 glue、projector 梯度、checkpoint 保存恢复和生成
+链路已经跑通；真实视觉能力尚未建立。此前 Package 15P–15R 主要测试的是
+`local_v2_legacy`，因此它们的失败不能外推到精确的 Kimi-K3 V2 projector。
+当前最有判别力的本地任务，是在同一 Qwen3B 社区评测合同下完成
+`local_v2_exact_k3` 与 `local_v1_family_proxy` 的 matched architecture screen。
+
+## 当前状态表
+
+| 问题 | 当前证据 | 状态 | 允许的结论 |
+|---|---|---|---|
+| 图像能否进入小模型 | 真实 MoonViT 图像 → projector → frozen Qwen2.5-3B；projector 有 finite/non-zero gradient；save/load/resume/generate 已验证 | 通过（工程） | 通用 glue pipeline 可运行 |
+| 3B 是否已经获得视觉能力 | legacy V2 的 ScreenSpot50/full 与 paired preference 中，vision 没有稳定优于 blind/shuffled；candidate 被拒绝 | 未通过 | 不能声称 Qwen 或 DeepSeek 已“看懂图像” |
+| 失败发生在哪里 | legacy V2 训练在很早期 common-direction collapse：projector effective rank 13.28→1.14，top-1 variance 17.48%→93.46%，RMS 约 0.124→35.74/97.31（不同 trajectory） | 已定位到 projector 输出动力学 | CE/loss 下降不能作为视觉成功证据 |
+| geometry repair | Package 15P 的 control、ratio005、ratio020、ratio080 都在 step 1–2 止损；500-step expansion 取消 | 失败并已止损 | 同一 geometry λ 剂量不值得继续堆训练量 |
+| output normalization | Package 15Q 的 CE-only、post-LayerNorm、post-RMSNorm 都在 step 2 止损 | 失败 | 输出归一化单变量不足以保留跨图像几何 |
+| residual repair | Package 15R baseline 与 zero-init residual 都在 step 2 止损；gated arm 尚待结果 | 进行中 | 已证明 zero-init branch 可收梯度，尚未证明能保留图像差异 |
+| exact K3 V2 projector | `kimi_k3_v2` 已实现，bias-free MLP、post-RMSNorm 与 vendored K3 forward parity 单测通过 | 能运行，未训练 | 旧 legacy failure 不适用于它；尚无能力结论 |
+| V1 family proxy | SO-400M revision 和 V1 cache CLI 已冻结；canonical-4096 projector 配置已修正，历史 direct-2048 draft 废弃 | 待跑 | 可检验 V1/K2.6-lineage 表示是否更易映射 |
+| Qwen3.5-4B | 原生 VLM positive control 已在 TextVQA、DocVQA、OCRBench、ScreenSpot 等 selection 上得到阳性 | 诊断完成 | 证明 scorer/processor 健康；不进入 projector 排名 |
+| TextVQA/DocVQA/OCRBench/language retention | 3B architecture candidate 尚未完成全套候选评测 | 待补 | ScreenSpot 单项不能替代完整能力合同 |
+| DeepSeek-V4-Flash-0731 | tiny DeepSeek 类和 routing harness 通过；完整 0731 图像 forward/backward/train/save/resume/generate 未运行 | 未通过 | Gate D 仍需真实量化 input DGRAD 和完整主干证据 |
+| 付费资源 | 当前没有租机或产生账单 | 未授权 | 继续 V100；不自动执行 Gate D 租机 |
+
+## Placeholder 与词表边界
+
+当前两条目标路径都使用主干词表中已有的 placeholder，不扩充词表：
+
+| 主干 | placeholder | token ID | 备注 |
+|---|---|---:|---|
+| Qwen2.5-3B-Instruct | `<|image_pad|>` | `151655` | 固定社区合同；训练和评测都使用同一 pinned tokenizer |
+| DeepSeek-V4-Flash-0731 | `<｜image｜>` | `129279` | 目标路径已有 token；Hash-MoE routing 需要保留扩展后的 ID |
+
+旧 0.5B 机制包中出现的 ID `151643` 属于历史 artifact 身份，不能进入当前
+Qwen3B 合同或 V1/V2 architecture screen。
+
+`configs/qwen2.5-3b-community-eval-v1.json` 的
+`contract_status=preregistered_no_qwen3b_results` 是冻结时的 provenance 标记，
+不表示当前没有 Qwen3B 结果；当前结果状态只在本文和各实验 manifest 中维护，
+避免修改已冻结合同的身份字段。
+
+## 为什么前一套方案没有改进
+
+### 1. 训练目标奖励了“会输出坐标”，没有奖励“从正确图片读取坐标”
+
+legacy V2 的 CE 和 correct-answer NLL 持续下降，vision 与 shuffled image 的
+paired preference 却没有正向差异。自由生成还出现窄坐标模式。模型找到的是
+image-agnostic coordinate soft prompt，训练指标因此给出假阳性。
+
+### 2. projector 表示在早期变成近共线方向
+
+RMS 上升、跨图 spread 下降、effective rank 下降同时发生，receiver 端保留了
+相同趋势。健康合同把 onset 从“step 1–100 某处”缩到 `[1,2]`，自动止损保存了
+failure checkpoint、optimizer/RNG、batch IDs 和最近健康 checkpoint。
+
+### 3. 几何损失和输出归一化没有改变首步更新方向
+
+四个预注册 λ 都无法通过 projector/receiver 的 spread/rank 门槛；LayerNorm 和
+RMSNorm 也无法保留跨图像差异；zero-init residual 仍在第二步塌缩。继续增加
+同一训练量的判别力很低，下一步必须先区分 projector 版本和视觉塔版本。
+
+### 4. 结构审计发现旧结果使用了错误的“V2”标签
+
+旧实现是 affine pre-LayerNorm 加 bias MLP。Kimi-K3/MoonViT-V2 reference 是
+bias-free MLP 加 trainable post-RMSNorm。旧结果仍然有价值，它们准确描述了已
+训练代码的失败；结果不能当作 exact K3 V2 的失败证明。
+
+## 下一步最短路径
+
+### 阶段 A：架构与 cache 接口
+
+1. 运行 `local_v2_exact_k3` 的 state/forward parity、strict save/load 和
+   parameter-count smoke。
+2. 用 pinned `MoonViT-SO-400M` 生成 1152 维 V1 cache；核对每张图的 SHA、
+   feature shape、processor revision 和视觉 token 数。
+3. 给 V1/V2 各生成独立的 step0、random-projector、probe manifest 和 artifact
+   manifest。共享样本顺序，禁止共享 projector 权重。
+
+### 阶段 B：廉价高频筛选
+
+两臂都在相同 3B budget 下跑 step 0/1/2/5/10/20/30/50/75/100。每步写
+`train_health.jsonl`；probe 写 `probe_metrics.jsonl`。任一 critical guard 触发
+就自动保存并回滚，禁止继续到 500 steps。健康通过只允许进入评测队列，不等于
+视觉能力通过。
+
+### 阶段 C：固定真实 benchmark
+
+健康臂运行完整 ScreenSpot（GLM-format 50 和 1,272-row public test，含
+click-in-box、Accuracy@50/100/200、距离与 paired bootstrap），再运行 TextVQA、
+DocVQA、OCRBench、synthetic 和 language-retention。所有结果同时报告 vision、
+blind、shuffled、random projector、step0 和 previous-best 角色。
+
+### 阶段 D：根据结果选择解释
+
+| 结果模式 | 最强解释 | 后续动作 |
+|---|---|---|
+| V1 健康/因果通过，exact V2 失败 | 视觉塔版本、预处理或 V2 压缩映射问题 | 复核 V2 特征层、token 压缩和 projector 初始化；保留 V1 为诊断参考 |
+| V1 与 exact V2 都失败且早期塌缩 | 纯文本 3B receiver、优化尺度或监督接口是共同瓶颈 | 测试冻结 projector 结构、学习率/初始化和 counterfactual objective；不扩大数据预算 |
+| 两者 health 通过但 causal benchmark 失败 | 表示仍有差异，语言主干没有形成可解码读出 | 检查 receiver、prompt/loss mask、答案格式和训练数据覆盖 |
+| exact V2 causal 通过，V1 失败 | K3 V2 是当前更合适的最终视觉塔 | 固定 exact V2 配方，准备 DeepSeek runtime validation |
+
+## Gate D 边界
+
+当前 Gate D 为 **NO-GO**。仍缺：
+
+- 固定 revision 的完整 DeepSeek-V4-Flash-0731 真实权重加载；
+- 真实 FP4/FP8 module 的有限、非零 input gradient；
+- 图像 token 插入完整 Hash-MoE 主干后的 forward/backward/generate；
+- batch、activation checkpointing、routing、20-step 稳定性和精确 save/resume；
+- 完整真实 benchmark 的视觉因果增益与语言保持。
+
+这些证据需要目标硬件。V100 阶段继续做 V1/V2 架构筛选、健康诊断和固定合同
+评测；任何租机、云 GPU、付费存储或完整 0731 运行都等待用户明确授权。
+
+## 权威文件关系
+
+1. `configs/`、实验 `MANIFEST.json`、checkpoint manifest：机器可验证的身份和哈希。
+2. `docs/qwen2.5-3b-community-eval-contract.md`：冻结的评测、预算、parser 和迁移规则。
+3. 本文：唯一的 live status、证据边界和下一步队列。
+4. `docs/architecture-matrix.md`：架构身份、版本差异和比较解释。
+5. `HANDOFF.md` 与 `report/main.typ`：交接和长篇历史记录；更新时必须引用本文和矩阵，不能另造 live status。

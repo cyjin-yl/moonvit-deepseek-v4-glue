@@ -79,7 +79,7 @@
     "role": "standalone V1 encoder for the matched Qwen2.5-3B benchmark",
     "vision_width": 1152,
     "merge_factor": 4,
-    "projector_contract_for_qwen3b": "LayerNorm(1152) -> flatten(4608) -> Linear(4608,4608) -> GELU -> Linear(4608,2048)",
+    "projector_contract_for_qwen3b": "LayerNorm(1152) -> flatten(4608) -> Linear(4608,4608) -> GELU -> Linear(4608,4096), then shared fixed 4096->2048 receiver",
     "snapshot_files": {
       "model.safetensors": {
         "bytes": 833765656,
@@ -135,7 +135,7 @@
   "decision": {
     "gate_d": "NO-GO",
     "next_primary_experiments": [
-      "Implement and unit-test the exact K3/MoonViT-V2 PatchMergerMLPV2 variant at output width 2048 for Qwen proxy.",
+      "Implement and unit-test the exact K3/MoonViT-V2 PatchMergerMLPV2 variant at canonical output width 4096, then use the shared frozen 4096-to-2048 Qwen proxy receiver.",
       "Run a matched MoonViT-SO-400M V1 -> Qwen2.5-3B projector-only benchmark under the fixed community contract.",
       "Keep the GLM-5.2V projector weights as an architecture/weight-shape reference only; their 6144 output cannot plug into Qwen3B or DeepSeek 4096 without retraining.",
       "Do not promote any legacy-V2 checkpoint to previous_best or DeepSeek candidate until the exact-V2 and V1 controls are compared."

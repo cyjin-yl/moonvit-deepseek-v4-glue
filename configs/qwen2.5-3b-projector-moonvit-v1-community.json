@@ -4,7 +4,7 @@
   "vision_revision": "a889d399ff2306053e4e28d499d3b8f97d3e5007",
   "vision_width": 1152,
   "merge_factor": 4,
-  "language_width": 2048,
+  "language_width": 4096,
   "projector_width": 4608,
   "layer_norm_eps": 1e-5,
   "output_norm": "none",
@@ -14,11 +14,11 @@
     "text_target": "zai-org/GLM-5.2",
     "vision_source": "moonshotai/Kimi-K2.6",
     "reference_projector_shape": "LayerNorm(1152) -> flatten(4608) -> Linear(4608,4608) -> GELU -> Linear(4608,6144)",
-    "qwen_control_rule": "same vision-side structure, target width changed to frozen Qwen2.5-3B hidden size 2048"
+    "qwen_control_rule": "same vision-side structure, target width fixed at canonical 4096; use the shared frozen 4096 -> 2048 Qwen receiver"
   },
   "transfer_status": "transferable_with_runtime_validation",
   "notes": [
     "This is an architecture control, not a claim that GLM-5.2V projector weights load into Qwen or DeepSeek.",
-    "The V1 control shares the community K2.6 MoonViT family; exact target-width weights must be trained for each receiver."
+    "The V1 control shares the community K2.6 MoonViT family; its target width is canonical 4096 and Qwen uses the same fixed 4096 -> 2048 receiver as V2."
   ]
 }
