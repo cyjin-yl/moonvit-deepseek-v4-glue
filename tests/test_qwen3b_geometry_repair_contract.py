@@ -1,14 +1,16 @@
 import hashlib
 import json
+import sys
 from pathlib import Path
-
-from tools.calibrate_qwen3b_geometry_regularization import (
-    SUMMARY_BINDING_KEYS,
-    calibration_summary_bindings,
-)
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tools"))
+
+from calibrate_qwen3b_geometry_regularization import (  # noqa: E402
+    SUMMARY_BINDING_KEYS,
+    calibration_summary_bindings,
+)
 CONFIG = ROOT / "configs" / "qwen3b-geometry-repair-screen-v1.json"
 PACKAGE = (
     ROOT
@@ -77,6 +79,20 @@ def test_pre_result_binding_failure_is_archived_with_no_training_result():
     assert failure["final_half_scored"] is False
     assert manifest["file_count"] == 7
     assert manifest["final_half_scored"] is False
+    for relative, expected in manifest["files"].items():
+        path = failure_root / relative
+        assert path.stat().st_size == expected["bytes"]
+        assert _sha256(path) == expected["sha256"]
+
+
+def test_test_collection_failure_is_archived():
+    failure_root = PACKAGE / "failures" / "attempt02_test_import"
+    failure = _load(failure_root / "FAILURE.json")
+    manifest = _load(failure_root / "ARTIFACT_MANIFEST.json")
+
+    assert failure["status"] == "test_collection_failure_preserved"
+    assert failure["checkpoint_or_capability_result_created"] is False
+    assert manifest["file_count"] == 2
     for relative, expected in manifest["files"].items():
         path = failure_root / relative
         assert path.stat().st_size == expected["bytes"]

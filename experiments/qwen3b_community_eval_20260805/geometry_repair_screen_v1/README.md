@@ -36,3 +36,7 @@ supervision and failure files are retained under
 `failures/attempt01_calibration_binding/`. The repair adds every input binding
 to the summary and makes the independent verifier check them; calibration will
 be regenerated before any arm is allowed to train.
+
+A focused regression collection then exposed a test-only import-path omission;
+that log is retained under `failures/attempt02_test_import/` and has no bearing
+on the runtime or training schedule.

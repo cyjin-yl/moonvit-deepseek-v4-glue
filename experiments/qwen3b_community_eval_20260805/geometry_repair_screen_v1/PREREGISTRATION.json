@@ -64,6 +64,11 @@
       "path": "failures/attempt01_calibration_binding/REPAIR_RECORD.json",
       "reason": "Calibration SUMMARY did not expose the hashes required by the trainer binding check; no optimizer step or capability result existed.",
       "schedule_thresholds_and_objective_unchanged": true
+    },
+    {
+      "path": "failures/attempt02_test_import/FAILURE.json",
+      "reason": "Focused regression collection lacked the repository tools directory on sys.path; no GPU or training result existed.",
+      "schedule_thresholds_and_objective_unchanged": true
     }
   ]
 }

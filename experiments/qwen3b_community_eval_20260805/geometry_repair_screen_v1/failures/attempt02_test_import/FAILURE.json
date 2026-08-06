@@ -1,0 +1,13 @@
+{
+  "format_version": "qwen3b-geometry-repair-pre-result-repair-v1",
+  "status": "test_collection_failure_preserved",
+  "attempt": 2,
+  "stage": "focused_regression_collection",
+  "failure_class": "python_import_path",
+  "failure": "tests/test_qwen3b_geometry_repair_contract.py imported the calibrator without adding the repository tools directory to sys.path; calibrator could not import train_qwen3b_proxy.",
+  "checkpoint_or_capability_result_created": false,
+  "repair": "Add the repository tools directory to sys.path before importing the calibrator helper in the test.",
+  "schedule_thresholds_and_objective_unchanged": true,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

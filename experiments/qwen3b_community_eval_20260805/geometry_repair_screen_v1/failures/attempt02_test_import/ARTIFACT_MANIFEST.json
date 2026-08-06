@@ -1,0 +1,19 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-06T03:30:55.953386+00:00",
+  "root": "attempt02_test_import",
+  "git_base_sha": "0d15d6203ae955b1a2147649ed6fd84624816422",
+  "files": {
+    "FAILURE.json": {
+      "bytes": 696,
+      "sha256": "09c6277d81e4582f3de9e52f0d2b657e4f07b5446a6afde7479a8f5ca5f7bda7"
+    },
+    "stderr.log": {
+      "bytes": 133,
+      "sha256": "15a50caf5858d927215ddb26c5f0988fc30c9ca576c7aea4980a19d80eebf080"
+    }
+  },
+  "file_count": 2,
+  "total_bytes": 829,
+  "final_half_scored": false
+}

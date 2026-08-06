@@ -1,0 +1,2 @@
+ImportError while importing tests/test_qwen3b_geometry_repair_contract.py:
+ModuleNotFoundError: No module named 'train_qwen3b_proxy'

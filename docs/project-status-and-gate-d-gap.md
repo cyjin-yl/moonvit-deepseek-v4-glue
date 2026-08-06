@@ -63,6 +63,8 @@ Package 15P 已完成预注册 geometry-repair 的固定 λ 校准。冻结 step
 
 短筛选的第一次 `control` 启动在 optimizer step 1 之前被绑定检查拒绝：校准 SUMMARY 缺少 `screen_contract_file_sha256`。失败目录保留了完整 supervision records、cache verification、ATTEMPT、traceback 和日志；没有 checkpoint 或能力结果。已登记 pre-result repair，修复只补齐 SUMMARY/独立 verifier 的输入哈希和 record IDs，训练预算、顺序、目标和 λ 不变；修复提交后需重新生成校准再启动四臂。
 
+修复后的 focused regression 又因测试导入路径缺少 `tools/` 而在 collection 阶段失败；该失败单独归档，加入路径后再跑，仍没有 GPU 或训练结果。
+
 ## 5. Replay 与 sentinel 的收束结论
 
 包 13 已证明 fixed-budget preventive replay 在相同 1,200-example 预算内改善 count/shape preference `+0.255 [0.210, 0.300]` 和 generation `+0.120 [0.050, 0.190]`，donor 合并差异接近零。包 14 进一步确定：
