@@ -172,3 +172,12 @@ projector 梯度 finite/non-zero，语言梯度全 None；恢复后 projector �
 
 该 tiny 闭环随后在 V100 `bfloat16` 下重复通过，20 steps 的 save/resume delta 仍为
 `0.0`，说明当前工作站 BF16 seam 稳定；目标 FP4/FP8 kernel 仍必须在授权硬件上单独验证。
+# Live status addendum (2026-08-07)
+
+The Package 15P/15Q/15R geometry repair queue is no longer pending: the tested
+arms stop at the early collapse guard and the planned 500-step expansions were
+cancelled. The 7B λ=0.5 candidate has now completed the full public ScreenSpot
+diagnostic; it remains rejected because vision does not beat blind and the
+community threshold contract is incomplete. Keep the older package table as a
+historical record, and use `docs/current-status.md` and the end of `HANDOFF.md`
+for live gate state.

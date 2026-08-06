@@ -1,0 +1,78 @@
+{
+  "schema_version": "raw-artifact-pointer-v1",
+  "experiment": "qwen25_7b_stripped_screenspot_public_margin05_scale01_20260807",
+  "status": "reject_current_candidate",
+  "capability_claim_allowed": false,
+  "deepseek_transfer_label": "transferable_with_runtime_validation",
+  "dataset": {
+    "name": "screenspot_public_test_v1",
+    "sample_count": 1272,
+    "manifest_path": "experiments/qwen3b_community_eval_20260805/contract/datasets/screenspot_public_test_v1/MANIFEST.json",
+    "manifest_sha256": "0e2159f2bdf30dca85cb8f448bf1cf4790b8c0a2056ab42273b0f5ba9e57167f",
+    "feature_cache_manifest_path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_public_features_1024_v1/MANIFEST.json",
+    "feature_cache_manifest_sha256": "1bd63e051e5522fbdba39060abd4ca85a5354b11e7074aa751081fe4ac1c5c9e"
+  },
+  "receiver": {
+    "repo_id": "Qwen/Qwen2.5-7B-Instruct",
+    "resolved_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "config_sha256": "7463bb0ea78315365e6c6b74de4e73bbcc8359dfb0c5a737584e077d42c0b03c",
+    "frozen": true
+  },
+  "projector": {
+    "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen25_7b_real_train32_margin05_scale01_meanpool16_20260807/projector_final",
+    "weights_sha256": "5a273f64dc9c7beff7ee816502b5cc89ea57afe6f24daea91b4e2161d24c9940",
+    "config_sha256": "0f39cc8dd48e33921a546ffc236a5ff8a66388bbf41ddec08cb8abc1b95d7405",
+    "scale": 0.1
+  },
+  "generation_contract": {
+    "conditions": [
+      "vision",
+      "blind",
+      "shuffled",
+      "random_projector"
+    ],
+    "max_visual_tokens": 16,
+    "token_selection": "mean_pool",
+    "do_sample": false,
+    "temperature": 0,
+    "max_new_tokens": 32,
+    "bootstrap_samples": 2000,
+    "bootstrap_seed": 20260805
+  },
+  "raw_artifacts": {
+    "root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen25_7b_stripped_screenspot_public_margin05_scale01_20260807",
+    "summary": {
+      "bytes": 4140321,
+      "sha256": "b41b27522855df01aac45694b2ecf5d8581e9c24e6814e5af0d3b15e1cb9b164"
+    },
+    "generation_rows": {
+      "bytes": 3197842,
+      "sha256": "bd783eb2b257739eaee25225853958ad3acfe0758bb3ed4d816e85ce025cf6d3"
+    },
+    "wall_seconds": 3097.7280405000784
+  },
+  "category_verifier": {
+    "root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen25_7b_stripped_screenspot_public_margin05_scale01_categories_20260807",
+    "summary_sha256": "f5da80b3e1bed9ccbb8b73183cf34deea79acf5ee48266854702e0f913a975be",
+    "artifact_manifest_sha256": "f384711f3320bcd71443649b0596a61268f40301f9286700dee5b321e42dd479",
+    "tool_sha256": "8920bf1226e4e8724c4df23137288ef1d1de35ce6153be558d4c457730bc87e6",
+    "test_sha256": "54c4413f906c2fda38cd399620348534a71975a71542f453f3333f96a60b9404"
+  },
+  "evaluator_tool_sha256": "c1301049adca28564842596cbd9e1ed39adc12782afc0e7e814ee84555f996ce",
+  "primary_result": {
+    "vision_click_in_box": 0.0330188679245283,
+    "blind_click_in_box": 0.03459119496855346,
+    "shuffled_click_in_box": 0.026729559748427674,
+    "vision_minus_blind_click_improvement": -0.0015723270440251569,
+    "vision_minus_blind_click_ci95": [
+      -0.009433962264150941,
+      0.0062893081761006275
+    ],
+    "vision_minus_shuffled_click_improvement": 0.0062893081761006275,
+    "vision_minus_shuffled_click_ci95": [
+      0.0015723270440251569,
+      0.01179245283018868
+    ]
+  },
+  "decision": "Weak correct-image click attribution appears against shuffled images on the full public set, but vision does not beat blind and the full promotion contract fails. Keep previous_best unchanged."
+}

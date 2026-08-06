@@ -23,11 +23,14 @@ The project has a working software seam: real MoonViT features enter a frozen
 receiver through a trainable projector, gradients reach the projector, and tiny
 DeepSeek-shaped FP32/BF16 loops save, resume, and generate exactly. The central
 product claim is still open: Qwen2.5-3B and the matched V1/V2 screens do not show
-stable correct-image attribution. Qwen2.5-7B runs on the V100, but its 50-row
-GLM-format diagnostic has a vision-vs-shuffled paired CI crossing zero; the
-larger receiver changed coordinate priors without producing reproducible click
-grounding. Qwen3.5-9B gives a useful receiver-prior signal but is too memory
-heavy for projector-only training on this V100 and is not a leaderboard result.
+stable correct-image attribution. Qwen2.5-7B runs on the V100 and its full
+1,272-row public ScreenSpot diagnostic now has a weak vision-vs-shuffled
+click-in-box gain (`+0.629` points, CI `[+0.157,+1.179]`), while vision remains
+slightly below blind (`-0.157` points, CI `[-0.943,+0.629]`). The 50-row
+GLM-format screen still crossed zero; the larger receiver changes coordinate
+priors without producing reliable click grounding. Qwen3.5-9B gives a useful
+receiver-prior signal but is too memory heavy for projector-only training on this
+V100 and is not a leaderboard result.
 
 This leaves a credible engineering path with an unresolved scientific bottleneck:
 the projector/receiver/target interface must make `vision - shuffled` positive on
@@ -60,6 +63,13 @@ The first cache attempt passed the snapshot directory directly to Transformers
 5.12.1 and hit its symlink-relative-import bug before writing any tensor. The
 tracked fix loads by pinned model ID/revision and keeps the snapshot for hashing
 only; the failure record is next to the V1 architecture-control artifacts.
+
+The architecture control is now complete: both V1 and exact-K3 V2 high-frequency
+health screens stop by step 2, and neither has entered the capability leaderboard.
+Do not follow the older text below that says the V1 benchmark is still pending;
+the current decision is that both versions have failed the current 3B health or
+causal screen, while the full-public 7B result is recorded at the end of this
+handoff.
 
 ## Community GLM-5.2V architecture audit (2026-08-06)
 
@@ -757,3 +767,60 @@ expanded `129279` routing IDs. The raw pointer is
 `experiments/qwen3b_community_eval_20260805/capacity_controls/deepseek_gate_d_tiny_e2e_placeholder129279_20260807_RAW_POINTER.json`.
 This closes a numeric placeholder/routing software check; it does not pass the
 full 0731, FP4/FP8 or Gate D requirements.
+
+## Full public ScreenSpot result for the 7B lambda=0.5 checkpoint
+
+The fixed Qwen2.5-7B checkpoint was evaluated on all 1,272 public ScreenSpot
+samples with 16 mean-pooled visual tokens, projector scale 0.1, greedy decoding,
+and the frozen vision/blind/shuffled/random-projector conditions. All 5,088
+outputs parsed. Vision/blind/shuffled/random click-in-box was
+`3.30%/3.46%/2.67%/2.91%`; Accuracy@50 was
+`1.18%/1.02%/1.02%/1.26%`, Accuracy@100
+`5.19%/5.03%/4.87%/4.87%`, Accuracy@200
+`15.33%/15.09%/15.02%/14.94%`, and mean center distance
+`404.38/409.71/406.10/405.74`.
+
+Vision minus shuffled click-in-box was `+0.629` percentage points. The
+independent category verifier's 2,000-bootstrap 95% CI was
+`[+0.157,+1.179]` percentage points. Vision minus blind was `-0.157` points,
+CI `[-0.943,+0.629]`. This is the first full-public result with a weak positive
+correct-image click signal against shuffle, while the required blind control
+still fails. Do not promote the checkpoint or claim the community GLM-5.2V
+metric-aligned baseline. It meets or approaches parse rate, Accuracy@200 and
+mean-distance references, but misses Accuracy@50/100 and causal vision-over-
+blind evidence.
+
+Category analysis shows the gain is not uniform. iOS vision-minus-shuffled
+click was `+1.96` points with CI `[+0.39,+3.92]`; Android vision-minus-blind
+click was `-1.62` points with CI `[-3.24,-0.40]`. Preserve these strata as
+mechanism/failure evidence.
+
+Raw artifacts live at:
+
+`/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen25_7b_stripped_screenspot_public_margin05_scale01_20260807`
+
+and the category verifier output at the sibling
+`qwen25_7b_stripped_screenspot_public_margin05_scale01_categories_20260807`.
+The row SHA is `bd783eb...f6d3`; the full summary SHA is `b41b275...b164`;
+the category summary SHA is `f5da80b...75be`.
+
+Mechanism evidence is now consolidated in
+`docs/experiment-mechanism-findings.md`. Keep that document current whenever
+receiver, token count/order, projector health, attribution, V1/V2 or
+teacher-forced/free-generation behavior changes.
+
+Next discriminating local task: run the same checkpoint on the frozen
+ScreenSpot50 with 240 full-sequence tokens and compare it to the existing
+16-token mean-pool result. Expand to all 1,272 samples only if correct-image
+causal metrics improve without a blind regression. If token count does not
+help, test one DeepSeek-transferable projector/auxiliary variable with a matched
+CE-only control.
+
+Gate D remains NO-GO. The tiny target-ID BF16 seam is complete. Full 0731 still
+needs resolved-weight loading, real FP4/FP8 input DGRAD, 43-layer Hash-MoE
+forward/backward and routing checks, target memory/throughput and activation
+checkpointing, a stable 20-step exact resume, and the fixed real benchmark.
+Local candidate/verifier work is estimated at 1--2 working days. After explicit
+paid-hardware authorization, the minimal Gate D and first small real training
+judgment are estimated at 3--5 working days if weights and kernels work as
+expected.

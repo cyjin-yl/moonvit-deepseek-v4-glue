@@ -413,3 +413,21 @@ SHA pointer 位于
 这条结果补上了“目标 placeholder 数值是否能进入路由接口”的软件证据，仍然只覆盖
 tiny DeepSeek 和 BF16。它没有覆盖完整 0731 词表、43 层 Hash-MoE、真实 FP4/FP8
 kernels 或输入梯度，因此 Gate D 继续 **NO-GO**。
+
+## 2026-08-07 Qwen2.5-7B 完整公共 ScreenSpot
+
+λ=`0.5`、scale=`0.1`、mean-pool 16-token checkpoint 已完成完整公共 ScreenSpot 1,272 条四条件生成和 2,000 次 paired bootstrap。全部输出都通过严格 click parser。vision/blind/shuffled/random-projector 的 click-in-box 分别为 `3.30%/3.46%/2.67%/2.91%`；Accuracy@50 为 `1.18%/1.02%/1.02%/1.26%`，Accuracy@100 为 `5.19%/5.03%/4.87%/4.87%`，Accuracy@200 为 `15.33%/15.09%/15.02%/14.94%`；中心距离均值为 `404.38/409.71/406.10/405.74`。
+
+vision 相对 shuffled 的 click-in-box 改善为 `+0.629` 个百分点，独立分层 verifier 的 95% CI 为 `[+0.157,+1.179]` 个百分点；vision 相对 blind 为 `-0.157` 个百分点，CI `[-0.943,+0.629]`。这是一条弱但有效的正确图像归因信号，也显示文本先验仍然主导输出。Accuracy 与距离的关键 paired CI 没有共同通过，候选继续拒绝晋升。
+
+分层结果进一步限制结论：iOS 的 vision-shuffled click 改善为 `+1.96` 个百分点，CI `[+0.39,+3.92]`；Android 的 vision-blind click 为 `-1.62` 个百分点，CI `[-3.24,-0.40]`。社区参考的 parse rate、Accuracy@200 和 mean distance 表面达到或接近，Accuracy@50/@100 仍低，vision 没有显著胜过 blind，因此不能声称达到社区 GLM-5.2V metric-aligned baseline。
+
+原始 5,088 条 generation rows、4.1 MB evaluator summary、172 KB 分类 summary 与 SHA manifest 均已保存。机制记录集中在 `docs/experiment-mechanism-findings.md`；它把 receiver、V1/V2、token 数、CE/attribution 分离和分层失败案例与最终 benchmark 并列维护。
+
+### 面向 DeepSeek 的时间与剩余 Gate
+
+本地软件准备已覆盖真实 MoonViT-V2、canonical 4096 projector、目标 placeholder ID `129279`、tiny DeepSeek FP32/BF16 20-step forward/backward、冻结主干、精确 save/resume 和 generation。V100 上还需一个严格匹配的 16-token/240-token grounding screen，以及 verifier、报告和最终候选冻结，预计 1--2 个工作日。
+
+进入完整 DeepSeek-V4-Flash-0731 pilot 前仍需通过：完整 resolved 权重加载和 SHA 固定；真实 FP4/FP8 kernel 的 finite input DGRAD；43 层 Hash-MoE 图像 forward/backward 与 routing 一致性；目标 batch、activation checkpointing、峰值显存和吞吐；20-step 稳定 checkpoint 与精确恢复；同一 ScreenSpot/TextVQA/DocVQA/OCRBench 合同。前五项依赖能够容纳完整模型的付费硬件。获得授权且权重/kernel 可用后，最小 Gate D 通常需要 1--2 个工作日；首个真实小规模训练和固定 benchmark 还需约 2--3 个工作日。现实估计为授权后 3--5 个工作日进入并完成首轮真实训练判断，kernel 或权重加载失败会延长该时间。
+
+当前状态仍为 **Gate D NO-GO**。本地研究不会因付费阶段暂缓而停止；下一项直接测试视觉 token 压缩是否导致当前弱 grounding。

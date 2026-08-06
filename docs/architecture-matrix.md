@@ -85,3 +85,13 @@ chat template、Qwen 原生视觉模块或 direct-2048 draft 的结果都不进�
 
 Gate D 当前仍为 `NO-GO`。该矩阵不授权租机、不授权下载完整 0731，也不把
 社区 projector 权重当作本地可加载 checkpoint。
+# Live status addendum (2026-08-07)
+
+The V1 benchmark and Qwen2.5-7B capacity control mentioned in older rows are
+complete. V1 and exact-K3 V2 both stop in the early health screen on the frozen
+3B contract; neither is a promoted capability candidate. Qwen2.5-7B runs
+projector-only on V100 and the full public ScreenSpot diagnostic has a weak
+vision-minus-shuffled click signal, while vision-minus-blind remains non-positive
+and the promotion contract fails. The next discriminating screen is 16-token
+mean-pool versus 240-token full sequence on the same checkpoint. This addendum
+overrides older "next" notes below; historical entries remain for provenance.

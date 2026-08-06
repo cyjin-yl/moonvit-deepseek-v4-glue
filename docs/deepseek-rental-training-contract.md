@@ -253,3 +253,14 @@ cost             = hours * authorized_hourly_price + measured_storage_and_transf
 | 付费授权 | 未授权 | 用户明确指令才可变更 |
 
 上表所有本地前置项收敛后，再在 `HANDOFF.md` 顶部给出最终 go/no-go。当前结论为 **no-go for paid execution；继续 V100 本地研究**。
+# Live status addendum (2026-08-07)
+
+The local proxy and tiny DeepSeek seam are complete: MoonViT-V2, the canonical
+4096 projector, target placeholder ID `129279`, frozen language weights,
+projector-only backward, BF16/FP32 20-step loops, exact save/resume and generate
+have all passed on V100. This does not pass the full DeepSeek-V4-Flash-0731 Gate
+D. The paid pilot still requires resolved 0731 weight loading, real FP4/FP8
+input DGRAD, full 43-layer Hash-MoE routing/forward/backward, memory and
+activation-checkpointing measurements, exact full-checkpoint resume and the
+fixed grounding/VQA/OCR contract. No rental or full-model download is authorized
+by this addendum.

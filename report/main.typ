@@ -249,7 +249,7 @@ Gate B 结论：胶水层 + projector 训练合同在真实权重、两个文本
 
 == Gate B 全量 mix early-alignment（2026-08-04，V100，工程/信号闸门）
 
-目的：在正式 train\_v1 mix（59,198 行 packed parquet）上验证"parquet 消费路径 + 全量数据 + early alignment + 全套评测 + 上传"的租期闭环，同时作为正式 0731 训练的本地对照组。设置：Qwen2.5-0.5B-Instruct（冻结）+ K3 MoonViT-V2（冻结，eager），只训 projector（33.6M 参数）,2000 个 optimizer step、恒定 lr 5e-4、`--max-image-side 448`。历史参数 `batch 8` 实际不是一次 8 样本 forward，而是 `micro_batch_size=1` 下串行 8 次 forward/backward 后更新，因此本轮只见过 16,000 样本，即 59,198 条 mix 的约 *0.27 epoch*；历史 answer-token 数未记录，不能精确补齐。占位 token 自动解析为 Qwen 词表已有的 `<|image_pad|>`（ID 151643，不扩词表）。
+目的：在正式 train\_v1 mix（59,198 行 packed parquet）上验证"parquet 消费路径 + 全量数据 + early alignment + 全套评测 + 上传"的租期闭环，同时作为正式 0731 训练的本地对照组。设置：Qwen2.5-0.5B-Instruct（冻结）+ K3 MoonViT-V2（冻结，eager），只训 projector（33.6M 参数）,2000 个 optimizer step、恒定 lr 5e-4、`--max-image-side 448`。历史参数 `batch 8` 实际不是一次 8 样本 forward，而是 `micro_batch_size=1` 下串行 8 次 forward/backward 后更新，因此本轮只见过 16,000 样本，即 59,198 条 mix 的约 *0.27 epoch*；历史 answer-token 数未记录，不能精确补齐。占位 token 自动解析为 Qwen 词表已有的 `<|image_pad|>`（ID 151643，不扩词表；这是 0.5B 历史运行身份，当前 3B 合同固定使用 ID 151655）。
 
 训练结果（train.log 实测）:
 
@@ -2033,3 +2033,32 @@ gradients; step-10 save/resume matched exactly and generation retained the two
 expanded placeholder routing IDs. This closes the low-ID software seam concern.
 The full 0731 vocabulary, 43-layer Hash-MoE, FP4/FP8 kernels and input-DGRAD
 remain unverified, so this result does not change Gate D's **NO-GO** status.
+
+== Qwen2.5-7B 完整公共 ScreenSpot
+
+λ=`0.5` checkpoint 在完整 1,272 条公共 ScreenSpot 上完成 vision、blind、shuffled、random-projector 四条件生成，共 5,088 条输出，严格 parser 全部通过。固定配置为 scale=`0.1`、mean-pool 16 visual tokens、greedy decoding 与 32 new tokens。
+
+#table(
+  columns: 6,
+  table.header([rows], [click-in-box], [Accuracy\@50], [Accuracy\@100], [Accuracy\@200], [中心距离均值]),
+  [vision], [3.30%], [1.18%], [5.19%], [15.33%], [404.38],
+  [blind], [3.46%], [1.02%], [5.03%], [15.09%], [409.71],
+  [shuffled], [2.67%], [1.02%], [4.87%], [15.02%], [406.10],
+  [random projector], [2.91%], [1.26%], [4.87%], [14.94%], [405.74],
+)
+
+vision 相对 shuffled 的 click-in-box 改善为 *+0.629 个百分点*；独立分层 verifier 的 2,000-bootstrap 95% CI 为 `[+0.157,+1.179]`。vision 相对 blind 为 `-0.157` 个百分点，CI `[-0.943,+0.629]`。这表明完整公共集上已经出现很弱的正确图像归因，同时文本/坐标先验仍然主导；Accuracy 与距离的关键 paired CI 没有共同通过。
+
+分层结果也不均匀：iOS 的 vision-shuffled click 改善 `+1.96` 个百分点，CI `[+0.39,+3.92]`；Android 的 vision-blind click 为 `-1.62` 个百分点，CI `[-3.24,-0.40]`。社区参考中的 parse rate、Accuracy\@200 与 mean distance 表面达到或接近，Accuracy\@50/100 仍未达到，vision 也没有显著胜过 blind。因此 checkpoint 继续拒绝晋升，`capability_claim_allowed=false`，不能声称达到社区 GLM-5.2V metric-aligned baseline。
+
+这轮支持“7B 加 paired supervision 已产生少量 correct-image click attribution”，反驳“teacher-forced 正 margin 已经等价于可用 grounding”。完整原始 summary 和 rows 保存在 V100 数据盘，Git 提交分类 summary、SHA pointer 与 verifier。receiver、V1/V2、token 数、CE/attribution 分离和失败分层集中维护于 `docs/experiment-mechanism-findings.md`。
+
+下一项在同一 ScreenSpot50、同一 checkpoint 和生成合同下比较 16-token mean-pool 与 240-token full sequence。若 240-token 没有改善 vision-shuffled 或继续落后 blind，则停止扩大 token 实验，转向一个 DeepSeek 可迁移的 projector/辅助目标变量和 matched CE-only control。
+
+== DeepSeek 真实训练时间与剩余 Gate
+
+当前本地软件链路已经覆盖真实 MoonViT-V2、canonical 4096 projector、目标 placeholder ID `129279`、tiny DeepSeek FP32/BF16 20-step forward/backward、冻结主干、精确 save/resume 和 generation。候选冻结、240-token 对照、独立 verifier 与文档预计还需 *1--2 个工作日*。
+
+完整 0731 pilot 仍需：resolved 权重加载与 SHA 固定；真实 FP4/FP8 kernel finite input DGRAD；43 层 Hash-MoE 图像 forward/backward 和 routing 一致性；目标 batch、activation checkpointing、显存和吞吐；20-step 稳定 checkpoint 与精确恢复；同一 ScreenSpot/TextVQA/DocVQA/OCRBench 合同。获得付费硬件明确授权后，最小 Gate D 预计 1--2 个工作日，首个真实小规模训练和固定 benchmark 再需约 2--3 个工作日。权重与 kernel 路径顺利时，授权后 *3--5 个工作日*可以得到首轮真实训练判断。
+
+Gate D 继续为 *NO-GO*，任何租卡或完整 0731 下载等待用户明确授权。
