@@ -1,0 +1,120 @@
+{
+  "format_version": "community-projector-architecture-audit-v1",
+  "audit_date": "2026-08-06",
+  "purpose": "Freeze the public GLM-5.2V/Kimi projector evidence before the next Qwen2.5-3B experiment.",
+  "primary_reference": {
+    "repo_id": "baseten/GLM-5.2-Vision-NVFP4",
+    "resolved_revision": "04c0a6f198afc00eff109e5cd7d0a1bbae9e9085",
+    "status": "community_repack_not_an_official_zai_release",
+    "model_card_url": "https://huggingface.co/baseten/GLM-5.2-Vision-NVFP4",
+    "model_card_claims": {
+      "vision_source": "MoonViT-3d from Kimi-K2.6",
+      "vision_layers": 27,
+      "vision_width": 1152,
+      "vision_frozen": true,
+      "text_frozen": true,
+      "trained_parameters": 49500000,
+      "image_tokens_max": 4096
+    },
+    "config": {
+      "mm_projector_type": "patchmerger",
+      "merge_kernel_size": [2, 2],
+      "mm_hidden_size": 1152,
+      "text_hidden_size": 6144,
+      "projector_ln_eps": 0.00001,
+      "activation": "gelu"
+    },
+    "projector_file": {
+      "path": "mm_projector.safetensors",
+      "bytes": 99117136,
+      "hf_lfs_sha256": "e7c6ce8c27424f292e708e7bbb48ade57ea9f1aaddd28bd6a1020a860d9db80c",
+      "downloaded_sha256": "e7c6ce8c27424f292e708e7bbb48ade57ea9f1aaddd28bd6a1020a860d9db80c",
+      "tensor_shapes": {
+        "mm_projector.pre_norm.weight": [1152],
+        "mm_projector.pre_norm.bias": [1152],
+        "mm_projector.proj.0.weight": [4608, 4608],
+        "mm_projector.proj.0.bias": [4608],
+        "mm_projector.proj.2.weight": [6144, 4608],
+        "mm_projector.proj.2.bias": [6144]
+      }
+    },
+    "source_files": {
+      "README.md": "d3cbe538d604424f701a12c67705f47f91f092aa7488f3aa9e4e6112a6674928",
+      "config.json": "5a4c1c2e388e28373dcdd9d38c968246a23a261f7ad49908d94823f3a4616f65",
+      "configuration_glm5v.py": "093f21a370b0bdb69e9c467e2990ff787b5a6008e40d96559b23db8e63c4ef09",
+      "plugins/sglang_glm5v/glm5v.py": "f6b956f9350f1ca92ce8d888005e1efc18d58fe661a1ff1c83c6c4382957b0ca"
+    }
+  },
+  "k26_reference": {
+    "repo_id": "moonshotai/Kimi-K2.6",
+    "resolved_revision": "7eb5002f6aadc958aed6a9177b7ed26bb94011bb",
+    "model_url": "https://huggingface.co/moonshotai/Kimi-K2.6",
+    "vision_config": {
+      "model": "MoonViT-3d",
+      "layers": 27,
+      "width": 1152,
+      "merge_kernel_size": [2, 2],
+      "mm_projector_type": "patchmerger",
+      "text_hidden_size": 7168
+    },
+    "projector_state_keys": [
+      "mm_projector.pre_norm.weight",
+      "mm_projector.pre_norm.bias",
+      "mm_projector.proj.0.weight",
+      "mm_projector.proj.0.bias",
+      "mm_projector.proj.2.weight",
+      "mm_projector.proj.2.bias"
+    ],
+    "source_files": {
+      "README.md": "95db3be1d0473e482c7aa901f237ad7af8bb7929625a777b27428081bb8ea9f7",
+      "config.json": "85825ca6e18cbe539eb83ee09eedfb3f4222265929f06e9f535a6d9364f55899",
+      "configuration_kimi_k25.py": "2bc5487efced291e0e6aa3b24aad1082bade4172aff94ea1b6f0ae20a1d6bb4f",
+      "modeling_kimi_k25.py": "ef28f469e7cb5ab91008a52c1b34718ad37de8428e2ed6aadc408d031a38a372"
+    }
+  },
+  "v1_standalone_reference": {
+    "repo_id": "moonshotai/MoonViT-SO-400M",
+    "resolved_revision": "a889d399ff2306053e4e28d499d3b8f97d3e5007",
+    "model_url": "https://huggingface.co/moonshotai/MoonViT-SO-400M",
+    "role": "standalone V1 encoder for the matched Qwen2.5-3B benchmark",
+    "vision_width": 1152,
+    "merge_factor": 4,
+    "projector_contract_for_qwen3b": "LayerNorm(1152) -> flatten(4608) -> Linear(4608,4608) -> GELU -> Linear(4608,2048)",
+    "source_files": {
+      "README.md": "275a92f879147318629804a1347eed79c1736f64d3bbfd073c5e88454b4d2399",
+      "config.json": "97fd0c47279c9e624f7b14010d0bba2726f4c52e89818d9b69e052ef612609a3"
+    }
+  },
+  "v2_reference": {
+    "repo_id": "AI4Industry/MoonViT-V2",
+    "resolved_revision": "c5acb88baf02a94e68ca8a225f7eebee152c1fc6",
+    "model_url": "https://huggingface.co/AI4Industry/MoonViT-V2",
+    "role": "community mirror of the Kimi-K3 MoonViT-V2 lineage",
+    "vision_width": 1024,
+    "merge_factor": 4,
+    "official_k3_projector_contract": "flatten(4096) -> Linear(4096,4096,bias=false) -> GELU -> Linear(4096,text_hidden,bias=false) -> RMSNorm(text_hidden)",
+    "source_files": {
+      "README.md": "086afc720795eb07daca3394efde7ff4b36d636d44bf0adc009a2da0e3a3811e",
+      "config.json": "9b4d33179e87d891d4fffdff777a1e6e975a2b63c955bacdbb49e19b093760ec"
+    }
+  },
+  "local_implementation_comparison": {
+    "current_class": "moonvit_glue.projector.PatchMergerProjector",
+    "current_v2_config": "configs/deepseek-v4-flash-0731-projector-moonvit-v2.json",
+    "current_v2_shape": "LayerNorm(1024) -> flatten(4096) -> Linear(4096,4096,bias=true) -> GELU -> Linear(4096,4096,bias=true)",
+    "matches_glm52_k26_patchmerger_family": true,
+    "matches_k3_v2_projector": false,
+    "mismatch_reason": "The current V2 path has affine pre-LayerNorm and bias-bearing linear layers, while the K3/MoonViT-V2 reference uses bias-free linear layers followed by trainable post RMSNorm.",
+    "historical_result_scope": "Package 15P results are valid for the tested legacy-pre-norm projector implementation; they are not evidence against the exact K3/MoonViT-V2 projector.",
+    "deepseek_target_width": 4096
+  },
+  "decision": {
+    "gate_d": "NO-GO",
+    "next_primary_experiments": [
+      "Implement and unit-test the exact K3/MoonViT-V2 PatchMergerMLPV2 variant at output width 2048 for Qwen proxy.",
+      "Run a matched MoonViT-SO-400M V1 -> Qwen2.5-3B projector-only benchmark under the fixed community contract.",
+      "Keep the GLM-5.2V projector weights as an architecture/weight-shape reference only; their 6144 output cannot plug into Qwen3B or DeepSeek 4096 without retraining.",
+      "Do not promote any legacy-V2 checkpoint to previous_best or DeepSeek candidate until the exact-V2 and V1 controls are compared."
+    ]
+  }
+}

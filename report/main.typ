@@ -33,6 +33,16 @@ MoonViT-V2 有 401.2M 参数，抽取后的 BF16 权重约 802 MB，相对于约
 
 独立 MoonViT-SO-400M 来自 Kimi-VL；当前主线使用 Kimi K3 的 MoonViT3d/MoonViT-V2。两者输出合同同构不代表特征分布或通道宽度相同。视觉塔 revision 与权重哈希是训练 provenance 的组成部分；更换视觉塔必须重训 projector。
 
+= 社区 GLM-5.2V 架构核验
+
+2026-08-06 对公开的 #link("https://huggingface.co/baseten/GLM-5.2-Vision-NVFP4")[GLM-5.2-Vision-NVFP4] 页面、解析后的配置、远程模型代码和独立的 `mm_projector.safetensors` 做了 revision 与 SHA-256 固定。社区卡片明确说明视觉塔来自 #link("https://huggingface.co/moonshotai/Kimi-K2.6")[Kimi-K2.6] 的 MoonViT-3d：27 层、1152 维、2×2 merge；视觉塔和 GLM-5.2 文本主干冻结，只训练约 49.5M 参数的 projector。这里的“来自 K2.6”指视觉塔来源，projector 仍然为 GLM 的 6144 维语言空间重新训练，K2.6 自身的语言宽度为 7168。
+
+公开 projector 的 tensor header 与网页配置一致：`LayerNorm(1152) → flatten(4608) → Linear(4608,4608,bias=true) → GELU → Linear(4608,6144,bias=true)`。文件大小为 99,117,136 bytes，SHA-256 为 `e7c6ce8c27424f292e708e7bbb48ade57ea9f1aaddd28bd6a1020a860d9db80c`。它是结构和尺度的可靠参考，不能直接插入 Qwen 的 2048 或 DeepSeek 的 4096 输出边界。
+
+这次审计还修正了我们对本地 V2 的表述。当前 `PatchMergerProjector` 在 `[tokens,4,1024]` 上使用 affine pre-LayerNorm 和带 bias 的两层 MLP；它属于 V1-style PatchMerger 家族。vendored Kimi-K3/MoonViT-V2 的 `PatchMergerMLPV2` 则是 bias-free 两层 MLP 加 trainable post-RMSNorm。因而 Package 15P 的早期塌缩结论只适用于已训练的本地实现，不能写成对官方 K3 V2 结构的否定。详细来源、resolved revision、文件哈希与张量形状见 `experiments/qwen3b_community_eval_20260805/community_architecture_audit_v1/COMMUNITY_SOURCES.json`。
+
+下一步固定为两条匹配控制：一条实现精确 K3 V2 projector，另一条使用公开 #link("https://huggingface.co/moonshotai/MoonViT-SO-400M")[MoonViT-SO-400M] V1 在 Qwen2.5-3B 上复现。两条都沿用相同图像预处理、训练预算、在线 collapse guards 和 ScreenSpot/TextVQA/DocVQA/OCRBench 合同；旧的 legacy-V2 checkpoint 不再自动成为 `previous_best`。Gate D 仍为 NO-GO。
+
 = 权重与张量合同
 
 #table(

@@ -1,8 +1,8 @@
 {
   "format_version": "experiment-artifact-manifest-v1",
-  "created_at_utc": "2026-08-06T09:26:06.777721+00:00",
+  "created_at_utc": "2026-08-06T09:49:19.049837+00:00",
   "root": "projector_residual_screen_v1",
-  "git_base_sha": "b7ae55360305ac3c35a4c25c04dfe9dffc836fa7",
+  "git_base_sha": "263a845fd5a456904c2fb10f07272c7f8039f08e",
   "files": {
     "failures/attempt01_scalar_gate_hash/ATTEMPT.json": {
       "bytes": 440,

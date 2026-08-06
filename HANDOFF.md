@@ -1,5 +1,33 @@
 # Handoff
 
+## Community GLM-5.2V architecture audit (2026-08-06)
+
+The public `baseten/GLM-5.2-Vision-NVFP4` page has now been checked against
+the resolved files and the independent projector tensor header. It explicitly
+uses the MoonViT-3d vision tower from Kimi-K2.6: 27 layers, width 1152, 2x2
+merge, frozen vision and frozen GLM-5.2 text. The newly trained component is a
+49.5M-parameter PatchMerger with affine pre-LayerNorm and bias-bearing
+`4608 -> 4608 -> 6144` linear layers. The standalone projector file is bound by
+SHA-256 `e7c6ce8c27424f292e708e7bbb48ade57ea9f1aaddd28bd6a1020a860d9db80c`.
+
+This separates the two meanings of “来自 K2.6”: the tower is copied from the
+K2.6 lineage; the GLM-compatible projector is trained for GLM's 6144-wide text
+space. It is not a directly reusable K2.6 projector because K2.6 targets 7168.
+
+The audit also found a naming/structure boundary in our code. The current
+`PatchMergerProjector` used with the `[tokens,4,1024]` MoonViT-V2 tower is a
+legacy V1-style implementation (`pre_norm + bias-bearing MLP`). The vendored
+Kimi-K3/MoonViT-V2 reference uses `PatchMergerMLPV2`: bias-free MLP followed by
+trainable post-RMSNorm. Package 15P therefore remains a valid failure record
+for the implementation that was trained, but it cannot be presented as a
+failure of the exact K3 V2 projector. The machine-readable source and hash
+record is under
+`experiments/qwen3b_community_eval_20260805/community_architecture_audit_v1/`.
+
+Gate D remains NO-GO. Before promoting any checkpoint, the next matched screen
+must compare an exact K3-V2 projector variant with a MoonViT-SO-400M V1
+projector on Qwen2.5-3B under the same fixed evaluation contract.
+
 ## Projector health contract (2026-08-06, mandatory for the next V100 runs)
 
 The practical objective is easy to state: MoonViT-V2 reads the screenshot, the
@@ -197,9 +225,9 @@ fixed. The candidate will be relaunched after this repair is committed.
 
 ## ⚠️ ACTIVE V100 REAL-VISION BRIDGE (2026-08-06)
 
-**Current task / hard boundary**: the engineering mainline is now a fixed real-data bridge on pure-text `Qwen/Qwen2.5-3B-Instruct`, followed by transfer of the same MoonViT-V2/projector/data/eval contract to DeepSeek-V4-Flash-0731. The 0.5B/synthetic line remains mechanism evidence. Do not rent any server, create a paid resource, run the full DeepSeek weights, or inspect final evaluation halves without explicit authorization. Exact V100 environment evidence is under `experiments/v100_perception_20260804/infra/environment/`.
+**Current task / hard boundary**: the engineering mainline is a fixed real-data bridge on pure-text `Qwen/Qwen2.5-3B-Instruct`, followed by transfer of a validated MoonViT/projector/data/eval contract to DeepSeek-V4-Flash-0731. The 0.5B/synthetic line remains mechanism evidence. The public GLM-5.2V audit now requires two architecture controls before any checkpoint promotion: exact Kimi-K3/MoonViT-V2 `PatchMergerMLPV2`, and MoonViT-SO-400M/K2.6-lineage V1. Do not rent any server, create a paid resource, run the full DeepSeek weights, or inspect final evaluation halves without explicit authorization. Exact V100 environment evidence is under `experiments/v100_perception_20260804/infra/environment/`.
 
-**Experiment packages 1–14 COMPLETE; Packages 15A–15R establish, diagnose and redirect the 3B bridge**: packages 1–12 established auditable caching and mechanism controls. Package 13 fixes preventive replay; Package 14 fixes the smallest reliable sentinel and V100 cost. Package 15A freezes the Qwen2.5-3B model/data/generation/scoring/budget contract before any 3B output. Package 15B closes the real-image load/gradient/optimizer/checkpoint smoke. Package 15C freezes the exact first-4,000 training prefix and teacher targets. Package 15D independently verifies the content-addressed MoonViT cache. Package 15E completes exact 4k projector-only training. Package 15F rejects the first GLM-format ScreenSpot50 candidate. Package 15G confirms the failure on all 1,272 public ScreenSpot rows. Package 15H shows that training raises coordinate-answer probability without learning correct-image coordinate preference. Package 15I preregisters the matched 2,000-grounding/2,000-short-answer treatment before its cache or training result exists. Package 15J independently verifies its content-addressed MoonViT cache. Package 15K completes the exact matched-budget training and checkpoint audit. Packages 15L/15M reject it by preference and free generation: vision/blind/shuffled preference is 52%/56%/54%, while click is 6%/12%/6%. Package 15N localizes a scale/rank collapse at the projector output; Package 15O shows that both collapse guards already fire at the first saved checkpoint, step 100/800 examples. Package 15P freezes a directly transferable step-one geometry repair and completes its independent λ calibration. Package 15Q tests output LayerNorm/RMSNorm and cancels its 500-step expansion after all three arms stop at step 2. Package 15R freezes the residual/gated-residual screen; baseline and zero-init both stop at step 2, and gated is next.
+**Experiment packages 1–14 COMPLETE; Packages 15A–15R establish, diagnose and redirect the 3B bridge**: packages 1–12 established auditable caching and mechanism controls. Package 13 fixes preventive replay; Package 14 fixes the smallest reliable sentinel and V100 cost. Package 15A freezes the Qwen2.5-3B model/data/generation/scoring/budget contract before any 3B output. Package 15B closes the real-image load/gradient/optimizer/checkpoint smoke. Package 15C freezes the exact first-4,000 training prefix and teacher targets. Package 15D independently verifies the content-addressed MoonViT cache. Package 15E completes exact 4k projector-only training. Package 15F rejects the first GLM-format ScreenSpot50 candidate. Package 15G confirms the failure on all 1,272 public ScreenSpot rows. Package 15H shows that training raises coordinate-answer probability without learning correct-image coordinate preference. Package 15I preregisters the matched 2,000-grounding/2,000-short-answer treatment before its cache or training result exists. Package 15J independently verifies its content-addressed MoonViT cache. Package 15K completes the exact matched-budget training and checkpoint audit. Packages 15L/15M reject it by preference and free generation: vision/blind/shuffled preference is 52%/56%/54%, while click is 6%/12%/6%. Package 15N localizes a scale/rank collapse at the projector output; Package 15O shows that both collapse guards already fire at the first saved checkpoint, step 100/800 examples. Package 15P freezes a directly transferable step-one geometry repair and completes its independent λ calibration. Package 15Q tests output LayerNorm/RMSNorm and cancels its 500-step expansion after all three arms stop at step 2. Package 15R freezes the residual/gated-residual screen; baseline and zero-init both stop at step 2, and gated is next. The architecture audit now marks the old V2 label as legacy-pre-norm and blocks promotion until exact K3-V2 and V1 controls are run.
 
 **Pre-rental go/no-go (authoritative top-level table)**:
 
@@ -451,7 +479,7 @@ Everything below this note is current through the pre-repair project history; ne
 ## Immediate next actions
 
 1. ~~Fetch real eval datasets / mix / pack / upload~~ **DONE (2026-08-04)**: all 12 sources staged and sha256-verified; mix 59,198 rows; `train_v1`/`eval_v1`/`sft_art_v1` all on `cyjin-yl/moonvit-dsv4-data`. Historical Gate B early-alignment run DONE (shuffle_delta +0.727 at only ~0.27 epoch). Repaired stock 4B positive control and artifact publishing are also complete.
-1b. **Qwen2.5-3B contract, real-image smoke and exact 4k order/targets are complete in Packages 15A/15B/15C**. The exact `efd942e0…b06b0` step0, pinned BF16-source→FP16-runtime Qwen, 4096 receiver gradient, checkpoint round-trip and `ddca738e…c2fd` training-order manifest all pass. Next build the manifest-bound feature cache and run the matched 4k ScreenSpot baseline with causal controls. Expand to 8k/16k only from contract evidence; every candidate also runs TextVQA, DocVQA, OCRBench, synthetic and language retention.
+1b. **Qwen2.5-3B contract, real-image smoke and exact 4k order/targets are complete in Packages 15A/15B/15C**. The exact `efd942e0…b06b0` step0, pinned BF16-source→FP16-runtime Qwen, 4096 receiver gradient, checkpoint round-trip and `ddca738e…c2fd` training-order manifest all pass. The next architecture screen is now two matched arms: exact K3/MoonViT-V2 `PatchMergerMLPV2` and MoonViT-SO-400M V1/K2.6-lineage PatchMerger, both under the same 3B health and community evaluation contract. Legacy-pre-norm V2 checkpoints remain diagnostic only. Expand to 8k/16k only from contract evidence; every candidate also runs TextVQA, DocVQA, OCRBench, synthetic and language retention.
 2. ~~Overfit check~~ **done on three tracks** — SmolLM2-135M/comfy delta +0.343, Qwen2.5-0.5B/comfy delta +0.282, Qwen2.5-0.5B/flickr8k-1100 delta +0.148 (checkpoint `checkpoints/overfit-qwen05-flickr8k` on the workstation). flickr8k data note: `jxie/flickr8k` (nlphuji is gated); hub fetch kept dying on the proxy, so the 1100 records were decoded offline from the two fully-cached train parquets (script `$HDD/staging/rescue_flickr8k.py`), MANIFEST.json records the resolved revision `56f58c9`. Validation/test parquets were never downloaded — don't need them.
 3. Re-run the read-only Vast offer search immediately before budgeting; do not create an instance without fresh user approval. **Ampere correction**: 4×A100 cannot load the native NVFP4 weights (no FP8/FP4 path; bf16 dequant = 568GB > 320GB) — Gate D primary is 4×H100 PCIe ($6.93/h); 8×A100 SXM4 ($10.30/h) is the scenario-B dequant fallback only; 4×B200 ($21.25/h) is scenario A′ when H100 cannot even run the FP4 forward. Final bill in the report ("最终账单"): scenario A **$55 optimistic / $75 baseline / $110 pessimistic** (download-time sensitivity included; budget $120), scenario A′/B ~$210–310, ceiling $350. Bandwidth and storage are minor (~$5 total) but **destroy the instance at the end — stopped instances keep billing storage ($0.107/GB/mo ≈ $53/week for 2TB)**. The report also carries the full Gate D risk register (R1–R11) with per-risk mitigation and abort points; there is no "guaranteed success" — the guarantee is that failure costs ≤ ~$20 and every failure mode has a planned next step.
 4. On the rented multi-GPU box, run Gate D: native 0731 load → single-image forward → single-batch backward (Dgrad verification) before any training loop exists.

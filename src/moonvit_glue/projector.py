@@ -36,6 +36,10 @@ class ProjectorConfig:
     layer_norm_eps: float = 1e-5
     output_norm: str = "none"
     residual_mode: str = "none"
+    # ``legacy_pre_norm`` is kept as the backward-compatible implementation
+    # used by historical checkpoints. ``kimi_k3_v2`` mirrors the vendored
+    # Kimi-K3/MoonViT-V2 PatchMergerMLPV2 contract: bias-free MLP + post RMSNorm.
+    projector_variant: str = "legacy_pre_norm"
 
     @property
     def flattened_vision_width(self) -> int:
@@ -59,10 +63,27 @@ class ProjectorConfig:
             raise ValueError(
                 "residual_mode must be one of none, zero_init, or gated"
             )
+        if self.projector_variant not in {"legacy_pre_norm", "kimi_k3_v2"}:
+            raise ValueError(
+                "projector_variant must be one of legacy_pre_norm or kimi_k3_v2"
+            )
+        if self.projector_variant == "kimi_k3_v2":
+            if self.output_norm != "none":
+                raise ValueError(
+                    "kimi_k3_v2 owns its post RMSNorm; keep output_norm=none"
+                )
+            if self.residual_mode != "none":
+                raise ValueError("kimi_k3_v2 cannot combine with residual_mode")
 
 
 class PatchMergerProjector(nn.Module):
-    """Kimi-style PatchMerger MLP with a configurable language width."""
+    """Kimi-style PatchMerger MLP with a configurable language width.
+
+    The default preserves the historical project checkpoints. The explicit
+    ``kimi_k3_v2`` variant is source-aligned with Kimi-K3's
+    ``PatchMergerMLPV2`` and is deliberately opt-in so old hashes retain their
+    original meaning.
+    """
 
     config_filename = "projector_config.json"
     weights_filename = "projector.safetensors"
@@ -70,27 +91,53 @@ class PatchMergerProjector(nn.Module):
     def __init__(self, config: ProjectorConfig):
         super().__init__()
         self.config = config
-        self.pre_norm = nn.LayerNorm(config.vision_width, eps=config.layer_norm_eps)
-        self.linear_1 = nn.Linear(
-            config.flattened_vision_width, config.effective_projector_width
-        )
-        self.activation = nn.GELU()
-        self.linear_2 = nn.Linear(
-            config.effective_projector_width, config.language_width
-        )
-        if config.output_norm == "layernorm":
-            # affine=False 保持参数量和 DeepSeek 迁移边界不变。
-            self.output_norm = nn.LayerNorm(
+        if config.projector_variant == "kimi_k3_v2":
+            # This is the exact Kimi-K3/MoonViT-V2 shape contract. The official
+            # implementation has no vision-side pre-norm and no linear bias.
+            self.pre_norm = nn.Identity()
+            self.linear_1 = nn.Linear(
+                config.flattened_vision_width,
+                config.effective_projector_width,
+                bias=False,
+            )
+            self.activation = nn.GELU()
+            self.linear_2 = nn.Linear(
+                config.effective_projector_width,
                 config.language_width,
-                eps=config.layer_norm_eps,
-                elementwise_affine=False,
+                bias=False,
             )
-        elif config.output_norm == "rmsnorm":
-            self.output_norm = _ParameterFreeRMSNorm(
-                config.language_width, config.layer_norm_eps
+            self.output_norm = nn.RMSNorm(
+                config.language_width, eps=config.layer_norm_eps
             )
+            for module in (self.linear_1, self.linear_2):
+                nn.init.trunc_normal_(
+                    module.weight,
+                    std=(2.0 / module.in_features) ** 0.5,
+                )
         else:
-            self.output_norm = nn.Identity()
+            self.pre_norm = nn.LayerNorm(
+                config.vision_width, eps=config.layer_norm_eps
+            )
+            self.linear_1 = nn.Linear(
+                config.flattened_vision_width, config.effective_projector_width
+            )
+            self.activation = nn.GELU()
+            self.linear_2 = nn.Linear(
+                config.effective_projector_width, config.language_width
+            )
+            if config.output_norm == "layernorm":
+                # affine=False 保持参数量和 DeepSeek 迁移边界不变。
+                self.output_norm = nn.LayerNorm(
+                    config.language_width,
+                    eps=config.layer_norm_eps,
+                    elementwise_affine=False,
+                )
+            elif config.output_norm == "rmsnorm":
+                self.output_norm = _ParameterFreeRMSNorm(
+                    config.language_width, config.layer_norm_eps
+                )
+            else:
+                self.output_norm = nn.Identity()
         if config.residual_mode != "none":
             # 残差分支保持 canonical 4096 宽度；分支初值由结构合同冻结。
             self.residual = nn.Linear(
@@ -163,19 +210,25 @@ class PatchMergerProjector(nn.Module):
     def load_trunk(self, directory: str | Path) -> None:
         """Warm-start the language-agnostic trunk from a donor projector.
 
-        ``pre_norm`` and ``linear_1`` only touch vision-side dimensions, so a
-        projector aligned against a small text model can donate them to a
-        projector targeting DeepSeek-V4; ``linear_2`` keeps its fresh init
-        because its output width differs across backbones. All vision-side
-        config fields must match — a V1 (1152-dim) donor cannot warm-start a
-        V2 (1024-dim) projector.
+        ``linear_1`` (and the legacy ``pre_norm``) only touch vision-side
+        dimensions, so a projector aligned against a small text model can
+        donate that trunk to a projector targeting DeepSeek-V4; ``linear_2``
+        and the receiver-facing norm keep their fresh init when the output
+        width differs. All vision-side config fields and the projector variant
+        must match — a V1 (1152-dim) donor cannot warm-start a V2 (1024-dim)
+        projector.
         """
 
         source = Path(directory)
         donor = ProjectorConfig(
             **json.loads((source / self.config_filename).read_text(encoding="utf-8"))
         )
-        for field_name in ("vision_width", "merge_factor", "layer_norm_eps"):
+        for field_name in (
+            "vision_width",
+            "merge_factor",
+            "layer_norm_eps",
+            "projector_variant",
+        ):
             if getattr(donor, field_name) != getattr(self.config, field_name):
                 raise ValueError(
                     f"donor {field_name}={getattr(donor, field_name)} does not match "
@@ -187,11 +240,10 @@ class PatchMergerProjector(nn.Module):
                 f"{self.config.effective_projector_width}"
             )
         state = load_file(str(source / self.weights_filename), device="cpu")
-        trunk = {
-            key: value
-            for key, value in state.items()
-            if key.startswith(("pre_norm.", "linear_1."))
-        }
+        prefixes = ("linear_1.",)
+        if self.config.projector_variant == "legacy_pre_norm":
+            prefixes = ("pre_norm.", "linear_1.")
+        trunk = {key: value for key, value in state.items() if key.startswith(prefixes)}
         self.load_state_dict(trunk, strict=False)
 
 

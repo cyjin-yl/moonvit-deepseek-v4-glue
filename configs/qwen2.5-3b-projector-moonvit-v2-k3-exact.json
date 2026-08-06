@@ -1,0 +1,10 @@
+{
+  "language_width": 2048,
+  "layer_norm_eps": 1e-05,
+  "merge_factor": 4,
+  "projector_width": null,
+  "vision_width": 1024,
+  "output_norm": "none",
+  "residual_mode": "none",
+  "projector_variant": "kimi_k3_v2"
+}
