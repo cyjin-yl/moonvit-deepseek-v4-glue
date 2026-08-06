@@ -2,6 +2,8 @@ import hashlib
 import json
 from pathlib import Path
 
+from moonvit_glue.screenspot_contract import verify_manifest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -37,9 +39,32 @@ def test_architecture_screen_binds_canonical_boundary_and_distinct_towers():
     )
     for arm in arms.values():
         config_path = ROOT / arm["projector"]["config_path"]
-        assert _sha(config_path) == arm["projector"]["config_sha256"]
+        assert _sha(config_path) == arm["projector"]["source_config_sha256"]
         config = json.loads(config_path.read_text(encoding="utf-8"))
         assert int(config["language_width"]) == 4096
+        initialization = arm["projector"]["initialization"]
+        manifest_path = ROOT / initialization["manifest"]
+        assert _sha(manifest_path) == initialization["manifest_file_sha256"]
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        assert verify_manifest(manifest)
+        assert manifest["manifest_sha256"] == initialization["manifest_sha256"]
+        by_role = {row["role"]: row for row in manifest["roles"]}
+        for role in ("step0", "random_projector"):
+            expected = initialization[role]
+            actual = by_role[role]
+            assert actual["seed"] == expected["seed"]
+            assert actual["tensor_state_sha256"] == expected["tensor_state_sha256"]
+            weight = next(
+                row for row in actual["files"] if row["path"].endswith("projector.safetensors")
+            )
+            assert weight["bytes"] == expected["weights_bytes"]
+            assert weight["sha256"] == expected["weights_sha256"]
+        serialized_config = next(
+            row
+            for row in by_role["step0"]["files"]
+            if row["path"].endswith("projector_config.json")
+        )
+        assert serialized_config["sha256"] == arm["projector"]["config_sha256"]
 
 
 def test_architecture_screen_does_not_reuse_direct_2048_draft():

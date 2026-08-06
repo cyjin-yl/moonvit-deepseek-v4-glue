@@ -169,6 +169,15 @@ def test_architecture_overlay_keeps_qwen_budget_and_rebinds_v1_interface(tmp_pat
     core = _contract()
     core_path = tmp_path / "core.json"
     core_path.write_text(json.dumps(core), encoding="utf-8")
+    projector_config_path = tmp_path / "configs" / "v1.json"
+    projector_config_path.parent.mkdir()
+    projector_config_path.write_text(
+        json.dumps({"vision_width": 1152, "language_width": 4096}),
+        encoding="utf-8",
+    )
+    source_config_sha = __import__("hashlib").sha256(
+        projector_config_path.read_bytes()
+    ).hexdigest()
     sidecar = {
         "base_contract": {
             "path": "core.json",
@@ -189,6 +198,7 @@ def test_architecture_overlay_keeps_qwen_budget_and_rebinds_v1_interface(tmp_pat
                 "projector": {
                     "config_path": "configs/v1.json",
                     "config_sha256": "c" * 64,
+                    "source_config_sha256": source_config_sha,
                     "variant": "legacy_pre_norm",
                     "output_width": 4096,
                     "parameter_count": 40_000_000,

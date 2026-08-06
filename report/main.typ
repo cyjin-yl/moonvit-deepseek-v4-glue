@@ -29,6 +29,12 @@ Package 15P–15R 测试的是 `local_v2_legacy`，其 early-collapse 结果不�
 到 exact K3 V2。V1 cache 已通过 4 张图的 V100 接口 smoke，正式 benchmark 尚未
 开始。Gate D 仍为 **NO-GO**。
 
+两条 matched control 的初始化已经冻结并完成 strict save/load 与确定性重建：
+V1 step0/random 权重文件分别为 `f24f677f…786cf` / `a740f349…5ec0`，exact K3
+V2 分别为 `bec6e8bf…54815` / `7bdfb08c…65ed`。V1 snapshot 权重集合聚合 SHA
+为 `51a39391…f0ef`。训练入口同时绑定 source config、保存后的 serialized config
+和 projector 权重，后续两臂不会因配置文件语义漂移形成假比较。
+
 下一步只做最小高频 screen：两条 control 使用相同样本顺序、预算、receiver、
 health guards 和 parser，在 step 0/1/2/5/10/20/30/50/75/100 观察 collapse
 与 vision-minus-shuffled；通过健康筛选的 arm 才进入完整 ScreenSpot、TextVQA、

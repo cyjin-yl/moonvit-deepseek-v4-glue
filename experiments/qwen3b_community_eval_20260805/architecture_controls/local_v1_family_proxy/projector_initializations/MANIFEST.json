@@ -1,0 +1,88 @@
+{
+  "comparison_rule": "every horizontal method comparison must load the same exact step0 file; random_projector always uses the separately frozen control file",
+  "config": {
+    "language_width": 4096,
+    "layer_norm_eps": 1e-05,
+    "merge_factor": 4,
+    "output_norm": "none",
+    "projector_variant": "legacy_pre_norm",
+    "projector_width": 4608,
+    "residual_mode": "none",
+    "vision_width": 1152
+  },
+  "config_source": "configs/qwen2.5-3b-projector-moonvit-v1-community.json",
+  "config_source_sha256": "4b618111141bea324cdaf5f71cad101d3d68f1c7ef5bbed36e68c003187c54c5",
+  "construction_device": "cpu",
+  "frozen_on": "2026-08-05",
+  "manifest_sha256": "329a179c5762fd76f6e6c9025916f157b341ac8cfb436b7121dbb8f31d8923a9",
+  "roles": [
+    {
+      "dtype": "float32",
+      "files": [
+        {
+          "bytes": 160476720,
+          "path": "step0/projector.safetensors",
+          "sha256": "f24f677f61905e259a6648802b6f4f4a681aa3d3a8965dbccdc8b1cd46d786cf"
+        },
+        {
+          "bytes": 222,
+          "path": "step0/projector_config.json",
+          "sha256": "10d1517cd5e54c9cd5f6a53d006178291efee91982b03b04e7c83be62349c86c"
+        }
+      ],
+      "parameter_count": 40119040,
+      "regenerated_tensor_state_sha256": "d6919a1c7695a559988dd1d530fa0f7d3d4863b8a6dee3edbdf16800c8b79d2a",
+      "role": "step0",
+      "save_restore_tensor_state_sha256": "d6919a1c7695a559988dd1d530fa0f7d3d4863b8a6dee3edbdf16800c8b79d2a",
+      "seed": 20260805,
+      "tensor_state_sha256": "d6919a1c7695a559988dd1d530fa0f7d3d4863b8a6dee3edbdf16800c8b79d2a"
+    },
+    {
+      "dtype": "float32",
+      "files": [
+        {
+          "bytes": 160476720,
+          "path": "random_projector/projector.safetensors",
+          "sha256": "a740f3497e3d6d4388597569f18540385015eafd8fef4acb53e61cb3d0935ec0"
+        },
+        {
+          "bytes": 222,
+          "path": "random_projector/projector_config.json",
+          "sha256": "10d1517cd5e54c9cd5f6a53d006178291efee91982b03b04e7c83be62349c86c"
+        }
+      ],
+      "parameter_count": 40119040,
+      "regenerated_tensor_state_sha256": "56b5c2f7f9c75842d37d7fb4fbbee7ff0a08e604040ed87f79d6573d3185fc7f",
+      "role": "random_projector",
+      "save_restore_tensor_state_sha256": "56b5c2f7f9c75842d37d7fb4fbbee7ff0a08e604040ed87f79d6573d3185fc7f",
+      "seed": 20260806,
+      "tensor_state_sha256": "56b5c2f7f9c75842d37d7fb4fbbee7ff0a08e604040ed87f79d6573d3185fc7f"
+    }
+  ],
+  "schema_version": "canonical-projector-initializations-v1",
+  "source_config": {
+    "community_lineage": {
+      "qwen_control_rule": "same vision-side structure, target width fixed at canonical 4096; use the shared frozen 4096 -> 2048 Qwen receiver",
+      "reference_projector_shape": "LayerNorm(1152) -> flatten(4608) -> Linear(4608,4608) -> GELU -> Linear(4608,6144)",
+      "text_target": "zai-org/GLM-5.2",
+      "vision_source": "moonshotai/Kimi-K2.6"
+    },
+    "language_width": 4096,
+    "layer_norm_eps": 1e-05,
+    "merge_factor": 4,
+    "notes": [
+      "This is an architecture control, not a claim that GLM-5.2V projector weights load into Qwen or DeepSeek.",
+      "The V1 control shares the community K2.6 MoonViT family; its target width is canonical 4096 and Qwen uses the same fixed 4096 -> 2048 receiver as V2."
+    ],
+    "output_norm": "none",
+    "projector_variant": "legacy_pre_norm",
+    "projector_width": 4608,
+    "residual_mode": "none",
+    "schema_version": "community-glm52v1-qwen3b-architecture-control-v1",
+    "transfer_status": "transferable_with_runtime_validation",
+    "vision_revision": "a889d399ff2306053e4e28d499d3b8f97d3e5007",
+    "vision_tower": "moonshotai/MoonViT-SO-400M",
+    "vision_width": 1152
+  },
+  "torch_version": "2.10.0+cu128"
+}

@@ -379,6 +379,25 @@ def load_architecture_overlay(
     for key in ("config_path", "config_sha256", "output_width", "parameter_count"):
         if key not in projector:
             raise ValueError(f"architecture arm projector is missing {key}")
+    raw_projector_config = Path(str(projector["config_path"]))
+    projector_config_path = (
+        raw_projector_config
+        if raw_projector_config.is_absolute()
+        else root / raw_projector_config
+    )
+    if not projector_config_path.is_file():
+        candidate = architecture_control_path.parent / raw_projector_config
+        if candidate.is_file():
+            projector_config_path = candidate
+    if not projector_config_path.is_file():
+        raise FileNotFoundError(
+            f"architecture projector source config is absent: {projector_config_path}"
+        )
+    source_config_sha = projector.get("source_config_sha256")
+    if source_config_sha is not None and sha256_file(projector_config_path) != str(
+        source_config_sha
+    ):
+        raise ValueError("architecture projector source config SHA-256 differs")
 
     effective = copy.deepcopy(core_contract)
     effective_vision = effective["vision_tower"]
@@ -413,6 +432,9 @@ def load_architecture_overlay(
         {
             "config": str(projector["config_path"]),
             "config_sha256": str(projector["config_sha256"]),
+            "source_config_sha256": (
+                str(source_config_sha) if source_config_sha is not None else None
+            ),
             "projector_variant": projector.get(
                 "variant", effective_projector.get("projector_variant", "legacy_pre_norm")
             ),
@@ -1157,6 +1179,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
     )
     receiver_path = args.receiver_dir / "proxy_receiver.safetensors"
     projector_path = args.projector_dir / "projector.safetensors"
+    projector_config_path = args.projector_dir / "projector_config.json"
     canonical_projector = contract["canonical_projector"]
     canonical_projector_sha = canonical_projector["initialization_contract"][
         "step0"
@@ -1168,6 +1191,10 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
             )
         if sha256_file(projector_path) != canonical_projector_sha:
             raise ValueError("step0 projector SHA-256 differs from the frozen contract")
+        if sha256_file(projector_config_path) != str(
+            canonical_projector["config_sha256"]
+        ):
+            raise ValueError("step0 projector config SHA-256 differs from the contract")
         projector_binding = canonical_binding(
             weights_sha256=canonical_projector_sha,
             parameter_count=int(canonical_projector["parameter_count"]),

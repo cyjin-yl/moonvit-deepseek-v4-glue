@@ -41,7 +41,8 @@
       },
       "projector": {
         "config_path": "configs/qwen2.5-3b-projector-moonvit-v1-community.json",
-        "config_sha256": "4b618111141bea324cdaf5f71cad101d3d68f1c7ef5bbed36e68c003187c54c5",
+        "source_config_sha256": "4b618111141bea324cdaf5f71cad101d3d68f1c7ef5bbed36e68c003187c54c5",
+        "config_sha256": "10d1517cd5e54c9cd5f6a53d006178291efee91982b03b04e7c83be62349c86c",
         "variant": "legacy_pre_norm",
         "vision_width": 1152,
         "merge_factor": 4,
@@ -50,7 +51,26 @@
         "parameter_count": 40119040,
         "initialization_seed": 20260805,
         "random_projector_seed": 20260806,
-        "initialization_manifest": "experiments/qwen3b_community_eval_20260805/architecture_controls/local_v1_family_proxy/projector_initializations/MANIFEST.json"
+        "initialization_manifest": "experiments/qwen3b_community_eval_20260805/architecture_controls/local_v1_family_proxy/projector_initializations/MANIFEST.json",
+        "initialization": {
+          "manifest": "experiments/qwen3b_community_eval_20260805/architecture_controls/local_v1_family_proxy/projector_initializations/MANIFEST.json",
+          "manifest_file_sha256": "95e7d73a0ffda3139fc147ea04e5f2fc0cba8e9e57dce691b141fceb0f8f2656",
+          "manifest_sha256": "329a179c5762fd76f6e6c9025916f157b341ac8cfb436b7121dbb8f31d8923a9",
+          "step0": {
+            "seed": 20260805,
+            "dtype": "float32",
+            "weights_bytes": 160476720,
+            "weights_sha256": "f24f677f61905e259a6648802b6f4f4a681aa3d3a8965dbccdc8b1cd46d786cf",
+            "tensor_state_sha256": "d6919a1c7695a559988dd1d530fa0f7d3d4863b8a6dee3edbdf16800c8b79d2a"
+          },
+          "random_projector": {
+            "seed": 20260806,
+            "dtype": "float32",
+            "weights_bytes": 160476720,
+            "weights_sha256": "a740f3497e3d6d4388597569f18540385015eafd8fef4acb53e61cb3d0935ec0",
+            "tensor_state_sha256": "56b5c2f7f9c75842d37d7fb4fbbee7ff0a08e604040ed87f79d6573d3185fc7f"
+          }
+        }
       },
       "transfer_status": "transferable_with_runtime_validation"
     },
@@ -68,7 +88,8 @@
       },
       "projector": {
         "config_path": "configs/qwen2.5-3b-projector-moonvit-v2-k3-exact.json",
-        "config_sha256": "7bc4bb82cb4b834bf2f2c62ea646518e9e8f9a74277400fb6c08293ef6f701d4",
+        "source_config_sha256": "7bc4bb82cb4b834bf2f2c62ea646518e9e8f9a74277400fb6c08293ef6f701d4",
+        "config_sha256": "0f39cc8dd48e33921a546ffc236a5ff8a66388bbf41ddec08cb8abc1b95d7405",
         "variant": "kimi_k3_v2",
         "vision_width": 1024,
         "merge_factor": 4,
@@ -77,7 +98,26 @@
         "parameter_count": 33558528,
         "initialization_seed": 20260805,
         "random_projector_seed": 20260806,
-        "initialization_manifest": "experiments/qwen3b_community_eval_20260805/architecture_controls/local_v2_exact_k3/projector_initializations/MANIFEST.json"
+        "initialization_manifest": "experiments/qwen3b_community_eval_20260805/architecture_controls/local_v2_exact_k3/projector_initializations/MANIFEST.json",
+        "initialization": {
+          "manifest": "experiments/qwen3b_community_eval_20260805/architecture_controls/local_v2_exact_k3/projector_initializations/MANIFEST.json",
+          "manifest_file_sha256": "aeeb1ce2b3fd768ca24140a8b65c5d4e8d377bf1a9d635c9086b42f5233d4601",
+          "manifest_sha256": "d4ba5aeb362547bc5ed7478ca7a21920f91ebbaba97e228fa57092bbcc96e529",
+          "step0": {
+            "seed": 20260805,
+            "dtype": "float32",
+            "weights_bytes": 134234440,
+            "weights_sha256": "bec6e8bffbc6b08fe8f2c33691d4653a417becb87692db2496b8fc3449f54815",
+            "tensor_state_sha256": "474a0041d7589fc3576f8f235aaa0aef43fb39235b893cdf291f9b70acd9f31a"
+          },
+          "random_projector": {
+            "seed": 20260806,
+            "dtype": "float32",
+            "weights_bytes": 134234440,
+            "weights_sha256": "7bdfb08cc0f7198a3225e151d4454786c0ffb9b0ac588d1c810afd5da9f565ed",
+            "tensor_state_sha256": "383838bce753eff864b6e1a504964114a88d3294421f45e156f350af647c543b"
+          }
+        }
       },
       "transfer_status": "transferable_with_runtime_validation"
     }

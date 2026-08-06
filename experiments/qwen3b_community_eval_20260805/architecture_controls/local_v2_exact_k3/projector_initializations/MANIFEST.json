@@ -1,0 +1,74 @@
+{
+  "comparison_rule": "every horizontal method comparison must load the same exact step0 file; random_projector always uses the separately frozen control file",
+  "config": {
+    "language_width": 4096,
+    "layer_norm_eps": 1e-05,
+    "merge_factor": 4,
+    "output_norm": "none",
+    "projector_variant": "kimi_k3_v2",
+    "projector_width": null,
+    "residual_mode": "none",
+    "vision_width": 1024
+  },
+  "config_source": "configs/qwen2.5-3b-projector-moonvit-v2-k3-exact.json",
+  "config_source_sha256": "7bc4bb82cb4b834bf2f2c62ea646518e9e8f9a74277400fb6c08293ef6f701d4",
+  "construction_device": "cpu",
+  "frozen_on": "2026-08-05",
+  "manifest_sha256": "d4ba5aeb362547bc5ed7478ca7a21920f91ebbaba97e228fa57092bbcc96e529",
+  "roles": [
+    {
+      "dtype": "float32",
+      "files": [
+        {
+          "bytes": 134234440,
+          "path": "step0/projector.safetensors",
+          "sha256": "bec6e8bffbc6b08fe8f2c33691d4653a417becb87692db2496b8fc3449f54815"
+        },
+        {
+          "bytes": 217,
+          "path": "step0/projector_config.json",
+          "sha256": "0f39cc8dd48e33921a546ffc236a5ff8a66388bbf41ddec08cb8abc1b95d7405"
+        }
+      ],
+      "parameter_count": 33558528,
+      "regenerated_tensor_state_sha256": "474a0041d7589fc3576f8f235aaa0aef43fb39235b893cdf291f9b70acd9f31a",
+      "role": "step0",
+      "save_restore_tensor_state_sha256": "474a0041d7589fc3576f8f235aaa0aef43fb39235b893cdf291f9b70acd9f31a",
+      "seed": 20260805,
+      "tensor_state_sha256": "474a0041d7589fc3576f8f235aaa0aef43fb39235b893cdf291f9b70acd9f31a"
+    },
+    {
+      "dtype": "float32",
+      "files": [
+        {
+          "bytes": 134234440,
+          "path": "random_projector/projector.safetensors",
+          "sha256": "7bdfb08cc0f7198a3225e151d4454786c0ffb9b0ac588d1c810afd5da9f565ed"
+        },
+        {
+          "bytes": 217,
+          "path": "random_projector/projector_config.json",
+          "sha256": "0f39cc8dd48e33921a546ffc236a5ff8a66388bbf41ddec08cb8abc1b95d7405"
+        }
+      ],
+      "parameter_count": 33558528,
+      "regenerated_tensor_state_sha256": "383838bce753eff864b6e1a504964114a88d3294421f45e156f350af647c543b",
+      "role": "random_projector",
+      "save_restore_tensor_state_sha256": "383838bce753eff864b6e1a504964114a88d3294421f45e156f350af647c543b",
+      "seed": 20260806,
+      "tensor_state_sha256": "383838bce753eff864b6e1a504964114a88d3294421f45e156f350af647c543b"
+    }
+  ],
+  "schema_version": "canonical-projector-initializations-v1",
+  "source_config": {
+    "language_width": 4096,
+    "layer_norm_eps": 1e-05,
+    "merge_factor": 4,
+    "output_norm": "none",
+    "projector_variant": "kimi_k3_v2",
+    "projector_width": null,
+    "residual_mode": "none",
+    "vision_width": 1024
+  },
+  "torch_version": "2.10.0+cu128"
+}

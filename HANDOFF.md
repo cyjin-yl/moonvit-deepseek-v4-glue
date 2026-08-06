@@ -17,6 +17,16 @@ reserved rows are dummy pure-text initialization; DeepSeek `<｜image｜>` is ID
 Qwen3.5 native token rows belong to a diagnostic receiver-prior control and never
 replace the pure-text Qwen contract.
 
+The matched V1/exact-K3 V2 initialization contract is now executable. Both
+step0 (seed 20260805) and random-projector (seed 20260806) were serialized and
+verified by regeneration plus strict save/load. V1 step0 is
+`f24f677f…786cf`; exact K3 V2 step0 is `bec6e8bf…54815`. The V1 snapshot weight
+set is bound to aggregate SHA `51a39391…f0ef`. Machine-readable manifests are
+under `experiments/qwen3b_community_eval_20260805/architecture_controls/`;
+complete 589 MB of projector tensors remain on the workstation HDD under
+`data/qwen3b_contract/architecture_controls/`. The next pane command should
+materialize the two effective contracts and build the V1 50-row health cache.
+
 ## Community GLM-5.2V architecture audit (2026-08-06)
 
 The public `baseten/GLM-5.2-Vision-NVFP4` page has now been checked against
