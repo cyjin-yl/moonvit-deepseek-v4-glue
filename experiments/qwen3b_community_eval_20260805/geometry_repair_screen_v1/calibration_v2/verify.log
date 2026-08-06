@@ -1,0 +1,100 @@
+{
+  "format_version": "qwen3b-geometry-calibration-verification-v1",
+  "status": "verified",
+  "runner_git_sha": "1dcf61753a1dfe5679f0cdf2dc43b1882a971d40",
+  "core_contract_file_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+  "screen_contract_file_sha256": "4b23e708e1fb0ff4c4bfa9f974d2680128f579bf43e60ce2ab5d3436f2170e8e",
+  "training_order_manifest_file_sha256": "640b36840d96e765e694d888f4db801b216b16081d52c963c34d4e0bfa93d5ee",
+  "feature_cache_manifest_file_sha256": "1f035374a0db01c8347dfcb2fb6aa6c5e4aad7128ccaa4e169e17f784a6c8a41",
+  "reference_projector_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0",
+  "checkpoint_projector_sha256": "08bdda72d5f984edbf7931dc4eb3dad8f3b296b05c18afa0364071dd1fdc19b1",
+  "checkpoint_manifest_sha256": "99bef0b084bba8a17f0ae960d6a73d4aea0f36457c04dfde8112e61c845113fc",
+  "training_history_sha256": "c22a01631598d4ca4850347474f39171853cc9ba22da4176e0a0fac6067df3a8",
+  "record_ids": [
+    "showui_desktop_001540",
+    "docvqa_train_013657",
+    "showui_desktop_004133",
+    "textvqa_train_016391",
+    "showui_desktop_003854",
+    "train_006489",
+    "showui_desktop_001562",
+    "textvqa_train_028980"
+  ],
+  "pooled_sha256": "92d57dd38d95c68a40e5e917792da21be91e4495429d3c3ffea82faabbb8e7ee",
+  "geometry": {
+    "total": 35.00701904296875,
+    "scale": 31.873992919921875,
+    "relative_spread": 2.6293909549713135,
+    "centered_gram": 0.5036343336105347,
+    "current_rms": 36.62332534790039,
+    "reference_rms": 0.12937752902507782,
+    "rms_ratio": 283.07330322265625,
+    "current_between_rms": 2.919761896133423,
+    "reference_between_rms": 0.052200451493263245,
+    "current_relative_spread": 0.07972410321235657,
+    "reference_relative_spread": 0.4034738540649414,
+    "relative_spread_ratio": 0.19759422540664673
+  },
+  "unweighted_auxiliary_gradient_norm": 3.8781849596907043,
+  "recorded_ce_gradient_norm_before_clip": 0.7901650667190552,
+  "derived_arms": {
+    "control": {
+      "target_gradient_ratio": 0.0,
+      "lambda": 0.0
+    },
+    "ratio005": {
+      "target_gradient_ratio": 0.05,
+      "lambda": 0.01018730507868909
+    },
+    "ratio020": {
+      "target_gradient_ratio": 0.2,
+      "lambda": 0.04074922031475636
+    },
+    "ratio080": {
+      "target_gradient_ratio": 0.8,
+      "lambda": 0.16299688125902545
+    }
+  },
+  "per_parameter_gradients": [
+    {
+      "name": "pre_norm.weight",
+      "numel": 1024,
+      "gradient_norm": 0.5967691540718079,
+      "gradient_nonzero": 1024
+    },
+    {
+      "name": "pre_norm.bias",
+      "numel": 1024,
+      "gradient_norm": 0.8428378105163574,
+      "gradient_nonzero": 1024
+    },
+    {
+      "name": "linear_1.weight",
+      "numel": 16777216,
+      "gradient_norm": 3.5340092182159424,
+      "gradient_nonzero": 16777216
+    },
+    {
+      "name": "linear_1.bias",
+      "numel": 4096,
+      "gradient_norm": 0.07053670287132263,
+      "gradient_nonzero": 4096
+    },
+    {
+      "name": "linear_2.weight",
+      "numel": 16777216,
+      "gradient_norm": 1.2163777351379395,
+      "gradient_nonzero": 16777216
+    },
+    {
+      "name": "linear_2.bias",
+      "numel": 4096,
+      "gradient_norm": 0.006181266624480486,
+      "gradient_nonzero": 4096
+    }
+  ],
+  "capability_claim_allowed": false,
+  "visual_ability_established": false,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

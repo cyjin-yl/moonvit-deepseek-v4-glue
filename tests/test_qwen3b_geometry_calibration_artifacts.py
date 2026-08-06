@@ -13,6 +13,7 @@ CALIBRATION = (
     / "geometry_repair_screen_v1"
     / "calibration"
 )
+CALIBRATION_V2 = CALIBRATION.parent / "calibration_v2"
 
 
 def _load(path: Path) -> dict:
@@ -86,3 +87,42 @@ def test_failed_log_pipeline_is_preserved_without_replacing_gpu_result():
     assert failure["rerun_required"] is False
     assert failure["paid_resources_used"] is False
     assert failure["final_half_scored"] is False
+
+
+def test_corrected_calibration_manifest_rehashes_all_bound_outputs():
+    manifest = _load(CALIBRATION_V2 / "ARTIFACT_MANIFEST.json")
+
+    assert manifest["file_count"] == 7
+    assert manifest["total_bytes"] == 548_944
+    assert manifest["final_half_scored"] is False
+    for relative, expected in manifest["files"].items():
+        path = CALIBRATION_V2 / relative
+        assert path.stat().st_size == expected["bytes"]
+        assert _sha256(path) == expected["sha256"]
+
+
+def test_corrected_calibration_is_runtime_bound_and_numerically_identical():
+    first = _load(CALIBRATION / "SUMMARY.json")
+    summary = _load(CALIBRATION_V2 / "SUMMARY.json")
+    verification = _load(CALIBRATION_V2 / "INDEPENDENT_VERIFICATION.json")
+    run_config = _load(CALIBRATION_V2 / "RUN_CONFIG.json")
+    binding_keys = (
+        "core_contract_file_sha256",
+        "screen_contract_file_sha256",
+        "training_order_manifest_file_sha256",
+        "feature_cache_manifest_file_sha256",
+        "reference_projector_sha256",
+        "checkpoint_projector_sha256",
+        "checkpoint_manifest_sha256",
+        "training_history_sha256",
+    )
+
+    assert summary["status"] == "valid"
+    assert verification["status"] == "verified"
+    assert summary["derived_arms"] == first["derived_arms"]
+    assert summary["geometry"] == first["geometry"]
+    assert summary["record_ids"] == run_config["record_ids"]
+    for key in binding_keys:
+        assert summary[key] == run_config[key] == verification[key]
+    assert summary["paid_resources_used"] is False
+    assert summary["final_half_scored"] is False

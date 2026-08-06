@@ -63,7 +63,7 @@ Package 15P 已完成预注册 geometry-repair 的固定 λ 校准。冻结 step
 
 短筛选的第一次 `control` 启动在 optimizer step 1 之前被绑定检查拒绝：校准 SUMMARY 缺少 `screen_contract_file_sha256`。失败目录保留了完整 supervision records、cache verification、ATTEMPT、traceback 和日志；没有 checkpoint 或能力结果。已登记 pre-result repair，修复只补齐 SUMMARY/独立 verifier 的输入哈希和 record IDs，训练预算、顺序、目标和 λ 不变；修复提交后需重新生成校准再启动四臂。
 
-修复后的 focused regression 又因测试导入路径缺少 `tools/` 而在 collection 阶段失败；该失败单独归档，加入路径后再跑，仍没有 GPU 或训练结果。
+修复后的 focused regression 又因测试导入路径缺少 `tools/` 而在 collection 阶段失败；该失败单独归档，加入路径后再跑，仍没有 GPU 或训练结果。随后 corrected calibration 已在 `calibration_v2/` 重新生成，绑定字段完整且独立 verifier 为 `verified`；四臂 screen 现在可以使用该 v2 SUMMARY。
 
 ## 5. Replay 与 sentinel 的收束结论
 
@@ -114,7 +114,7 @@ Package 15P 已完成预注册 geometry-repair 的固定 λ 校准。冻结 step
 18. **已完成（Package 15N）**：projector/receiver 两个 gross-collapse guards 同时触发；projector effective rank 13.28→1.14、top-1 variance 17.48%→93.46%，receiver ratio 近似不变。pooled tensors、6,125 pair rows、50 per-sample rows及两项失败修复全部保留；17 files / 8,120,202 bytes，V100 full suite 347/347。
 19. **已完成（Package 15O）**：steps 0/100/200/300/400/500 的 frozen representation trajectory；首个保存点 step100 已 gross collapse，13 个 pooled tensors、15,925 pair rows、50 per-sample rows与 500 行训练历史由独立 verifier 重算。
 20. **已完成（Package 15P calibration）**：从冻结 step100/batch100 状态独立重算 geometry loss、辅助梯度和三档 λ；`INDEPENDENT_VERIFICATION.json` 为 `verified`，无能力结论。
-21. **已保留失败并修复（Package 15P）**：首个 control 在 step 1 前因 calibration binding 缺字段停止；未生成结果，修复后重新校准。
+21. **已保留失败并修复（Package 15P）**：首个 control 在 step 1 前因 calibration binding 缺字段停止；未生成结果，修复后 `calibration_v2` 已重新校准并独立验证。
 22. **当前训练 screen**：运行 `control/ratio005/ratio020/ratio080` 四臂各 100 optimizer steps / 800 examples；仅按预注册 representation guards 与 final-20 CE 比例选择最小非零 arm，未通过则停止扩展并重设计。
 23. **并行工程缺口**：补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 240-row language-retention evaluator；任何候选替换 previous-best 前必须跑完。
 

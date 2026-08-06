@@ -1413,7 +1413,7 @@ projector 与 receiver 的首个保存点均同时触发两个 guard。step100 p
   [`ratio080`], [0.80], [0.1629968813], [fixed],
 )
 
-未加权辅助梯度范数为 *3.8781849597*，记录 CE 梯度范数为 *0.7901650667*；输出、配置、日志和独立 verifier 已写入 `geometry_repair_screen_v1/calibration/`，verifier 为 *verified*。第一次日志管道因 `tee` 先于目录创建而返回 1，失败记录保留且不影响已验证 GPU 产物。随后第一次 control 在 step 1 前暴露 SUMMARY 绑定字段缺失；完整失败原始文件位于 `failures/attempt01_calibration_binding/`，修复不改变 objective、预算或 λ。修复后的 focused regression 又记录了测试-only 的 `tools/` 导入路径失败，归档于 `failures/attempt02_test_import/`，已在 GPU 重跑前修复。此处仍禁止视觉能力或 previous-best 结论；修复提交后重新校准，再运行预注册四臂 100-step/800-example screen。
+未加权辅助梯度范数为 *3.8781849597*，记录 CE 梯度范数为 *0.7901650667*；第一次校准结果与绑定失败均完整保留。修复后的校准已重新写入 `geometry_repair_screen_v1/calibration_v2/`，SUMMARY 暴露 core/screen/order/cache/step0/step100/history/record IDs，独立 verifier 为 *verified*，且几何与 λ 数值逐位复现第一次数学结果。第一次日志管道因 `tee` 先于目录创建而返回 1，失败记录保留；第一次 control 在 step 1 前暴露 SUMMARY 绑定字段缺失，完整原始文件位于 `failures/attempt01_calibration_binding/`。修复后的 focused regression 又记录了测试-only 的 `tools/` 导入路径失败，归档于 `failures/attempt02_test_import/`，已在 GPU 重跑前修复。此处仍禁止视觉能力或 previous-best 结论；下一步使用 v2 SUMMARY 运行预注册四臂 100-step/800-example screen。
 
 == 工程主线与 Gate D 真实缺口（2026-08-06）
 
@@ -1714,6 +1714,7 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
   [2026-08-06], [包 15P 在任何 screen checkpoint 前完成 geometry-repair λ 校准：unweighted auxiliary/CE gradient norm 为 3.87818/0.79017，三档固定 λ 为 0.0101873/0.0407492/0.162997；独立 verifier 为 verified。首轮 tee 目录编排失败已保留，不影响 GPU 产物。],
   [2026-08-06], [包 15P 的第一次 control 在 optimizer step 1 前因 calibration SUMMARY 缺少 screen-contract hash 被拒绝；完整 supervision/failure 原始文件已保存，修复只补齐绑定字段并重新校准，未产生 checkpoint 或能力结果。],
   [2026-08-06], [包 15P 修复后的 focused regression 仅因测试导入路径缺少 tools/ 而在 collection 阶段失败；失败已归档并修复，没有 GPU 或训练结果。],
+  [2026-08-06], [包 15P corrected calibration_v2 重新生成并由独立 verifier 核验：所有 trainer bindings 完整，λ 与几何值逐位复现；下一步启动四臂短 screen。],
   [2026-08-05], [固定 revision 的 DeepSeek 量化 runtime 源码审计与 GPU 矩阵成稿：forward 集成缺少已确认 autograd 证据，SM120/121 受 DeepGEMM #372 weight-load blocker 影响；首个付费建议降为单卡 SM100/B200 最小 kernel gate，仍等待授权。],
 )
 

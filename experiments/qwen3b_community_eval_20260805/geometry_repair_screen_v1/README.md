@@ -35,7 +35,9 @@ calibration summary did not expose its screen-contract hash. Its complete
 supervision and failure files are retained under
 `failures/attempt01_calibration_binding/`. The repair adds every input binding
 to the summary and makes the independent verifier check them; calibration will
-be regenerated before any arm is allowed to train.
+be regenerated before any arm is allowed to train. The corrected, runtime-bound
+calibration is archived under `calibration_v2/` and is the only calibration
+output eligible for the short screen.
 
 A focused regression collection then exposed a test-only import-path omission;
 that log is retained under `failures/attempt02_test_import/` and has no bearing
