@@ -57,6 +57,7 @@ def parse_args() -> argparse.Namespace:
         "--token-selection", choices=("prefix", "uniform", "mean_pool"), default="prefix",
         help="固定 token 预算下的序列选择/压缩方式",
     )
+    p.add_argument("--projector-scale", type=float, default=1.0)
     p.add_argument("--steps", type=int, default=3)
     p.add_argument("--learning-rate", type=float, default=5e-5)
     p.add_argument("--shuffle-margin-lambda", type=float, default=0.0)
@@ -68,6 +69,8 @@ def main() -> None:
     args = parse_args()
     if args.steps <= 0 or args.max_visual_tokens <= 0:
         raise ValueError("steps and max-visual-tokens must be positive")
+    if not math.isfinite(args.projector_scale) or args.projector_scale <= 0:
+        raise ValueError("projector-scale must be finite and positive")
     started = time.perf_counter()
     if args.out.exists():
         raise FileExistsError(f"refusing to overwrite existing output: {args.out}")
@@ -147,6 +150,7 @@ def main() -> None:
             "feature_rows": feature_selection_meta,
         },
         "steps": args.steps, "learning_rate": args.learning_rate,
+        "projector_scale": args.projector_scale,
         "shuffle_margin_lambda": args.shuffle_margin_lambda, "shuffle_margin": args.shuffle_margin,
         "receiver_width": receiver_width, "native_vision_bypassed": True,
         "native_vision_forward_calls": 0, "capability_claim_allowed": False,
@@ -159,8 +163,8 @@ def main() -> None:
         margin_values = []
         projected_values = []
         for sample, feature, shuffled_feature in feature_rows:
-            _, vision_out, vision_labels = expanded_forward(model=model, projector=projector, receiver=receiver, features=feature, tokenizer=tokenizer, sample=sample, placeholder_token_id=placeholder, device=device)
-            _, shuffle_out, shuffle_labels = expanded_forward(model=model, projector=projector, receiver=receiver, features=shuffled_feature, tokenizer=tokenizer, sample=sample, placeholder_token_id=placeholder, device=device)
+            _, vision_out, vision_labels = expanded_forward(model=model, projector=projector, receiver=receiver, features=feature, tokenizer=tokenizer, sample=sample, placeholder_token_id=placeholder, device=device, projector_scale=args.projector_scale)
+            _, shuffle_out, shuffle_labels = expanded_forward(model=model, projector=projector, receiver=receiver, features=shuffled_feature, tokenizer=tokenizer, sample=sample, placeholder_token_id=placeholder, device=device, projector_scale=args.projector_scale)
             vision_lp = answer_logprob_tensor(vision_out.logits, vision_labels)
             shuffle_lp = answer_logprob_tensor(shuffle_out.logits, shuffle_labels)
             ce_values.append(vision_out.loss.detach().float())

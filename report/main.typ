@@ -1940,3 +1940,15 @@ gradient、NaN/Inf）和真实能力（vision/blind/shuffled、ScreenSpot、Text
 32-sample frozen receiver-prior probe 已完成。固定 seed `20260805`，TextVQA、DocVQA、ShowUI 和普通 VQA 各 8 条，manifest SHA 为 `c726ebfd...a5a629f`。2,000 次 paired bootstrap 的 `vision-minus-shuffle` 结果为：full/prefix 240 `-0.22`、CI `[-0.64,0.13]`；prefix 16 `-0.07`、`[-0.35,0.21]`；uniform 16 `-0.05`、`[-0.31,0.22]`；mean-pool 16 `+0.14`、`[-0.12,0.39]`。四种条件的 `vision-minus-blind` 均有正 CI，说明 receiver 被视觉 token 激活；正确图与 shuffled 图的差异仍不足以支持 grounding。
 
 Qwen2.5-7B 的 32-sample mean-pool 训练 matched control 随后完成：CE-only 的 `vision-minus-shuffle` 为 `+0.1351→+0.2051`，paired margin λ=`0.1` 为 `+0.1351→+0.1722`；两者 RMS/spread 稳定，margin 没有优于 CE-only，梯度峰值约 3,000。尺度 sweep 以文本 embedding RMS `0.01364` 和 projector RMS `0.994` 为参照，测试 projector scale `0.01/0.03/0.1/0.25/1.0`；所有 paired CI 仍跨 0。下一步仅保留 scale=`0.1` 的 matched training screen，失败后停止扩大 Qwen 训练量，转 projector 结构和辅助目标。
+
+== 2026-08-07：scale=0.1 训练与机制经验归档
+
+scale=`0.1` 的 32-sample matched training 使用同一真实答案 manifest、mean-pool 16、循环 derangement、exact step0 projector 与冻结 Qwen2.5-7B receiver。CE-only 的 CE 从 `6.9045` 降至 `5.8405`，`vision-minus-shuffle` 从 `-0.0167` 到 `+0.1297`；paired margin (`lambda=0.1, margin=0.1`) 的 CE 从 `6.9045` 到 `5.9001`，`vision-minus-shuffle` 从 `-0.0167` 到 `+0.2487`。两臂全程 finite，gradient peak 约 `781`。
+
+训练后 32 条 probe 的 2,000 次 paired bootstrap 显示：CE-only 的 `vision-minus-shuffle` 为 `+0.1297`，95% CI `[-0.3042, 0.5542]`；margin 为 `+0.2487`，CI `[-0.1099, 0.6001]`。两臂的 `vision-minus-blind` 均有正 CI，margin 的 `vision-minus-random-projector` 为 `-0.5038`，CI `[-1.0500,-0.0247]`；margin-minus-CE 配对差为 `+0.1190`，CI `[-0.0429,0.2881]`。随机 projector 对照变差和视觉 token 激活都成立，正确图像相对 shuffled 的稳定归因仍未成立。
+
+这轮把几类机制经验收束到同一证据表：projector-only 在不同 receiver 上的容量与视觉预训练先验差异、vision/blind/shuffled/random-projector attribution、token 数量与压缩方式、CE 下降但视觉归因不升、V1/V2 与 mRoPE 对照，以及 RMS/spread/rank/Gram/gradient collapse 轨迹。健康指标只回答表示是否保持可用，paired grounding 指标才回答模型是否依据正确图像。Qwen 代理仍没有可以替换 `previous_best` 的 checkpoint；当前下一项只注册一个 projector 结构或辅助目标变量，并保留严格 matched CE-only control。
+
+== Gate D：当前边界
+
+Gate D 仍为 *NO-GO*。V100 已验证 MoonViT-V2 真权重、4096 projector、placeholder 展开、冻结 receiver 的 backward、自动止损和 checkpoint/RNG/save-resume；完整 DeepSeek-V4-Flash-0731 仍缺真实权重加载、目标 FP4/FP8 input DGRAD、Hash-MoE 图像 forward/backward、batch/routing/activation-checkpointing 一致性、20-step 稳定 checkpoint 以及固定真实 benchmark。按当前节奏，本地还需约 1--3 个短实验周期来冻结候选和补 verifier；真实 DeepSeek 训练仍需用户授权付费硬件，授权前不租卡、不下载完整模型，也不把 Qwen 结果写成 DeepSeek 能力。

@@ -1,6 +1,6 @@
 # 当前工程状态与下一步
 
-更新日期：2026-08-06
+更新日期：2026-08-07
 
 ## 一句话结论
 
@@ -272,3 +272,28 @@ Qwen2.5-7B 反向训练已在 V100 完成一个匹配的 3-step CE-only screen�
 随后做了 projector scale sweep。Qwen2.5-7B 输入 embedding RMS 为 `0.01364`，当前 V2 projector 输出 RMS 为约 `0.994`，约 73 倍差异。scale=`0.01/0.03/0.1/0.25/1.0` 的 32-sample full-token probe 中，`vision−shuffle` 均值约为 `+0.01/+0.00/+0.04/-0.03/-0.22`，所有 paired CI 仍跨 0。尺度必须保留为后续训练变量，但冻结 scale screen 已排除“单纯乘一个常数即可获得可靠归因”。
 
 32-sample mean-pool 训练也完成 matched control：CE-only 的 `vision−shuffle +0.1351→+0.2051`，paired margin λ=`0.1` 为 `+0.1351→+0.1722`；RMS/spread 稳定，梯度峰值约 3,000，margin 没有优于 CE-only。下一项只做 scale=`0.1` 的 matched training screen；若 paired CI 仍跨 0，Qwen 代理训练量暂止，转 projector 结构/辅助目标设计，不再扩展数据或长训。
+
+## 2026-08-07 scale=0.1 matched training 结果
+
+scale=`0.1` 是在 32-sample 预冻结 probe 中唯一值得继续做短训练的尺度。它把 projector 输出 RMS 从约 `0.994` 拉到接近 Qwen2.5-7B 文本 embedding 的数量级参考，同时保持 finite。训练使用 exact step0 projector、mean-pool 16 tokens、同一真实答案 manifest、同一循环 derangement 和冻结 7B receiver；CE-only 与 paired margin (`lambda=0.1`, `margin=0.1`) 是严格匹配的两臂。
+
+| 条件 | CE step0→3 | vision−shuffle step0→3 | 训练健康 | 解释 |
+|---|---:|---:|---|---|
+| scale 0.1 CE-only | `6.9045→5.8405` | `-0.0167→+0.1297` | finite；gradient peak 约 `781` | 有限的正向点估计，未形成稳健归因 |
+| scale 0.1 paired margin | `6.9045→5.9001` | `-0.0167→+0.2487` | finite；gradient peak 约 `781` | 点估计优于 CE-only，仍未过 paired CI |
+
+训练后在同一 32 条 probe 上做 2,000 次 paired bootstrap。CE-only 的 `vision−shuffle` 为 `+0.1297`，95% CI `[-0.3042, 0.5542]`；margin 为 `+0.2487`，CI `[-0.1099, 0.6001]`。两臂的 `vision−blind` 均显著为正，margin 的 `vision−random_projector` 为 `-0.5038`，CI `[-1.0500, -0.0247]`，说明随机 projector 会降低答案概率；这仍然没有证明正确图片胜过 shuffled 图片。margin 相对 CE-only 的配对差为 `+0.1190`，CI `[-0.0429, 0.2881]`，因此改进方向尚未达到“真实 grounding 改进”合同。
+
+这轮支持三个较窄的判断：输入尺度影响训练数值和局部归因，paired margin 比 CE-only 更接近正确方向，7B 训练/保存/回测链路可稳定运行。它反驳“把 projector 乘一个常数就能修复视觉 grounding”，也反驳“随机 projector 结果变差就等于模型已经读懂正确图像”。Qwen 代理当前仍没有可替换 `previous_best` 的 checkpoint；ScreenSpot、TextVQA、DocVQA、OCRBench 和语言保持不应被启动来包装一个尚未过 paired CI 的候选。
+
+### 研究经验归档与下一步
+
+目前仓库已经把以下现象和设计依据作为正式记录：projector-only 在 3B、7B 纯文本 receiver 与 9B 视觉预训练 receiver 上的差异；vision/blind/shuffled/random-projector attribution 的分离；16/32/64/128/240 token 的长度与压缩敏感性；CE 下降而正确图像归因不升；V1/V2 与 Qwen3.5 mRoPE 的版本/位置对照；projector RMS、spread、rank、Gram 和梯度的 collapse 轨迹。每条结论都标注 `capability_claim_allowed`，伪监督旧运行与真实答案运行严格分开。
+
+下一项注册为单变量 projector/辅助目标 screen：优先测试保留 scale=`0.1` 的更强 paired objective 或轻量 residual/尺度约束，并保留同初始化、同预算的 CE-only control。若 32-sample paired CI 仍跨零，Qwen 训练量冻结，转向架构重设计和 DeepSeek runtime 代码审计；不再靠延长训练制造“最好 checkpoint”。
+
+## Gate D 进度估计（2026-08-07）
+
+当前 Gate D 仍是 **NO-GO**。本地已经具备 MoonViT-V2 真权重、4096 projector、placeholder 展开、冻结 receiver 的 projector backward、自动 collapse guard、checkpoint/RNG/save-resume 和固定 benchmark 工具；Qwen2.5-7B 进一步证明 V100 上的低成本训练可以稳定执行。DeepSeek-V4-Flash-0731 仍缺完整权重加载、目标 FP4/FP8 input-gradient、完整 Hash-MoE 图像 forward/backward、batch/routing/activation-checkpointing 一致性、20-step 稳定 checkpoint 与真实 benchmark。
+
+按当前证据，V100 本地还需要约 1--3 个短实验周期（每周期数小时级，取决于远端 tmux 队列）来冻结 projector 结构/辅助目标候选、补齐独立 verifier 和文档。进入 DeepSeek 真实训练仍取决于付费硬件 Gate D；得到授权后，最小顺序是“单模块权重加载 → 单 batch forward → input DGRAD → projector-only backward → 20-step save/resume → 小规模真实评测”。在授权前不下载完整 0731、不租卡，也不把 Qwen 结果写成 DeepSeek 能力。

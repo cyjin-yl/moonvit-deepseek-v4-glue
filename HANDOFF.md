@@ -647,3 +647,19 @@ matched margin arm（λ=0.1）在 7B 上的 16-token 轨迹为 `+0.0333/-0.0568/
 32-sample frozen probe 已完成：固定 seed `20260805`，TextVQA、DocVQA、ShowUI、普通 VQA 各 8 条，manifest SHA `c726ebfd...a5a629f`。2,000 bootstrap 后 full240/prefix16/uniform16/mean_pool16 的 `vision−shuffle` 均值与 CI 分别为 `-0.22[-0.64,0.13]`、`-0.07[-0.35,0.21]`、`-0.05[-0.31,0.22]`、`+0.14[-0.12,0.39]`；`vision−blind` 全为正。receiver 感知视觉 token，正确图像归因仍不稳定。
 
 32-sample mean-pool matched training：CE-only `+0.1351→+0.2051`，margin λ=`0.1` `+0.1351→+0.1722`，margin 没有优于 CE-only，梯度峰值约 3,000。scale sweep（projector RMS 约 0.994、文本 embedding RMS 0.01364）在 `0.01/0.03/0.1/0.25/1.0` 上均未让 paired CI 脱离 0。下一步只做 scale=`0.1` matched training；如果仍失败，停止扩展 Qwen 训练量，转 projector 结构/辅助目标。
+
+## 2026-08-07 scale=0.1 训练结论与交接
+
+scale=`0.1` 的 32-sample matched screen 已完成，使用冻结 manifest SHA `c726ebfd...a5a629f`、mean-pool 16、同一 derangement、同一 exact step0 和冻结 Qwen2.5-7B receiver。CE-only：CE `6.9045→5.8405`，`vision−shuffle -0.0167→+0.1297`，全程 finite，gradient peak 约 `781`。paired margin (`lambda=0.1, margin=0.1`)：CE `6.9045→5.9001`，`vision−shuffle -0.0167→+0.2487`，同样 finite。
+
+训练后 32 条 probe 的 2,000 次 bootstrap：
+
+- trained CE `vision−shuffle=+0.1297`，CI `[-0.3042,0.5542]`；`vision−blind=+1.8596`，CI `[1.2702,2.5173]`。
+- trained margin `vision−shuffle=+0.2487`，CI `[-0.1099,0.6001]`；`vision−blind=+1.7932`，CI `[1.2040,2.4167]`。
+- trained margin 的 `vision−random_projector=-0.5038`，CI `[-1.0500,-0.0247]`；margin-minus-CE 配对差 `+0.1190`，CI `[-0.0429,0.2881]`。
+
+结论：scale 和 paired supervision 能改善点估计与随机 projector 对照，但正确图/打乱图的 paired CI 仍跨零，不能称真实 grounding 改进，不能替换 `previous_best`，也不能启动完整 ScreenSpot/通用 VQA 晋升。该结果支持“数值尺度和监督方向是有效变量”，拒绝“单纯乘常数就能修复归因”。当前下一项只做一个结构/辅助目标变量加 matched CE-only control；若 CI 继续跨零，冻结 Qwen 训练量，整理迁移合同并转 DeepSeek runtime Gate 设计。
+
+研究记录必须继续同时保存训练健康与真实能力：RMS、spread、rank、Gram、gradient、NaN/Inf 与 vision/blind/shuffled/random-projector paired 指标分开报告；旧 cache-only receiver-prior 结果已经降级为伪监督扰动诊断，真实答案 manifest 运行才可作监督接口证据。
+
+Gate D 仍为 **NO-GO**。Qwen 代理已证明 V100 上 projector-only 训练和安全止损链路可重复；完整 DeepSeek-V4-Flash-0731 的权重加载、FP4/FP8 input DGRAD、完整 Hash-MoE 图像 forward/backward、20-step 稳定 save/resume 和真实 benchmark 仍未通过。没有付费硬件授权前，不租卡、不下载完整 0731。

@@ -1,6 +1,6 @@
 # 工程主线、证据边界与 Gate D 缺口
 
-更新日期：2026-08-06。
+更新日期：2026-08-07。
 
 ## 1. 项目主目标
 
@@ -119,3 +119,16 @@ Package 15P 已完成预注册 geometry-repair 的固定 λ 校准。冻结 step
 23. **并行工程缺口**：补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 240-row language-retention evaluator；任何候选替换 previous-best 前必须跑完。
 
 在完成以上本地证据后，若剩余阻塞只来自完整权重容量和量化 DGRAD，再提交最小付费 Gate D 的硬件、时价、GPU-hour、存储与止损上限，等待单独授权。
+
+## 8. 2026-08-07：scale=0.1 训练后更新
+
+32-sample 真实答案 matched training 的 scale=`0.1` 两臂已完成。CE-only 的 CE `6.9045→5.8405`、`vision−shuffle -0.0167→+0.1297`；paired margin (`lambda=0.1`) 的 CE `6.9045→5.9001`、`vision−shuffle -0.0167→+0.2487`。训练全程 finite，梯度峰值约 781。训练后 bootstrap 仍没有让正确图/打乱图差异越过零：CE CI `[-0.3042,0.5542]`，margin CI `[-0.1099,0.6001]`；margin-minus-CE CI `[-0.0429,0.2881]`。因此 scale 和 paired objective 是有效的机制变量，当前没有 candidate promotion，也没有启动完整 ScreenSpot/VQA 晋升。
+
+当前总体判断：
+
+- 3B：真实 Qwen glue、训练安全和正式 benchmark 可跑；视觉能力候选被拒绝。
+- 7B：V100 可完成 projector-only backward 与短训练，真实答案下出现有限正点估计；paired CI 仍跨零，模型规模单独没有解决问题。
+- 9B/Qwen3.5：视觉预训练 receiver 有 token 激活信号，但 projector-only 长训练触及 V100 显存边界；结果只作 receiver-prior 诊断。
+- MoonViT V1/V2：在 3B/9B 对照中都没有稳定消除 paired attribution gap；V2 仍作为最终迁移塔，V1 只保留版本排错用途。
+
+因此 DeepSeek 真实训练还没有时间承诺。若本地最后一个结构/辅助目标短筛选通过，约需 1--3 个短实验周期冻结候选与 verifier；随后仍必须等待付费硬件授权完成权重、FP4/FP8 DGRAD、完整主干和稳定 checkpoint Gate。授权前不租卡或产生外部费用。
