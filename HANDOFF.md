@@ -643,3 +643,7 @@ matched margin arm（λ=0.1）在 7B 上的 16-token 轨迹为 `+0.0333/-0.0568/
 真实答案合同下的后续 token screen：240-token CE-only `vision−shuffle +0.3338→+0.2444`，paired margin λ=`0.1` `+0.3338→+0.3375`；16-token prefix `-0.2741→-0.1613`，uniform `-0.2421→+0.0630`，mean-pool `-0.2036→-0.1363`。这些结果只说明 token 覆盖会影响 receiver 的局部答案归因；8 samples、3 steps、无 bootstrap，不能替代 ScreenSpot。mean-pool 梯度峰值约 4,292，需保留为数值风险记录。
 
 最短后续是对四个 token 条件做逐样本 probe、random-projector 和 bootstrap，再决定是否扩大样本。只有真实 benchmark 通过，才能替代 previous-best 或进入 DeepSeek 候选。旧 cache-only receiver-prior 数字均已降级，见 `docs/current-status.md` 的审计修正节。
+
+32-sample frozen probe 已完成：固定 seed `20260805`，TextVQA、DocVQA、ShowUI、普通 VQA 各 8 条，manifest SHA `c726ebfd...a5a629f`。2,000 bootstrap 后 full240/prefix16/uniform16/mean_pool16 的 `vision−shuffle` 均值与 CI 分别为 `-0.22[-0.64,0.13]`、`-0.07[-0.35,0.21]`、`-0.05[-0.31,0.22]`、`+0.14[-0.12,0.39]`；`vision−blind` 全为正。receiver 感知视觉 token，正确图像归因仍不稳定。
+
+32-sample mean-pool matched training：CE-only `+0.1351→+0.2051`，margin λ=`0.1` `+0.1351→+0.1722`，margin 没有优于 CE-only，梯度峰值约 3,000。scale sweep（projector RMS 约 0.994、文本 embedding RMS 0.01364）在 `0.01/0.03/0.1/0.25/1.0` 上均未让 paired CI 脱离 0。下一步只做 scale=`0.1` matched training；如果仍失败，停止扩展 Qwen 训练量，转 projector 结构/辅助目标。

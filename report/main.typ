@@ -1936,3 +1936,7 @@ gradient、NaN/Inf）和真实能力（vision/blind/shuffled、ScreenSpot、Text
 同一合同的 16-token 选择 screen 给出 prefix `-0.2741→-0.1613`、uniform
 `-0.2421→+0.0630`、mean-pool `-0.2036→-0.1363`。uniform 的终点方向较好，mean-pool
 出现约 `4,292` 的梯度峰值；8 条混合真实答案样本和 3 steps 不足以做能力结论。下一项先为四种 token 条件生成逐样本 probe、random-projector 和 bootstrap，之后再决定是否扩大到 32 samples 或 ScreenSpot50。
+
+32-sample frozen receiver-prior probe 已完成。固定 seed `20260805`，TextVQA、DocVQA、ShowUI 和普通 VQA 各 8 条，manifest SHA 为 `c726ebfd...a5a629f`。2,000 次 paired bootstrap 的 `vision-minus-shuffle` 结果为：full/prefix 240 `-0.22`、CI `[-0.64,0.13]`；prefix 16 `-0.07`、`[-0.35,0.21]`；uniform 16 `-0.05`、`[-0.31,0.22]`；mean-pool 16 `+0.14`、`[-0.12,0.39]`。四种条件的 `vision-minus-blind` 均有正 CI，说明 receiver 被视觉 token 激活；正确图与 shuffled 图的差异仍不足以支持 grounding。
+
+Qwen2.5-7B 的 32-sample mean-pool 训练 matched control 随后完成：CE-only 的 `vision-minus-shuffle` 为 `+0.1351→+0.2051`，paired margin λ=`0.1` 为 `+0.1351→+0.1722`；两者 RMS/spread 稳定，margin 没有优于 CE-only，梯度峰值约 3,000。尺度 sweep 以文本 embedding RMS `0.01364` 和 projector RMS `0.994` 为参照，测试 projector scale `0.01/0.03/0.1/0.25/1.0`；所有 paired CI 仍跨 0。下一步仅保留 scale=`0.1` 的 matched training screen，失败后停止扩大 Qwen 训练量，转 projector 结构和辅助目标。

@@ -124,7 +124,7 @@ def build_inputs(
 def expanded_forward(
     *, model: torch.nn.Module, projector: PatchMergerProjector | None,
     receiver: FixedGroupedReceiverAdapter | None, features: torch.Tensor | None, tokenizer: Any, sample: dict[str, Any],
-    placeholder_token_id: int, device: torch.device,
+    placeholder_token_id: int, device: torch.device, projector_scale: float = 1.0,
 ):
     supervision, input_ids, labels, attention = build_inputs(
         tokenizer=tokenizer, features=features, sample=sample,
@@ -139,7 +139,7 @@ def expanded_forward(
         )
         return supervision, outputs, labels
     assert projector is not None
-    projected = projector([features])[0]
+    projected = projector([features])[0] * float(projector_scale)
     if receiver is not None:
         projected = receiver(projected)
     merged = expand_image_placeholders(

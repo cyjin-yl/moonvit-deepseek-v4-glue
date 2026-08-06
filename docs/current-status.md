@@ -254,3 +254,21 @@ Qwen2.5-7B 反向训练已在 V100 完成一个匹配的 3-step CE-only screen�
 同一真实答案合同下的 16-token 单变量 screen：prefix margin `-0.2741→-0.1613`，uniform margin `-0.2421→+0.0630`，mean-pool margin `-0.2036→-0.1363`。uniform 的方向比 prefix 好，mean-pool 训练中出现 4,292 的梯度峰值；三臂均未达到真实 grounding 改进规则。它支持“token 覆盖/选择是有判别力的变量”，不支持“16-token 任意压缩都能修复 receiver”。
 
 下一步固定顺序：先对 prefix/uniform/mean-pool 和 240 full 做逐样本 step0/step3 probe、random-projector 与 paired bootstrap；只有方向在样本层面稳定，才运行 32-sample probe 或 ScreenSpot50。之后再做 projector scale/结构 screen。任何 arm 只有在真实 ScreenSpot、TextVQA、DocVQA、OCRBench 和 paired CI 同时满足合同后，才可进入 DeepSeek 候选列表。
+
+## 2026-08-07 32-sample token 与尺度机制筛选
+
+固定 seed `20260805` 从 feature cache 与 `train_mix.jsonl` 的交集按四类来源各抽 8 条，冻结 32 条真实答案样本；manifest SHA-256 为
+`c726ebfd...a5a629f`。四个 probe 共享同一顺序、同一循环 derangement、同一 exact step0 projector、同一 random-projector seed，执行 2,000 次 bootstrap。
+
+| 条件 | vision−shuffle 均值 | paired bootstrap 95% CI | positive count | vision−blind 均值 |
+|---|---:|---:|---:|---:|
+| full/prefix 240 | `-0.22` | `[-0.64, 0.13]` | 15/32 | `+2.44` |
+| prefix 16 | `-0.07` | `[-0.35, 0.21]` | 17/32 | `+0.97` |
+| uniform 16 | `-0.05` | `[-0.31, 0.22]` | 18/32 | `+1.05` |
+| mean-pool 16 | `+0.14` | `[-0.12, 0.39]` | 19/32 | `+1.18` |
+
+四种条件的 `vision−blind` 都显著为正，`vision−shuffle` 的 CI 都跨 0。Qwen2.5-7B 会受到视觉 token 影响，仍然不能稳定区分正确图片和 shuffled 图片。mean-pool 的来源分层均值都略正，但每层只有 8 条；random-projector 差异也没有稳定 CI 下界。token 覆盖是有效诊断变量，尚无可晋升的 grounding 改进。
+
+随后做了 projector scale sweep。Qwen2.5-7B 输入 embedding RMS 为 `0.01364`，当前 V2 projector 输出 RMS 为约 `0.994`，约 73 倍差异。scale=`0.01/0.03/0.1/0.25/1.0` 的 32-sample full-token probe 中，`vision−shuffle` 均值约为 `+0.01/+0.00/+0.04/-0.03/-0.22`，所有 paired CI 仍跨 0。尺度必须保留为后续训练变量，但冻结 scale screen 已排除“单纯乘一个常数即可获得可靠归因”。
+
+32-sample mean-pool 训练也完成 matched control：CE-only 的 `vision−shuffle +0.1351→+0.2051`，paired margin λ=`0.1` 为 `+0.1351→+0.1722`；RMS/spread 稳定，梯度峰值约 3,000，margin 没有优于 CE-only。下一项只做 scale=`0.1` 的 matched training screen；若 paired CI 仍跨 0，Qwen 代理训练量暂止，转 projector 结构/辅助目标设计，不再扩展数据或长训。

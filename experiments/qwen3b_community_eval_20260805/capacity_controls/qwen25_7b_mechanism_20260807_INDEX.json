@@ -1,0 +1,31 @@
+{
+  "schema_version": "qwen25-7b-mechanism-index-v1",
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "sample_manifest": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_real_probe32_manifest.json",
+  "sample_manifest_sha256": "c726ebfd3eeafa9521e9342fd88c2423ef3c98bb4d8c72d189622ef687a5a629f",
+  "selection_seed": 20260805,
+  "source_strata": {"textvqa_train": 8, "docvqa_train": 8, "showui_desktop": 8, "train": 8},
+  "bootstrap": {
+    "samples": 2000,
+    "seed": 20260805,
+    "token_conditions": "qwen25_7b_real_probe32_bootstrap_20260807.json",
+    "scale_conditions": "qwen25_7b_probe32_scale_bootstrap_20260807.json"
+  },
+  "raw_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls",
+  "runs": [
+    {"name": "qwen25_7b_real_probe32_prefix240_20260807", "kind": "frozen_probe", "token_selection": "prefix", "max_visual_tokens": 240},
+    {"name": "qwen25_7b_real_probe32_prefix16_20260807", "kind": "frozen_probe", "token_selection": "prefix", "max_visual_tokens": 16},
+    {"name": "qwen25_7b_real_probe32_uniform16_20260807", "kind": "frozen_probe", "token_selection": "uniform", "max_visual_tokens": 16},
+    {"name": "qwen25_7b_real_probe32_mean_pool16_20260807", "kind": "frozen_probe", "token_selection": "mean_pool", "max_visual_tokens": 16},
+    {"name": "qwen25_7b_real_train32_ceonly_meanpool16_20260807", "kind": "train", "token_selection": "mean_pool", "max_visual_tokens": 16, "lambda": 0.0},
+    {"name": "qwen25_7b_real_train32_margin01_meanpool16_20260807", "kind": "train", "token_selection": "mean_pool", "max_visual_tokens": 16, "lambda": 0.1},
+    {"name": "qwen25_7b_real_probe32_scale001_full240_20260807", "kind": "scale_probe", "projector_scale": 0.01},
+    {"name": "qwen25_7b_real_probe32_scale003_full240_20260807", "kind": "scale_probe", "projector_scale": 0.03},
+    {"name": "qwen25_7b_real_probe32_scale01_full240_20260807", "kind": "scale_probe", "projector_scale": 0.1},
+    {"name": "qwen25_7b_real_probe32_scale025_full240_20260807", "kind": "scale_probe", "projector_scale": 0.25},
+    {"name": "qwen25_7b_real_probe32_scale1_full240_20260807", "kind": "scale_probe", "projector_scale": 1.0}
+  ],
+  "capability_claim_allowed": false,
+  "deepseek_transfer_label": "transferable_with_runtime_validation"
+}

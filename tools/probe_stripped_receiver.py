@@ -57,6 +57,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--sample-indices", default="0,1,2,3,4,5,6,7")
     p.add_argument("--max-visual-tokens", type=int, default=16)
     p.add_argument("--token-selection", choices=("prefix", "uniform", "mean_pool"), default="prefix")
+    p.add_argument("--projector-scale", type=float, default=1.0)
     p.add_argument("--random-seed", type=int, default=20260806)
     p.add_argument("--qwen-mrope", action="store_true", help="Qwen3.5-only positional diagnostic; not transferable")
     return p.parse_args()
@@ -77,14 +78,14 @@ def _grid_for_token_count(token_count: int, device: torch.device) -> torch.Tenso
     return torch.tensor([[1, height, width]], dtype=torch.long, device=device)
 
 
-def eval_case(*, model, projector, receiver, tokenizer, sample, feature, placeholder, device, qwen_mrope=False):
+def eval_case(*, model, projector, receiver, tokenizer, sample, feature, placeholder, device, qwen_mrope=False, projector_scale=1.0):
     if qwen_mrope and feature is not None and hasattr(getattr(model, "model", None), "compute_3d_position_ids"):
         supervision, input_ids, labels, attention = build_inputs(
             tokenizer=tokenizer, features=feature, sample=sample,
             placeholder_token_id=placeholder, device=device,
         )
         text_embeddings = model.get_input_embeddings()(input_ids)
-        projected = projector([feature])[0]
+        projected = projector([feature])[0] * float(projector_scale)
         if receiver is not None:
             projected = receiver(projected)
         merged = expand_image_placeholders(
@@ -112,7 +113,7 @@ def eval_case(*, model, projector, receiver, tokenizer, sample, feature, placeho
         _, outputs, labels = expanded_forward(
             model=model, projector=projector, receiver=receiver, features=feature,
             tokenizer=tokenizer, sample=sample, placeholder_token_id=placeholder,
-            device=device,
+            device=device, projector_scale=projector_scale,
         )
     return answer_logprob(outputs.logits, labels)
 
@@ -121,6 +122,8 @@ def main() -> None:
     args = parse_args()
     if args.max_visual_tokens <= 0:
         raise ValueError("max-visual-tokens must be positive")
+    if not math.isfinite(args.projector_scale) or args.projector_scale <= 0:
+        raise ValueError("projector-scale must be finite and positive")
     started = time.perf_counter()
     args.out.mkdir(parents=True, exist_ok=True)
     dtype = getattr(torch, args.dtype)
@@ -171,14 +174,14 @@ def main() -> None:
             cache.get(shuffled["id"], device=device, dtype=torch.float32)[0],
             args.max_visual_tokens, args.token_selection,
         )
-        correct = eval_case(model=model, projector=projector, receiver=receiver, tokenizer=tokenizer, sample=sample, feature=feature, placeholder=placeholder, device=device, qwen_mrope=args.qwen_mrope)
-        shuffled_lp = eval_case(model=model, projector=projector, receiver=receiver, tokenizer=tokenizer, sample=sample, feature=shuffled_feature, placeholder=placeholder, device=device, qwen_mrope=args.qwen_mrope)
+        correct = eval_case(model=model, projector=projector, receiver=receiver, tokenizer=tokenizer, sample=sample, feature=feature, placeholder=placeholder, device=device, qwen_mrope=args.qwen_mrope, projector_scale=args.projector_scale)
+        shuffled_lp = eval_case(model=model, projector=projector, receiver=receiver, tokenizer=tokenizer, sample=sample, feature=shuffled_feature, placeholder=placeholder, device=device, qwen_mrope=args.qwen_mrope, projector_scale=args.projector_scale)
         _, input_ids, labels, attention = build_inputs(tokenizer=tokenizer, features=None, sample=sample, placeholder_token_id=placeholder, device=device)
         with torch.no_grad():
             text_embeddings = model.get_input_embeddings()(input_ids)
             blind_out = model(inputs_embeds=text_embeddings, attention_mask=attention, position_ids=(attention.long().cumsum(dim=-1) - 1).clamp_min(0), labels=labels, use_cache=False)
         blind_lp = answer_logprob(blind_out.logits, labels)
-        random_lp = eval_case(model=model, projector=random_projector, receiver=receiver, tokenizer=tokenizer, sample=sample, feature=feature, placeholder=placeholder, device=device, qwen_mrope=args.qwen_mrope)
+        random_lp = eval_case(model=model, projector=random_projector, receiver=receiver, tokenizer=tokenizer, sample=sample, feature=feature, placeholder=placeholder, device=device, qwen_mrope=args.qwen_mrope, projector_scale=args.projector_scale)
         rows.append({
             "sample_index": index, "sample_id": sample["id"], "shuffled_sample_id": shuffled["id"],
             "vision_answer_logp": correct, "shuffled_answer_logp": shuffled_lp, "blind_answer_logp": blind_lp,
@@ -199,6 +202,7 @@ def main() -> None:
         "weight_manifest_sha256": sha256_file(args.weight_manifest),
         "dtype": args.dtype, "max_visual_tokens": args.max_visual_tokens,
         "token_selection": args.token_selection,
+        "projector_scale": args.projector_scale,
         "qwen_mrope": args.qwen_mrope,
         "sample_indices": indices, "sample_count": len(rows), "random_projector_seed": args.random_seed,
         "native_vision_forward_calls": vision_calls["count"],

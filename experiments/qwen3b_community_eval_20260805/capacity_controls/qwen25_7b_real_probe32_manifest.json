@@ -1,0 +1,639 @@
+{
+  "schema_version": "receiver-real-answer-probe-v2",
+  "selection_seed": 20260805,
+  "stratification": {
+    "sources": [
+      "textvqa_train",
+      "docvqa_train",
+      "showui_desktop",
+      "train"
+    ],
+    "per_source": 8
+  },
+  "source_jsonl": "/run/media/ezra/13D010B6FDBC1A06/data/train_v1/train_mix.jsonl",
+  "sample_order": [
+    "textvqa_train_028123",
+    "textvqa_train_026176",
+    "textvqa_train_022719",
+    "textvqa_train_018795",
+    "textvqa_train_023289",
+    "textvqa_train_005032",
+    "textvqa_train_028980",
+    "textvqa_train_002346",
+    "docvqa_train_016951",
+    "docvqa_train_002067",
+    "docvqa_train_012046",
+    "docvqa_train_016244",
+    "docvqa_train_016770",
+    "docvqa_train_003373",
+    "docvqa_train_011495",
+    "docvqa_train_017335",
+    "showui_desktop_003671",
+    "showui_desktop_002968",
+    "showui_desktop_001402",
+    "showui_desktop_000637",
+    "showui_desktop_001747",
+    "showui_desktop_000340",
+    "showui_desktop_002140",
+    "showui_desktop_000397",
+    "train_002137",
+    "train_006754",
+    "train_007017",
+    "train_004702",
+    "train_001526",
+    "train_001063",
+    "train_002357",
+    "train_005735"
+  ],
+  "records": [
+    {
+      "sample_index": 0,
+      "id": "textvqa_train_028123",
+      "image": "images/textvqa_train_028123.jpg",
+      "image_sha256": "2dce5e93584e48c81dd1e5d9c3135373f46756dfd8fe1094ba2845dc1d44a1c9",
+      "question": "what two letters are written in black on the right side of the scarf?",
+      "answers": [
+        "ac",
+        "mi",
+        "ac",
+        "ac",
+        "ac",
+        "ac",
+        "ac",
+        "ac",
+        "ac",
+        "ac"
+      ],
+      "source": "textvqa_train",
+      "feature_shape": [
+        176,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 1,
+      "id": "textvqa_train_026176",
+      "image": "images/textvqa_train_026176.jpg",
+      "image_sha256": "e9145fba22708a798fbccdf5f075a0d3ba535e1ac0a5962a9bc4e7a6ccaadcd6",
+      "question": "what is the bottom number?",
+      "answers": [
+        "6",
+        "6",
+        "6",
+        "6",
+        "6",
+        "6",
+        "6",
+        "unanswerable",
+        "6",
+        "6"
+      ],
+      "source": "textvqa_train",
+      "feature_shape": [
+        192,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 2,
+      "id": "textvqa_train_022719",
+      "image": "images/textvqa_train_022719.jpg",
+      "image_sha256": "7cda9c3ce29dee9e17e3444bb0e82f5b738f5c7ecefa3da1a0c0f4c7f5ce2dcc",
+      "question": "where does chris law work?",
+      "answers": [
+        "snp, dundee west",
+        "dundee west",
+        "dundee west",
+        "unanswerable",
+        "dundee west",
+        "snp. dundee west",
+        "snp, dundee west",
+        "snp",
+        "snp dundee west",
+        "snp: dundee west"
+      ],
+      "source": "textvqa_train",
+      "feature_shape": [
+        192,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 3,
+      "id": "textvqa_train_018795",
+      "image": "images/textvqa_train_018795.jpg",
+      "image_sha256": "410e365eb72be366e39c51472c1747c9526d45a7e3b318f48f4f655592b04b55",
+      "question": "what is the brand name of this shirt?",
+      "answers": [
+        "umbro",
+        "sharp",
+        "umbro",
+        "umbro",
+        "umbro",
+        "umbro",
+        "sharp",
+        "umbro",
+        "umbro",
+        "umbro"
+      ],
+      "source": "textvqa_train",
+      "feature_shape": [
+        192,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 4,
+      "id": "textvqa_train_023289",
+      "image": "images/textvqa_train_023289.jpg",
+      "image_sha256": "7d774d246c3dc558a9fc33c269ff05fc9cb5a506bc647781223e445e5bee89dc",
+      "question": "which company is sponsoring this bus?",
+      "answers": [
+        "old tramshed",
+        "the old tramshed",
+        "the old tramshed bar and brasserie",
+        "the old tramshed",
+        "the old tramshed",
+        "the old tramshed",
+        "linq",
+        "the old tramshed",
+        "the old tramshed",
+        "old tramshed"
+      ],
+      "source": "textvqa_train",
+      "feature_shape": [
+        208,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 5,
+      "id": "textvqa_train_005032",
+      "image": "images/textvqa_train_005032.jpg",
+      "image_sha256": "af4bb05bf711e8d35aaa3891177714c5a1bf5989392b2a951256143e59e2b110",
+      "question": "what letter is inside the star?",
+      "answers": [
+        "r",
+        "r",
+        "r",
+        "r",
+        "r",
+        "r",
+        "r",
+        "r",
+        "r",
+        "r"
+      ],
+      "source": "textvqa_train",
+      "feature_shape": [
+        192,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 6,
+      "id": "textvqa_train_028980",
+      "image": "images/textvqa_train_028980.jpg",
+      "image_sha256": "9dfd4a2ec28049505895a0d4df569e5550c9761406c4cd4e95ce322dfce897df",
+      "question": "how much is this worth?",
+      "answers": [
+        "half dollar",
+        "half dollar",
+        "50 cents",
+        "50 cents",
+        "half dollar",
+        "half dollar",
+        ".50",
+        "half dollar",
+        "half dollar",
+        "half dollar"
+      ],
+      "source": "textvqa_train",
+      "feature_shape": [
+        192,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 7,
+      "id": "textvqa_train_002346",
+      "image": "images/textvqa_train_002346.jpg",
+      "image_sha256": "fad1eee16b83e10d0be85fe7d366aa545ae5fc2cb6fdea3493b236e198c71087",
+      "question": "what is one of the foreign words on this page?",
+      "answers": [
+        "interventi",
+        "centro",
+        "interventi",
+        "trento",
+        "scuole",
+        "stiffe",
+        "stiffe",
+        "interventi realizzati",
+        "casa",
+        "trento"
+      ],
+      "source": "textvqa_train",
+      "feature_shape": [
+        192,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 8,
+      "id": "docvqa_train_016951",
+      "image": "images/docvqa_train_016951.png",
+      "image_sha256": "515ccf291c3c193f231da30010cf689d4a8603314bca2eacf0584a1c2b588e14",
+      "question": "when was Pension Reform Act formed?",
+      "answers": [
+        "1974"
+      ],
+      "source": "docvqa_train",
+      "feature_shape": [
+        176,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 9,
+      "id": "docvqa_train_002067",
+      "image": "images/docvqa_train_002067.png",
+      "image_sha256": "873a985cbef503fb9f8b3a66143dbefa451f531941c24afd7658fa8ee0fc78b0",
+      "question": "Whose name is mentioned below the document?",
+      "answers": [
+        "Mrs. Doris M. Bailey"
+      ],
+      "source": "docvqa_train",
+      "feature_shape": [
+        208,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 10,
+      "id": "docvqa_train_012046",
+      "image": "images/docvqa_train_012046.png",
+      "image_sha256": "66be55d7cd26178c8068c7f64d43ef4f0f902611549cfa354a951b213d546b07",
+      "question": "What is the name of the University mentioned on the top?",
+      "answers": [
+        "THE ROCKFELLER UNIVERSITY"
+      ],
+      "source": "docvqa_train",
+      "feature_shape": [
+        208,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 11,
+      "id": "docvqa_train_016244",
+      "image": "images/docvqa_train_016244.png",
+      "image_sha256": "3d14c32da3183050012956002fa91f5ee800aef27dc5786bece52156db977fe9",
+      "question": "What is the country for study #945-01/11-0019?",
+      "answers": [
+        "spain",
+        "Spain"
+      ],
+      "source": "docvqa_train",
+      "feature_shape": [
+        208,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 12,
+      "id": "docvqa_train_016770",
+      "image": "images/docvqa_train_016770.png",
+      "image_sha256": "034a03eaa9829f7c2c217ae8dc86e8ca04971afe1e9d2a188dbea89f7433e0e0",
+      "question": "What is the Order No. & date mentioned in the dcoument?",
+      "answers": [
+        "b5132 1/6/61",
+        "B5132 1/6/61"
+      ],
+      "source": "docvqa_train",
+      "feature_shape": [
+        208,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 13,
+      "id": "docvqa_train_003373",
+      "image": "images/docvqa_train_003373.png",
+      "image_sha256": "223373a7a2d010bec8399156f841745969f827c9f2ee34155efcdfc22195fca3",
+      "question": "What is the G/L Account Code mentioned?",
+      "answers": [
+        "04-88-5015-9016-867"
+      ],
+      "source": "docvqa_train",
+      "feature_shape": [
+        208,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 14,
+      "id": "docvqa_train_011495",
+      "image": "images/docvqa_train_011495.png",
+      "image_sha256": "2d7e3525d53abb1121ee257ebc03018d0ae789998d75e667b96fc520e70eb7d7",
+      "question": "Who is the Group Director",
+      "answers": [
+        "Dr. G. Robert Dimarco",
+        "DR. G. ROBERT DIMARCO",
+        "Dr. Dimarco",
+        "Junior Chamber pf Commerce"
+      ],
+      "source": "docvqa_train",
+      "feature_shape": [
+        208,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 15,
+      "id": "docvqa_train_017335",
+      "image": "images/docvqa_train_017335.png",
+      "image_sha256": "f8502aa6a69c8136d8c127bfbbead598bcfb559009d916722d5fb31b521588e5",
+      "question": "what is the number of subjects in young men?",
+      "answers": [
+        "6"
+      ],
+      "source": "docvqa_train",
+      "feature_shape": [
+        208,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 16,
+      "id": "showui_desktop_003671",
+      "image": "images/showui_desktop_003671.jpg",
+      "image_sha256": "3f365ca479f9ea4b6d424325597110404bb478bb65d01a752215fb6901fe31af",
+      "question": "Select to save the song to your Liked Songs.",
+      "answers": [
+        "click(start_box=[906,206])"
+      ],
+      "source": "showui_desktop",
+      "feature_shape": [
+        144,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 17,
+      "id": "showui_desktop_002968",
+      "image": "images/showui_desktop_002968.jpg",
+      "image_sha256": "b48928713de0118f98ee5b6a9ceab2d200f1d7a1b000c3c0443ed91c61508c25",
+      "question": "A toggle switch labeled 'Try the new Outlook.'",
+      "answers": [
+        "click(start_box=[884,65])"
+      ],
+      "source": "showui_desktop",
+      "feature_shape": [
+        144,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 18,
+      "id": "showui_desktop_001402",
+      "image": "images/showui_desktop_001402.jpg",
+      "image_sha256": "b49b936cbff13accdc5b80ec95cc11db8469cc144f75bbe16be9c53d3cf4a677",
+      "question": "Open the Intel Graphics Command Center.",
+      "answers": [
+        "click(start_box=[957,917])"
+      ],
+      "source": "showui_desktop",
+      "feature_shape": [
+        144,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 19,
+      "id": "showui_desktop_000637",
+      "image": "images/showui_desktop_000637.jpg",
+      "image_sha256": "938159a05643a5558ec6ea11545655764fd678975488e2c5ee9b01998b43984a",
+      "question": "Positioned below the toolbar; at the right of sidebar.",
+      "answers": [
+        "click(start_box=[563,47])"
+      ],
+      "source": "showui_desktop",
+      "feature_shape": [
+        160,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 20,
+      "id": "showui_desktop_001747",
+      "image": "images/showui_desktop_001747.jpg",
+      "image_sha256": "e5316d3f71d8808e92fa272ed6840405affd57d228056427a8a488194e1d28b8",
+      "question": "Click to play the video.",
+      "answers": [
+        "click(start_box=[78,972])"
+      ],
+      "source": "showui_desktop",
+      "feature_shape": [
+        144,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 21,
+      "id": "showui_desktop_000340",
+      "image": "images/showui_desktop_000340.jpg",
+      "image_sha256": "b663daf20e6924b4889da6905dbd03739d93c071c9e6f7dd0b8f08aeff599c2f",
+      "question": "clear_queue",
+      "answers": [
+        "click(start_box=[912,970])"
+      ],
+      "source": "showui_desktop",
+      "feature_shape": [
+        160,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 22,
+      "id": "showui_desktop_002140",
+      "image": "images/showui_desktop_002140.jpg",
+      "image_sha256": "d9c8551f3dcec86001acdf45f1a8f4860252fd60d4437ae3d368eb413cb29851",
+      "question": "Located below 'Memoirs of Casanova - Volume 23: English' book.",
+      "answers": [
+        "click(start_box=[396,460])"
+      ],
+      "source": "showui_desktop",
+      "feature_shape": [
+        160,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 23,
+      "id": "showui_desktop_000397",
+      "image": "images/showui_desktop_000397.jpg",
+      "image_sha256": "b083e0ee677be68baa760b1122274a885e09bdd35b4473e9ae5c4f97bfddde93",
+      "question": "Square album cover with a black and white photo of Calvin Harris.",
+      "answers": [
+        "click(start_box=[629,213])"
+      ],
+      "source": "showui_desktop",
+      "feature_shape": [
+        160,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 24,
+      "id": "train_002137",
+      "image": "images/train_002137.jpg",
+      "image_sha256": "161fe7eabc0d4d036f42704f59b20b31f7c8f2aaeb1fb2a46f65294f795f472a",
+      "question": "Name the artist who created this work.",
+      "answers": [
+        "Paul Jacoulet"
+      ],
+      "source": "train",
+      "feature_shape": [
+        81,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 25,
+      "id": "train_006754",
+      "image": "images/train_006754.jpg",
+      "image_sha256": "d45ea989908f8f0fddab65b554a5a8d5147783c7a519e819ce380a4f143a1d8c",
+      "question": "What art style is this painting?",
+      "answers": [
+        "Expressionism"
+      ],
+      "source": "train",
+      "feature_shape": [
+        81,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 26,
+      "id": "train_007017",
+      "image": "images/train_007017.jpg",
+      "image_sha256": "13f885943be270b612c68c45f580ab644cad6de90bae4eb19b4176185ccdd1f8",
+      "question": "What season is this item designed for?",
+      "answers": [
+        "Summer"
+      ],
+      "source": "train",
+      "feature_shape": [
+        192,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 27,
+      "id": "train_004702",
+      "image": "images/train_004702.jpg",
+      "image_sha256": "b0df201a524d953af23a195663265c1832fc72f2608c0f3f4479b0a8cdd10113",
+      "question": "Who is the artist of this painting?",
+      "answers": [
+        "Joseph Wright"
+      ],
+      "source": "train",
+      "feature_shape": [
+        81,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 28,
+      "id": "train_001526",
+      "image": "images/train_001526.jpg",
+      "image_sha256": "9663efd46e7347580570107937e9ad371e04bfddad692b7406597afa95cb51cc",
+      "question": "What artistic movement does this painting belong to?",
+      "answers": [
+        "Art Deco"
+      ],
+      "source": "train",
+      "feature_shape": [
+        81,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 29,
+      "id": "train_001063",
+      "image": "images/train_001063.jpg",
+      "image_sha256": "484ebfd03b17c3ec3f8af83167c35f4a876e13db714aa0bef25d203f8e0ddf62",
+      "question": "What type of painting is this?",
+      "answers": [
+        "landscape"
+      ],
+      "source": "train",
+      "feature_shape": [
+        81,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 30,
+      "id": "train_002357",
+      "image": "images/train_002357.jpg",
+      "image_sha256": "714e0f7151056eeab636dd2ab5dbe169fee2d1a1fe626db90006c8704d92d91d",
+      "question": "Name the artist who created this work.",
+      "answers": [
+        "Angelica Kauffman"
+      ],
+      "source": "train",
+      "feature_shape": [
+        81,
+        4,
+        1024
+      ]
+    },
+    {
+      "sample_index": 31,
+      "id": "train_005735",
+      "image": "images/train_005735.jpg",
+      "image_sha256": "644af17fa527c9d67f960ea771239b9885b760e56a99fe45e44cc1b6ceb7f77c",
+      "question": "What type of painting is this?",
+      "answers": [
+        "portrait"
+      ],
+      "source": "train",
+      "feature_shape": [
+        81,
+        4,
+        1024
+      ]
+    }
+  ]
+}
