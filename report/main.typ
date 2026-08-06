@@ -1998,3 +1998,7 @@ returned shape [2, 8], and step-10 save/resume matched an uninterrupted run
 with maximum absolute projector and loss deltas of 0.0. The first grouped
 feature-shape failure was preserved before retry. This closes the tiny software
 seam; complete 0731 weights and real FP4/FP8 input-DGRAD remain pending.
+
+The same tiny loop also passed in bfloat16 on the V100, including batch 2,
+20 steps, exact save/resume and generation. This covers the local BF16 seam;
+the target 0731 FP4/FP8 kernels remain unverified.

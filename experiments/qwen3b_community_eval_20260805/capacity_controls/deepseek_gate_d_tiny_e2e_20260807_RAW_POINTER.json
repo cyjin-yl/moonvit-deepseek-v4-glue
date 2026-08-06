@@ -2,7 +2,7 @@
   "schema_version": "deepseek-v4-tiny-e2e-pointer-v1",
   "status": "software_tiny_pass_hardware_pending",
   "tool": "tools/gate_d_tiny_deepseek_e2e.py",
-  "tool_sha256": "665a1e1b5155d57ce4b1ac7a2b541c391754e06c0919bc856fe96c19fa14d98a",
+  "tool_sha256": "a886ea1247f6af8aea2398330e9671c2a4490c2cdda7bc7856fe57db7e78e6a5",
   "failure_artifact": {
     "path": "experiments/qwen3b_community_eval_20260805/capacity_controls/deepseek_gate_d_tiny_e2e_20260807_FAILURE.json",
     "sha256": "4df2d2b24c007a2be2f9062cdfae71d407c105f711f43f049e7e11717a311bbc"
@@ -15,6 +15,18 @@
     "batch_size": 2,
     "steps": 20,
     "expanded_sequence_length": 6,
+    "projector_grad_finite_nonzero": true,
+    "language_grads_all_none": true,
+    "projector_max_abs_delta_after_resume": 0.0,
+    "loss_max_abs_delta_after_resume": 0.0,
+    "generate_shape": [2, 8]
+  },
+  "bf16_retry": {
+    "output_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/deepseek_gate_d_tiny_e2e_bf16_20260807",
+    "summary_sha256": "b1b4f81f3580d36314bc86b0677fc692314268e26edbc8a51dc0e39d9746495a",
+    "trace_sha256": "c9b6b3ce25c98a255d01b766a06beee608c1ec5084ac4185ed1af8c0e186a373",
+    "dtype": "bfloat16",
+    "steps": 20,
     "projector_grad_finite_nonzero": true,
     "language_grads_all_none": true,
     "projector_max_abs_delta_after_resume": 0.0,

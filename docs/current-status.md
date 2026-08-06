@@ -358,3 +358,7 @@ run 的最大绝对差为 `0.0`，loss 差为 `0.0`；扩展图像 token 后的 
 形状为 `[2, 8]`。第一次运行因 grouped feature 少了 `[T, M, W]` 的显式 `M=1` 轴
 而在 step 0 前失败，失败 JSON 已保留，修复后的 retry 使用独立目录。该结果证明
 软件级 DeepSeek seam 已经能跑通，完整 0731 权重和 FP4/FP8 kernel 证据仍缺。
+
+同一 tiny 闭环在 V100 `bfloat16` 下也通过 20 steps、batch=2、save/resume 和 generate，
+恢复后的 projector/loss delta 仍为 `0.0`。这覆盖了当前工作站可验证的 BF16 数值路径；
+它不等价于目标 0731 的真实 FP4/FP8 input-DGRAD。

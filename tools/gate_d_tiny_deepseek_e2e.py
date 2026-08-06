@@ -48,14 +48,14 @@ def _tiny_config() -> DeepseekV4Config:
     )
 
 
-def _build(seed: int, device: torch.device) -> VisionCausalLM:
+def _build(seed: int, device: torch.device, dtype: torch.dtype) -> VisionCausalLM:
     torch.manual_seed(seed)
     if device.type == "cuda":
         torch.cuda.manual_seed_all(seed)
-    language_model = DeepseekV4ForCausalLM(_tiny_config()).to(device)
+    language_model = DeepseekV4ForCausalLM(_tiny_config()).to(device=device, dtype=dtype)
     projector = PatchMergerProjector(
         ProjectorConfig(vision_width=3, language_width=32, merge_factor=1, projector_width=8)
-    ).to(device)
+    ).to(device=device, dtype=dtype)
     return VisionCausalLM(
         language_model=language_model,
         projector=projector,
@@ -66,7 +66,7 @@ def _build(seed: int, device: torch.device) -> VisionCausalLM:
     ).to(device)
 
 
-def _batch(seed: int, device: torch.device) -> tuple[torch.Tensor, torch.Tensor, list[torch.Tensor]]:
+def _batch(seed: int, device: torch.device, dtype: torch.dtype) -> tuple[torch.Tensor, torch.Tensor, list[torch.Tensor]]:
     torch.manual_seed(seed)
     if device.type == "cuda":
         torch.cuda.manual_seed_all(seed)
@@ -77,7 +77,7 @@ def _batch(seed: int, device: torch.device) -> tuple[torch.Tensor, torch.Tensor,
         [[1, -100, 5, 7, 2], [1, -100, 8, 9, 2]], dtype=torch.long, device=device
     )
     # projector 的 merge_factor=1 仍要求显式保留 grouped patch 轴 [T, M, W]。
-    features = [torch.randn(2, 1, 3, device=device), torch.randn(2, 1, 3, device=device)]
+    features = [torch.randn(2, 1, 3, device=device, dtype=dtype), torch.randn(2, 1, 3, device=device, dtype=dtype)]
     return input_ids, labels, features
 
 
@@ -167,6 +167,7 @@ def main() -> None:
     parser.add_argument("--steps", type=int, default=20)
     parser.add_argument("--split-step", type=int, default=10)
     parser.add_argument("--seed", type=int, default=20260805)
+    parser.add_argument("--dtype", choices=("float32", "float16", "bfloat16"), default="float32")
     args = parser.parse_args()
     if args.steps <= 1 or not 0 < args.split_step < args.steps:
         raise ValueError("steps must be > 1 and split-step must be inside the run")
@@ -174,16 +175,17 @@ def main() -> None:
     device = torch.device(args.device)
     if device.type == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("CUDA requested but unavailable")
-    input_ids, labels, features = _batch(args.seed + 1, device)
+    dtype = getattr(torch, args.dtype)
+    input_ids, labels, features = _batch(args.seed + 1, device, dtype)
 
-    uninterrupted = _build(args.seed, device)
+    uninterrupted = _build(args.seed, device, dtype)
     uninterrupted_optimizer = torch.optim.AdamW(uninterrupted.projector.parameters(), lr=1e-3)
     uninterrupted_trace = _run_steps(
         uninterrupted, uninterrupted_optimizer, input_ids, labels, features, args.steps, start_step=0
     )
     uninterrupted_state = _projector_state(uninterrupted)
 
-    split = _build(args.seed, device)
+    split = _build(args.seed, device, dtype)
     split_optimizer = torch.optim.AdamW(split.projector.parameters(), lr=1e-3)
     split_trace_a = _run_steps(
         split, split_optimizer, input_ids, labels, features, args.split_step, start_step=0
@@ -192,7 +194,7 @@ def main() -> None:
     checkpoint_path = args.out / f"checkpoint_step{args.split_step:04d}.pt"
     _save_checkpoint(checkpoint_path, split, split_optimizer, args.split_step)
 
-    resumed = _build(args.seed, device)
+    resumed = _build(args.seed, device, dtype)
     resumed_optimizer = torch.optim.AdamW(resumed.projector.parameters(), lr=1e-3)
     restored_step = _restore_checkpoint(checkpoint_path, resumed, resumed_optimizer)
     split_trace_b = _run_steps(
@@ -228,6 +230,7 @@ def main() -> None:
             "platform": platform.platform(),
             "torch": torch.__version__,
             "device": str(device),
+            "dtype": args.dtype,
             "gpu": torch.cuda.get_device_name(device) if device.type == "cuda" else None,
             "cuda_available": torch.cuda.is_available(),
         },

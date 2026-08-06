@@ -169,3 +169,6 @@ projector 梯度 finite/non-zero，语言梯度全 None；恢复后 projector �
 绝对差均为 `0.0`。首轮 grouped feature shape 错误在任何 optimizer step 前停止并
 单独归档，修复后 retry 通过。该结果关闭软件 tiny seam 风险，不能关闭完整 0731、
 真实 FP4/FP8 DGRAD 或大规模显存 Gate。
+
+该 tiny 闭环随后在 V100 `bfloat16` 下重复通过，20 steps 的 save/resume delta 仍为
+`0.0`，说明当前工作站 BF16 seam 稳定；目标 FP4/FP8 kernel 仍必须在授权硬件上单独验证。
