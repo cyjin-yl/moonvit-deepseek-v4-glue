@@ -1889,3 +1889,7 @@ exact V2 的 projector 学习率降到 `5e-5` 后，前两步 rank/spread 几乎
 9B 的官方 HF revision 是 `c202236235762e1c871ad0ccb60c8ee5ba337b9a`，config SHA 是 `d0883072e01861ed0b2d47be3c16c36a8e81c224c7ffaa310c6558fb3f932b05`，权重 SHA 在 `configs/qwen3.5-9b-hf-sha256.json`。这个结果支持接收器容量和视觉预训练先验是当前 3B 失败的候选瓶颈；它没有证明 projector 获得了通用视觉能力。样本数为 1、视觉 token 数为 16、只做一步更新，不能代替固定 ScreenSpot、TextVQA、DocVQA 或 OCRBench。该方法标记为 `transferable_with_runtime_validation`，`capability_claim_allowed=false`。
 
 下一条实验先在 9B BF16 上筛选 32/64/128/240 token 的数值和局部配对稳定性，再做 Qwen2.5-7B 纯文本 matched control。Gate D 继续保持 *NO-GO*，直到 DeepSeek-V4-Flash-0731 的真实量化 input-gradient、完整图像 forward/backward、稳定 save/resume 和固定 benchmark 全部通过。
+
+9B 的 token-length sweep 在 32、64、128、240 个视觉 token 上均通过 finite/input-gradient gate，且原生视觉 hook 均为零；单样本 `vision-minus-shuffle` 为 `+0.1781/-0.4574/+0.2881/-0.8842`。正 margin 没有随 token 数稳定，说明 16-token 的 receiver-prior 信号对 token 序列敏感。Qwen2.5-7B 纯文本 matched control 在 FP16 的 16/240 token 也均 finite，但 `vision-minus-shuffle=-1.0731/-0.8335`，容量增加本身没有带来外部视觉因果。
+
+这些结果把当前假设排序为：视觉预训练 receiver prior 可能有帮助，纯文本容量本身不足以解决接口问题，projector 输出的 token 数、顺序和尺度仍需要多样 probe 验证。所有运行都只有单样本一步更新，因此不进入社区排行榜，也不构成真实视觉能力。下一项先做 9B 多样 probe 与 random-projector 小筛选；Gate D 继续 *NO-GO*。

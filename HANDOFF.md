@@ -613,3 +613,7 @@ Qwen3.5 的 native vision、merger 和 visual forward 被绕过，外部输入�
 9B 的官方 revision、config 和四个权重 SHA 已冻结。这个正 margin 支持“视觉预训练过的接收器比纯文本 3B 更容易接收新的视觉塔”这一假设，也说明当前 3B 失败并非 V2 版本一个因素。它仍只有一个样本、16 个 token、一步更新，属于 receiver-prior numerical diagnostic；`capability_claim_allowed=false`，不能替代 ScreenSpot、TextVQA、DocVQA、OCRBench，也不能写成 DeepSeek 已获得视力。
 
 下一位执行者先跑 9B BF16 32/64/128/240 token 短筛选，再跑 Qwen2.5-7B 纯文本 matched control。若长 token 仍稳定且 margin 为正，才值得把相同 projector/目标带回固定 3B 社区评测；否则先处理 token 压缩和数值尺度。Qwen3.5 只作为迁移判断材料，不改变正式 DeepSeek 配方。
+
+9B token sweep 已完成：32/64/128/240 token 均 finite，`vision−shuffle` 分别为 `+0.1781/-0.4574/+0.2881/-0.8842`。这证明长序列输入梯度在 V100 上可控，但图像因果方向不随长度稳定。Qwen2.5-7B 纯文本 matched control（官方 revision `a09a35458c702b33eeacc393d103063234e8bc28`）在 FP16 下 16/240 token 均 finite，margin 为 `-1.0731/-0.8335`。因此“模型规模从 3B 增到 7B 就能读懂外部视觉 token”被反驳。
+
+下一步不要直接扩大 9B 训练。先用固定 9B receiver 做至少 8--32 个 probe 样本的 16/32/64/128/240 token 小筛选，并加入 random projector；若正向差异仍不稳定，优先检查视觉 token 顺序、压缩和尺度。Qwen3.5 的所有结果仍为 `transferable_with_runtime_validation` diagnostic，不能替代 DeepSeek Gate D。

@@ -7,6 +7,8 @@
 | `qwen35_4b_stripped_receiver_bf16_16tok_20260806` | 2560，固定 grouped signed adapter | BF16 / 16 | finite，`vision−shuffle=-0.0597` | 能回传梯度，但没有局部因果优势 |
 | `qwen35_4b_stripped_receiver_fp16_20260806` | 2560，固定 grouped signed adapter | FP16 / full | NaN/Inf after the first update | 数值失败，不能继续用该 dtype/长度 |
 | `qwen35_9b_stripped_receiver_bf16_16tok_20260806` | 4096，identity | BF16 / 16 | finite，`vision−shuffle=+0.6265` | 首个正的 receiver-prior 局部信号；仍非能力结果 |
+| `qwen35_9b_stripped_receiver_bf16_{32,64,128,240}tok_20260806` | 4096，identity | BF16 / 32,64,128,240 | finite；margin `+0.1781/-0.4574/+0.2881/-0.8842` | 长度敏感，不能只凭 16 token 外推 |
+| `qwen25_7b_stripped_receiver_fp16_{16,240}tok_20260806` | 3584，固定 grouped signed adapter | FP16 / 16,240 | finite；margin `-1.0731/-0.8335` | 纯文本容量增加没有自动产生局部视觉因果 |
 
 所有成功 run 都使用同一 exact-K3 V2 projector step0、同一 4k cache manifest `09df2f2cbd502cdf84422eabd499922e7c0cda4fb3368eb0c7cbac4ac21cc023`、单样本配对（正确/打乱/盲）和一步 projector update。原始目录仍在工作站：
 
@@ -15,4 +17,4 @@
 - 4B FP16 failure：`/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/failures/qwen35_4b_stripped_receiver_fp16_20260806`
 - 4B full-token BF16 timeout：`/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/failures/attempt02_bf16_full_tokens_timeout_20260806`
 
-下一项是 9B BF16 的 32/64/128/240 token 短筛选；只有长度稳定且 `vision−shuffle` 保持正向，才进入 7B 纯文本 matched control 或更大预算。Qwen3.5 不进入 Qwen2.5 社区排行榜。
+9B token sweep 说明有限梯度在 V100 上可运行，但接收器 margin 对 token 长度高度敏感；7B 的 16/240 token matched control 均为负。两组都只有一个样本、一步更新，仍不进入 Qwen2.5 社区排行榜，也没有 ScreenSpot 能力结论。下一步应优先把 9B 的 token 顺序/压缩方式和多样 probe 扩展冻结，再决定是否值得进入真实 benchmark。

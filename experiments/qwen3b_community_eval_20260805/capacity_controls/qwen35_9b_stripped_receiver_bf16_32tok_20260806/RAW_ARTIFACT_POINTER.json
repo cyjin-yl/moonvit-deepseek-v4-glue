@@ -1,0 +1,13 @@
+{
+  "schema_version": "raw-artifact-pointer-v1",
+  "status": "diagnostic_only",
+  "remote_raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_9b_stripped_receiver_bf16_32tok_20260806",
+  "files": ["RUN_CONFIG.json", "SUMMARY.json", "train_health.jsonl"],
+  "model_hf_revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "native_vision_forward_calls": 0,
+  "dtype": "bfloat16",
+  "max_visual_tokens": 32,
+  "vision_minus_shuffle": 0.17806625366210938,
+  "sample_count": 1,
+  "capability_claim_allowed": false
+}

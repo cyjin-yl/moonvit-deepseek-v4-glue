@@ -1,0 +1,42 @@
+{
+  "schema_version": "stripped-native-qwen35-receiver-smoke-v1",
+  "status": "passed_input_gradient_gate",
+  "failure_reasons": [],
+  "native_vision_forward_calls": 0,
+  "trajectory": [
+    {
+      "optimizer_step": 0,
+      "ce_loss": 1.9032927751541138,
+      "correct_answer_logp": -11.593358039855957,
+      "shuffled_answer_logp": -10.709126472473145,
+      "blind_answer_logp": -11.722925186157227,
+      "vision_minus_shuffle": -0.8842315673828125,
+      "projector_output_rms": 0.9974478483200073,
+      "projector_gradient_norm_before_clip": 109.43133544921875,
+      "vision_forward_calls": 0,
+      "nan_or_inf": false
+    },
+    {
+      "optimizer_step": 1,
+      "ce_loss": 0.9568770527839661,
+      "correct_answer_logp": -11.593358039855957,
+      "shuffled_answer_logp": -10.709126472473145,
+      "blind_answer_logp": -11.722925186157227,
+      "vision_minus_shuffle": -0.8842315673828125,
+      "projector_output_rms": 0.9974478483200073,
+      "projector_gradient_norm_before_clip": null,
+      "vision_forward_calls": 0,
+      "nan_or_inf": false
+    }
+  ],
+  "projector_step0_state_keys": [
+    "linear_1.weight",
+    "linear_2.weight",
+    "output_norm.weight"
+  ],
+  "projector_trainable_parameter_count": 33558528,
+  "wall_seconds": 19.468020018190145,
+  "deepseek_transfer_label": "transferable_with_runtime_validation",
+  "capability_claim_allowed": false,
+  "qwen_proxy_conclusion": "This is a receiver-prior and input-gradient smoke only; it is not a community benchmark result."
+}

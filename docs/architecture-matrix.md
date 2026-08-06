@@ -38,7 +38,8 @@ max-side、视觉 token 上限，并在 cache manifest 中记录每座塔实际�
 | `local_v2_exact_k3` | 同一 K3/MoonViT-V2 tower；`[tokens,4,1024]` | vendored `PatchMergerMLPV2`：无视觉侧 pre-norm；bias-free `4096 → 4096 → 4096` MLP；trainable post-RMSNorm | canonical 4096；33,558,528 参数；配置 `configs/deepseek-v4-flash-0731-projector-moonvit-v2-k3-exact.json` 与 `configs/qwen2.5-3b-projector-moonvit-v2-k3-exact.json` | state/forward parity 已有单测；尚无 Qwen3B 训练或能力结果。它是当前 V2 主实验候选 | `transferable_with_runtime_validation` |
 | `qwen35_native_diagnostic` | 原生 Qwen3.5-4B VLM，自带视觉塔和多模态对齐 | 不使用本仓库 projector | 原生模型边界 | 仅验证数据、processor、生成器和 scorer 的阳性诊断；不进入 projector 排名，也不代表 DeepSeek 迁移能力 | `diagnostic_only` |
 | `qwen35_stripped_4b` | Qwen3.5-4B 的视觉预训练语言接收器；原生 visual/merger 绕过 | 本仓库 exact V2 projector + 固定 4096→2560 grouped signed adapter | receiver 2560；BF16/16 token finite，FP16 full-token nonfinite | 接收器先验诊断；`vision−shuffle=-0.0597`，不能称能力结果 | `transferable_with_runtime_validation` |
-| `qwen35_stripped_9b` | Qwen3.5-9B 的视觉预训练语言接收器；原生 visual/merger 绕过 | 本仓库 exact V2 projector + 4096 identity | receiver 4096；BF16/16 token finite | 单样本 `vision−shuffle=+0.6265` 的首个正局部信号；不进入 projector leaderboard | `transferable_with_runtime_validation` |
+| `qwen35_stripped_9b` | Qwen3.5-9B 的视觉预训练语言接收器；原生 visual/merger 绕过 | 本仓库 exact V2 projector + 4096 identity | receiver 4096；BF16/16/32/64/128/240 token finite | 16-token 单样本 `+0.6265`，长度 sweep `+0.1781/-0.4574/+0.2881/-0.8842`；不进入 projector leaderboard | `transferable_with_runtime_validation` |
+| `qwen25_text_7b` | `Qwen/Qwen2.5-7B-Instruct` 纯文本，revision `a09a35458c702b33eeacc393d103063234e8bc28` | 本仓库 exact V2 projector + 固定 4096→3584 grouped signed adapter | receiver 3584；FP16/16、240 token finite | `vision−shuffle=-1.0731/-0.8335`；容量对照，尚无能力结果 | `transferable_with_runtime_validation` |
 
 ### 2.1 来源锁定
 
@@ -61,6 +62,7 @@ max-side、视觉 token 上限，并在 cache manifest 中记录每座塔实际�
 4. 两者都通过 health 但 causal benchmark 仍失败时，继续检查训练数据、answer format、解码和 receiver 接口。health 通过只说明表示没有立刻丢失图像差异。
 5. Qwen3.5 native diagnostic 的高分只说明评测链路能产生阳性结果，不能替代 V1/V2 的 `vision − blind`、`vision − shuffled` 和 `trained − random_projector` 证据。
 6. Qwen3.5 stripped-native 运行完全绕过原生视觉路径；9B 的正 margin 只能说明视觉预训练 receiver prior 的单样本可读性，不能归因给 projector，也不能进入 Qwen2.5 社区排行榜。
+7. Qwen2.5-7B 是纯文本容量 control；它的 finite gradient 和负 margin 反驳“只扩大纯文本模型就会自然获得视觉因果”。
 
 ## 4. 下一次架构 screen
 
