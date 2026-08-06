@@ -1,0 +1,77 @@
+{
+  "format_version": "qwen3b-projector-structure-screen-decision-v1",
+  "package": "15Q",
+  "contract": "experiments/qwen3b_community_eval_20260805/projector_structure_screen_v1/PREREGISTRATION.json",
+  "budget": {
+    "optimizer_steps": 100,
+    "examples_seen": 800,
+    "same_training_order": true,
+    "same_initial_mlp_weights": true,
+    "same_health_schedule": true
+  },
+  "arms": [
+    {
+      "name": "baseline_none",
+      "output_norm": "none",
+      "optimizer_steps_completed": 2,
+      "collapse_onset_interval": [1, 2],
+      "projector_spread_ratio": 0.2690394393229053,
+      "projector_rank_ratio": 0.5021815003364928,
+      "receiver_spread_ratio": 0.22535580701898872,
+      "receiver_rank_ratio": 0.36220314252365915,
+      "critical_reasons": [
+        "projector_rms_rising_spread_falling",
+        "receiver_rms_rising_spread_falling"
+      ],
+      "health_verifier": "verified"
+    },
+    {
+      "name": "post_layernorm",
+      "output_norm": "layernorm",
+      "optimizer_steps_completed": 2,
+      "collapse_onset_interval": [1, 2],
+      "projector_spread_ratio": 0.1998476847281375,
+      "projector_rank_ratio": 0.6452017658260317,
+      "receiver_spread_ratio": 0.15591051189868982,
+      "receiver_rank_ratio": 0.5177708769291791,
+      "critical_reasons": [
+        "projector_rms_rising_spread_falling",
+        "receiver_rms_rising_spread_falling"
+      ],
+      "health_verifier": "verified"
+    },
+    {
+      "name": "post_rmsnorm",
+      "output_norm": "rmsnorm",
+      "optimizer_steps_completed": 2,
+      "collapse_onset_interval": [1, 2],
+      "projector_spread_ratio": 0.21095783379525984,
+      "projector_rank_ratio": 0.75402511337783,
+      "receiver_spread_ratio": 0.16560563955491833,
+      "receiver_rank_ratio": 0.6284834954228061,
+      "critical_reasons": [
+        "projector_rms_rising_spread_falling",
+        "receiver_rms_rising_spread_falling",
+        "vision_minus_shuffle_logp_critical"
+      ],
+      "health_verifier": "verified"
+    }
+  ],
+  "passing_arms": [],
+  "decision": "cancel_500_step_expansion",
+  "supports": [
+    "the early collapse is reproducible across CE-only, affine-free LayerNorm and affine-free RMSNorm",
+    "output-only normalization is insufficient to preserve cross-image geometry",
+    "the causal guard can detect a harmful vision-versus-shuffle trajectory before long training"
+  ],
+  "refutes": [
+    "increasing or fixing output scale alone will solve the projector collapse",
+    "falling CE loss is a sufficient visual-alignment criterion"
+  ],
+  "next_registered_direction": "residual_or_gated_residual_projector_with_matched_ce_only_control",
+  "capability_claim_allowed": false,
+  "visual_ability_established": false,
+  "paid_resources_used": false,
+  "final_half_scored": false,
+  "transfer_label": "directly_transferable"
+}

@@ -108,6 +108,20 @@ at the 4096 boundary, yet did not preserve cross-image spread, so this arm is
 not promoted to capability evaluation. Its raw copy is outside Git at
 `D:/V100-artifacts/projector_structure_screen_hf_v1/post_layernorm`.
 
+The final `post_rmsnorm` arm also stopped at step 2. It reached projector and
+receiver spread/rank ratios of `0.2110/0.7540` and `0.1656/0.6285`, and it
+additionally triggered the causal critical guard because
+vision-minus-shuffle correct-answer log-prob was `-0.21164`. Its independent
+verifier passed all three probes/checkpoints; the raw copy is outside Git at
+`D:/V100-artifacts/projector_structure_screen_hf_v1/post_rmsnorm`.
+
+Package 15Q therefore has no passing arm. The pre-registered 500-step
+expansion is cancelled. The evidence supports a step-one update-direction or
+receiver-interface problem that output-only normalization cannot repair. The
+next local package will test a residual/gated-residual projector with a
+matched CE-only control, then return to the fixed real-vision evaluation
+contract only if the health screen survives.
+
 ## ⚠️ ACTIVE V100 REAL-VISION BRIDGE (2026-08-06)
 
 **Current task / hard boundary**: the engineering mainline is now a fixed real-data bridge on pure-text `Qwen/Qwen2.5-3B-Instruct`, followed by transfer of the same MoonViT-V2/projector/data/eval contract to DeepSeek-V4-Flash-0731. The 0.5B/synthetic line remains mechanism evidence. Do not rent any server, create a paid resource, run the full DeepSeek weights, or inspect final evaluation halves without explicit authorization. Exact V100 environment evidence is under `experiments/v100_perception_20260804/infra/environment/`.

@@ -1790,3 +1790,9 @@ Package 15Q 已在任何新结构结果前冻结。它把一个结构变量放�
 `post_layernorm` 只在 canonical 4096 输出后加入 affine-free LayerNorm，参数量和初始化权重保持不变。它仍在 step 2 自动止损，onset `[1,2]`；step 1/2 的 CE 为 4.92825/3.60105。projector 的 spread/rank ratio 为 0.1998/0.6452，receiver 为 0.1559/0.5178，两个 RMS-rising/spread-falling critical guard 同时触发。LayerNorm 把输出尺度限制在稳定范围，却没有保持跨图像 spread，说明当前首步更新的问题包含方向共线化，单纯输出归一化不够。
 
 该臂的 3 个 probe、3 个 checkpoint 和 22 项 health artifact 已由独立 verifier 重算通过；完整原始目录在 `D:/V100-artifacts/projector_structure_screen_hf_v1/post_layernorm`。它没有进入 ScreenSpot 或其他能力评测，也没有替代 previous best。下一步运行同预算 `post_rmsnorm`；若同样失败，取消 500-step 扩展，转向 residual/gated-residual 结构。
+
+== Package 15Q：post-RMSNorm 与最终决定
+
+`post_rmsnorm` 同样在 step 2 自动止损，onset `[1,2]`。step 1/2 的 CE 为 4.92061/3.71350；projector spread/rank ratio 为 0.2110/0.7540，receiver 为 0.1656/0.6285。除两条 RMS-rising/spread-falling guard 外，`vision_minus_shuffle_correct_logp` 在连续 probe 点恶化，触发 causal critical guard；step 2 值为 -0.21164。3 个 probe、3 个 checkpoint 和 22 项 artifact 经独立 verifier 通过，原始目录保存在 `D:/V100-artifacts/projector_structure_screen_hf_v1/post_rmsnorm`。
+
+三臂的共同 onset 都是 `[1,2]`，passing set 为空。`baseline_none`、`post_layernorm` 和 `post_rmsnorm` 的 CE-only/输出归一化差异没有改变早期几何崩坏，因此按预注册规则取消 500-step expansion，也不进行能力晋升。当前最有判别力的下一步是 residual 或 gated-residual projector 加 matched CE-only control；只有健康轨迹通过，才继续 ScreenSpot、TextVQA、DocVQA 和 OCRBench。

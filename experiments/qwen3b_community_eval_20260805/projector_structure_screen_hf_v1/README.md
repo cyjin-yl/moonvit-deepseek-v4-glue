@@ -10,6 +10,7 @@ training order, 100-step budget and projector-health contract. A health pass
 only permits the fixed real-vision evaluation contract to run; it does not
 establish visual ability by itself.
 
-The matched `baseline_none` control reproduced the step-2 auto-stop and is
-independently verified. LayerNorm and RMSNorm arms are evaluated sequentially
-and added without changing the frozen contract.
+All three arms auto-stopped at optimizer step 2 with onset `[1, 2]`, and every
+run passed the independent health verifier. The passing set is empty, so the
+pre-registered 500-step expansion is cancelled. `DECISION.json` records the
+comparison and sends the next screen to residual/gated-residual structures.
