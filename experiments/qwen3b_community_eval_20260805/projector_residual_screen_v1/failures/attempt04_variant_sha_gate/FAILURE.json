@@ -1,0 +1,17 @@
+{
+  "format_version": "qwen3b-projector-residual-screen-failure-v1",
+  "status": "runner_contract_gate_failure_preserved",
+  "stage": "frozen_file_verification",
+  "arm": "zero_init_residual",
+  "exception_type": "ValueError",
+  "failure": "step0 projector SHA-256 differs from the frozen contract",
+  "root_cause": "the legacy runner accepted only the canonical CE-only projector and had no registered-variant binding path",
+  "repair": "add a generic projector variant binding that checks the residual contract, base config/weights, variant config/weights, parameter count, base tensors and exact step0 output before GPU model load",
+  "remote_raw_failure_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/failures/attempt02_variant_sha_gate",
+  "local_raw_failure_root": "D:/V100-artifacts/projector_residual_screen_hf_v1_failures/attempt02_variant_sha_gate",
+  "gpu_started": false,
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

@@ -162,6 +162,18 @@ refutes any claim that the residual candidates can be judged by a lower CE
 alone. The next arm is `zero_init_residual`; it must keep the same first-step
 geometry healthy before we spend time on full grounding evaluation.
 
+### Package 15R variant-binding repair before the first candidate
+
+The first `zero_init_residual` launch stopped before CUDA model load because
+the legacy trainer accepted only the canonical projector SHA. The failure is
+archived as `attempt04_variant_sha_gate`; it created no optimizer step or
+checkpoint. The repaired runner now accepts a variant only when a registered
+contract binds its config/weights SHA, base projector SHA, parameter count,
+common base tensors and exact step0 output. The binding module and runner
+source hashes are recorded in the 15R config and preregistration. This changes
+the runner interface only; data, budget, health thresholds and model remain
+fixed. The candidate will be relaunched after this repair is committed.
+
 ## ⚠️ ACTIVE V100 REAL-VISION BRIDGE (2026-08-06)
 
 **Current task / hard boundary**: the engineering mainline is now a fixed real-data bridge on pure-text `Qwen/Qwen2.5-3B-Instruct`, followed by transfer of the same MoonViT-V2/projector/data/eval contract to DeepSeek-V4-Flash-0731. The 0.5B/synthetic line remains mechanism evidence. Do not rent any server, create a paid resource, run the full DeepSeek weights, or inspect final evaluation halves without explicit authorization. Exact V100 environment evidence is under `experiments/v100_perception_20260804/infra/environment/`.

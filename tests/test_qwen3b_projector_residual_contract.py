@@ -50,6 +50,12 @@ def test_residual_variant_configs_and_preregistration_hashes_are_bound():
     assert prereg["frozen_before_any_residual_result"] is True
     assert prereg["contract_sha256"] == _sha256(CONTRACT)
     assert prereg["runner_source_sha256"] == _sha256(ROOT / prereg["runner_source"])
+    assert prereg["training_runner_source_sha256"] == _sha256(
+        ROOT / prereg["training_runner_source"]
+    )
+    assert prereg["projector_binding_source_sha256"] == _sha256(
+        ROOT / prereg["projector_binding_source"]
+    )
     assert prereg["initialization_tool_sha256"] == _sha256(ROOT / prereg["initialization_tool"])
     assert prereg["verifier_tool_sha256"] == _sha256(ROOT / prereg["verifier_tool"])
     assert prereg["arms"] == [row["name"] for row in contract["arms"]]

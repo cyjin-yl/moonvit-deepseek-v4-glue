@@ -15,6 +15,10 @@ share all base MLP tensors. The branch is projector-only, keeps the canonical
 fixed 100-step/800-example health screen is the only first-stage budget; no
 arm may enter capability evaluation on health metrics alone.
 
-The first initialization attempt exposed a scalar-hash bug before GPU work;
-the repair and raw attempt are preserved under `failures/`. The repaired
-initialization manifest is stored outside Git and bound by SHA in the contract.
+The pre-result initialization and launcher attempts exposed a scalar-hash bug,
+a gated-gradient test expectation, an output-directory creation mistake and
+the legacy runner's canonical-projector-only SHA gate. Every repair and raw
+log is preserved under `failures/`; none created an optimizer step. The
+repaired initialization manifest is stored outside Git and bound by SHA in
+the contract. The generic projector binding now validates registered variants
+before CUDA model load.

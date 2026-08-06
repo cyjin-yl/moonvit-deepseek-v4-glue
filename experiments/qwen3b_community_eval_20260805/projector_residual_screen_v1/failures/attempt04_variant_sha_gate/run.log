@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_qwen3b_proxy.py", line 1979, in main
+    _run(args, stage)
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_qwen3b_proxy.py", line 1022, in _run
+    raise ValueError("step0 projector SHA-256 differs from the frozen contract")
+ValueError: step0 projector SHA-256 differs from the frozen contract

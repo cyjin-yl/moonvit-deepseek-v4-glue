@@ -29,6 +29,7 @@ import moonvit_glue.merge as merge_module
 import moonvit_glue.model as model_module
 import moonvit_glue.projector as projector_module
 import moonvit_glue.proxy_receiver as proxy_receiver_module
+import moonvit_glue.projector_binding as projector_binding_module
 import moonvit_glue.training_health as training_health_module
 import moonvit_glue.training_order as training_order_module
 from moonvit_glue import FeatureCache
@@ -64,6 +65,7 @@ from moonvit_glue.training_health import (
 )
 from moonvit_glue.model import VisionCausalLM
 from moonvit_glue.projector import PatchMergerProjector
+from moonvit_glue.projector_binding import canonical_binding, validate_variant_binding
 from moonvit_glue.proxy_receiver import FixedPairwiseReceiverAdapter
 from moonvit_glue.training_order import (
     load_ordered_records,
@@ -167,6 +169,7 @@ def runtime_source_files(*, include_health: bool = False) -> list[dict[str, Any]
         Path(merge_module.__file__).resolve(),
         Path(model_module.__file__).resolve(),
         Path(projector_module.__file__).resolve(),
+        Path(projector_binding_module.__file__).resolve(),
         Path(proxy_receiver_module.__file__).resolve(),
         Path(training_order_module.__file__).resolve(),
         Path(__file__).with_name("verify_feature_cache.py").resolve(),
@@ -279,6 +282,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--feature-cache", type=Path, required=True)
     parser.add_argument("--expected-cache-runner-git-sha", required=True)
     parser.add_argument("--projector-dir", type=Path, required=True)
+    parser.add_argument(
+        "--projector-variant-contract",
+        type=Path,
+        help="可选的结构变体合同；提供后必须同时给 --projector-variant-arm 和 --projector-base-dir",
+    )
+    parser.add_argument("--projector-variant-arm")
+    parser.add_argument(
+        "--projector-base-dir",
+        type=Path,
+        help="结构变体对应的冻结 step0 projector 目录",
+    )
     parser.add_argument("--receiver-dir", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--resume", type=Path)
@@ -1013,13 +1027,38 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
     model_files = verify_frozen_files(
         args.model_dir, contract["proxy_model"]["files"], label="Qwen contract"
     )
-    projector_path = args.projector_dir / "projector.safetensors"
     receiver_path = args.receiver_dir / "proxy_receiver.safetensors"
-    expected_projector_sha = contract["canonical_projector"][
-        "initialization_contract"
-    ]["step0"]["weights_sha256"]
-    if sha256_file(projector_path) != expected_projector_sha:
-        raise ValueError("step0 projector SHA-256 differs from the frozen contract")
+    projector_path = args.projector_dir / "projector.safetensors"
+    canonical_projector = contract["canonical_projector"]
+    canonical_projector_sha = canonical_projector["initialization_contract"][
+        "step0"
+    ]["weights_sha256"]
+    if args.projector_variant_contract is None:
+        if args.projector_variant_arm is not None or args.projector_base_dir is not None:
+            raise ValueError(
+                "projector variant arm/base-dir require --projector-variant-contract"
+            )
+        if sha256_file(projector_path) != canonical_projector_sha:
+            raise ValueError("step0 projector SHA-256 differs from the frozen contract")
+        projector_binding = canonical_binding(
+            weights_sha256=canonical_projector_sha,
+            parameter_count=int(canonical_projector["parameter_count"]),
+        ).as_dict()
+    else:
+        if args.projector_variant_arm is None or args.projector_base_dir is None:
+            raise ValueError(
+                "projector variant contract requires --projector-variant-arm and --projector-base-dir"
+            )
+        variant_contract_path = args.projector_variant_contract.resolve()
+        projector_binding = validate_variant_binding(
+            root=Path(__file__).resolve().parents[1],
+            contract_path=variant_contract_path,
+            arm_name=str(args.projector_variant_arm),
+            projector_dir=args.projector_dir.resolve(),
+            base_dir=args.projector_base_dir.resolve(),
+        ).as_dict()
+    expected_projector_sha = str(projector_binding["weights_sha256"])
+    expected_projector_parameter_count = int(projector_binding["parameter_count"])
     expected_receiver_sha = contract["qwen_proxy_receiver"]["buffer_sha256"]
     if sha256_file(receiver_path) != expected_receiver_sha:
         raise ValueError("proxy receiver SHA-256 differs from the frozen contract")
@@ -1102,6 +1141,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         "feature_cache_records_sha256": cache_manifest["records_sha256"],
         "feature_cache_runner_git_sha": cache_manifest["git_sha"],
         "initial_projector_sha256": expected_projector_sha,
+        "projector_binding": projector_binding,
         "proxy_receiver_sha256": expected_receiver_sha,
     }
     if geometry_setup is not None:
@@ -1160,6 +1200,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         "feature_cache_manifest_file_sha256": cache_manifest_file_sha,
         "feature_cache_verification": cache_verification,
         "projector_dir": str(args.projector_dir.resolve()),
+        "projector_binding": projector_binding,
         "receiver_dir": str(args.receiver_dir.resolve()),
         "binding": binding_summary,
         "target_optimizer_steps": target_steps,
@@ -1216,9 +1257,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
     projector = PatchMergerProjector.from_pretrained(
         args.projector_dir, device=device, dtype=torch.float32
     )
-    if sum(parameter.numel() for parameter in projector.parameters()) != int(
-        contract["canonical_projector"]["parameter_count"]
-    ):
+    if sum(parameter.numel() for parameter in projector.parameters()) != expected_projector_parameter_count:
         raise ValueError("projector parameter count differs from the contract")
     receiver = FixedPairwiseReceiverAdapter.from_pretrained(
         args.receiver_dir, device=device
@@ -1825,6 +1864,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
             "final_half_scored": False,
             "paid_resources_used": False,
             "runner_git_sha": current_git_sha,
+            "projector_binding": projector_binding,
             "git_tracked_worktree_clean": tracked_clean,
             "target_optimizer_steps": target_steps,
             "optimizer_steps_completed": actual_steps,
@@ -1869,6 +1909,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         "final_half_scored": False,
         "paid_resources_used": False,
         "runner_git_sha": current_git_sha,
+        "projector_binding": projector_binding,
         "git_tracked_worktree_clean": tracked_clean,
         "optimizer_steps": target_steps,
         "examples_seen": examples_seen,

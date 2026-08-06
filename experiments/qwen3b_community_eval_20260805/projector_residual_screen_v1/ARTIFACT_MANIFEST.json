@@ -1,8 +1,8 @@
 {
   "format_version": "experiment-artifact-manifest-v1",
-  "created_at_utc": "2026-08-06T09:02:42.054879+00:00",
+  "created_at_utc": "2026-08-06T09:26:06.777721+00:00",
   "root": "projector_residual_screen_v1",
-  "git_base_sha": "5682265c1640c5526929b48209b69c6d0b74cefb",
+  "git_base_sha": "b7ae55360305ac3c35a4c25c04dfe9dffc836fa7",
   "files": {
     "failures/attempt01_scalar_gate_hash/ATTEMPT.json": {
       "bytes": 440,
@@ -52,6 +52,22 @@
       "bytes": 510,
       "sha256": "4d5fc10de1c59c9750472998a79dc07b66a5bcad9b255e058478ed82a0e203b3"
     },
+    "failures/attempt04_variant_sha_gate/ATTEMPT.json": {
+      "bytes": 392,
+      "sha256": "66f2150047b4295898a6c58d36a351798328e13048f391bde703b107c67c83b5"
+    },
+    "failures/attempt04_variant_sha_gate/FAILURE.json": {
+      "bytes": 1081,
+      "sha256": "56e3d2b756653bf42544ab017839e5f65bc9dfe3130bec59406f648e8ab6ea58"
+    },
+    "failures/attempt04_variant_sha_gate/REPAIR_RECORD.json": {
+      "bytes": 508,
+      "sha256": "5be4f1936838b87872f7c47818799863f596d1937d001089e12cd0a2a223eb47"
+    },
+    "failures/attempt04_variant_sha_gate/run.log": {
+      "bytes": 437,
+      "sha256": "079fc29fcfd5e3ef603a251c9507775aed8a6553abea80481d617a6251251221"
+    },
     "INITIALIZATION_ARTIFACT_POINTER.json": {
       "bytes": 1725,
       "sha256": "7d89280c4d25701fac8680ca4e4e6da72e436a8de8d59b79efe1d57c3d5fff44"
@@ -65,15 +81,15 @@
       "sha256": "bd12bf202803365bbca87b7ab6c7765e5d0aa213dbd68152c188e4336d3b138c"
     },
     "PREREGISTRATION.json": {
-      "bytes": 2599,
-      "sha256": "81c1a22a8020671797130c382c11d4fd3b33706e4c75e5e622d28380ba44e3b8"
+      "bytes": 2937,
+      "sha256": "86b85a6dde446c4e5fa5f13decf190faaf885947d2c699c703e4d8aebc2fe4e3"
     },
     "README.md": {
-      "bytes": 1107,
-      "sha256": "ce9533e79e85ad705b0d44cc99dfca24154fd575e74e0337f194e2c5644ffbd2"
+      "bytes": 1358,
+      "sha256": "9790975608ab7603290c5c7820f6bb463b8a5955344529f5f29434a65292e020"
     }
   },
-  "file_count": 17,
-  "total_bytes": 11749,
+  "file_count": 21,
+  "total_bytes": 14756,
   "final_half_scored": false
 }

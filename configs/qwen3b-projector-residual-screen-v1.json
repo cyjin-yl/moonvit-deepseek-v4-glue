@@ -7,6 +7,10 @@
   "health_contract_file_sha256": "c6b8f7c6fcefb2fcf11c4328e1cb1023b571ed36503f3d2519aeb2f257f9a325",
   "projector_source_file": "src/moonvit_glue/projector.py",
   "projector_source_file_sha256": "f6e0ed618c465230658358fa7a69697173520c8fbb41dffbd401cd91cb0f14d8",
+  "training_runner_source_file": "tools/train_qwen3b_proxy.py",
+  "training_runner_source_file_sha256": "58de666101bdb32550113d9f3497ba4eed9a50a7049f08405e813d199e919e0f",
+  "projector_binding_source_file": "src/moonvit_glue/projector_binding.py",
+  "projector_binding_source_file_sha256": "7785f35423a51d6a04c97567bc604bc0d6583dc26ccdc575d7ea17109ce61926",
   "base_projector": {
     "config_source": "configs/deepseek-v4-flash-0731-projector-moonvit-v2.json",
     "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",

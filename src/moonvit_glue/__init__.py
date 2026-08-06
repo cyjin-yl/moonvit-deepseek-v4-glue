@@ -39,6 +39,9 @@ _LAZY_EXPORTS = {
     "PatchMergerProjector": "projector",
     "ProjectorConfig": "projector",
     "seeded_projector": "projector",
+    "ProjectorBinding": "projector_binding",
+    "canonical_binding": "projector_binding",
+    "validate_variant_binding": "projector_binding",
     "FixedPairwiseReceiverAdapter": "proxy_receiver",
 }
 

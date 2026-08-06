@@ -1,0 +1,12 @@
+{
+  "format_version": "qwen3b-projector-residual-screen-attempt-v1",
+  "attempt": "attempt04_variant_sha_gate",
+  "stage": "frozen_file_verification",
+  "arm": "zero_init_residual",
+  "gpu_started": false,
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "output_directory_created": true,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

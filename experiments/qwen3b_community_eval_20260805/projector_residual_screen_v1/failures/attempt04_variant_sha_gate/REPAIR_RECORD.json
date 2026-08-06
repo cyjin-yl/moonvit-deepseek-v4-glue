@@ -1,0 +1,12 @@
+{
+  "format_version": "qwen3b-projector-residual-screen-repair-v1",
+  "attempt": "attempt04_variant_sha_gate",
+  "repair_scope": "generic_projector_binding",
+  "contract_changed": false,
+  "screen_budget_changed": false,
+  "health_thresholds_changed": false,
+  "model_or_data_changed": false,
+  "gpu_or_optimizer_result_exists": false,
+  "repair": "registered variants now bind their own weight/config SHA and parameter count while proving equality to the canonical step0 base",
+  "raw_log_archived": true
+}
