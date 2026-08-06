@@ -1341,7 +1341,19 @@ vision−blind click 为 −0.06 `[−0.16,0.02]`，mean-distance improvement �
 
 自由生成进一步暴露坐标塌缩：vision 只有 6 种输出，31/50 为 `[125,345]`；shuffled 只有 9 种，23/50 也是 `[125,345]`，两条件 30/50 字符串完全相同。该点并非训练 label mode：2,000 个 grounding targets 有 1,066 个 unique pairs，x/y median 为 513/320，`[125,345]` 精确出现 0 次。图像身份会造成窄范围扰动，但扰动与目标位置无关。
 
-Package 15L/15M 的 internal preference 与 free generation 结论一致，checkpoint 正式拒绝，previous-best 保持 step0。下一项先做一个分钟级 projector→fixed-receiver information-retention screen，比较 step0/current 的跨图 variance、effective rank 与坐标 probe；若信息在 projector/receiver 已塌缩，修 projector 目标或结构，若信息仍在而 LM readout 不对齐，再执行 matched counterfactual-margin auxiliary。该诊断直接决定下一次固定预算训练配方，不扩展 replay 支线。19 个远端 raw files 共 565,923 bytes、23 个 checked-in files 共 576,071 bytes；无付费资源，未评 final half。
+Package 15L/15M 的 internal preference 与 free generation 结论一致，checkpoint 正式拒绝，previous-best 保持 step0。下一项先做一个分钟级 projector→fixed-receiver information-retention screen，比较 step0/current 的跨图 spread、effective rank、token 内方差、CKA 与 pairwise geometry；若信息在 projector/receiver 已塌缩，修 projector 目标或结构，若跨图多样性仍在而 LM readout 不对齐，再执行 matched counterfactual-margin auxiliary。projector 不接收文字 query，因此预注册明确禁止把 image-only target-coordinate probe 当作能力证据。该诊断直接决定下一次固定预算训练配方，不扩展 replay 支线。19 个远端 raw files 共 565,923 bytes、23 个 checked-in files 共 576,071 bytes；无付费资源，未评 final half。
+
+#pagebreak()
+
+== Representation-retention 结果前合同（包 15N，2026-08-06）
+
+包 15N 在提取任何新表示结果前冻结一个短诊断。输入固定为 `screenspot_glm50_v1` 的原顺序 50 条、exact step0、grounding-enriched step 500 `62f69393…3df4` 和无参数 4096→2048 receiver；该运行不加载或改变 Qwen 权重，也不训练。
+
+每张图先拼接 cache 中的 MoonViT groups，再在 visual-token 维做算术均值。MoonViT flattened、projector 4096 和 fixed-receiver 2048 三个边界均记录 sample RMS、between-image RMS、relative spread、participation/entropy effective rank、top-1 variance fraction、within-image token RMS、全部 pairwise RMS distance/cosine、linear CKA 和 pairwise-distance Pearson。pooled float64 tensors、全部 pair 和逐样本 norm 都必须保存并独立复算。
+
+决策范围故意收窄：fixed-receiver 边界只有在 current/step0 relative-spread ratio < 0.25 且 participation-rank ratio < 0.5 同时成立时，才判定 gross collapse 并先修 projector/receiver representation；否则下一项执行已选定的 training-only correct-versus-counterfactual margin auxiliary。projector 没有文字 query，image-only target-coordinate probe 会混淆表征保留与 instruction-conditioned selection，本合同禁止把它当作能力证据。多样性保留也不能证明 grounding，能力门仍由包 15L/15M 的 paired preference 和 generation 决定。
+
+本提交只冻结 analyzer、独立 verifier、metric core 与合同的逐字节哈希，不含任何 representation value、action decision 或 capability score；无付费资源，未评 final half。
 
 #pagebreak()
 
@@ -1637,9 +1649,10 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
   [2026-08-06], [包 15K 完成 grounding-enriched exact 500-step 训练：4,000 examples、36,589 answer tokens、Qwen/receiver 全冻结；五个 checkpoint / 23.51 亿 bytes 经独立恢复与哈希验证，后续能力判定见包 15L。],
   [2026-08-06], [包 15L 完成 grounding-enriched GLM50 paired preference：vision/blind/shuffled 为 52%/56%/54%，vision−shuffled 为 −0.02 `[−0.06,0]`；correct-NLL 相对 step0 改善 1.44854，却无图像身份依赖，候选在因果 gate 被拒绝。],
   [2026-08-06], [包 15M 完成同 checkpoint GLM50 generation：vision/blind/shuffled click 为 6%/12%/6%，vision−blind mean distance 显著恶化 109.47，vision−shuffled distance 无差异；vision 31/50 塌缩到 `[125,345]`，该点在 2,000 个 grounding labels 中从未出现。],
+  [2026-08-06], [包 15N 在读取任何新 activation 结果前冻结 representation-retention screen：固定 50-row/step0/current/receiver，记录 spread、rank、token variance、pairwise geometry 与 CKA；gross collapse 需两个 receiver guard 同时触发，并禁止把无文字 query 的 image-only coordinate probe 当作能力证据。],
   [2026-08-05], [固定 revision 的 DeepSeek 量化 runtime 源码审计与 GPU 矩阵成稿：forward 集成缺少已确认 autograd 证据，SM120/121 受 DeepGEMM #372 weight-load blocker 影响；首个付费建议降为单卡 SM100/B200 最小 kernel gate，仍等待授权。],
 )
 
 = 下一位执行者的最短路径
 
-包 15A–15D 的 pre-result contract、3B 工程 smoke、首轮 exact 4k order/target 与完整 MoonViT cache 已完成；包 15E–15H 又完成 fixed-budget 训练、ScreenSpot50/full 与 teacher-forced preference。首个 checkpoint 被 generation 与内部正确坐标偏好共同拒绝，previous-best 保持 step0。包 15I/15J 冻结 grounding-enriched 4k exact order/cache，包 15K 完成 exact 500-step 训练与五个 checkpoint 审计；包 15L/15M 又以 paired preference 和 GLM50 generation 一致拒绝 treatment。下一步用最小 representation-retention screen 决定 projector 修复或 discard-after-training counterfactual-margin auxiliary；只有因果 preference 与 generation 同时改善才扩大 full/三 seed。并行补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 language retention。正式 0731 必须通过完整权重 load、真实 FP4/FP8 input DGRAD、图像 forward/backward、20-step 稳定性和 save/resume/generate Gate D；任何付费动作等待用户明确授权。
+包 15A–15D 的 pre-result contract、3B 工程 smoke、首轮 exact 4k order/target 与完整 MoonViT cache 已完成；包 15E–15H 又完成 fixed-budget 训练、ScreenSpot50/full 与 teacher-forced preference。首个 checkpoint 被 generation 与内部正确坐标偏好共同拒绝，previous-best 保持 step0。包 15I/15J 冻结 grounding-enriched 4k exact order/cache，包 15K 完成 exact 500-step 训练与五个 checkpoint 审计；包 15L/15M 又以 paired preference 和 GLM50 generation 一致拒绝 treatment。包 15N 已在新 activation 结果前冻结最小 representation-retention screen 与分支规则，下一步直接执行并独立复算；只有因果 preference 与 generation 同时改善才扩大 full/三 seed。并行补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 language retention。正式 0731 必须通过完整权重 load、真实 FP4/FP8 input DGRAD、图像 forward/backward、20-step 稳定性和 save/resume/generate Gate D；任何付费动作等待用户明确授权。

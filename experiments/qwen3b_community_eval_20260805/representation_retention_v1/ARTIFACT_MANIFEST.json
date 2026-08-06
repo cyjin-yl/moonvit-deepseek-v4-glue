@@ -1,0 +1,19 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-06T00:53:00.053736+00:00",
+  "root": "representation_retention_v1",
+  "git_base_sha": "89a2d48e001fa15a36bcf9dd8259e4cb6bd9af33",
+  "files": {
+    "PREREGISTRATION.json": {
+      "bytes": 2011,
+      "sha256": "7dc764d5d27e660cb921a8909ff1fb066b775603586754424a1176f28137d22a"
+    },
+    "README.md": {
+      "bytes": 1760,
+      "sha256": "74e4b52a8517f6f5ad898eec16e2f43c41728de0f29e0f2c547eccb684b29540"
+    }
+  },
+  "file_count": 2,
+  "total_bytes": 3771,
+  "final_half_scored": false
+}

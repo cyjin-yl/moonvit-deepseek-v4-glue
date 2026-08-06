@@ -1,0 +1,45 @@
+{
+  "format_version": "qwen3b-representation-retention-contract-v1",
+  "frozen_before_result": true,
+  "dataset_name": "screenspot_glm50_v1",
+  "dataset_manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+  "sample_count": 50,
+  "conditions": [
+    "step0",
+    "current_candidate"
+  ],
+  "stages": [
+    "moonvit_flattened",
+    "projector_4096",
+    "fixed_receiver_2048"
+  ],
+  "pooling": "concatenate all feature groups, then arithmetic mean across visual tokens",
+  "token_variance": "per-image RMS around that image's token mean, averaged over images",
+  "representation_metrics": [
+    "sample_rms",
+    "between_image_rms",
+    "relative_between_image_spread",
+    "effective_rank_participation",
+    "effective_rank_entropy",
+    "top1_variance_fraction",
+    "pairwise_rms_distance",
+    "pairwise_cosine_similarity"
+  ],
+  "geometry_metrics": [
+    "linear_cka",
+    "pairwise_distance_pearson"
+  ],
+  "decision_stage": "fixed_receiver_2048",
+  "gross_collapse_rule": {
+    "requires_all": true,
+    "current_over_step0_relative_spread_below": 0.25,
+    "current_over_step0_effective_rank_below": 0.5
+  },
+  "actions": {
+    "gross_collapse": "repair_projector_or_receiver_representation_before_margin_training",
+    "diversity_retained": "run_matched_training_only_counterfactual_margin_auxiliary"
+  },
+  "interpretation_boundary": "Diversity retention does not prove instruction-conditioned target information. The projector has no text query, so no image-only target-coordinate probe is allowed.",
+  "paid_resources_allowed": false,
+  "final_half_allowed": false
+}

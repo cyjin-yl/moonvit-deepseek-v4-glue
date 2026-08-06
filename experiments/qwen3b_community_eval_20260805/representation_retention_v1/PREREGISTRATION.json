@@ -1,0 +1,41 @@
+{
+  "format_version": "qwen3b-representation-retention-preregistration-v1",
+  "frozen_before_result": true,
+  "dataset_name": "screenspot_glm50_v1",
+  "dataset_manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+  "sample_count": 50,
+  "step0_projector_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0",
+  "current_projector_sha256": "62f69393dd3d157446db05a7060942bdfbd23f834bbe2e6782560431b5773df4",
+  "receiver_sha256": "1cecc883394edc51a30c151ff955e92b6abfb9b7bf512f91a7644071551a6d47",
+  "feature_cache_manifest_sha256": "03f35d8cee962a97996f3250e41c351978f28c0ca9a8fe74d4f8d41c411ae7f3",
+  "source_files": {
+    "configs/qwen3b-representation-retention-v1.json": {
+      "bytes": 1613,
+      "sha256": "3deb3f60a4aca39e4f2881cebdb3d544ee1f96a3381e5a0895e4ef7b02f5a490"
+    },
+    "src/moonvit_glue/representation_retention.py": {
+      "bytes": 8841,
+      "sha256": "fb2b313368ffd2de68761257fcf7c1092bcbc98b7ed2eb653250f46acfdde7bf"
+    },
+    "tools/analyze_qwen3b_representation_retention.py": {
+      "bytes": 15449,
+      "sha256": "1ab7f4f8c5d8d41483c496665a46744b053dfffe0c76ad02263644d9b8f7c346"
+    },
+    "tools/verify_qwen3b_representation_retention.py": {
+      "bytes": 6921,
+      "sha256": "f5776d1a1db6b84d15a5a79af81d2fc002d4947b20a65e6a9effc7093e35a6e0"
+    }
+  },
+  "decision_stage": "fixed_receiver_2048",
+  "gross_collapse_rule": {
+    "requires_all": true,
+    "current_over_step0_relative_spread_below": 0.25,
+    "current_over_step0_effective_rank_below": 0.5
+  },
+  "gross_collapse_action": "repair_projector_or_receiver_representation_before_margin_training",
+  "diversity_retained_action": "run_matched_training_only_counterfactual_margin_auxiliary",
+  "interpretation_boundary": "This screen detects gross cross-image diversity collapse only. It cannot establish instruction-conditioned grounding or visual ability.",
+  "paid_resources_used": false,
+  "final_half_scored": false,
+  "result_exists_at_freeze": false
+}

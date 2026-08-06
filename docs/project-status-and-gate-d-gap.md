@@ -101,7 +101,7 @@ Package 15M 已补完 generation 合同。vision/blind/shuffled 的 click-in-box
 15. **已完成（Package 15K）**：exact step0 上完成 500 steps / 4,000 examples / 36,589 answer tokens；Qwen/receiver 全冻结，五个 checkpoint、optimizer/RNG/order/token accounting 独立验证通过。最终 projector 为 `62f69393…3df4`。
 16. **已完成（Package 15L）**：GLM-format public-50 teacher-forced correct-vs-counterfactual preference；vision/blind/shuffled 为 52%/56%/54%，correct-NLL 相对 step0 显著降低，图像身份依赖仍未建立，checkpoint 被拒绝。
 17. **已完成（Package 15M）**：同 checkpoint 的 GLM-format public-50 七条件 generation 与 2,000 bootstrap；vision/blind/shuffled click 为 6%/12%/6%，vision 与 shuffled distance 无差异，候选不扩大 full/三 seed。
-18. **当前最小诊断**：比较 step0/current 在 projector 4096 输出与 fixed-receiver 2048 输出上的跨图 variance、effective rank、pairwise similarity 和 cross-validated x/y coordinate probe，定位坐标塌缩发生在 projector/receiver 边界前后。
+18. **已冻结（Package 15N，结果前）**：比较 step0/current 在 projector 4096 输出与 fixed-receiver 2048 输出上的跨图 spread、effective rank、token 内方差、pairwise geometry 与 CKA。receiver gross collapse 预注册为 relative-spread ratio < 0.25 且 participation-rank ratio < 0.5；projector 没有文字 query，禁止把 image-only target-coordinate probe 当作能力证据。
 19. **下一训练 screen**：若表示仍保留 target signal，运行训练后丢弃的 correct-vs-counterfactual margin auxiliary objective；若表示已塌缩，先验证 projector variance-preserving/spatial objective 或结构修复。两者都必须保留匹配 CE-only control、exact step0、记录/顺序和 examples seen。
 20. **并行工程缺口**：补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 240-row language-retention evaluator；任何候选替换 previous-best 前必须跑完。
 
