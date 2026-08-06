@@ -617,3 +617,5 @@ Qwen3.5 的 native vision、merger 和 visual forward 被绕过，外部输入�
 9B token sweep 已完成：32/64/128/240 token 均 finite，`vision−shuffle` 分别为 `+0.1781/-0.4574/+0.2881/-0.8842`。这证明长序列输入梯度在 V100 上可控，但图像因果方向不随长度稳定。Qwen2.5-7B 纯文本 matched control（官方 revision `a09a35458c702b33eeacc393d103063234e8bc28`）在 FP16 下 16/240 token 均 finite，margin 为 `-1.0731/-0.8335`。因此“模型规模从 3B 增到 7B 就能读懂外部视觉 token”被反驳。
 
 下一步不要直接扩大 9B 训练。先用固定 9B receiver 做至少 8--32 个 probe 样本的 16/32/64/128/240 token 小筛选，并加入 random projector；若正向差异仍不稳定，优先检查视觉 token 顺序、压缩和尺度。Qwen3.5 的所有结果仍为 `transferable_with_runtime_validation` diagnostic，不能替代 DeepSeek Gate D。
+
+8-sample probe 已完成：16 token 的 `vision−shuffle` 为 `+0.0447 ± 0.3729`，240 token 为 `-0.0748 ± 0.4520`；`vision−blind` 分别为 `+0.1993 ± 0.2142` 和 `+0.6753 ± 0.3335`。因此 9B receiver-prior 能感知“有视觉 token”，但不能稳定归因到正确图片。下一条应优先做 token ordering/压缩或输入尺度的小设计筛选，而不是把 9B 直接扩成长训或把它写成 VLM 成功。

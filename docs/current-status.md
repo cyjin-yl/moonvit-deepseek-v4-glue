@@ -204,3 +204,7 @@ blind、shuffled、random projector、step0 和 previous-best 角色。
 Qwen2.5-7B 纯文本 matched control 使用官方 revision `a09a35458c702b33eeacc393d103063234e8bc28`、FP16 和同一个 exact V2 projector。16/240 token 都 finite，`vision−shuffle` 为 `-1.0731/-0.8335`。这条结果反驳“只要从 3B 换到 7B，纯文本 receiver 就会自然解读外部视觉 token”。它支持继续保留视觉预训练 receiver 先验作为候选解释，但 9B 结果仍然必须扩展到多样 probe 与 random-projector 对照。
 
 当前最短路径从“换更大纯文本模型”收敛为“冻结 9B receiver-prior 的多样 probe、token 压缩与 random-projector 小筛选；若仍无稳定正向配对，再回到 projector/输入尺度设计”。所有这些都仍是诊断，不能替代固定 ScreenSpot、TextVQA、DocVQA、OCRBench。
+
+### 8-sample receiver-prior probe
+
+把 9B 的正确图/确定性打乱图/blind/random-projector 扩展到固定 8 个样本后，16 token 的 `vision−shuffle` 均值为 `+0.0447 ± 0.3729`，240 token 为 `-0.0748 ± 0.4520`；两档中各有 5/8 样本为正。`vision−blind` 则为 `+0.1993 ± 0.2142` 和 `+0.6753 ± 0.3335`。这支持“接收器确实响应外部视觉 token”，没有支持“它已经能区分正确图像”。后续若要进入真实 ScreenSpot，必须先解决这个 paired image attribution gap。

@@ -18,3 +18,12 @@
 - 4B full-token BF16 timeout：`/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/failures/attempt02_bf16_full_tokens_timeout_20260806`
 
 9B token sweep 说明有限梯度在 V100 上可运行，但接收器 margin 对 token 长度高度敏感；7B 的 16/240 token matched control 均为负。两组都只有一个样本、一步更新，仍不进入 Qwen2.5 社区排行榜，也没有 ScreenSpot 能力结论。下一步应优先把 9B 的 token 顺序/压缩方式和多样 probe 扩展冻结，再决定是否值得进入真实 benchmark。
+
+8-sample receiver probe（同一 derangement、同一 random-projector seed）补充了这条边界：
+
+| 9B BF16 | vision−shuffle mean ± std | vision−blind mean ± std | 结论 |
+|---|---:|---:|---|
+| 16 token | `+0.0447 ± 0.3729` | `+0.1993 ± 0.2142` | 有 token 影响，正确图优势很弱 |
+| 240 token | `-0.0748 ± 0.4520` | `+0.6753 ± 0.3335` | 有 token 影响，正确图与打乱图仍不可分 |
+
+这比单样本结果更接近真实判断：9B 接收器能对外部视觉 token 产生响应，但目前没有稳定的图像归因。`probe_metrics.jsonl` 保留每个样本与 random-projector log-prob；仍然不能称为 projector capability。

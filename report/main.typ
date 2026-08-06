@@ -1893,3 +1893,5 @@ exact V2 的 projector 学习率降到 `5e-5` 后，前两步 rank/spread 几乎
 9B 的 token-length sweep 在 32、64、128、240 个视觉 token 上均通过 finite/input-gradient gate，且原生视觉 hook 均为零；单样本 `vision-minus-shuffle` 为 `+0.1781/-0.4574/+0.2881/-0.8842`。正 margin 没有随 token 数稳定，说明 16-token 的 receiver-prior 信号对 token 序列敏感。Qwen2.5-7B 纯文本 matched control 在 FP16 的 16/240 token 也均 finite，但 `vision-minus-shuffle=-1.0731/-0.8335`，容量增加本身没有带来外部视觉因果。
 
 这些结果把当前假设排序为：视觉预训练 receiver prior 可能有帮助，纯文本容量本身不足以解决接口问题，projector 输出的 token 数、顺序和尺度仍需要多样 probe 验证。所有运行都只有单样本一步更新，因此不进入社区排行榜，也不构成真实视觉能力。下一项先做 9B 多样 probe 与 random-projector 小筛选；Gate D 继续 *NO-GO*。
+
+固定 8 个样本的 receiver-prior probe 给出更严格的边界。9B BF16 在 16 token 时 `vision-minus-shuffle=+0.0447 ± 0.3729`，在 240 token 时为 `-0.0748 ± 0.4520`；`vision-minus-blind` 分别为 `+0.1993 ± 0.2142` 与 `+0.6753 ± 0.3335`。有视觉 token 会改变接收器的答案分布，但正确图相对打乱图的平均优势接近零。该结果支持“接收器先验可被激活”，同时反驳“单个正 margin 已足以证明真实视觉 grounding”。
