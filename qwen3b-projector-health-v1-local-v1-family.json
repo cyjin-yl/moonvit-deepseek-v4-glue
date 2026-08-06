@@ -1,0 +1,17 @@
+{
+  "format_version": "projector-health-contract-v1",
+  "name": "qwen3b_projector_health_v1_local_v1_family_proxy",
+  "extends": "qwen3b-projector-health-v1.json",
+  "architecture_id": "local_v1_family_proxy",
+  "probe_manifest": {
+    "file": "experiments/qwen3b_community_eval_20260805/architecture_controls/local_v1_family_proxy/health_probe_manifest_v1/PROBE_MANIFEST.json",
+    "file_sha256": "6a65cddbda126f7c96804bd270420b6153c8a886270e279831b6e11128483b57",
+    "manifest_sha256": "2858ee80971dc857202e251ed6f057283c957b298cb7c5097660c679afb2ef39",
+    "count": 50,
+    "feature_cache_manifest_file_sha256": "896e363d24fd49b8d185989928a8383c92df6069041560a21831cdbbbf5ee10f",
+    "feature_cache_manifest_sha256": null
+  },
+  "transfer_label": "transferable_with_runtime_validation",
+  "paid_resources_used": false,
+  "capability_claim_allowed": false
+}

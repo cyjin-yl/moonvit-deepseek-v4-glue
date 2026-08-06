@@ -1,0 +1,33 @@
+{
+  "schema_version": "qwen35-9b-stripped-screenspot-pointer-v1",
+  "status": "diagnostic_only",
+  "model_id": "Qwen/Qwen3.5-9B",
+  "model_revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "native_vision_calls": 0,
+  "projector": "local_v2_exact_k3/step0",
+  "visual_tokens": 16,
+  "initial_run": {
+    "output_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_9b_stripped_screenspot_step0_prefix16_glm50_20260807",
+    "sample_count": 50,
+    "decode_contract": "Qwen3.5 reasoning enabled; max_new_tokens=32",
+    "parse_rate": 0.0,
+    "summary_sha256": "c4724eaaaaca76d2b299ad6ead875d4e0d82b68d6610884bacf40ae810bdaca0",
+    "rows_sha256": "8ddfac027ff573ace369e6a24f9c6b66c088a7bae217399a882e1d4ec5f46200",
+    "interpretation": "format-contract failure; outputs truncated before click action"
+  },
+  "repair_run": {
+    "output_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_9b_stripped_screenspot_step0_prefix16_glm50_20260807_retry1_nothink8",
+    "sample_count": 8,
+    "decode_contract": "enable_thinking=false; max_new_tokens=128",
+    "parse_rate": 1.0,
+    "click_in_box": {"vision": 0.0, "blind": 0.0, "shuffled": 0.0, "random_projector": 0.125},
+    "center_distance_mean": {"vision": 595.1009, "blind": 637.8446, "shuffled": 506.4153, "random_projector": 584.9082},
+    "paired_center_distance_vision_minus_blind": {"mean": -42.7437, "ci95": [-127.7391, 13.7680]},
+    "paired_center_distance_vision_minus_shuffled": {"mean": 88.6856, "ci95": [2.9967, 199.1549]},
+    "summary_sha256": "aac056d3a3d5493d0e9cb10aa49b6f7abc7af62cf7ff4d03d333f31576ab623f",
+    "rows_sha256": "0937f98b3ef51e07a58aea5ea95f8e1adf91ed344762ab7186b459f5342c9952",
+    "interpretation": "receiver-prior diagnostic; no grounding capability claim"
+  },
+  "capability_claim_allowed": false,
+  "deepseek_transfer_label": "transferable_with_runtime_validation"
+}

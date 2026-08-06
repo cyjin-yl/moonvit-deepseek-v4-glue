@@ -39,6 +39,7 @@ def build_chat_prompt(
     user_prompt: str,
     placeholder_token_id: int,
     include_image: bool,
+    enable_thinking: bool | None = None,
 ) -> ChatPrompt:
     """渲染 tokenizer 官方 chat template，并精确插入一个图像 token ID。
 
@@ -54,14 +55,17 @@ def build_chat_prompt(
     if _IMAGE_SENTINEL in system or _IMAGE_SENTINEL in user:
         raise ValueError("semantic prompt contains the reserved image sentinel")
     user_content = f"{_IMAGE_SENTINEL}\n{user}" if include_image else user
-    rendered = tokenizer.apply_chat_template(
-        [
-            {"role": "system", "content": system},
-            {"role": "user", "content": user_content},
-        ],
-        tokenize=False,
-        add_generation_prompt=True,
-    )
+    messages = [
+        {"role": "system", "content": system},
+        {"role": "user", "content": user_content},
+    ]
+    template_kwargs = {
+        "tokenize": False,
+        "add_generation_prompt": True,
+    }
+    if enable_thinking is not None:
+        template_kwargs["enable_thinking"] = bool(enable_thinking)
+    rendered = tokenizer.apply_chat_template(messages, **template_kwargs)
     if not isinstance(rendered, str):
         raise TypeError("chat template must return text when tokenize=False")
 
