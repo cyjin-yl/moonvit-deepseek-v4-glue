@@ -74,6 +74,7 @@ def _prompt_inputs(*, model, tokenizer, sample, placeholder, feature, projector,
         user_prompt=user_prompt,
         placeholder_token_id=placeholder,
         include_image=feature is not None,
+        enable_thinking=False if "enable_thinking" in str(getattr(tokenizer, "chat_template", "")) else None,
     )
     input_ids = torch.tensor([prompt.input_ids], dtype=torch.long, device=device)
     attention = torch.ones_like(input_ids)

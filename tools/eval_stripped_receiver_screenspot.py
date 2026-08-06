@@ -34,6 +34,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--projector-scale", type=float, default=0.1)
     p.add_argument("--random-seed", type=int, default=20260806)
     p.add_argument("--max-new-tokens", type=int, default=32)
+    p.add_argument("--sample-indices", default=None, help="只跑指定的冻结样本下标，逗号分隔；用于失败后的最小重试")
     p.add_argument("--bootstrap-seed", type=int, default=20260805)
     p.add_argument("--bootstrap-samples", type=int, default=2000)
     return p.parse_args()
@@ -69,6 +70,11 @@ def main() -> None:
 
     manifest = json.loads(args.screenspot_manifest.read_text(encoding="utf-8"))
     samples = list(manifest["samples"])
+    if args.sample_indices:
+        indices = [int(part.strip()) for part in args.sample_indices.split(",") if part.strip()]
+        if any(index < 0 or index >= len(samples) for index in indices):
+            raise ValueError("sample-indices contains an out-of-range index")
+        samples = [samples[index] for index in indices]
     mapping = {str(row["sample_id"]): str(row["shuffled_image_sample_id"]) for row in manifest["shuffled_image_control"]["mapping"]}
     config = json.loads((args.model_dir / "config.json").read_text(encoding="utf-8"))
     tokenizer = AutoTokenizer.from_pretrained(str(args.model_dir), local_files_only=True)
