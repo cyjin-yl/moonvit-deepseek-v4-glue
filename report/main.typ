@@ -35,6 +35,10 @@ V2 分别为 `bec6e8bf…54815` / `7bdfb08c…65ed`。V1 snapshot 权重集合�
 为 `51a39391…f0ef`。训练入口同时绑定 source config、保存后的 serialized config
 和 projector 权重，后续两臂不会因配置文件语义漂移形成假比较。
 
+V1 probe-cache 的首次正式尝试在模型加载阶段发现 Transformers 5.12.1 对 HF
+snapshot 符号链接的相对导入缺陷，尚未产生 feature shard。修复后模型仍按 pinned
+ID/revision 加载，snapshot 只负责权重身份哈希；失败记录已保留，缓存从空目录重跑。
+
 下一步只做最小高频 screen：两条 control 使用相同样本顺序、预算、receiver、
 health guards 和 parser，在 step 0/1/2/5/10/20/30/50/75/100 观察 collapse
 与 vision-minus-shuffled；通过健康筛选的 arm 才进入完整 ScreenSpot、TextVQA、

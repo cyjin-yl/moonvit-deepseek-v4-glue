@@ -53,6 +53,9 @@ serialized config SHA 和 save/load/regeneration 一致性记录位于
 `experiments/qwen3b_community_eval_20260805/architecture_controls/`。V1 视觉塔
 snapshot 的权重集合聚合 SHA 为 `51a39391…f0ef`。训练入口现在同时校验 source
 config、serialized config 与 step0 权重，避免结构 JSON 和 safetensors 静默错配。
+首次正式 V1 probe-cache 尝试暴露了 Transformers 5.12.1 对 HF snapshot 符号链接
+的 dynamic-module 相对导入缺陷；失败记录已保存。加载入口已改为 pinned model ID
+和 revision，snapshot 只用于离线文件身份与哈希，随后从空目录重跑。
 
 ## 为什么前一套方案没有改进
 

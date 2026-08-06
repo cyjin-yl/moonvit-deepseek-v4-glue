@@ -1,0 +1,12 @@
+{
+  "status": "failed_before_output_creation",
+  "stage": "v1_health_probe_cache_load",
+  "command_identity": "MoonViT-SO-400M pinned revision a889d399ff2306053e4e28d499d3b8f97d3e5007 with --moonvit-snapshot",
+  "exception_type": "FileNotFoundError",
+  "exception": "Transformers dynamic-module loader resolved configuration_moonvit.py into the HF blob directory and could not find the relative module file.",
+  "cause": "The HF snapshot uses symlinks; passing the snapshot directory directly to AutoModel.from_pretrained breaks relative-import discovery in Transformers 5.12.1.",
+  "repair": "Use pinned model ID plus pinned revision for loading; use the resolved snapshot only for offline file identity and aggregate weight SHA-256.",
+  "weights_manifest_sha256": "51a39391d4a36cb536fe68176bb68f4218d0526c93749e04e63d4e779675f0ef",
+  "paid_resources_used": false,
+  "capability_claim_allowed": false
+}

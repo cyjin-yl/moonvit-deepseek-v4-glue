@@ -26,6 +26,10 @@ under `experiments/qwen3b_community_eval_20260805/architecture_controls/`;
 complete 589 MB of projector tensors remain on the workstation HDD under
 `data/qwen3b_contract/architecture_controls/`. The next pane command should
 materialize the two effective contracts and build the V1 50-row health cache.
+The first cache attempt passed the snapshot directory directly to Transformers
+5.12.1 and hit its symlink-relative-import bug before writing any tensor. The
+tracked fix loads by pinned model ID/revision and keeps the snapshot for hashing
+only; the failure record is next to the V1 architecture-control artifacts.
 
 ## Community GLM-5.2V architecture audit (2026-08-06)
 

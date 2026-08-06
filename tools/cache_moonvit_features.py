@@ -303,7 +303,11 @@ def load_tower(args: argparse.Namespace, *, dtype: torch.dtype):
             attn_implementation=args.moonvit_v2_attn,
             torch_dtype=dtype,
         )
-    model_id = str(getattr(args, "moonvit_snapshot", None) or args.moonvit_model)
+    # ``snapshot_download`` 的 snapshot 目录含有指向 blobs 的符号链接；
+    # Transformers dynamic-module loader 在直接接收这个本地路径时会把相对
+    # import 解析到 blob 哈希目录，导致 configuration_moonvit.py 丢失。这里
+    # 用 pinned model ID/revision 加载，snapshot 仅承担离线身份与权重哈希。
+    model_id = str(args.moonvit_model)
     return MoonViTEncoder.from_pretrained(
         model_id,
         revision=args.moonvit_revision,
