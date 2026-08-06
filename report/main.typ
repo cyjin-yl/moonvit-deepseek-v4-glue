@@ -1748,3 +1748,19 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
 健康门槛触发时，训练自动保存 failure checkpoint 和最近健康 checkpoint，记录当前 batch、完整 JSONL、塌缩区间，然后回滚。这个过程只说明表示还保留了图像差异，不能单独写成“模型获得视力”。真正的能力晋升仍要求完整 ScreenSpot click-in-box 提升、vision 显著优于 blind 和 shuffled、格式没有退化，并在 TextVQA/DocVQA/OCRBench 没有未解释的严重下降。
 
 因此当前 Gate D 状态是 *NO-GO*：工程链路已经具备，视觉能力证据和 DeepSeek 真实运行证据都还不够。最短本地路径是“冻结 probe → 跑四臂高频 trajectory → 选择或否决 geometry repair → 用固定社区合同重跑真实评测 → 再做 DeepSeek runtime Gate”。
+
+== Package 15P 高频 control：塌缩 onset 已缩到 step 1--2
+
+第一条满足新 health 合同的 GPU 结果来自 `lambda=0` control。真实 Qwen2.5-3B、MoonViT-V2 特征缓存和冻结 receiver 均加载成功；训练在 optimizer step 2 由预注册 guard 自动停止，并回滚到 step 1 的健康 checkpoint。独立 verifier 重算了 step 0、1、2 的三组 guards，检查了三个 checkpoint 和 22 个健康产物，结果为 `verified`。
+
+#table(
+  columns: (1.2fr, 1.4fr, 1.4fr, 1.4fr),
+  [*step*], [*projector*], [*receiver*], [*训练/判定*],
+  [0], [RMS 0.1235；spread/rank ratio 1.000/1.000], [RMS 0.1222；spread/rank ratio 1.000/1.000], [CE 尚未开始；health pass],
+  [1], [RMS 0.3531；spread/rank ratio 0.419/0.762], [RMS 0.4551；spread/rank ratio 0.341/0.625], [CE 4.1440；趋势预警尚未止损],
+  [2], [RMS 0.6598；spread/rank ratio 0.269/0.502], [RMS 0.8810；spread/rank ratio 0.225/0.362], [CE 2.4380；auto-stop + rollback],
+)
+
+这条轨迹把已知故障从“step 1--100 的某处”缩小到 `[1,2]`。CE 在两步内下降约 41%，projector 与 receiver 的 RMS 同时上升，跨图 spread 和有效秩同时下降；触发原因是 `projector_rms_rising_spread_falling` 与 `receiver_rms_rising_spread_falling`。八条 teacher-forced probe 在 step 2 的 vision/shuffled preference 为 0.625/0.375，但这只是早期小探针，且没有完整 ScreenSpot 能力证据，不能提升 checkpoint。
+
+结果支持两个判断：早期 common-direction collapse 确实是训练主故障，在线监控能在昂贵的长跑前保存可恢复现场。结果反驳“loss 下降就足以证明模型看到了图像”，也说明 lambda-zero control 不能直接进入 500-step 扩展。当前 `previous_best` 仍为 step0，Gate D 仍为 *NO-GO*；下一项按同一预算和同一停止规则运行 `ratio005`，随后依次处理另外两条预注册臂。完整 1.1 GB raw checkpoint/optimizer 现场保存在本地 V100 归档目录，Git 只提交可审查日志、manifest 和路径绑定。

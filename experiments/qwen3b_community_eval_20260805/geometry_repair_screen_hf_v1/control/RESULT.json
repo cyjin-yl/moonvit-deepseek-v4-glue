@@ -1,0 +1,116 @@
+{
+  "format_version": "qwen3b-geometry-repair-health-result-v1",
+  "package": "15P",
+  "run_kind": "high_frequency_health_trajectory",
+  "arm": "control",
+  "geometry_lambda": 0.0,
+  "runner_git_sha": "60031ff87b030ad1b24100b38310c33b03ab902c",
+  "health_contract": "configs/qwen3b-projector-health-v1.json",
+  "probe_manifest": "experiments/qwen3b_community_eval_20260805/health_probe_v1/PROBE_MANIFEST.json",
+  "target_optimizer_steps": 100,
+  "optimizer_steps_completed": 2,
+  "examples_seen": 16,
+  "answer_tokens_seen": 145,
+  "trajectory": [
+    {
+      "step": 0,
+      "projector_output_rms": 0.12354247945327045,
+      "projector_relative_spread": 0.26870909150341443,
+      "projector_effective_rank": 13.279701449469266,
+      "projector_relative_spread_ratio": 1.0,
+      "projector_effective_rank_ratio": 1.0,
+      "projector_top1_variance_fraction": 0.1747579506841463,
+      "receiver_output_rms": 0.1221616306585098,
+      "receiver_relative_spread": 0.27084907314327866,
+      "receiver_effective_rank": 13.462064804823438,
+      "receiver_relative_spread_ratio": 1.0,
+      "receiver_effective_rank_ratio": 1.0,
+      "receiver_top1_variance_fraction": 0.17539507960557402,
+      "auto_stop": false
+    },
+    {
+      "step": 1,
+      "projector_output_rms": 0.3531207868991484,
+      "projector_relative_spread": 0.1125065299188249,
+      "projector_effective_rank": 10.116525450909256,
+      "projector_relative_spread_ratio": 0.4186926809560342,
+      "projector_effective_rank_ratio": 0.7618036813104387,
+      "projector_top1_variance_fraction": 0.22960386204061903,
+      "receiver_output_rms": 0.4551277921818022,
+      "receiver_relative_spread": 0.09229515610732732,
+      "receiver_effective_rank": 8.41538020643728,
+      "receiver_relative_spread_ratio": 0.3407623110399324,
+      "receiver_effective_rank_ratio": 0.6251180876370509,
+      "receiver_top1_variance_fraction": 0.275736400451666,
+      "auto_stop": false,
+      "ce_loss": 4.144003733992577,
+      "projector_gradient_norm_before_clip": 175.7845458984375
+    },
+    {
+      "step": 2,
+      "projector_output_rms": 0.6597889837472587,
+      "projector_relative_spread": 0.07229334331904588,
+      "projector_effective_rank": 6.668820397915174,
+      "projector_relative_spread_ratio": 0.2690394393229053,
+      "projector_effective_rank_ratio": 0.5021815003364928,
+      "projector_top1_variance_fraction": 0.32983977752496846,
+      "receiver_output_rms": 0.8809502363792526,
+      "receiver_relative_spread": 0.061037411458548664,
+      "receiver_effective_rank": 4.8760021771641995,
+      "receiver_relative_spread_ratio": 0.22535580701898872,
+      "receiver_effective_rank_ratio": 0.36220314252365915,
+      "receiver_top1_variance_fraction": 0.4105320176218227,
+      "auto_stop": true,
+      "ce_loss": 2.438019228167832,
+      "geometry_loss": 1.4394655227661133,
+      "projector_gradient_norm_before_clip": 416.0146484375,
+      "critical_reasons": [
+        "projector_rms_rising_spread_falling",
+        "receiver_rms_rising_spread_falling"
+      ]
+    }
+  ],
+  "causal_probe_step_2": {
+    "sample_count": 8,
+    "vision_preference": 0.625,
+    "shuffled_preference": 0.375,
+    "blind_preference": 0.625,
+    "vision_minus_blind_correct_logp": -9.19347642673241,
+    "vision_minus_shuffle_correct_logp": 0.09829819508087922,
+    "capability_claim_allowed": false
+  },
+  "stop_and_rollback": {
+    "status": "rolled_back_to_last_healthy_checkpoint",
+    "collapse_onset_interval": [1, 2],
+    "failed_step": 2,
+    "restored_step": 1,
+    "failure_checkpoint": "health_snapshots/checkpoints/failure-step-000002",
+    "last_healthy_checkpoint": "health_snapshots/checkpoints/healthy-step-000001",
+    "resume_from_failure_forbidden": true
+  },
+  "independent_verifier": {
+    "status": "verified",
+    "probe_steps": [0, 1, 2],
+    "guards_recomputed": 3,
+    "checkpoint_count": 3,
+    "artifact_file_count": 22,
+    "artifact_total_bytes": 1141300055,
+    "paid_resources_used": false
+  },
+  "interpretation": {
+    "supports": [
+      "projector and receiver geometry can fail within the first two optimizer steps",
+      "the frozen health contract detects the failure before a long run and preserves rollback state"
+    ],
+    "refutes": [
+      "CE loss decrease is sufficient evidence of image-dependent grounding",
+      "the lambda-zero control remains geometrically safe for the first 100-step screen"
+    ],
+    "visual_ability_established": false,
+    "previous_best_promoted": false,
+    "next_action": "run the matched ratio005 arm; retain the same frozen schedule and stop policy"
+  },
+  "paid_resources_used": false,
+  "final_half_scored": false,
+  "transfer_label": "directly_transferable"
+}

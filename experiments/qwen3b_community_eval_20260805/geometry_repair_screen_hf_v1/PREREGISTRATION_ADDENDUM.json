@@ -1,0 +1,35 @@
+{
+  "format_version": "qwen3b-geometry-repair-screen-addendum-v1",
+  "base_preregistration": "../geometry_repair_screen_v1/PREREGISTRATION.json",
+  "frozen_health_contract": "configs/qwen3b-projector-health-v1.json",
+  "pre_result_repairs": [
+    {
+      "attempt": "attempt03_online_health_contract",
+      "record": "../geometry_repair_screen_v1/failures/attempt03_online_health_contract/REPAIR_RECORD.json",
+      "completed_before_valid_screen": true,
+      "geometry_objective_changed": false,
+      "lambda_values_changed": false,
+      "screen_budget_changed": false
+    },
+    {
+      "attempt": "attempt04_health_shuffled_supervision",
+      "record": "../geometry_repair_screen_v1/failures/attempt04_health_shuffled_supervision/REPAIR_RECORD.json",
+      "completed_before_valid_screen": true,
+      "optimizer_step_created": false,
+      "checkpoint_or_capability_result_created": false,
+      "repair": "shuffled probes reuse the vision answer supervision and replace only the cached image feature"
+    }
+  ],
+  "first_valid_result": {
+    "path": "control/RESULT.json",
+    "arm": "control",
+    "optimizer_steps_completed": 2,
+    "collapse_onset_interval": [1, 2],
+    "capability_claim_allowed": false,
+    "previous_best_promoted": false,
+    "paid_resources_used": false,
+    "final_half_scored": false
+  },
+  "selection_rule_unchanged": true,
+  "interpretation_boundary": "health trajectory is representation evidence; it cannot establish visual ability or advance a checkpoint without the full community evaluation contract"
+}

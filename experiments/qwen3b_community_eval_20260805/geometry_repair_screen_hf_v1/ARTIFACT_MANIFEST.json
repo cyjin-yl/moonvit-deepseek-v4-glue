@@ -1,0 +1,123 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-06T05:41:43.701475+00:00",
+  "root": "geometry_repair_screen_hf_v1",
+  "git_base_sha": "60031ff87b030ad1b24100b38310c33b03ab902c",
+  "files": {
+    "control/ATTEMPT.json": {
+      "bytes": 2048,
+      "sha256": "a330f6fc55062cd5b086503ea165d11204703fd3f247b654368c9c1114f20525"
+    },
+    "control/CACHE_VERIFICATION.json": {
+      "bytes": 752,
+      "sha256": "989d6e1bee684233d888860a6883d91419392537ecbf387c64d20db6da16ae1b"
+    },
+    "control/control.launcher.log": {
+      "bytes": 2965,
+      "sha256": "0adff842dae730dacab810c68fe4942582ea8194bcee4a8c5026f5d8c4ed5b48"
+    },
+    "control/FAILURE.json": {
+      "bytes": 13305,
+      "sha256": "2c23257b481b9baef5e79a7c8536212ec6a8d65bd002c0fadb3dd65ff379455e"
+    },
+    "control/HEALTH_ARTIFACT_MANIFEST.json": {
+      "bytes": 4559,
+      "sha256": "398c0c03690f6c89aebcf40f66ddcdfbb610103430ecf365b49ee2905369af0a"
+    },
+    "control/health_snapshots/checkpoints/failure-step-000002/CHECKPOINT_MANIFEST.json": {
+      "bytes": 2872,
+      "sha256": "6334f16f96619f754f2bdd5dd0c524a23d2c10bcca2ff9ed13d79210537531c3"
+    },
+    "control/health_snapshots/checkpoints/failure-step-000002/history.json": {
+      "bytes": 3356,
+      "sha256": "14eb4e93e604c190f11240e2460695fcd389ae7f6f403f86f0bce7611e76e489"
+    },
+    "control/health_snapshots/checkpoints/failure-step-000002/projector_config.json": {
+      "bytes": 128,
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    "control/health_snapshots/checkpoints/healthy-step-000000/CHECKPOINT_MANIFEST.json": {
+      "bytes": 2842,
+      "sha256": "1b36c6370f4bb1dd090ca93168ca63ccefa4e9f9c7b861c6444958af4027966c"
+    },
+    "control/health_snapshots/checkpoints/healthy-step-000000/history.json": {
+      "bytes": 33,
+      "sha256": "14a770dff8ee1382261970572c8e0c62554c19e22c3ea97513c5315e13909387"
+    },
+    "control/health_snapshots/checkpoints/healthy-step-000000/projector_config.json": {
+      "bytes": 128,
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    "control/health_snapshots/checkpoints/healthy-step-000001/CHECKPOINT_MANIFEST.json": {
+      "bytes": 2870,
+      "sha256": "a7e2e35724a7ba23461899c1ee0ed49808258bec095d6ac5d6b252141ccfbda6"
+    },
+    "control/health_snapshots/checkpoints/healthy-step-000001/history.json": {
+      "bytes": 1645,
+      "sha256": "6f8a7efb82297ff6881173a94a07cbe39321f1f6600d8756a9f7e8cc0dae6839"
+    },
+    "control/health_snapshots/checkpoints/healthy-step-000001/projector_config.json": {
+      "bytes": 128,
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    "control/HEALTH_VERIFIER.json": {
+      "bytes": 376,
+      "sha256": "91edc23a223fe05c6575425a7c56ee7e0b32de73e992e5e47c837710f7dc4a1d"
+    },
+    "control/probe_metrics.jsonl": {
+      "bytes": 22868,
+      "sha256": "5b6446c135b0b69838fc77983e2a0f3633593f7cb7bd8ea2c726a3fec2f99a88"
+    },
+    "control/RAW_ARTIFACT_POINTER.json": {
+      "bytes": 828,
+      "sha256": "ac55c42f4be9d617fdff256409d47f5f862915cf147566453e838c02eee9625c"
+    },
+    "control/RESULT.json": {
+      "bytes": 4716,
+      "sha256": "47a9e4f7e5dfacf4573e47383ce73a79cbec8886930cd4fed2723b22f79a8816"
+    },
+    "control/ROLLBACK.json": {
+      "bytes": 438,
+      "sha256": "cd59f169f32be41b2613d2582291a89eb76b52b29cf542bf4daec620f8783320"
+    },
+    "control/run.log": {
+      "bytes": 2965,
+      "sha256": "0adff842dae730dacab810c68fe4942582ea8194bcee4a8c5026f5d8c4ed5b48"
+    },
+    "control/RUN_CONFIG.json": {
+      "bytes": 23444,
+      "sha256": "c1406250ebd152f642d89240106447fb83960b167ea0b9dbc3f59802350fe3d1"
+    },
+    "control/SUMMARY.json": {
+      "bytes": 1772,
+      "sha256": "e6c23454424d697fd87d2ba5b67b31ecee4100c1c931ae521cf30371fdf1dd4c"
+    },
+    "control/SUPERVISION_RECORDS.jsonl": {
+      "bytes": 2275709,
+      "sha256": "d90ea7515a67b2f4d77320fe061aef1cfc44ef877726d312366a309390ab5bc9"
+    },
+    "control/SUPERVISION_SUMMARY.json": {
+      "bytes": 452,
+      "sha256": "b48ccd66814269906b96bebc6a5c3b48727a2d1ea0f935468e1e19ba33d94a7e"
+    },
+    "control/train_health.jsonl": {
+      "bytes": 1723,
+      "sha256": "8763b6489042a49edfb64bb82cdff43ec2b8a22e3b595af6bd3b6f6995cc60ce"
+    },
+    "control/TRAINING_HISTORY.jsonl": {
+      "bytes": 2735,
+      "sha256": "ebd0a1bcad275e958e411d9b1a012993121c7f4fae33ea0bdca3e6ff206befe8"
+    },
+    "PREREGISTRATION_ADDENDUM.json": {
+      "bytes": 1547,
+      "sha256": "2783bfa668d47f006874373fa23383cf29326b4805f12ff83ad2c8c7eaf3ccd8"
+    },
+    "README.md": {
+      "bytes": 1414,
+      "sha256": "75b55d05d524ff4fa071c08aa0b1c889527b00a8a4f63b6d3b90bc9c45de533e"
+    }
+  },
+  "file_count": 28,
+  "total_bytes": 2378618,
+  "final_half_scored": false
+}

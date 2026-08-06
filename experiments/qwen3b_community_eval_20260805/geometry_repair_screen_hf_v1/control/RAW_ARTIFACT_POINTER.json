@@ -1,0 +1,19 @@
+{
+  "format_version": "v100-raw-artifact-pointer-v1",
+  "local_root": "D:/V100-artifacts/geometry_repair_screen_hf_v1/control",
+  "remote_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/geometry_repair_screen_hf_v1/control",
+  "complete_raw_copy": true,
+  "local_file_count": 32,
+  "local_total_bytes": 1143614867,
+  "health_manifest": "HEALTH_ARTIFACT_MANIFEST.json",
+  "health_manifest_sha256": "398c0c03690f6c89aebcf40f66ddcdfbb610103430ecf365b49ee2905369af0a",
+  "health_manifest_file_count": 22,
+  "health_manifest_total_bytes": 1141300055,
+  "local_rehash": {
+    "status": "verified",
+    "manifest_entries_checked": 22,
+    "mismatches": 0
+  },
+  "large_files_policy": "checkpoint tensors and optimizer state remain in the local raw archive and are not duplicated in Git",
+  "paid_resources_used": false
+}

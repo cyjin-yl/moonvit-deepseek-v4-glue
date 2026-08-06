@@ -30,6 +30,27 @@ health/CE screen, the 500-step expansion is cancelled and projector structure
 redesign is the next local experiment. DeepSeek-V4-Flash-0731 remains a later,
 unpaid migration target; Gate D is still NO-GO.
 
+### First valid high-frequency result: control arm (2026-08-06 UTC)
+
+The corrected control run loaded the real 3B model and MoonViT cache, then
+stopped automatically at optimizer step 2. The onset interval is now `[1, 2]`:
+projector RMS rose `0.1235 → 0.6598`, projector spread ratio fell to `0.2690`,
+and receiver effective-rank ratio fell to `0.3622`. CE still fell `4.1440 →
+2.4380`; the two trends therefore give a clean counterexample to using loss as
+the visual-success criterion. The run saved failure/healthy checkpoints,
+optimizer and RNG state, current batch IDs, rollback metadata and all JSONL
+logs. The independent verifier reports `verified` (3 probes, 3 checkpoints,
+22 hashed health artifacts, 1,141,300,055 bytes). Complete raw tensors are
+kept outside Git at `D:/V100-artifacts/geometry_repair_screen_hf_v1/control`;
+the committed pointer and manifest binding are under the matching experiment
+directory.
+
+This result supports early common-direction collapse and the usefulness of
+automatic stop/rollback. It does not establish visual ability, does not promote
+`previous_best`, and does not justify a DeepSeek run. The matched `ratio005`,
+`ratio020`, and `ratio080` arms remain required; if they all stop or exceed the
+frozen CE/geometry rule, the next experiment is projector structure repair.
+
 ## ⚠️ ACTIVE V100 REAL-VISION BRIDGE (2026-08-06)
 
 **Current task / hard boundary**: the engineering mainline is now a fixed real-data bridge on pure-text `Qwen/Qwen2.5-3B-Instruct`, followed by transfer of the same MoonViT-V2/projector/data/eval contract to DeepSeek-V4-Flash-0731. The 0.5B/synthetic line remains mechanism evidence. Do not rent any server, create a paid resource, run the full DeepSeek weights, or inspect final evaluation halves without explicit authorization. Exact V100 environment evidence is under `experiments/v100_perception_20260804/infra/environment/`.
@@ -47,8 +68,8 @@ unpaid migration target; Gate D is still NO-GO.
 | 完整公共真实评测合同 | **ScreenSpot50/full 完成 / 候选拒绝** | 1,272 条七条件与 2,000 bootstrap 已落盘；vision click 2.67%，blind 3.07%，step0 3.30%，vision−blind 距离显著恶化 |
 | Paired preference 机制判定 | **完成 / 无 content-specific readout** | trained vision/blind/shuffled 为 46%/56%/52%；训练显著降低坐标 NLL，但正确图与错图的 correct-logp 无差异 |
 | Grounding-enriched fixed-budget treatment | **训练通过 / preference+generation 拒绝** | preference 52%/56%/54%；generation click 6%/12%/6%，vision−blind mean distance 显著恶化 109.47 |
-| Projector representation retention | **step100 已 gross collapse / receiver 前** | step100 projector spread/rank ratio 0.1298/0.0772，sample RMS 0.124→35.74；receiver ratio 0.1287/0.0760 |
-| Package 15P geometry calibration | **已完成，尚无能力结论** | unweighted auxiliary grad 3.8782；λ=0.0101873/0.0407492/0.162997；独立 verifier `verified` |
+| Projector representation retention | **step1–2 已触发在线止损** | Package 15P control 在 step2 停止；projector spread/rank ratio 0.2690/0.5022，receiver 0.2254/0.3622，RMS 0.1235→0.6598；CE 仍 4.144→2.438 |
+| Package 15P geometry calibration | **已完成；control 高频轨迹已验证止损** | unweighted auxiliary grad 3.8782；λ=0.0101873/0.0407492/0.162997；control onset [1,2]；独立 health verifier `verified` |
 | 通用 train/save/resume/generate 链路 | 通过（含 3B 代理） | Qwen2.5-3B + 真 MoonViT 图像完成生成、梯度、一步 AdamW 与 checkpoint/optimizer/RNG 精确恢复 |
 | 完整 DeepSeek-V4-Flash-0731 闭环 | **未通过** | 完整权重从未完成图像 forward/backward/train/save/resume/generate |
 | Gate D 量化 DGRAD | **未通过（本地 harness 完成）** | 三模式接口/reference 通过；真实 FP8/FP4 module 仍 `hardware_pending` |
