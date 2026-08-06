@@ -543,3 +543,35 @@ Optimizer states exist **only for the projector** (`AdamW(projector.parameters()
 - Keep MoonViT, DeepSeek, and projector revisions/hashes separate.
 - The supplied Vast credential was not written into this repository.
 - The Vast API was used only with `POST /api/v0/bundles/` (offer search), never the instance-creation endpoint.
+
+## Matched V1/V2 health screen result (2026-08-06)
+
+The public MoonViT-SO-400M V1 lineage and the exact Kimi-K3/MoonViT-V2
+PatchMergerMLPV2 were finally compared on the same frozen Qwen2.5-3B contract.
+Both use the same 4,000-row order, receiver, learning rate, probe schedule and
+automatic rollback.
+
+V1 has a complete 4,000-row cache: 3,534 real tower forwards, 466 image-hash
+reuses, zero failures. It stops at step 2 with projector/receiver rank ratios
+`1.000 -> 0.264` and `1.000 -> 0.212`. V1 therefore does not rescue the
+early common-direction collapse.
+
+Exact K3 V2 uses the correct bias-free MLP plus post-RMSNorm. Its existing cache
+was rebound to the current frozen order with 111 hard links after all 4,000
+IDs, image hashes, shapes and spans matched. It also stops at step 2. Geometry
+is healthier (`1.000 -> 0.910` projector rank ratio and `1.000 -> 0.830`
+receiver ratio), yet correct-image log-prob is below shuffled at every
+post-step probe (`-0.240 -> -0.204 -> -0.098`). The causal guard stops it.
+
+The result weakens “V2 compression alone is the root cause”. V1 and V2 share
+an early optimization/receiver-interface problem on the frozen 3B proxy.
+V2 remains the migration candidate because its exact structure preserves
+geometry better; it has no visual-capability claim. Raw archives and hashes
+are under the two architecture-control health-run directories, with compact
+summaries and independent verifier records committed in Git.
+
+Next local screen: exact V2 with a substantially smaller projector learning
+rate, same data/order/guards and a matched CE-only control. If geometry survives,
+run the smallest image-vs-shuffle counterfactual objective. Do not increase the
+dataset or run full ScreenSpot generation until a trajectory passes both health
+and causal gates.

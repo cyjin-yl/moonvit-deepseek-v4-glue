@@ -26,8 +26,9 @@ Qwen2.5-3B 只承担冻结纯文本 receiver 的低成本代理角色。
 1152 维视觉塔；GLM projector 在自己的 6144 维语言空间重新训练。仓库当前
 注册 `local_v1_family_proxy` 与 `local_v2_exact_k3` 两条 matched control。
 Package 15P–15R 测试的是 `local_v2_legacy`，其 early-collapse 结果不能外推
-到 exact K3 V2。V1 cache 已通过 4 张图的 V100 接口 smoke，正式 benchmark 尚未
-开始。Gate D 仍为 **NO-GO**。
+到 exact K3 V2。现在两条 matched control 都已完成真实 cache 和高频 health
+screen；两条都在 step 2 自动止损，正式能力 benchmark 尚未启动。Gate D 仍为
+**NO-GO**。
 
 两条 matched control 的初始化已经冻结并完成 strict save/load 与确定性重建：
 V1 step0/random 权重文件分别为 `f24f677f…786cf` / `a740f349…5ec0`，exact K3
@@ -36,14 +37,20 @@ V2 分别为 `bec6e8bf…54815` / `7bdfb08c…65ed`。V1 snapshot 权重集合�
 和 projector 权重，后续两臂不会因配置文件语义漂移形成假比较。
 
 V1 probe-cache 的首次正式尝试在模型加载阶段发现 Transformers 5.12.1 对 HF
-snapshot 符号链接的相对导入缺陷，尚未产生 feature shard。修复后模型仍按 pinned
-ID/revision 加载，snapshot 只负责权重身份哈希；失败记录已保留，缓存从空目录重跑。
+snapshot 符号链接的相对导入缺陷；修复后 50-row probe 与 4,000-row training
+cache 均成功。V1 cache 是 3,534 次真实 tower forward、466 次同图复用、0 failures；
+V2 旧 cache 通过 4,000 条记录的 ID/image/shape/order 校验后以 111 个 hard links
+绑定到当前 order。失败记录、完整 raw archive、manifest 和 SHA 指针均已保留。
 
-下一步只做最小高频 screen：两条 control 使用相同样本顺序、预算、receiver、
-health guards 和 parser，在 step 0/1/2/5/10/20/30/50/75/100 观察 collapse
-与 vision-minus-shuffled；通过健康筛选的 arm 才进入完整 ScreenSpot、TextVQA、
-DocVQA、OCRBench 和 language-retention 合同。没有真实 causal gain 的结果不替换
-`previous_best`，也不进入 DeepSeek 付费阶段。
+V1 在 step 0/1/2 的 projector/receiver rank ratio 为
+1.000/1.000 → 0.562/0.451 → 0.264/0.212，触发 RMS/spread adverse-trend guard。
+exact K3 V2 的 ratio 为 1.000/1.000 → 0.947/0.900 → 0.910/0.830，但
+vision-minus-shuffled correct-logp 为 -0.240 → -0.204 → -0.098，连续触发
+causal critical。结果削弱“V2 压缩是唯一根因”，共同瓶颈更像 projector 更新尺度、
+冻结 3B receiver 的读出接口和不足的 image-vs-shuffle 监督。下一步先跑 exact V2
+更小 projector learning-rate 的 matched control；只有健康且 causal 为正的轨迹才
+进入完整 ScreenSpot、TextVQA、DocVQA、OCRBench 和 language-retention 合同。
+没有真实 causal gain 的结果不替换 `previous_best`，也不进入 DeepSeek 付费阶段。
 
 = 历史执行摘要
 

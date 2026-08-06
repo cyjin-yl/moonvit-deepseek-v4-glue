@@ -20,8 +20,8 @@ Qwen2.5-3B 代理的真实图像 glue、projector 梯度、checkpoint 保存恢�
 | geometry repair | Package 15P 的 control、ratio005、ratio020、ratio080 都在 step 1–2 止损；500-step expansion 取消 | 失败并已止损 | 同一 geometry λ 剂量不值得继续堆训练量 |
 | output normalization | Package 15Q 的 CE-only、post-LayerNorm、post-RMSNorm 都在 step 2 止损 | 失败 | 输出归一化单变量不足以保留跨图像几何 |
 | residual repair | Package 15R baseline 与 zero-init residual 都在 step 2 止损；gated arm 尚待结果 | 进行中 | 已证明 zero-init branch 可收梯度，尚未证明能保留图像差异 |
-| exact K3 V2 projector | `kimi_k3_v2` 已实现，bias-free MLP、post-RMSNorm 与 vendored K3 forward parity 单测通过；step0/random 权重已冻结 | 能运行，未训练 | 旧 legacy failure 不适用于它；尚无能力结论 |
-| V1 family proxy | SO-400M revision、权重集合 SHA、V1 cache CLI 与 canonical-4096 step0/random 权重已冻结；4-image V100 cache smoke 通过 | 待正式 probe/cache 与训练 | 可检验 V1/K2.6-lineage 表示是否更易映射 |
+| exact K3 V2 projector | `kimi_k3_v2` 已实现，bias-free MLP、post-RMSNorm 与 vendored K3 forward parity 单测通过；step0/random 权重已冻结 | 高频 screen 在 step 2 止损 | 几何相对健康，但 vision−shuffled log-prob 连续为负；仍未建立视觉能力 |
+| V1 family proxy | SO-400M revision、1152 维特征、权重集合 SHA、canonical-4096 step0/random 权重和 4,000-row cache 已冻结 | 高频 screen 在 step 2 止损 | V1 也发生相同早期 RMS/spread/rank 恶化；V1 版本单独不能解释失败 |
 | Qwen3.5-4B | 原生 VLM positive control 已在 TextVQA、DocVQA、OCRBench、ScreenSpot 等 selection 上得到阳性 | 诊断完成 | 证明 scorer/processor 健康；不进入 projector 排名 |
 | TextVQA/DocVQA/OCRBench/language retention | 3B architecture candidate 尚未完成全套候选评测 | 待补 | ScreenSpot 单项不能替代完整能力合同 |
 | DeepSeek-V4-Flash-0731 | tiny DeepSeek 类和 routing harness 通过；完整 0731 图像 forward/backward/train/save/resume/generate 未运行 | 未通过 | Gate D 仍需真实量化 input DGRAD 和完整主干证据 |
@@ -57,6 +57,26 @@ config、serialized config 与 step0 权重，避免结构 JSON 和 safetensors 
 的 dynamic-module 相对导入缺陷；失败记录已保存。加载入口已改为 pinned model ID
 和 revision，snapshot 只用于离线文件身份与哈希，随后从空目录重跑。
 
+### V1/V2 matched high-frequency health screen（2026-08-06）
+
+两条架构使用同一 Qwen2.5-3B、同一 4,000-row order、同一 receiver、同一
+learning rate 和前 100-step guard。V1 真实 cache 为 4,000/4,000、0 failures、
+3,534 次 MoonViT forward；V2 旧的 4,000-row cache 通过逐记录 SHA/尺寸/顺序校验，
+以 111 个硬链接 shard 重绑定到当前 order，未复制特征数据。两条训练都在
+step 2 自动止损，完整 raw archive、failure checkpoint、optimizer/RNG、batch IDs、
+rollback 和独立 verifier 均已保存到 V100 HDD，Git 只保存摘要与哈希指针。
+
+| arm | step 0→2 effective-rank ratio（projector / receiver） | step 0→2 vision−shuffle log-prob | stop reason | 判定 |
+|---|---|---|---|---|
+| V1 SO-400M | 1.000→0.264 / 1.000→0.212 | -0.155→+0.031 | RMS 上升、spread 下降；step 1 已低于 receiver rank floor | V1 也失败 |
+| exact K3 V2 | 1.000→0.910 / 1.000→0.830 | -0.240→-0.098 | RMS 上升、spread 下降；causal critical 连续触发 | 几何较稳，视觉因果仍失败 |
+
+这组结果削弱了“V2 的 embedding 压缩是唯一根因”。V1 与 V2 都无法在冻结
+纯文本 3B 上形成稳定的正确图像优势；V2 的表示健康比 V1 好，却仍然更偏好
+shuffled 或与 shuffled 持平。当前最强共同解释是 projector 更新尺度与冻结文本
+receiver 的读出接口，训练目标也没有提供足够强的 image-vs-shuffle 因果约束。
+这仍然是 health screen，不能把几何保留称为视觉能力。
+
 ## 为什么前一套方案没有改进
 
 ### 1. 训练目标奖励了“会输出坐标”，没有奖励“从正确图片读取坐标”
@@ -89,14 +109,15 @@ bias-free MLP 加 trainable post-RMSNorm。旧结果仍然有价值，它们准�
 
 1. `local_v2_exact_k3` 的 state/forward parity、strict save/load、参数量和两组
    初始化冻结已经完成。
-2. 用 pinned `MoonViT-SO-400M` 生成正式 1152 维 V1 probe/training cache；核对每张图的 SHA、
-   feature shape、processor revision 和视觉 token 数。
-3. V1/V2 独立 step0 与 random-projector 已冻结；下一步生成同样 50 个 probe ID
-   的 V1 feature manifest，并冻结两臂匹配的 4,000-row order/cache。
+2. 已用 pinned `MoonViT-SO-400M` 生成正式 1152 维 V1 probe/training cache；每张图的
+   SHA、feature shape、processor revision 和视觉 token 数已写入 manifest。
+3. V1/V2 独立 step0、random-projector、同 50 个 probe ID 和匹配 4,000-row order/cache
+   已冻结；V1/V2 高频 screen 已完成并独立复核。
 
 ### 阶段 B：廉价高频筛选
 
-两臂都在相同 3B budget 下跑 step 0/1/2/5/10/20/30/50/75/100。每步写
+两臂都在相同 3B budget 下从 step 0/1/2 开始高频运行；两臂都在 step 2 自动止损，
+因此没有把已触发 critical guard 的 checkpoint 推到 5/10/20/30/50/75/100。每步写
 `train_health.jsonl`；probe 写 `probe_metrics.jsonl`。任一 critical guard 触发
 就自动保存并回滚，禁止继续到 500 steps。健康通过只允许进入评测队列，不等于
 视觉能力通过。
@@ -112,14 +133,15 @@ blind、shuffled、random projector、step0 和 previous-best 角色。
 
 | 结果模式 | 最强解释 | 后续动作 |
 |---|---|---|
-| V1 健康/因果通过，exact V2 失败 | 视觉塔版本、预处理或 V2 压缩映射问题 | 复核 V2 特征层、token 压缩和 projector 初始化；保留 V1 为诊断参考 |
-| V1 与 exact V2 都失败且早期塌缩 | 纯文本 3B receiver、优化尺度或监督接口是共同瓶颈 | 测试冻结 projector 结构、学习率/初始化和 counterfactual objective；不扩大数据预算 |
+| V1 健康/因果通过，exact V2 失败 | 视觉塔版本、预处理或 V2 压缩映射问题 | 当前未发生；V1 也失败，保留两条 raw trajectory |
+| V1 与 exact V2 都失败且早期塌缩 | 纯文本 3B receiver、优化尺度或监督接口是共同瓶颈 | 先跑 exact V2 的更小 projector LR / scale-safe control，再做冻结 receiver 的 image-vs-shuffle objective screen；不扩大数据预算 |
 | 两者 health 通过但 causal benchmark 失败 | 表示仍有差异，语言主干没有形成可解码读出 | 检查 receiver、prompt/loss mask、答案格式和训练数据覆盖 |
 | exact V2 causal 通过，V1 失败 | K3 V2 是当前更合适的最终视觉塔 | 固定 exact V2 配方，准备 DeepSeek runtime validation |
 
 ## Gate D 边界
 
-当前 Gate D 为 **NO-GO**。仍缺：
+当前 Gate D 为 **NO-GO**。V1/V2 screen 证明了真实 cache、训练、自动止损、checkpoint 恢复和独立 verifier 可控；
+仍缺：
 
 - 固定 revision 的完整 DeepSeek-V4-Flash-0731 真实权重加载；
 - 真实 FP4/FP8 module 的有限、非零 input gradient；

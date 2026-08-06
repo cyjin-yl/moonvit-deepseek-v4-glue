@@ -1,0 +1,69 @@
+{
+  "format_version": "qwen3b-architecture-health-result-v1",
+  "architecture_id": "local_v2_exact_k3",
+  "architecture_label": "Kimi-K3/MoonViT-V2 exact PatchMergerMLPV2 / 4096 -> 4096",
+  "status": "auto_stopped_by_projector_health_guard",
+  "runner_git_sha": "b3218f92fa72b45e3b6768560adcb848c07f9a09",
+  "health_contract": "configs/qwen3b-projector-health-v1.json",
+  "probe_manifest": "experiments/qwen3b_community_eval_20260805/health_probe_v1/PROBE_MANIFEST.json",
+  "optimizer_steps_completed": 2,
+  "examples_seen": 16,
+  "answer_tokens_seen": 97,
+  "loss_first": 4.852579563856125,
+  "loss_last": 4.937998713925481,
+  "trajectory": [
+    {
+      "step": 0,
+      "projector_effective_rank_ratio": 1,
+      "receiver_effective_rank_ratio": 1,
+      "projector_relative_spread_ratio": 1,
+      "receiver_relative_spread_ratio": 1,
+      "projector_output_rms": 0.3983105075216328,
+      "receiver_output_rms": 0.40171646676739753,
+      "vision_preference": 0.625,
+      "shuffled_preference": 0.625,
+      "vision_minus_shuffle_correct_logp": -0.24043657535161733
+    },
+    {
+      "step": 1,
+      "projector_effective_rank_ratio": 0.9472317875281299,
+      "receiver_effective_rank_ratio": 0.8996077644108503,
+      "projector_relative_spread_ratio": 0.8703010117823832,
+      "receiver_relative_spread_ratio": 0.8099614110869732,
+      "projector_output_rms": 0.4488492643268322,
+      "receiver_output_rms": 0.49300489937096714,
+      "vision_preference": 0.5,
+      "shuffled_preference": 0.5,
+      "vision_minus_shuffle_correct_logp": -0.2040833350502962
+    },
+    {
+      "step": 2,
+      "projector_effective_rank_ratio": 0.9097032039978833,
+      "receiver_effective_rank_ratio": 0.8296976054581642,
+      "projector_relative_spread_ratio": 0.685479143448021,
+      "receiver_relative_spread_ratio": 0.5948453102414305,
+      "projector_output_rms": 0.538903411982056,
+      "receiver_output_rms": 0.642594336268533,
+      "vision_preference": 0.5,
+      "shuffled_preference": 0.5,
+      "vision_minus_shuffle_correct_logp": -0.09802000426547419
+    }
+  ],
+  "critical_reasons": [
+    "projector_rms_rising_spread_falling",
+    "receiver_rms_rising_spread_falling",
+    "vision_minus_shuffle_logp_critical"
+  ],
+  "collapse_onset_interval": [
+    1,
+    2
+  ],
+  "peak_gpu_memory_bytes": 13246238208,
+  "training_wall_seconds": 33.180470497347414,
+  "total_wall_seconds": 175.54561658296734,
+  "independent_verifier_status": "verified",
+  "capability_claim_allowed": false,
+  "qwen_proxy_conclusion": "Exact K3 V2 geometry remains above hard rank/spread floors through step2, but correct-image log-prob is consistently below shuffled and the trend guard stops the run; geometry health alone is insufficient.",
+  "deepseek_transfer_label": "directly_transferable",
+  "paid_resources_used": false
+}
