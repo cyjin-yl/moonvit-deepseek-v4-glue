@@ -1,0 +1,29 @@
+{
+  "schema_version": "stripped-receiver-prior-train-v1",
+  "model_dir": "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/models/Qwen2.5-7B-Instruct",
+  "model_type": "qwen2",
+  "model_loader": "AutoModelForCausalLM",
+  "weight_manifest": "configs/qwen2.5-7b-hf-sha256.json",
+  "feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/architecture_controls/local_v2_exact_k3/feature_cache_4k_rebound_retry1",
+  "projector_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/architecture_controls/local_v2_exact_k3/projector_initializations/step0",
+  "dtype": "float16",
+  "max_visual_tokens": 240,
+  "sample_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "steps": 3,
+  "learning_rate": 5e-05,
+  "shuffle_margin_lambda": 0.1,
+  "shuffle_margin": 0.1,
+  "receiver_width": 3584,
+  "native_vision_bypassed": true,
+  "native_vision_forward_calls": 0,
+  "capability_claim_allowed": false
+}

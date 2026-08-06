@@ -1,0 +1,13 @@
+{
+  "schema_version": "raw-artifact-pointer-v1",
+  "status": "diagnostic_training_no_full_length_gain",
+  "remote_raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen25_7b_receiver_train_margin01_240tok_20260806",
+  "files": ["RUN_CONFIG.json", "SUMMARY.json", "train_health.jsonl", "optimizer_final.pt", "projector_final/projector.safetensors"],
+  "model_hf_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "dtype": "float16", "max_visual_tokens": 240, "sample_count": 8, "optimizer_steps": 3,
+  "trajectory_vision_minus_shuffle": [0.026310205459594727, 0.0032873153686523438, 0.008627176284790039, 0.00896310806274414],
+  "trajectory_ce_loss": [0.20937131345272064, 0.02820849046111107, 0.010842285118997097, 0.008502248674631119],
+  "shuffle_margin_lambda": 0.1, "shuffle_margin": 0.1,
+  "capability_claim_allowed": false,
+  "deepseek_transfer_label": "transferable_with_runtime_validation"
+}

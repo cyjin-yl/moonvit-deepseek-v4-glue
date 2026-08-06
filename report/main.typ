@@ -1903,3 +1903,5 @@ Qwen3.5 原生 3D mRoPE 的 V2 诊断在同一 8-sample/240-token 条件下给�
 9B projector-only backward 的本机边界已经实测：240-token 首次尝试触发 NVML allocator assert；修复训练器的 graph retention、缩到 16 token 后仍在 25.88 GiB allocated / 41 MiB free 时 OOM。由此把 Qwen3.5-9B 固定为 inference/input-gradient receiver-prior diagnostic；V100 projector 训练继续使用 3B/7B，Gate D 仍等待真实 DeepSeek runtime 证据。
 
 Qwen2.5-7B 的 3-step CE-only projector screen 在 V100 上完成：8 samples、16 tokens、FP16 全 finite，projector RMS `0.99775→0.99779`、between-image RMS `0.4064→0.4055`，CE `0.2381→0.0094`，但 `vision-minus-shuffle` `+0.0333→-0.1027`。它给出了容量对照的关键答案：7B 能训练，不代表会按图像回答；下一轮训练目标必须直接优化 paired image attribution，并保留 CE-only matched control。
+
+匹配的 paired image-vs-shuffle margin（λ=`0.1`、margin=`0.1`）在 7B 上保持 finite。16-token 3-step 后 `vision-minus-shuffle=+0.0984`，240-token 为 `+0.0090`；RMS 和 between-image spread 没有崩坏。它支持监督方向的价值，却反驳“短上下文正 margin 足以代表完整视觉能力”。

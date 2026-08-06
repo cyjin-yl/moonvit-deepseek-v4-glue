@@ -627,3 +627,5 @@ Qwen3.5 native 3D mRoPE 诊断也完成：V2、8 samples、240 tokens 下 `visio
 9B projector-only training 的两次修复均撞到 V100 32GB 边界：240-token 首次 forward 是 NVML allocator assert；修复 health graph retention、缩到 16 token 后仍在约 25.9GiB allocated 时 OOM。9B 保留 inference/input-gradient gate，不再在本机强行长训；3B/7B 承担 projector 训练与正式合同筛选。
 
 Qwen2.5-7B 的 3-step CE-only screen 已完成：8 samples、16 tokens、FP16 全 finite；CE `0.2381→0.0094`，RMS/spread 基本不动，`vision−shuffle` `+0.0333→-0.1027`。这确认 7B 有足够显存完成 projector backward，却重复“loss 下降、图像归因变差”的路线。CE-only 结果不进入 candidate；下一条训练若继续，必须用 matched image-vs-shuffle objective，并用相同 7B CE-only control 对照。
+
+matched margin arm（λ=0.1）在 7B 上的 16-token 轨迹为 `+0.0333/-0.0568/+0.0365/+0.0984`，240-token 轨迹为 `+0.0263/+0.0033/+0.0086/+0.0090`。这是一条有限但重要的监督方向证据；240-token 仍接近零，不能进入 ScreenSpot。下一条只在 7B 上做 token compression/scale-safe 的单变量筛选，保持 CE-only control 与 health guard。
