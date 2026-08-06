@@ -35,6 +35,7 @@ class ProjectorConfig:
     projector_width: int | None = None
     layer_norm_eps: float = 1e-5
     output_norm: str = "none"
+    residual_mode: str = "none"
 
     @property
     def flattened_vision_width(self) -> int:
@@ -53,6 +54,10 @@ class ProjectorConfig:
         if self.output_norm not in {"none", "layernorm", "rmsnorm"}:
             raise ValueError(
                 "output_norm must be one of none, layernorm, or rmsnorm"
+            )
+        if self.residual_mode not in {"none", "zero_init", "gated"}:
+            raise ValueError(
+                "residual_mode must be one of none, zero_init, or gated"
             )
 
 
@@ -86,6 +91,16 @@ class PatchMergerProjector(nn.Module):
             )
         else:
             self.output_norm = nn.Identity()
+        if config.residual_mode != "none":
+            # 残差分支保持 canonical 4096 宽度；分支初值由结构合同冻结。
+            self.residual = nn.Linear(
+                config.language_width, config.language_width, bias=False
+            )
+            if config.residual_mode == "zero_init":
+                nn.init.zeros_(self.residual.weight)
+            else:
+                # gate=0 让初始输出精确等于旧 projector，同时保留 gate 梯度。
+                self.residual_gate = nn.Parameter(torch.zeros((), dtype=torch.float32))
 
     def forward(self, feature_groups: Sequence[Tensor]) -> list[Tensor]:
         projected: list[Tensor] = []
@@ -102,9 +117,16 @@ class PatchMergerProjector(nn.Module):
                 )
             normalized = self.pre_norm(item)
             flattened = normalized.reshape(item.shape[0], -1)
-            projected.append(
-                self.output_norm(self.linear_2(self.activation(self.linear_1(flattened))))
+            base_output = self.output_norm(
+                self.linear_2(self.activation(self.linear_1(flattened)))
             )
+            if self.config.residual_mode == "none":
+                projected.append(base_output)
+                continue
+            residual = self.residual(base_output)
+            if self.config.residual_mode == "gated":
+                residual = residual * self.residual_gate.to(dtype=base_output.dtype)
+            projected.append(base_output + residual)
         return projected
 
     def save_pretrained(self, directory: str | Path) -> None:

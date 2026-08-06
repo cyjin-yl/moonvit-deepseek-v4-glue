@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "tools/freeze_projector_residual_initializations.py", line 169, in <module>
+    main()
+  File "tools/freeze_projector_residual_initializations.py", line 140, in main
+    freeze_arm(...)
+RuntimeError: self.dim() cannot be 0 to view Float as Byte (different element sizes)

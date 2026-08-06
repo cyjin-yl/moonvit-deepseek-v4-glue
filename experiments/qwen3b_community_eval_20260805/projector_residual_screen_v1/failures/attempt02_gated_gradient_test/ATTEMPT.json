@@ -1,0 +1,10 @@
+{
+  "format_version": "qwen3b-projector-residual-screen-attempt-v1",
+  "attempt": "attempt02_gated_gradient_test",
+  "stage": "focused_unit_tests",
+  "gpu_started": false,
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

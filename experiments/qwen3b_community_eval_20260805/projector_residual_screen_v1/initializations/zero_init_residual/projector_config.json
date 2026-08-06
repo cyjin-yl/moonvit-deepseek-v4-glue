@@ -1,0 +1,9 @@
+{
+  "language_width": 4096,
+  "layer_norm_eps": 1e-05,
+  "merge_factor": 4,
+  "output_norm": "none",
+  "projector_width": null,
+  "residual_mode": "zero_init",
+  "vision_width": 1024
+}

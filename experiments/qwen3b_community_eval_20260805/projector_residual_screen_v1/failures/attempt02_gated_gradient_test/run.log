@@ -1,0 +1,1 @@
+AssertionError: gated residual branch gradient was zero at gate=0

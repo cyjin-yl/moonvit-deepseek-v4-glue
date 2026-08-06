@@ -1,0 +1,15 @@
+{
+  "format_version": "qwen3b-projector-residual-screen-failure-v1",
+  "status": "initialization_tool_failure_preserved",
+  "stage": "deterministic_initialization_generation",
+  "exception_type": "RuntimeError",
+  "failure": "self.dim() cannot be 0 to view Float as Byte (different element sizes)",
+  "root_cause": "the tensor state hash helper assumed every parameter had at least one dimension; gated residual adds a 0-d scalar gate",
+  "repair": "hash tensor.reshape(-1) before viewing bytes; contract, seeds, parameter counts and screen budget unchanged",
+  "gpu_started": false,
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "initialization_files_created": true,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

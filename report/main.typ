@@ -1796,3 +1796,9 @@ Package 15Q 已在任何新结构结果前冻结。它把一个结构变量放�
 `post_rmsnorm` 同样在 step 2 自动止损，onset `[1,2]`。step 1/2 的 CE 为 4.92061/3.71350；projector spread/rank ratio 为 0.2110/0.7540，receiver 为 0.1656/0.6285。除两条 RMS-rising/spread-falling guard 外，`vision_minus_shuffle_correct_logp` 在连续 probe 点恶化，触发 causal critical guard；step 2 值为 -0.21164。3 个 probe、3 个 checkpoint 和 22 项 artifact 经独立 verifier 通过，原始目录保存在 `D:/V100-artifacts/projector_structure_screen_hf_v1/post_rmsnorm`。
 
 三臂的共同 onset 都是 `[1,2]`，passing set 为空。`baseline_none`、`post_layernorm` 和 `post_rmsnorm` 的 CE-only/输出归一化差异没有改变早期几何崩坏，因此按预注册规则取消 500-step expansion，也不进行能力晋升。当前最有判别力的下一步是 residual 或 gated-residual projector 加 matched CE-only control；只有健康轨迹通过，才继续 ScreenSpot、TextVQA、DocVQA 和 OCRBench。
+
+== Package 15R：残差结构合同已冻结
+
+15Q 的三条轨迹都在 step 2 止损后，15R 把原始 projector 保留为主通路，在 `linear_2` 后增加一条 4096 宽度残差：`zero_init_residual` 将分支权重全部置零，`gated_residual` 使用正常初始化分支并将 scalar gate 置零。两者的 step0 输出逐元素等于旧 projector，base MLP 权重 SHA 完全相同；参数量分别为 50,341,888 和 50,341,889。control 仍是同一 step0 projector，训练主干、receiver、数据顺序、学习率和 health schedule 全部固定。
+
+15R 的首阶段只跑 100 optimizer steps/800 examples，要求 projector 与 receiver 都没有 critical guard、没有早期塌缩后恢复，且 CE 代价满足预注册上限。健康通过才进入固定 ScreenSpot/TextVQA/DocVQA/OCRBench 合同；健康本身不能作为视觉能力结论。初始化 hash、独立 verifier、失败记录和迁移边界已冻结，下一步在 V100 上按 control、zero-init、gated 顺序执行。

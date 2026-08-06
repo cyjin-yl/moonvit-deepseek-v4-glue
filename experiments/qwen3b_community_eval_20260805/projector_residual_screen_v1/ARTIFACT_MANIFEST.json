@@ -1,0 +1,63 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-06T08:36:06.843415+00:00",
+  "root": "projector_residual_screen_v1",
+  "git_base_sha": "95931d2f9e524d52639463782e0bfe34d962c776",
+  "files": {
+    "failures/attempt01_scalar_gate_hash/ATTEMPT.json": {
+      "bytes": 440,
+      "sha256": "5bcebf48a250a9a91ddd126e68cc90c8fd3dbacbe8fab34e616da4cd20a62d23"
+    },
+    "failures/attempt01_scalar_gate_hash/FAILURE.json": {
+      "bytes": 774,
+      "sha256": "7f0c9710124a4473112e35ea35f349261f03c1d8d5862a8e4a65f5ac06615e22"
+    },
+    "failures/attempt01_scalar_gate_hash/REPAIR_RECORD.json": {
+      "bytes": 467,
+      "sha256": "c2e7ad114eb692599a19735e9ad19da8a2c3d8cc547001ce8b4ee730dbb772c4"
+    },
+    "failures/attempt01_scalar_gate_hash/run.log": {
+      "bytes": 313,
+      "sha256": "54d578934dd90688e24d990a43a789486f3400ea6e38f0d961a918597c3fbbe6"
+    },
+    "failures/attempt02_gated_gradient_test/ATTEMPT.json": {
+      "bytes": 322,
+      "sha256": "c43d3903ccc732b010c36e512bc01b30de2d551563b317b75c79f8c91dd1d1c2"
+    },
+    "failures/attempt02_gated_gradient_test/FAILURE.json": {
+      "bytes": 669,
+      "sha256": "c99ed48b58b24a79278d4fad4523f0384d84dac8271b8e7aa646db578b02a536"
+    },
+    "failures/attempt02_gated_gradient_test/REPAIR_RECORD.json": {
+      "bytes": 473,
+      "sha256": "8a57ec6ffc99accbc917e64281cccc2a296da41fb4290338fca1c564d185aee4"
+    },
+    "failures/attempt02_gated_gradient_test/run.log": {
+      "bytes": 66,
+      "sha256": "8024b80f62efc3299de9357a5b5aa6e724f455f524073fe37f558c612977f5e6"
+    },
+    "INITIALIZATION_ARTIFACT_POINTER.json": {
+      "bytes": 1725,
+      "sha256": "7d89280c4d25701fac8680ca4e4e6da72e436a8de8d59b79efe1d57c3d5fff44"
+    },
+    "initializations/gated_residual/projector_config.json": {
+      "bytes": 181,
+      "sha256": "3cdba5e84ae8ee53da3a1b5904ac3b260de875154e7cf10fb1c063421cd3516b"
+    },
+    "initializations/zero_init_residual/projector_config.json": {
+      "bytes": 185,
+      "sha256": "bd12bf202803365bbca87b7ab6c7765e5d0aa213dbd68152c188e4336d3b138c"
+    },
+    "PREREGISTRATION.json": {
+      "bytes": 2599,
+      "sha256": "81c1a22a8020671797130c382c11d4fd3b33706e4c75e5e622d28380ba44e3b8"
+    },
+    "README.md": {
+      "bytes": 1107,
+      "sha256": "ce9533e79e85ad705b0d44cc99dfca24154fd575e74e0337f194e2c5644ffbd2"
+    }
+  },
+  "file_count": 13,
+  "total_bytes": 9321,
+  "final_half_scored": false
+}

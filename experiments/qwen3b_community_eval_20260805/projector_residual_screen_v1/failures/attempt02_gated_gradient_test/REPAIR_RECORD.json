@@ -1,0 +1,12 @@
+{
+  "format_version": "qwen3b-projector-residual-screen-repair-v1",
+  "attempt": "attempt02_gated_gradient_test",
+  "training_result_created_by_repair": false,
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "implementation_changed": false,
+  "contract_changed": false,
+  "screen_budget_changed": false,
+  "health_thresholds_changed": false,
+  "repair_description": "align the test with the preregistered zero-gate gradient path"
+}

@@ -1,0 +1,84 @@
+{
+  "format_version": "qwen3b-projector-residual-screen-contract-v1",
+  "frozen_before_any_residual_result": true,
+  "project_goal": "MoonViT-V2 -> canonical 4096 projector -> frozen Qwen proxy -> DeepSeek-V4-Flash-0731",
+  "proxy_contract_file_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+  "health_contract_file": "configs/qwen3b-projector-health-v1.json",
+  "health_contract_file_sha256": "c6b8f7c6fcefb2fcf11c4328e1cb1023b571ed36503f3d2519aeb2f257f9a325",
+  "projector_source_file": "src/moonvit_glue/projector.py",
+  "projector_source_file_sha256": "f6e0ed618c465230658358fa7a69697173520c8fbb41dffbd401cd91cb0f14d8",
+  "base_projector": {
+    "config_source": "configs/deepseek-v4-flash-0731-projector-moonvit-v2.json",
+    "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+    "weights_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0",
+    "parameter_count": 33564672,
+    "canonical_output_width": 4096,
+    "same_base_mlp_weights_for_all_arms": true
+  },
+  "arms": [
+    {
+      "name": "baseline_none",
+      "residual_mode": "none",
+      "config_path": "configs/deepseek-v4-flash-0731-projector-moonvit-v2.json",
+      "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+      "weights_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0",
+      "parameter_count": 33564672,
+      "matched_role": "CE-only control"
+    },
+    {
+      "name": "zero_init_residual",
+      "residual_mode": "zero_init",
+      "config_path": "experiments/qwen3b_community_eval_20260805/projector_residual_screen_v1/initializations/zero_init_residual/projector_config.json",
+      "config_sha256": "bd12bf202803365bbca87b7ab6c7765e5d0aa213dbd68152c188e4336d3b138c",
+      "weights_sha256": "24b2b74e82c0949c801aa2e7895a4d7d1aa233e94f603186df1f03ae7cd0f7ef",
+      "parameter_count": 50341888,
+      "matched_role": "zero-initialized residual branch"
+    },
+    {
+      "name": "gated_residual",
+      "residual_mode": "gated",
+      "config_path": "experiments/qwen3b_community_eval_20260805/projector_residual_screen_v1/initializations/gated_residual/projector_config.json",
+      "config_sha256": "3cdba5e84ae8ee53da3a1b5904ac3b260de875154e7cf10fb1c063421cd3516b",
+      "weights_sha256": "8417ed47a88164badd59c5fd14bcbf6327c3c48fd1a5898589f193632f03d8bb",
+      "parameter_count": 50341889,
+      "matched_role": "zero-gated residual branch"
+    }
+  ],
+  "boundary": {
+    "residual_position": "after linear_2 at canonical 4096 output",
+    "residual_width": 4096,
+    "zero_init_output_equals_step0": true,
+    "gated_output_equals_step0": true,
+    "canonical_output_width": 4096,
+    "receiver_is_frozen": true,
+    "text_backbone_is_frozen": true,
+    "qwen_native_vision_is_forbidden": true
+  },
+  "initialization_artifact": {
+    "remote_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_v1_retry1",
+    "local_root": "D:/V100-artifacts/projector_residual_initializations_v1_retry1",
+    "manifest_sha256": "533b281af2f3b43009a006a60b04effc23eb57147e99e89d75f2226efd061d85",
+    "generation_failure_archive": "experiments/qwen3b_community_eval_20260805/projector_residual_screen_v1/failures/attempt01_scalar_gate_hash"
+  },
+  "budget": {
+    "optimizer_steps": 100,
+    "examples_seen": 800,
+    "same_training_order": true,
+    "same_learning_rate": true,
+    "same_resolution": true,
+    "same_health_schedule": true,
+    "auto_stop_and_rollback": true
+  },
+  "selection": {
+    "health_pass_required_at_projector_and_receiver": true,
+    "requires_no_early_collapse_then_recovery": true,
+    "final_20_step_ce_ratio_to_baseline_max": 1.25,
+    "no_pass_action": "pre_register frozen-base residual-only or learning-rate-cap strategy; cancel any 500-step expansion",
+    "pass_action": "run full fixed ScreenSpot/TextVQA/DocVQA/OCRBench contract before promotion"
+  },
+  "interpretation_boundary": "health preservation is representation evidence and cannot establish visual ability",
+  "transfer_label": "transferable_with_runtime_validation",
+  "paid_resources_used": false,
+  "final_half_scored": false,
+  "capability_claim_allowed": false
+}

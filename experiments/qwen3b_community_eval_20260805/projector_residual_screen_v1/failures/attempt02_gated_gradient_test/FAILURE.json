@@ -1,0 +1,14 @@
+{
+  "format_version": "qwen3b-projector-residual-screen-failure-v1",
+  "status": "test_failure_preserved",
+  "stage": "focused_unit_tests",
+  "exception_type": "AssertionError",
+  "failure": "gated residual branch gradient was zero at gate=0",
+  "root_cause": "the test ignored the zero-gate chain rule; only the scalar gate receives first-step gradient",
+  "repair": "assert zero branch gradient and nonzero gate gradient for gated mode; zero-init mode still requires nonzero branch gradient",
+  "gpu_started": false,
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

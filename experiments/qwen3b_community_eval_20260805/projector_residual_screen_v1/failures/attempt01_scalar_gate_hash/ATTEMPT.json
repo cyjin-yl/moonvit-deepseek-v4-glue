@@ -1,0 +1,12 @@
+{
+  "format_version": "qwen3b-projector-residual-screen-attempt-v1",
+  "attempt": "attempt01_scalar_gate_hash",
+  "stage": "deterministic_initialization_generation",
+  "arms_started": ["zero_init_residual", "gated_residual"],
+  "gpu_started": false,
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "initialization_files_created": true,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

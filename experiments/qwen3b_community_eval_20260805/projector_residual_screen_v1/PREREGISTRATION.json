@@ -1,0 +1,50 @@
+{
+  "format_version": "qwen3b-projector-residual-screen-preregistration-v1",
+  "frozen_before_any_residual_result": true,
+  "contract": "configs/qwen3b-projector-residual-screen-v1.json",
+  "contract_sha256": "22bd38bc5bd3f35017249ca6e7a5ff34696b6d0dc73bd36d5b204607b311ba3a",
+  "runner_source": "src/moonvit_glue/projector.py",
+  "runner_source_sha256": "f6e0ed618c465230658358fa7a69697173520c8fbb41dffbd401cd91cb0f14d8",
+  "initialization_tool": "tools/freeze_projector_residual_initializations.py",
+  "initialization_tool_sha256": "b33ee675f841d7836b99f76d8f3fce9723cb5649d0be65fe8cec79402d6a8c61",
+  "verifier_tool": "tools/verify_qwen3b_projector_residual_structure.py",
+  "verifier_tool_sha256": "892c31e7bde882698fb8b93aa6fca36febe39646a2c64ed3579b05345c544416",
+  "arms": ["baseline_none", "zero_init_residual", "gated_residual"],
+  "initialization": {
+    "base_step0_weights_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0",
+    "base_tensor_state_sha256": "06aaffd3a4f3750abe4993ba108b7f06911d19930dc374afbd99c3b8fc5586d1",
+    "zero_init_seed": 20260806,
+    "gated_seed": 20260807,
+    "manifest_sha256": "533b281af2f3b43009a006a60b04effc23eb57147e99e89d75f2226efd061d85",
+    "initial_output_matches_base": true,
+    "same_base_mlp_weights": true
+  },
+  "screen": {
+    "optimizer_steps": 100,
+    "examples_seen": 800,
+    "same_training_order": true,
+    "same_health_probe_schedule": true,
+    "selection_requires_no_critical_guard": true,
+    "selection_requires_final_20_step_ce_ratio_at_most": 1.25,
+    "no_pass_action": "cancel 500-step expansion and preregister frozen-base residual-only or learning-rate-cap strategy"
+  },
+  "pre_result_repairs": [
+    {
+      "path": "failures/attempt01_scalar_gate_hash/REPAIR_RECORD.json",
+      "reason": "The initialization state hash did not support the 0-d gated scalar; no GPU or optimizer result existed.",
+      "implementation_changed": true,
+      "contract_budget_thresholds_unchanged": true
+    },
+    {
+      "path": "failures/attempt02_gated_gradient_test/REPAIR_RECORD.json",
+      "reason": "The unit test expected a branch gradient while the preregistered zero gate correctly blocks it on the first backward pass; no GPU or optimizer result existed.",
+      "implementation_changed": false,
+      "contract_budget_thresholds_unchanged": true
+    }
+  ],
+  "capability_boundary": "representation health cannot establish visual ability",
+  "paid_resources_used": false,
+  "final_half_scored": false,
+  "capability_claim_allowed": false,
+  "transfer_label": "transferable_with_runtime_validation"
+}
