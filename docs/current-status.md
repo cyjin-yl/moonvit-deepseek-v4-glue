@@ -438,4 +438,4 @@ vision 相对 shuffled 的 click-in-box 改善为 `+0.629` 个百分点，独立
 
 vision-blind click 差 `0` 个百分点，CI `[-6,+6]`；vision-shuffled click 差也为 `0`，CI `[-6,+6]`。距离改善分别为 `+15.59`（CI `[-13.51,+47.15]`）和 `-2.74`（CI `[-13.58,+9.96]`）。240 tokens 没有带来可重复 grounding 增益，token-count 扩展停止。这个结果支持把主要嫌疑转向 projector/辅助目标、尺度和 receiver 分布对齐，而非继续增加视觉 token。
 
-原始 240-token evaluator summary、generation rows、category verifier 和 pointer 已保存；evaluator summary 的 center-distance 字段为空，报告使用独立 verifier 重算值。`previous_best` 不变，候选不晋升。
+原始 240-token evaluator summary、generation rows、category verifier 和 pointer 已保存；原始 `center_distance` 统计存在，独立 verifier 用于分类与交叉核对，旧摘要消费者的 key/schema 不兼容已写入 pointer。`previous_best` 不变，候选不晋升。

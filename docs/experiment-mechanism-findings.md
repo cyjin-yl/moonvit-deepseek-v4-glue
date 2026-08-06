@@ -95,4 +95,4 @@ vision-shuffled click-in-box 的 paired improvement 为 `+0.629` 个百分点，
 
 独立 verifier 重算的中心距离均值为 `399.51/415.11/396.78/397.02`。vision-blind 的距离改善均值 `+15.59`，CI `[-13.51,+47.15]`；vision-shuffled 为 `-2.74`，CI `[-13.58,+9.96]`。click-in-box 的 vision-blind 和 vision-shuffled 都是 `0`，CI `[-6,+6]` 个百分点。
 
-这条结果没有支持“16-token mean-pool 的压缩是单一主要 grounding 瓶颈”这一假设。它支持停止扩大 token 数量筛选，优先测试 projector/辅助目标与 receiver 分布对齐。原始 evaluator summary 的 center-distance 字段为空，正式数字来自独立 category verifier；这个工具缺口已写入 raw pointer，不能静默混用两套统计。
+这条结果没有支持“16-token mean-pool 的压缩是单一主要 grounding 瓶颈”这一假设。它支持停止扩大 token 数量筛选，优先测试 projector/辅助目标与 receiver 分布对齐。原始 evaluator 的 `center_distance` 统计实际存在；先前消费者读取了不兼容的摘要 key，独立 category verifier 用于分类与交叉核对，raw pointer 记录了这一 schema 边界。

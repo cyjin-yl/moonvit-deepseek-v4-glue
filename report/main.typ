@@ -2069,4 +2069,4 @@ Gate D 继续为 *NO-GO*，任何租卡或完整 0731 下载等待用户明确�
 
 独立 category verifier 重算中心距离均值为 `399.51/415.11/396.78/397.02`。vision-blind 距离改善 `+15.59`，CI `[-13.51,+47.15]`；vision-shuffled 为 `-2.74`，CI `[-13.58,+9.96]`。两个 click paired 差都为 `0`，CI `[-6,+6]` 个百分点。240-token full sequence 没有改善正确图像归因，因此停止扩大 token 数量筛选，下一项转向一个 projector/辅助目标变量并保留 matched CE-only control。
 
-原始 evaluator summary 的 center-distance summary fields 为 `null`，本节数字来自独立 verifier；缺口已在 raw pointer 中记录。运行 wall time 为 `1,310.98` 秒，其中含首次 Transformers import 和 339 个权重分片的 CPU 加载；后续真实批处理优化必须把这段冷启动与 GPU throughput 分开。
+原始 evaluator 的 `center_distance` 统计完整存在；旧摘要消费者读取了不兼容的 key/schema，本节同时用独立 verifier 做分类与交叉核对，边界已在 raw pointer 中记录。运行 wall time 为 `1,310.98` 秒，其中含首次 Transformers import 和 339 个权重分片的 CPU 加载；后续真实批处理优化必须把这段冷启动与 GPU throughput 分开。

@@ -842,9 +842,10 @@ grounding gap. Stop expanding token count and move to one projector or
 auxiliary-objective variable that can transfer to DeepSeek, with a matched
 CE-only control.
 
-The raw evaluator summary has null center-distance summary fields; the category
-verifier is the authoritative distance source for this diagnostic and the gap
-is recorded in `...full240_20260807_RAW_POINTER.json`. The run took 1,310.98 s,
+The raw evaluator has complete `center_distance` statistics; an older summary
+consumer used an incompatible key/schema. The category verifier cross-checks
+the distances and categories, with the schema boundary recorded in
+`...full240_20260807_RAW_POINTER.json`. The run took 1,310.98 s,
 including cold Transformers import and 339-shard CPU weight loading. That
 startup cost must be separated from generation throughput in future batching
 optimization.

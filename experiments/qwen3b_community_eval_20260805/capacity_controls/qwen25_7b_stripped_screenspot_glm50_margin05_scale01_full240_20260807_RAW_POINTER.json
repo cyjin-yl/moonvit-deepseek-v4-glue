@@ -46,7 +46,7 @@
     "root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen25_7b_stripped_screenspot_glm50_margin05_scale01_full240_categories_20260807",
     "summary_sha256": "259951331112934273befdb5fd4e54b88f4e53984e2d7587b0e3d6db1044674b",
     "artifact_manifest_sha256": "e7d4167982c75005273ab997990e9954e4cc0f1dd91101cf3d950b6ab96abd35",
-    "distance_fields_source": "independent category verifier; primary evaluator summary center distance fields are null"
+    "distance_fields_source": "primary evaluator center_distance statistics plus independent category verifier cross-check; older summary consumer used an incompatible key/schema"
   },
   "evaluator_tool_sha256": "c1301049adca28564842596cbd9e1ed39adc12782afc0e7e814ee84555f996ce",
   "overall": {
