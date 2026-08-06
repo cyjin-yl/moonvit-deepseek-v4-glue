@@ -1,0 +1,125 @@
+{
+  "analysis_contract": {
+    "actions": {
+      "diversity_retained": "run_matched_training_only_counterfactual_margin_auxiliary",
+      "gross_collapse": "repair_projector_or_receiver_representation_before_margin_training"
+    },
+    "conditions": [
+      "step0",
+      "current_candidate"
+    ],
+    "dataset_manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+    "dataset_name": "screenspot_glm50_v1",
+    "decision_stage": "fixed_receiver_2048",
+    "final_half_allowed": false,
+    "format_version": "qwen3b-representation-retention-contract-v1",
+    "frozen_before_result": true,
+    "geometry_metrics": [
+      "linear_cka",
+      "pairwise_distance_pearson"
+    ],
+    "gross_collapse_rule": {
+      "current_over_step0_effective_rank_below": 0.5,
+      "current_over_step0_relative_spread_below": 0.25,
+      "requires_all": true
+    },
+    "interpretation_boundary": "Diversity retention does not prove instruction-conditioned target information. The projector has no text query, so no image-only target-coordinate probe is allowed.",
+    "paid_resources_allowed": false,
+    "pooling": "concatenate all feature groups, then arithmetic mean across visual tokens",
+    "representation_metrics": [
+      "sample_rms",
+      "between_image_rms",
+      "relative_between_image_spread",
+      "effective_rank_participation",
+      "effective_rank_entropy",
+      "top1_variance_fraction",
+      "pairwise_rms_distance",
+      "pairwise_cosine_similarity"
+    ],
+    "sample_count": 50,
+    "stages": [
+      "moonvit_flattened",
+      "projector_4096",
+      "fixed_receiver_2048"
+    ],
+    "token_variance": "per-image RMS around that image's token mean, averaged over images"
+  },
+  "analysis_contract_file_sha256": "3deb3f60a4aca39e4f2881cebdb3d544ee1f96a3381e5a0895e4ef7b02f5a490",
+  "binding_sha256": "ce1db8b3a400f11ee5d71babc849f4fb71750980afd9bafc49e8f9dc97fcc556",
+  "cache_binding": {
+    "aliased_records": 0,
+    "maximum_visual_tokens": 1332,
+    "records": 50,
+    "unique_feature_spans": 50
+  },
+  "cache_verification": {
+    "aliased_records": 0,
+    "cache": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/screenspot_glm50_features_1024_v1",
+    "manifest_sha256": "03f35d8cee962a97996f3250e41c351978f28c0ca9a8fe74d4f8d41c411ae7f3",
+    "records_verified": 50,
+    "runner_git_sha": "fbbd81f7dc77c146642b678fe84605f62615f58c",
+    "runner_tracked_worktree_clean": true,
+    "runtime_source_files_verified": 3,
+    "shards_verified": 50,
+    "status": "valid",
+    "total_shard_bytes": 627596320,
+    "training_order_binding": null,
+    "unique_feature_spans": 50,
+    "unique_values_verified": 156897280,
+    "values_verified": 156897280
+  },
+  "contract_file_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+  "dataset_manifest_file_sha256": "b578229e72a59a983623514f259d2f49fc46cb66c0802a622682727d88151543",
+  "dataset_manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+  "dataset_name": "screenspot_glm50_v1",
+  "feature_cache_manifest_file_sha256": "03f35d8cee962a97996f3250e41c351978f28c0ca9a8fe74d4f8d41c411ae7f3",
+  "final_half_scored": false,
+  "formal_run": true,
+  "format_version": "qwen3b-representation-retention-run-v1",
+  "git_tracked_worktree_clean": true,
+  "paid_resources_used": false,
+  "projector_sources": {
+    "current_candidate": {
+      "checkpoint_manifest_sha256": "19219dee0c22efa84a4b54e352075840cd725a2bb2f7bad0b63c395efc38774b",
+      "checkpoint_step": 500,
+      "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+      "directory": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/train_grounding_enriched_4k_v1/checkpoints/step-000500",
+      "role": "current_candidate",
+      "weights_bytes": 134259248,
+      "weights_sha256": "62f69393dd3d157446db05a7060942bdfbd23f834bbe2e6782560431b5773df4"
+    },
+    "step0": {
+      "checkpoint_manifest_sha256": null,
+      "checkpoint_step": 0,
+      "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+      "directory": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_initializations_v1/step0",
+      "role": "step0",
+      "weights_bytes": 134259248,
+      "weights_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0"
+    }
+  },
+  "receiver_sha256": "1cecc883394edc51a30c151ff955e92b6abfb9b7bf512f91a7644071551a6d47",
+  "runner_git_sha": "e27195ecee9c2d9c4337fa9f7550512e800bec3f",
+  "runtime_source_files": [
+    {
+      "bytes": 15449,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/analyze_qwen3b_representation_retention.py",
+      "sha256": "1ab7f4f8c5d8d41483c496665a46744b053dfffe0c76ad02263644d9b8f7c346"
+    },
+    {
+      "bytes": 8841,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/src/moonvit_glue/representation_retention.py",
+      "sha256": "fb2b313368ffd2de68761257fcf7c1092bcbc98b7ed2eb653250f46acfdde7bf"
+    },
+    {
+      "bytes": 27478,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/eval_qwen3b_screenspot.py",
+      "sha256": "8188b6bc078f66a6536437731a5874a03d358683de7fab8e0ee475002ff1be9a"
+    },
+    {
+      "bytes": 9032,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/verify_feature_cache.py",
+      "sha256": "8aeea8d316298470a7a984b7acd9d25c7a3dc62e72d223447d9d76f0c4b204b7"
+    }
+  ]
+}

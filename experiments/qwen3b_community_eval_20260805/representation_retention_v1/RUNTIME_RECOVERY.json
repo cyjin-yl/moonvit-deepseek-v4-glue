@@ -1,0 +1,41 @@
+{
+  "format_version": "v100-user-space-driver-recovery-v1",
+  "observed_before_run": {
+    "loaded_kernel_module_version": "580.159.04",
+    "system_libcuda_target": "/usr/lib64/libcuda.so.580.173.02",
+    "system_libnvidia_ml_target": "/usr/lib64/libnvidia-ml.so.580.173.02",
+    "nvidia_smi_error": "Failed to initialize NVML: Driver/library version mismatch",
+    "active_gpu_clients_preserved": true
+  },
+  "recovery": {
+    "system_files_modified": false,
+    "rebooted": false,
+    "gpu_clients_stopped": false,
+    "method": "Extract matching 580.159.04 user-space libraries on the data disk and scope LD_LIBRARY_PATH to the experiment process.",
+    "rpm_source": "https://rpmfind.net/linux/rpmfusion/nonfree/el/updates/9/x86_64/x/xorg-x11-drv-nvidia-580xx-cuda-libs-580.159.04-1.el9.x86_64.rpm",
+    "rpm_bytes": 62345221,
+    "rpm_sha256": "47cedce1e16cb8f4ec45f9e35d02bb0604f867a6a7415ce7a6ef0e54477cd309",
+    "official_primary_metadata": "https://download1.rpmfusion.org/nonfree/el/updates/9/x86_64/repodata/6f61be83885c94315b52fcea76c3ae52d8ff4f1a1ebd858eb34f8c013f4efa97-primary.xml.gz",
+    "official_primary_metadata_sha256": "6f61be83885c94315b52fcea76c3ae52d8ff4f1a1ebd858eb34f8c013f4efa97",
+    "official_metadata_rpm_sha256_matched": true,
+    "rpmkeys_output": "digests SIGNATURES NOT OK; the local RPM database lacks a usable verification path, so package integrity is instead bound to the matching SHA-256 in official RPM Fusion primary metadata.",
+    "libcuda": {
+      "bytes": 96284520,
+      "sha256": "821992937649fe6b01b0633fa4f47665ff5c02f273ea4696763ad19154cb7c55"
+    },
+    "libnvidia_ml": {
+      "bytes": 2291896,
+      "sha256": "941c7f7999351d8b9b69f275a20ebd2818e3314678fc12dba6da8a6f12b74d27"
+    }
+  },
+  "post_recovery_checks": {
+    "nvidia_smi_gpu": "Tesla V100-PCIE-32GB",
+    "nvidia_smi_driver_version": "580.159.04",
+    "torch_version": "2.10.0+cu128",
+    "torch_cuda_available": true,
+    "torch_device": "Tesla V100-PCIE-32GB",
+    "cuda_tensor_roundtrip": true
+  },
+  "formal_run_used_scoped_matching_libraries": true,
+  "paid_resources_used": false
+}

@@ -1,0 +1,43 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-06T01:13:17.926848+00:00",
+  "root": "formal",
+  "git_base_sha": "d66f1c5eec4d1ba4a94d51c625e089f444f7f9a1",
+  "files": {
+    "INDEPENDENT_VERIFICATION.json": {
+      "bytes": 1387,
+      "sha256": "4fb048207153e39434088a1e03c8c408adf026677b2d3174331823cd7022f961"
+    },
+    "PAIRWISE_GEOMETRY.jsonl": {
+      "bytes": 1483853,
+      "sha256": "99644957620804eaae67fb054159c6ef5f31acb7db87908602ce00daf604dac5"
+    },
+    "PER_SAMPLE.jsonl": {
+      "bytes": 37947,
+      "sha256": "511e23f05f30e076a302c456a30609213fdf24efda570f5587de9e4fde393102"
+    },
+    "POOLED_REPRESENTATIONS.safetensors": {
+      "bytes": 6554152,
+      "sha256": "8803e518b39db38bdd9a77259e37d830eeb2b54c69550896d113b3351b5af9b5"
+    },
+    "run.log": {
+      "bytes": 9303,
+      "sha256": "9da196790b34990048f126ab13a539f846b155bf5bbc1cc86412a857a09a77b5"
+    },
+    "RUN_CONFIG.json": {
+      "bytes": 5475,
+      "sha256": "15546d5c4a68e241c2cf5ee1232ce02b140c5768ca42b872d656e05c9cd14e1d"
+    },
+    "SUMMARY.json": {
+      "bytes": 9082,
+      "sha256": "02a421eb4b9b5967b1ebd84c813ff2abdd6beffa4de344d792d044fe65b7a486"
+    },
+    "verification_failed_order_attempt_01.log": {
+      "bytes": 549,
+      "sha256": "c6fd9663c4c8e401d3f910b538b7bfb251da19ceeb0c94c886e4cd1e3e3ec7f9"
+    }
+  },
+  "file_count": 8,
+  "total_bytes": 8101748,
+  "final_half_scored": false
+}

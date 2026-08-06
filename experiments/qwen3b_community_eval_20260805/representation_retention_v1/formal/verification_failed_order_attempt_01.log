@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/verify_qwen3b_representation_retention.py", line 168, in <module>
+    main()
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15j-result/tools/verify_qwen3b_representation_retention.py", line 124, in main
+    raise ValueError("pairwise geometry rows differ from pooled tensors")
+ValueError: pairwise geometry rows differ from pooled tensors
+exit_code=1
+invalid_reason=pairwise representation blocks compared in safetensors load order

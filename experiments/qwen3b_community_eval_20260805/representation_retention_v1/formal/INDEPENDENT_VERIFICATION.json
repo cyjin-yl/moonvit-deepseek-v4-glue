@@ -1,0 +1,32 @@
+{
+  "decisions": {
+    "fixed_receiver_2048": {
+      "action": "repair_projector_or_receiver_representation_before_margin_training",
+      "effective_rank_guard_triggered": true,
+      "effective_rank_ratio": 0.08457489147863204,
+      "gross_collapse": true,
+      "relative_spread_guard_triggered": true,
+      "relative_spread_ratio": 0.1372408079249148
+    },
+    "projector_4096": {
+      "action": "repair_projector_or_receiver_representation_before_margin_training",
+      "effective_rank_guard_triggered": true,
+      "effective_rank_ratio": 0.08585614520107673,
+      "gross_collapse": true,
+      "relative_spread_guard_triggered": true,
+      "relative_spread_ratio": 0.13839551812134085
+    }
+  },
+  "final_half_scored": false,
+  "format_version": "qwen3b-representation-retention-verification-v1",
+  "paid_resources_used": false,
+  "pairwise_rows": 6125,
+  "pairwise_sha256": "99644957620804eaae67fb054159c6ef5f31acb7db87908602ce00daf604dac5",
+  "per_sample_rows": 50,
+  "per_sample_sha256": "511e23f05f30e076a302c456a30609213fdf24efda570f5587de9e4fde393102",
+  "pooled_representations_sha256": "8803e518b39db38bdd9a77259e37d830eeb2b54c69550896d113b3351b5af9b5",
+  "pooled_tensor_count": 5,
+  "registered_action": "repair_projector_or_receiver_representation_before_margin_training",
+  "runner_git_sha": "e27195ecee9c2d9c4337fa9f7550512e800bec3f",
+  "status": "verified"
+}

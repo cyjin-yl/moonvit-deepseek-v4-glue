@@ -1,19 +1,67 @@
 {
   "format_version": "experiment-artifact-manifest-v1",
-  "created_at_utc": "2026-08-06T00:53:00.053736+00:00",
+  "created_at_utc": "2026-08-06T01:19:16.525501+00:00",
   "root": "representation_retention_v1",
-  "git_base_sha": "89a2d48e001fa15a36bcf9dd8259e4cb6bd9af33",
+  "git_base_sha": "d66f1c5eec4d1ba4a94d51c625e089f444f7f9a1",
   "files": {
+    "DECISION.json": {
+      "bytes": 2804,
+      "sha256": "073e29723c248cac611e4c7b0e7e3be1aa2e76d12e1f78ff28b58657be33b7b1"
+    },
+    "formal/ARTIFACT_MANIFEST.json": {
+      "bytes": 1481,
+      "sha256": "1cd4b185ffc5ed1238952af456977424fca2da9f68f2dd6243b7177e4004c463"
+    },
+    "formal/INDEPENDENT_VERIFICATION.json": {
+      "bytes": 1387,
+      "sha256": "4fb048207153e39434088a1e03c8c408adf026677b2d3174331823cd7022f961"
+    },
+    "formal/PAIRWISE_GEOMETRY.jsonl": {
+      "bytes": 1483853,
+      "sha256": "99644957620804eaae67fb054159c6ef5f31acb7db87908602ce00daf604dac5"
+    },
+    "formal/PER_SAMPLE.jsonl": {
+      "bytes": 37947,
+      "sha256": "511e23f05f30e076a302c456a30609213fdf24efda570f5587de9e4fde393102"
+    },
+    "formal/POOLED_REPRESENTATIONS.safetensors": {
+      "bytes": 6554152,
+      "sha256": "8803e518b39db38bdd9a77259e37d830eeb2b54c69550896d113b3351b5af9b5"
+    },
+    "formal/run.log": {
+      "bytes": 9303,
+      "sha256": "9da196790b34990048f126ab13a539f846b155bf5bbc1cc86412a857a09a77b5"
+    },
+    "formal/RUN_CONFIG.json": {
+      "bytes": 5475,
+      "sha256": "15546d5c4a68e241c2cf5ee1232ce02b140c5768ca42b872d656e05c9cd14e1d"
+    },
+    "formal/SUMMARY.json": {
+      "bytes": 9082,
+      "sha256": "02a421eb4b9b5967b1ebd84c813ff2abdd6beffa4de344d792d044fe65b7a486"
+    },
+    "formal/verification_failed_order_attempt_01.log": {
+      "bytes": 549,
+      "sha256": "c6fd9663c4c8e401d3f910b538b7bfb251da19ceeb0c94c886e4cd1e3e3ec7f9"
+    },
+    "POST_RESULT_VERIFIER_REPAIR.json": {
+      "bytes": 996,
+      "sha256": "0e52b1f71bafc5a9c5e59179c28c4ddc54a7039f17ac95b5a2a85240f602c4bd"
+    },
     "PREREGISTRATION.json": {
       "bytes": 2011,
       "sha256": "7dc764d5d27e660cb921a8909ff1fb066b775603586754424a1176f28137d22a"
     },
     "README.md": {
-      "bytes": 1760,
-      "sha256": "74e4b52a8517f6f5ad898eec16e2f43c41728de0f29e0f2c547eccb684b29540"
+      "bytes": 3455,
+      "sha256": "218f6f339677042a5996b257f2000ff5564f2d7ddd2bcd143654801e8429bc5b"
+    },
+    "RUNTIME_RECOVERY.json": {
+      "bytes": 2106,
+      "sha256": "17ce8fb942b64ee2ed9820f2b04808864d97ccba08df495fb5df5278f81bd088"
     }
   },
-  "file_count": 2,
-  "total_bytes": 3771,
+  "file_count": 14,
+  "total_bytes": 8114601,
   "final_half_scored": false
 }
