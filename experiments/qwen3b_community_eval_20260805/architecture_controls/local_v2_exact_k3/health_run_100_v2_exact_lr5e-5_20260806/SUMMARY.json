@@ -1,0 +1,70 @@
+{
+  "format_version": "qwen3b-architecture-health-result-v1",
+  "architecture_id": "local_v2_exact_k3",
+  "architecture_label": "Kimi-K3/MoonViT-V2 exact PatchMergerMLPV2 / projector LR exploration",
+  "status": "auto_stopped_by_projector_health_guard",
+  "runner_git_sha": "2e94f6e45a9e7bfb2b151d6956a219f3ede3523f",
+  "health_contract": "configs/qwen3b-projector-health-v1.json",
+  "projector_learning_rate_contract": 0.0005,
+  "projector_learning_rate_override": 0.00005,
+  "optimizer_steps_completed": 2,
+  "examples_seen": 16,
+  "answer_tokens_seen": 97,
+  "loss_first": 4.852579563856125,
+  "loss_last": 5.3247945019975305,
+  "trajectory": [
+    {
+      "step": 0,
+      "projector_effective_rank_ratio": 1,
+      "receiver_effective_rank_ratio": 1,
+      "projector_relative_spread_ratio": 1,
+      "receiver_relative_spread_ratio": 1,
+      "projector_output_rms": 0.3983105075216328,
+      "receiver_output_rms": 0.40171646676739753,
+      "vision_preference": 0.625,
+      "shuffled_preference": 0.625,
+      "vision_minus_shuffle_correct_logp": -0.24043657535161733
+    },
+    {
+      "step": 1,
+      "projector_effective_rank_ratio": 1.0003350049019726,
+      "receiver_effective_rank_ratio": 1.0004864059276581,
+      "projector_relative_spread_ratio": 0.9982977891338268,
+      "receiver_relative_spread_ratio": 0.9975861774001527,
+      "projector_output_rms": 0.39885074038691504,
+      "receiver_output_rms": 0.40252078110446954,
+      "vision_preference": 0.625,
+      "shuffled_preference": 0.625,
+      "vision_minus_shuffle_correct_logp": -0.21116765689500516
+    },
+    {
+      "step": 2,
+      "projector_effective_rank_ratio": 0.9994090757914449,
+      "receiver_effective_rank_ratio": 0.9987056307379206,
+      "projector_relative_spread_ratio": 0.9974132591916188,
+      "receiver_relative_spread_ratio": 0.9964690756287288,
+      "projector_output_rms": 0.3991925642125532,
+      "receiver_output_rms": 0.40305620238903,
+      "vision_preference": 0.5,
+      "shuffled_preference": 0.5,
+      "vision_minus_shuffle_correct_logp": -0.2851923103734251
+    }
+  ],
+  "critical_reasons": [
+    "projector_rms_rising_spread_falling",
+    "receiver_rms_rising_spread_falling",
+    "vision_minus_shuffle_logp_critical"
+  ],
+  "collapse_onset_interval": [
+    1,
+    2
+  ],
+  "peak_gpu_memory_bytes": 13246238208,
+  "training_wall_seconds": 31.64813677314669,
+  "total_wall_seconds": 82.53348546568304,
+  "independent_verifier_status": "verified",
+  "capability_claim_allowed": false,
+  "qwen_proxy_conclusion": "Lowering projector LR protects V2 rank/spread at steps 1-2, but correct-image preference remains equal to shuffled and vision-minus-shuffle log-prob stays negative. Optimization scale contributed to geometry collapse; it is not the only bottleneck.",
+  "deepseek_transfer_label": "directly_transferable",
+  "paid_resources_used": false
+}

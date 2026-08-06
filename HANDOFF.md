@@ -575,3 +575,14 @@ rate, same data/order/guards and a matched CE-only control. If geometry survives
 run the smallest image-vs-shuffle counterfactual objective. Do not increase the
 dataset or run full ScreenSpot generation until a trajectory passes both health
 and causal gates.
+
+The next exact-V2 exploration used a projector learning-rate override of
+5e-5 while retaining the main-contract value 5e-4 in the logged RUN_CONFIG.
+Rank/spread stayed essentially at step 0 through step 2 (projector rank ratio
+1.000, 1.000, 0.999; receiver 1.000, 1.000, 0.999), so update scale
+contributed to the high-LR geometry collapse. Correct-image preference stayed
+tied with shuffled (0.625, 0.625, 0.500), and vision-minus-shuffled log-prob
+stayed negative (-0.240, -0.211, -0.285). The causal guard stopped at step 2
+and the independent verifier was verified. The next registered direction is
+an image-vs-shuffle supervision screen, with the same geometry-safe LR and a
+matched CE-only control.

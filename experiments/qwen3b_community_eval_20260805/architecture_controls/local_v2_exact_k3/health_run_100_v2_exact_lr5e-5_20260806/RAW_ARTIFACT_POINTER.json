@@ -1,0 +1,22 @@
+{
+  "format_version": "v100-raw-artifact-pointer-v1",
+  "local_root": "D:/V100-artifacts/qwen3b_contract/architecture_controls/local_v2_exact_k3/health_run_100_v2_exact_lr5e-5_20260806",
+  "remote_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/architecture_controls/local_v2_exact_k3/health_run_100_v2_exact_lr5e-5_20260806",
+  "complete_raw_copy": true,
+  "raw_file_count": 22,
+  "raw_total_bytes": 1143367051,
+  "health_manifest_file_sha256": "2395582470a0caddd663091d695f3d1ecf4901dddbeb0e48032d9720782501b3",
+  "independent_verifier_file_sha256": "50eb5c66c068483f60e48b0ab24887889ac8162f386bcefc29476e7554b49485",
+  "raw_log_sha256": {
+    "SUMMARY": "f050ba8b2cc36b0077624c393afb78a8baca3a77a92ea895cc96f96982c71085",
+    "FAILURE": "0bb8996bb9f6f632883a45464f6b0a068100b1e01ab313efdb89ab2029d101a3",
+    "HEALTH_ARTIFACT_MANIFEST": "2395582470a0caddd663091d695f3d1ecf4901dddbeb0e48032d9720782501b3",
+    "INDEPENDENT_VERIFIER": "50eb5c66c068483f60e48b0ab24887889ac8162f386bcefc29476e7554b49485",
+    "train_health": "e870a64738f8681f2f1296f0bc5a089d539686ad6eaad766bb2066a6bd11d590",
+    "probe_metrics": "7c823b9e0c5314dcb6d0567913b51a88b323f037540089c7c91431aa1cb6463b",
+    "ROLLBACK": "0a2bc4eab7550986d8d3df918c4e1f2aaab8cd6519a630777d2663a82660ec3b",
+    "RUN_CONFIG": "5217742981aa28b578eb67e3f39f6b7cc547ff60a31c4cd22d9f8cdf3663d020"
+  },
+  "large_files_policy": "checkpoint tensors and optimizer state remain in the local raw archive and are not duplicated in Git",
+  "paid_resources_used": false
+}

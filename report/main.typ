@@ -52,6 +52,14 @@ causal critical。结果削弱“V2 压缩是唯一根因”，共同瓶颈更�
 进入完整 ScreenSpot、TextVQA、DocVQA、OCRBench 和 language-retention 合同。
 没有真实 causal gain 的结果不替换 `previous_best`，也不进入 DeepSeek 付费阶段。
 
+exact K3 V2 的小学习率探索随后把 projector learning rate 从合同默认
+`5e-4` 降到 `5e-5`，其余数据、顺序、step 和 guard 保持不变。step 1/2 的
+projector/receiver rank ratio 仍约为 `1.000/1.000`、`0.999/0.999`，说明
+较小 LR 能避免高 LR 的几何放大；但 vision preference 仍与 shuffled 持平或
+下降，vision-minus-shuffled correct-logp 为 `-0.240/-0.211/-0.285`，因果
+guard 在 step 2 停止。当前结论是优化尺度参与了塌缩，监督/receiver 接口仍是
+主要未解瓶颈；下一项是固定小 LR 的 image-vs-shuffle 监督 screen。
+
 = 历史执行摘要
 
 本项目目标是给纯文本的 DeepSeek-V4-Flash-0731 接入从 Kimi K3 抽取的 MoonViT-V2（MoonViT3d）视觉编码器。第一阶段冻结视觉塔和语言模型，只训练 Kimi 风格 PatchMerger projector；独立发布的 MoonViT-SO-400M（V1）只保留作历史对照。V2 的真实权重、预处理和 `[tokens,4,1024]` 合同均已在 V100 验证。包 3–12 依次建立 synthetic paired preference/generation、逐层 probe、activation patching、projector/LoRA 轨迹、任务干扰、checkpoint averaging、anchoring 与 batch-order 证据。包 13 在相同 1,200-example 预算内用 preventive replay 恢复 count/shape，包 14 把可靠 Tiny sentinel 固定为 25 pairs/task 并测得 V100 teacher-only 中位开销 22.501 秒。这条机制支线已收束为默认保护配方。包 15A–15D 冻结纯文本 `Qwen/Qwen2.5-3B-Instruct` 的模型、真实数据、评测、4,000-example 顺序和 MoonViT cache；包 15E 完成 500-step projector-only 训练与独立 checkpoint 验证；包 15F–15G 在 GLM-format public-50 和完整 1,272-row ScreenSpot 上一致拒绝首个 checkpoint。完整集 trained vision/blind/step0 的 click-in-box 为 2.67%/3.07%/3.30%，vision−blind 平均距离显著恶化 169.66。包 15H 的 paired preference 又显示 trained vision/blind/shuffled 为 46%/56%/52%；训练把坐标答案 NLL 从 2.51 降到 1.22，却没有正确图相对错误图的选择优势。容量切换稳定了真实链路，当前数据/目标仍只学到 image-agnostic coordinate prior。包 15I/15J 已在结果产生前冻结 2,000-grounding/2,000-short-answer 严格交替顺序与 cache；包 15K 完成相同 4,000-example/500-step 训练和 checkpoint 复核。包 15L/15M 的 preference 与 generation 均拒绝新 checkpoint：vision/blind/shuffled preference 为 52%/56%/54%，generation click 为 6%/12%/6%。包 15N 又把失败定位到 projector 输出的 scale/rank collapse：effective rank 13.28→1.14，top-1 variance 17.48%→93.46%，fixed receiver 保留相同塌缩比。包 15O 进一步发现第一个保存点 step 100/800 examples 已经塌缩，projector spread/rank 只剩 step0 的 0.1298/0.0772；包 15P 已完成从首步生效的 geometry-repair λ 校准，三档 λ 固定为 0.0101873/0.0407492/0.162997，下一项是四臂 100-step 短筛选。完整 DeepSeek-V4-Flash-0731 尚未完成图像前向、量化 input DGRAD、训练、恢复和生成闭环，Gate D 当前未通过。

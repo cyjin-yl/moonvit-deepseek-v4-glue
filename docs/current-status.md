@@ -77,6 +77,17 @@ shuffled 或与 shuffled 持平。当前最强共同解释是 projector 更新�
 receiver 的读出接口，训练目标也没有提供足够强的 image-vs-shuffle 因果约束。
 这仍然是 health screen，不能把几何保留称为视觉能力。
 
+### Exact V2 小学习率控制（2026-08-06）
+
+把 projector LR 从合同默认 5e-4 降到 5e-5，其余字段完全不变。step 1/2
+的 projector/receiver rank ratio 约为 1.000/1.000 和 0.999/0.999，spread
+ratio 也保持在 0.996–0.998；这说明默认 LR 确实放大了前一条 V2 trajectory
+的几何退化。可惜 causal signal 仍没有出现：vision 与 shuffled preference
+保持 0.625/0.625 后到 0.500/0.500，vision-minus-shuffle correct-logp
+为 -0.240/-0.211/-0.285。因果 guard 在 step 2 自动停止，独立 verifier
+仍为 verified。结论是“更新尺度是几何塌缩的原因之一”，同时“降低 LR 就能
+获得视觉能力”被反驳；下一项应直接测试 image-vs-shuffle 的监督/目标接口。
+
 ## 为什么前一套方案没有改进
 
 ### 1. 训练目标奖励了“会输出坐标”，没有奖励“从正确图片读取坐标”
