@@ -30,6 +30,7 @@ from smoke_stripped_qwen35 import (  # noqa: E402
 )
 
 from moonvit_glue import FeatureCache  # noqa: E402
+from moonvit_glue.merge import expand_image_placeholders  # noqa: E402
 from moonvit_glue.projector import PatchMergerProjector, seeded_projector  # noqa: E402
 
 
@@ -53,10 +54,55 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--sample-indices", default="0,1,2,3,4,5,6,7")
     p.add_argument("--max-visual-tokens", type=int, default=16)
     p.add_argument("--random-seed", type=int, default=20260806)
+    p.add_argument("--qwen-mrope", action="store_true", help="Qwen3.5-only positional diagnostic; not transferable")
     return p.parse_args()
 
 
-def eval_case(*, model, projector, receiver, tokenizer, sample, feature, placeholder, device):
+def _grid_for_token_count(token_count: int, device: torch.device) -> torch.Tensor:
+    target = int(token_count) * 4
+    candidates = []
+    for height in range(2, target + 1, 2):
+        if target % height:
+            continue
+        width = target // height
+        if width % 2 == 0:
+            candidates.append((abs(width - height), height, width))
+    if not candidates:
+        raise ValueError(f"cannot construct even Qwen3.5 grid for {token_count} tokens")
+    _, height, width = min(candidates)
+    return torch.tensor([[1, height, width]], dtype=torch.long, device=device)
+
+
+def eval_case(*, model, projector, receiver, tokenizer, sample, feature, placeholder, device, qwen_mrope=False):
+    if qwen_mrope and feature is not None and hasattr(getattr(model, "model", None), "compute_3d_position_ids"):
+        supervision, input_ids, labels, attention = build_inputs(
+            tokenizer=tokenizer, features=feature, sample=sample,
+            placeholder_token_id=placeholder, device=device,
+        )
+        text_embeddings = model.get_input_embeddings()(input_ids)
+        projected = projector([feature])[0]
+        if receiver is not None:
+            projected = receiver(projected)
+        merged = expand_image_placeholders(
+            input_ids=input_ids, text_embeddings=text_embeddings,
+            image_embeddings=[projected], placeholder_token_id=placeholder,
+            attention_mask=attention, labels=labels,
+        )
+        mm_token_type_ids = torch.zeros_like(merged.routing_input_ids, dtype=torch.int32)
+        mm_token_type_ids = mm_token_type_ids.masked_fill(
+            merged.routing_input_ids.eq(placeholder) & merged.attention_mask.bool(), 1
+        )
+        position_ids, _ = model.model.compute_3d_position_ids(
+            input_ids=merged.routing_input_ids, inputs_embeds=merged.inputs_embeds,
+            image_grid_thw=_grid_for_token_count(feature.shape[0], device),
+            mm_token_type_ids=mm_token_type_ids, attention_mask=merged.attention_mask,
+        )
+        with torch.no_grad():
+            outputs = model(
+                inputs_embeds=merged.inputs_embeds, attention_mask=merged.attention_mask,
+                position_ids=position_ids, labels=merged.labels, use_cache=False,
+            )
+        return answer_logprob(outputs.logits, merged.labels)
     with torch.no_grad():
         _, outputs, labels = expanded_forward(
             model=model, projector=projector, receiver=receiver, features=feature,
@@ -109,14 +155,14 @@ def main() -> None:
         shuffled = records[(index + 1) % len(records)]
         feature = cache.get(sample["id"], device=device, dtype=torch.float32)[0][: args.max_visual_tokens].contiguous()
         shuffled_feature = cache.get(shuffled["id"], device=device, dtype=torch.float32)[0][: args.max_visual_tokens].contiguous()
-        correct = eval_case(model=model, projector=projector, receiver=receiver, tokenizer=tokenizer, sample=sample, feature=feature, placeholder=placeholder, device=device)
-        shuffled_lp = eval_case(model=model, projector=projector, receiver=receiver, tokenizer=tokenizer, sample=sample, feature=shuffled_feature, placeholder=placeholder, device=device)
+        correct = eval_case(model=model, projector=projector, receiver=receiver, tokenizer=tokenizer, sample=sample, feature=feature, placeholder=placeholder, device=device, qwen_mrope=args.qwen_mrope)
+        shuffled_lp = eval_case(model=model, projector=projector, receiver=receiver, tokenizer=tokenizer, sample=sample, feature=shuffled_feature, placeholder=placeholder, device=device, qwen_mrope=args.qwen_mrope)
         _, input_ids, labels, attention = build_inputs(tokenizer=tokenizer, features=None, sample=sample, placeholder_token_id=placeholder, device=device)
         with torch.no_grad():
             text_embeddings = model.get_input_embeddings()(input_ids)
             blind_out = model(inputs_embeds=text_embeddings, attention_mask=attention, position_ids=(attention.long().cumsum(dim=-1) - 1).clamp_min(0), labels=labels, use_cache=False)
         blind_lp = answer_logprob(blind_out.logits, labels)
-        random_lp = eval_case(model=model, projector=random_projector, receiver=receiver, tokenizer=tokenizer, sample=sample, feature=feature, placeholder=placeholder, device=device)
+        random_lp = eval_case(model=model, projector=random_projector, receiver=receiver, tokenizer=tokenizer, sample=sample, feature=feature, placeholder=placeholder, device=device, qwen_mrope=args.qwen_mrope)
         rows.append({
             "sample_index": index, "sample_id": sample["id"], "shuffled_sample_id": shuffled["id"],
             "vision_answer_logp": correct, "shuffled_answer_logp": shuffled_lp, "blind_answer_logp": blind_lp,
@@ -136,6 +182,7 @@ def main() -> None:
         "config_sha256": sha256_file(args.model_dir / "config.json"),
         "weight_manifest_sha256": sha256_file(args.weight_manifest),
         "dtype": args.dtype, "max_visual_tokens": args.max_visual_tokens,
+        "qwen_mrope": args.qwen_mrope,
         "sample_indices": indices, "sample_count": len(rows), "random_projector_seed": args.random_seed,
         "native_vision_forward_calls": vision_calls["count"],
         "vision_minus_shuffle_mean": mean(margins), "vision_minus_shuffle_std": stdev(margins) if len(margins) > 1 else 0.0,
