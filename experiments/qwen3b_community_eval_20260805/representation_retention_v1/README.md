@@ -53,6 +53,12 @@ are retained. The corrected verifier sorts by stable row identity and exactly
 recomputed five pooled tensors, 6,125 pairwise rows, 50 per-sample rows, both
 decisions and all artifact hashes.
 
+The first full-suite run then found one Windows-CRLF versus Git-LF byte-count
+defect in the generic nested-manifest writer: 348 tests passed and only that
+assertion failed. The writer now emits explicit LF, the failure is retained,
+and the canonical V100 suite passes 347/347 after test consolidation. The root
+manifest binds 17 files / 8,120,202 bytes.
+
 The V100 host also had a loaded-driver/user-library mismatch. The run used
 matching 580.159.04 user-space libraries extracted on the HDD and scoped only
 through `LD_LIBRARY_PATH`; no system file, desktop GPU client or kernel module

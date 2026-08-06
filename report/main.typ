@@ -1370,7 +1370,7 @@ Package 15L/15M 的 internal preference 与 free generation 结论一致，check
 
 预注册 action 因此选择 `repair_projector_or_receiver_representation_before_margin_training`。下一项先把相同 screen 扩到 steps 0/100/200/300/400/500，定位 scale/rank collapse 起点，再冻结最小 matched-budget scale/geometry-preservation treatment。counterfactual margin 暂缓，继续加同类 CE-only grounding 数据也不再是首选。
 
-独立 verifier 重算 5 个 pooled tensors、6,125 个 pair rows、50 个 per-sample rows 与两个 action。首轮 verifier 只因 safetensors tensor-key 枚举顺序不同而失败；失败日志、冻结源码哈希与按稳定 row identity 排序的 post-result repair 均保留。V100 运行前还发现 loaded kernel module 580.159.04 与 system user libraries 580.173.02 不匹配；本轮仅在 HDD 解出经 RPM Fusion official primary-metadata SHA 验证的 580.159.04 用户态库，并通过进程级 `LD_LIBRARY_PATH` 使用，没有重启、修改系统文件或停止 GPU 客户端。formal screen 用时 7.494 s，峰值显存 402,776,064 bytes；不建立视觉能力主张，无付费资源，未评 final half。
+独立 verifier 重算 5 个 pooled tensors、6,125 个 pair rows、50 个 per-sample rows 与两个 action。首轮 verifier 只因 safetensors tensor-key 枚举顺序不同而失败；失败日志、冻结源码哈希与按稳定 row identity 排序的 post-result repair 均保留。首轮 full suite 又通过 348 项，只因 Windows nested manifest 计算 CRLF、Git checkout 为 LF 而失败 1 项；generic writer 已强制 LF，canonical V100 suite 为 *347/347*，17 个 package files 共 8,120,202 bytes。V100 运行前还发现 loaded kernel module 580.159.04 与 system user libraries 580.173.02 不匹配；本轮仅在 HDD 解出经 RPM Fusion official primary-metadata SHA 验证的 580.159.04 用户态库，并通过进程级 `LD_LIBRARY_PATH` 使用，没有重启、修改系统文件或停止 GPU 客户端。formal screen 用时 7.494 s，峰值显存 402,776,064 bytes；不建立视觉能力主张，无付费资源，未评 final half。
 
 #pagebreak()
 

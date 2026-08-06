@@ -1,20 +1,24 @@
 {
   "format_version": "experiment-artifact-manifest-v1",
-  "created_at_utc": "2026-08-06T01:33:16.473470+00:00",
+  "created_at_utc": "2026-08-06T01:39:26.841933+00:00",
   "root": "representation_retention_v1",
-  "git_base_sha": "741c3259deced5624c5a149a847e4ab6a1db3431",
+  "git_base_sha": "61ab2d2b0ee757b7f291a30956f4d8726a25d503",
   "files": {
     "DECISION.json": {
       "bytes": 2804,
       "sha256": "073e29723c248cac611e4c7b0e7e3be1aa2e76d12e1f78ff28b58657be33b7b1"
     },
     "formal/ARTIFACT_MANIFEST.json": {
-      "bytes": 1596,
-      "sha256": "da22002f8c33a6278f8a0b28f434b6c25a40defcceb3d115f6b88248e12c774d"
+      "bytes": 1738,
+      "sha256": "bcbf9a7757d0b5bb846415463c41df5cda7645253334070f92e6c9e2fc07b2e0"
     },
     "formal/full_suite_failed_crlf_attempt_01.log": {
       "bytes": 1837,
       "sha256": "3bbded1b451918c0513efad99ecebf4948c59e41ba3d2a1b941b34aba5126f8a"
+    },
+    "formal/full_suite_final.log": {
+      "bytes": 2282,
+      "sha256": "24b01cecda85588f50cdbf8eb5eb4b50f2a1ec673ac9670187340a0b26f09938"
     },
     "formal/INDEPENDENT_VERIFICATION.json": {
       "bytes": 1387,
@@ -61,15 +65,15 @@
       "sha256": "7dc764d5d27e660cb921a8909ff1fb066b775603586754424a1176f28137d22a"
     },
     "README.md": {
-      "bytes": 3455,
-      "sha256": "218f6f339677042a5996b257f2000ff5564f2d7ddd2bcd143654801e8429bc5b"
+      "bytes": 3810,
+      "sha256": "091633ff353e5c36feb11f5b55db50b5535651b1a47d0c56ba5c72b73aac865f"
     },
     "RUNTIME_RECOVERY.json": {
       "bytes": 2106,
       "sha256": "17ce8fb942b64ee2ed9820f2b04808864d97ccba08df495fb5df5278f81bd088"
     }
   },
-  "file_count": 16,
-  "total_bytes": 8117423,
+  "file_count": 17,
+  "total_bytes": 8120202,
   "final_half_scored": false
 }

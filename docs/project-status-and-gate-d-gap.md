@@ -103,7 +103,7 @@ Package 15N 随后触发预注册的两个 gross-collapse guards。projector cur
 15. **已完成（Package 15K）**：exact step0 上完成 500 steps / 4,000 examples / 36,589 answer tokens；Qwen/receiver 全冻结，五个 checkpoint、optimizer/RNG/order/token accounting 独立验证通过。最终 projector 为 `62f69393…3df4`。
 16. **已完成（Package 15L）**：GLM-format public-50 teacher-forced correct-vs-counterfactual preference；vision/blind/shuffled 为 52%/56%/54%，correct-NLL 相对 step0 显著降低，图像身份依赖仍未建立，checkpoint 被拒绝。
 17. **已完成（Package 15M）**：同 checkpoint 的 GLM-format public-50 七条件 generation 与 2,000 bootstrap；vision/blind/shuffled click 为 6%/12%/6%，vision 与 shuffled distance 无差异，候选不扩大 full/三 seed。
-18. **已完成（Package 15N）**：projector/receiver 两个 gross-collapse guards 同时触发；projector effective rank 13.28→1.14、top-1 variance 17.48%→93.46%，receiver ratio 近似不变。pooled tensors、6,125 pair rows、50 per-sample rows及失败后修复的独立 verifier 全部保留。
+18. **已完成（Package 15N）**：projector/receiver 两个 gross-collapse guards 同时触发；projector effective rank 13.28→1.14、top-1 variance 17.48%→93.46%，receiver ratio 近似不变。pooled tensors、6,125 pair rows、50 per-sample rows及两项失败修复全部保留；17 files / 8,120,202 bytes，V100 full suite 347/347。
 19. **当前零训练诊断**：对 steps 0/100/200/300/400/500 重复同一 frozen representation screen，定位 scale/rank collapse 首次跨阈值的 checkpoint，并关联 loss/NLL 轨迹。
 20. **下一训练 screen**：冻结最小 projector scale/geometry-preservation treatment，保留匹配 CE-only control、exact step0、记录/顺序、500 steps 和 4,000 examples；counterfactual margin 等表示修复后再评。
 21. **并行工程缺口**：补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 240-row language-retention evaluator；任何候选替换 previous-best 前必须跑完。

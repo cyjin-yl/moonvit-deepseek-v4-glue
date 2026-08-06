@@ -25,8 +25,8 @@ def _sha256(path: Path) -> str:
 
 def test_formal_manifest_rehashes_complete_raw_result():
     manifest = _load(FORMAL / "ARTIFACT_MANIFEST.json")
-    assert manifest["file_count"] == 9
-    assert manifest["total_bytes"] == 8_103_585
+    assert manifest["file_count"] == 10
+    assert manifest["total_bytes"] == 8_105_867
     assert manifest["final_half_scored"] is False
     for relative, expected in manifest["files"].items():
         path = FORMAL / relative
@@ -117,3 +117,8 @@ def test_failed_cross_platform_manifest_attempt_and_repair_are_preserved():
     assert repair["failed_full_suite"]["failed"] == 1
     assert repair["raw_result_changed"] is False
     assert repair["scientific_decision_changed"] is False
+
+    final_log = (FORMAL / "full_suite_final.log").read_text(encoding="utf-8")
+    assert "full_suite_collected=347" in final_log
+    assert "full_suite_passed=347" in final_log
+    assert "full_suite_failed=0" in final_log
