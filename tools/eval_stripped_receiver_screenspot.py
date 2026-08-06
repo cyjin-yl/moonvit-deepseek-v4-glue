@@ -65,7 +65,7 @@ def main() -> None:
     started = time.perf_counter()
     device = torch.device(args.device)
     dtype = getattr(torch, args.dtype)
-    from transformers import AutoModelForCausalLM, AutoTokenizer
+    from transformers import AutoModelForCausalLM, AutoModelForImageTextToText, AutoTokenizer
 
     manifest = json.loads(args.screenspot_manifest.read_text(encoding="utf-8"))
     samples = list(manifest["samples"])
@@ -73,7 +73,8 @@ def main() -> None:
     config = json.loads((args.model_dir / "config.json").read_text(encoding="utf-8"))
     tokenizer = AutoTokenizer.from_pretrained(str(args.model_dir), local_files_only=True)
     placeholder = int(config.get("image_token_id") or tokenizer.convert_tokens_to_ids("<|image_pad|>"))
-    model = AutoModelForCausalLM.from_pretrained(
+    model_class = AutoModelForCausalLM if config.get("model_type") == "qwen2" else AutoModelForImageTextToText
+    model = model_class.from_pretrained(
         str(args.model_dir), dtype=dtype, local_files_only=True, low_cpu_mem_usage=True,
     ).to(device).eval()
     model.requires_grad_(False)

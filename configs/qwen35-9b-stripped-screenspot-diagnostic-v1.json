@@ -1,0 +1,29 @@
+{
+  "schema_version": "qwen35-9b-stripped-screenspot-diagnostic-v1",
+  "frozen_before_result": true,
+  "purpose": "检验视觉预训练 receiver 在绕过原生 vision tower 后是否能读取 MoonViT-V2 projector token",
+  "model": "Qwen/Qwen3.5-9B",
+  "model_revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "native_vision_path": "bypassed; no pixel_values and no visual forward",
+  "visual_tower": "MoonViT-V2 exact K3",
+  "projector_output_width": 4096,
+  "projector_checkpoint_role": "exact_step0",
+  "projector_scale": 1.0,
+  "dataset": "screenspot_glm50_v1",
+  "sample_manifest": "experiments/qwen3b_community_eval_20260805/contract/datasets/screenspot_glm50_v1/MANIFEST.json",
+  "sample_manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+  "max_visual_tokens": 16,
+  "token_selection": "prefix",
+  "generation": {
+    "do_sample": false,
+    "temperature": 0.0,
+    "max_new_tokens": 32,
+    "prompt_route": "grounding",
+    "parser": "anchored click(start_box=[x, y])"
+  },
+  "conditions": ["vision", "blind", "shuffled", "random_projector"],
+  "bootstrap": {"samples": 2000, "seed": 20260805},
+  "status": "diagnostic_only",
+  "capability_claim_allowed": false,
+  "deepseek_transfer_label": "transferable_with_runtime_validation"
+}
