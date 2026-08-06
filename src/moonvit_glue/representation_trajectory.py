@@ -94,9 +94,19 @@ def find_collapse_onset(
     step0 = representations["step0"]
     decisions: dict[str, dict[str, Any]] = {}
     onset_index: int | None = None
+    # retention 判定器只需要两个占位 action；轨迹级 action 在确定 onset 后选择。
+    decision_contract = {
+        **contract,
+        "actions": {
+            "gross_collapse": "gross_collapse",
+            "diversity_retained": "diversity_retained",
+        },
+    }
     for index, checkpoint in enumerate(conditions[1:], start=1):
         name = str(checkpoint["name"])
-        decision = decide_representation_action(step0, representations[name], contract)
+        decision = decide_representation_action(
+            step0, representations[name], decision_contract
+        )
         decisions[name] = decision
         if onset_index is None and bool(decision["gross_collapse"]):
             onset_index = index

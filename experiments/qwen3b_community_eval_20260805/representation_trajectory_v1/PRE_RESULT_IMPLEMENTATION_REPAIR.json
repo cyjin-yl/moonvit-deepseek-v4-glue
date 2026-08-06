@@ -1,0 +1,30 @@
+{
+  "format_version": "qwen3b-representation-trajectory-pre-result-repair-v1",
+  "initial_freeze_commit": "efaa715a8c071d6d72e4670a22594f6abbaab209",
+  "failure_stage": "pre-result CPU unit tests",
+  "failure": "find_collapse_onset passed trajectory-level action keys to the Package 15N decision helper, which requires gross_collapse and diversity_retained keys",
+  "failed_source": {
+    "path": "src/moonvit_glue/representation_trajectory.py",
+    "bytes": 5521,
+    "sha256": "da325d1da349716ea5f71040d6acef8df4eaab6cd8cd37cace148774748e945d"
+  },
+  "corrected_source": {
+    "path": "src/moonvit_glue/representation_trajectory.py",
+    "bytes": 5842,
+    "sha256": "f2606248bac5e22986a6ede51c53f0cc12a80d9f73e82cc90ff4d65f8df4fd57"
+  },
+  "failure_log": {
+    "path": "pre_result_unit_failure_attempt_01.log",
+    "bytes": 6302,
+    "sha256": "f792f19d4c3e8e062c86f958b581c8c7d383c276b3c46eedd665252b1bcfdec1"
+  },
+  "repair": "use local placeholder actions while computing each checkpoint guard, then select the preregistered trajectory action from onset position",
+  "checkpoint_schedule_changed": false,
+  "gross_collapse_thresholds_changed": false,
+  "onset_rule_changed": false,
+  "training_history_binding_changed": false,
+  "gpu_analysis_started_before_repair": false,
+  "trajectory_result_existed_before_repair": false,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

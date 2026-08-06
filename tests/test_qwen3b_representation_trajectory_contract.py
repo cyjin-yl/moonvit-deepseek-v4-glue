@@ -46,3 +46,16 @@ def test_preregistration_binds_runtime_source_bytes():
         path = ROOT / relative
         assert path.stat().st_size == expected["bytes"]
         assert _sha256(path) == expected["sha256"]
+
+
+def test_pre_result_implementation_repair_preserves_registered_decision():
+    repair = _load(PACKAGE / "PRE_RESULT_IMPLEMENTATION_REPAIR.json")
+    failure_log = PACKAGE / repair["failure_log"]["path"]
+
+    assert failure_log.stat().st_size == repair["failure_log"]["bytes"]
+    assert _sha256(failure_log) == repair["failure_log"]["sha256"]
+    assert repair["checkpoint_schedule_changed"] is False
+    assert repair["gross_collapse_thresholds_changed"] is False
+    assert repair["onset_rule_changed"] is False
+    assert repair["gpu_analysis_started_before_repair"] is False
+    assert repair["trajectory_result_existed_before_repair"] is False

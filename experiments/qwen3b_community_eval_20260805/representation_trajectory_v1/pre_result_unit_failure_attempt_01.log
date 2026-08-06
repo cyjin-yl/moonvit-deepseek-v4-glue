@@ -1,0 +1,123 @@
+FF...............                                                        [100%]
+=================================== FAILURES ===================================
+__________ test_find_collapse_onset_selects_earliest_saved_checkpoint __________
+
+    def test_find_collapse_onset_selects_earliest_saved_checkpoint():
+>       result = find_collapse_onset(
+            {
+                "step0": _representation(0.8, 20.0),
+                "step100": _representation(0.3, 12.0),
+                "step200": _representation(0.1, 5.0),
+            },
+            _contract(),
+        )
+
+tests/test_representation_trajectory.py:38: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/moonvit_glue/representation_trajectory.py:99: in find_collapse_onset
+    decision = decide_representation_action(step0, representations[name], contract)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+step0 = {'relative_between_image_spread': 0.8, 'effective_rank_participation': 20.0}
+current = {'relative_between_image_spread': 0.3, 'effective_rank_participation': 12.0}
+contract = {'conditions': [{'name': 'step0', 'step': 0, 'examples_seen': 0, 'answer_tokens_seen': 0}, {'name': 'step100', 'step':...lapsed': 'protect_from_start', 'later_checkpoint_collapsed': 'localize_then_protect', 'never_collapsed': 'run_margin'}}
+
+    def decide_representation_action(
+        step0: dict[str, Any],
+        current: dict[str, Any],
+        contract: dict[str, Any],
+    ) -> dict[str, Any]:
+        """严格执行预注册的 gross-collapse 双门槛。"""
+    
+        spread_base = float(step0["relative_between_image_spread"])
+        rank_base = float(step0["effective_rank_participation"])
+        if spread_base <= 0.0 or rank_base <= 0.0:
+            raise ValueError("step0 representation has no measurable diversity")
+        spread_ratio = float(current["relative_between_image_spread"]) / spread_base
+        rank_ratio = float(current["effective_rank_participation"]) / rank_base
+        rule = contract["gross_collapse_rule"]
+        spread_guard = spread_ratio < float(
+            rule["current_over_step0_relative_spread_below"]
+        )
+        rank_guard = rank_ratio < float(
+            rule["current_over_step0_effective_rank_below"]
+        )
+        guards = (spread_guard, rank_guard)
+        gross = all(guards) if bool(rule["requires_all"]) else any(guards)
+        action_key = "gross_collapse" if gross else "diversity_retained"
+        return {
+>           "action": contract["actions"][action_key],
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            "gross_collapse": gross,
+            "relative_spread_ratio": spread_ratio,
+            "effective_rank_ratio": rank_ratio,
+            "relative_spread_guard_triggered": spread_guard,
+            "effective_rank_guard_triggered": rank_guard,
+        }
+E       KeyError: 'diversity_retained'
+
+src/moonvit_glue/representation_retention.py:218: KeyError
+_____ test_find_collapse_onset_uses_from_start_action_at_first_checkpoint ______
+
+    def test_find_collapse_onset_uses_from_start_action_at_first_checkpoint():
+>       result = find_collapse_onset(
+            {
+                "step0": _representation(0.8, 20.0),
+                "step100": _representation(0.1, 5.0),
+                "step200": _representation(0.08, 3.0),
+            },
+            _contract(),
+        )
+
+tests/test_representation_trajectory.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/moonvit_glue/representation_trajectory.py:99: in find_collapse_onset
+    decision = decide_representation_action(step0, representations[name], contract)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+step0 = {'relative_between_image_spread': 0.8, 'effective_rank_participation': 20.0}
+current = {'relative_between_image_spread': 0.1, 'effective_rank_participation': 5.0}
+contract = {'conditions': [{'name': 'step0', 'step': 0, 'examples_seen': 0, 'answer_tokens_seen': 0}, {'name': 'step100', 'step':...lapsed': 'protect_from_start', 'later_checkpoint_collapsed': 'localize_then_protect', 'never_collapsed': 'run_margin'}}
+
+    def decide_representation_action(
+        step0: dict[str, Any],
+        current: dict[str, Any],
+        contract: dict[str, Any],
+    ) -> dict[str, Any]:
+        """严格执行预注册的 gross-collapse 双门槛。"""
+    
+        spread_base = float(step0["relative_between_image_spread"])
+        rank_base = float(step0["effective_rank_participation"])
+        if spread_base <= 0.0 or rank_base <= 0.0:
+            raise ValueError("step0 representation has no measurable diversity")
+        spread_ratio = float(current["relative_between_image_spread"]) / spread_base
+        rank_ratio = float(current["effective_rank_participation"]) / rank_base
+        rule = contract["gross_collapse_rule"]
+        spread_guard = spread_ratio < float(
+            rule["current_over_step0_relative_spread_below"]
+        )
+        rank_guard = rank_ratio < float(
+            rule["current_over_step0_effective_rank_below"]
+        )
+        guards = (spread_guard, rank_guard)
+        gross = all(guards) if bool(rule["requires_all"]) else any(guards)
+        action_key = "gross_collapse" if gross else "diversity_retained"
+        return {
+>           "action": contract["actions"][action_key],
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            "gross_collapse": gross,
+            "relative_spread_ratio": spread_ratio,
+            "effective_rank_ratio": rank_ratio,
+            "relative_spread_guard_triggered": spread_guard,
+            "effective_rank_guard_triggered": rank_guard,
+        }
+E       KeyError: 'gross_collapse'
+
+src/moonvit_glue/representation_retention.py:218: KeyError
+=========================== short test summary info ============================
+FAILED tests/test_representation_trajectory.py::test_find_collapse_onset_selects_earliest_saved_checkpoint
+FAILED tests/test_representation_trajectory.py::test_find_collapse_onset_uses_from_start_action_at_first_checkpoint
+
+exit_code=1
