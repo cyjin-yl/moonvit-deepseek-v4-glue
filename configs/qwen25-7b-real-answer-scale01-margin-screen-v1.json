@@ -1,0 +1,39 @@
+{
+  "schema_version": "qwen25-7b-real-answer-scale01-margin-screen-v1",
+  "frozen_before_result": true,
+  "purpose": "在固定 projector 输入尺度下筛选 paired image-vs-shuffle supervision 强度",
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "visual_tower": "MoonViT-V2 exact K3",
+  "projector_output_width": 4096,
+  "projector_scale": 0.1,
+  "sample_manifest": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_real_probe32_manifest.json",
+  "sample_manifest_sha256": "c726ebfd3eefa9521e9342fd88c2423ef3c98bb4d8c72d189622ef687a5a629f",
+  "token_selection": "mean_pool",
+  "max_visual_tokens": 16,
+  "shuffle": {
+    "kind": "deterministic_cycle_derangement",
+    "seed": 20260805,
+    "same_sample_order": true
+  },
+  "arms": [
+    {"name": "ce_only_control", "shuffle_margin_lambda": 0.0, "shuffle_margin": 0.1},
+    {"name": "paired_margin_lambda050", "shuffle_margin_lambda": 0.5, "shuffle_margin": 0.1}
+  ],
+  "optimizer": {
+    "name": "AdamW",
+    "learning_rate": 0.00005,
+    "steps": 3,
+    "micro_batch_size": 1,
+    "gradient_accumulation": 1,
+    "trainable": "projector_only",
+    "frozen_receiver": true
+  },
+  "health_contract": {
+    "finite_required": true,
+    "capability_claim_allowed": false,
+    "promotion_requires": "32-sample paired bootstrap CI lower bound > 0 and matched community benchmark"
+  },
+  "bootstrap": {"samples": 2000, "seed": 20260805},
+  "deepseek_transfer_label": "transferable_with_runtime_validation"
+}
