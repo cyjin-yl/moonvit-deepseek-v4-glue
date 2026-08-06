@@ -82,6 +82,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--dtype", default="float16", choices=("float16", "bfloat16"))
     parser.add_argument("--sample-index", type=int, default=0)
+    parser.add_argument("--max-visual-tokens", type=int, default=None,
+                        help="Diagnostic-only token cap; omit for the fixed cache contract")
     return parser.parse_args()
 
 
@@ -205,6 +207,11 @@ def main() -> None:
     shuffled_sample = records[(index + 1) % len(records)]
     feature = cache.get(sample["id"], device=device, dtype=torch.float32)[0]
     shuffled_feature = cache.get(shuffled_sample["id"], device=device, dtype=torch.float32)[0]
+    if args.max_visual_tokens is not None:
+        if args.max_visual_tokens <= 0:
+            raise ValueError("--max-visual-tokens must be positive")
+        feature = feature[: args.max_visual_tokens].contiguous()
+        shuffled_feature = shuffled_feature[: args.max_visual_tokens].contiguous()
 
     (out / "RUN_CONFIG.json").write_text(json.dumps({
         "schema_version": "stripped-native-qwen35-receiver-smoke-v1",
@@ -221,6 +228,7 @@ def main() -> None:
         },
         "native_vision_bypassed": True, "native_vision_forward_calls": 0,
         "placeholder_token_id": placeholder_token_id, "dtype": args.dtype,
+        "max_visual_tokens": args.max_visual_tokens,
         "device": str(device), "steps": args.steps, "learning_rate": args.learning_rate,
         "feature_cache": str(args.feature_cache),
         "feature_cache_manifest_sha256": sha256_file(args.feature_cache / "MANIFEST.json"),
