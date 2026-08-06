@@ -1,0 +1,11 @@
+{
+  "format_version": "qwen3b-projector-structure-screen-attempt-v1",
+  "attempt": "attempt01_rmsnorm_test_tolerance",
+  "stage": "focused_unit_tests",
+  "command": "pytest -q tests/test_projector_output_norm.py tests/test_projector_checkpoint.py tests/test_projector_initialization.py tests/test_qwen3b_projector_structure_contract.py",
+  "gpu_started": false,
+  "optimizer_step_created": false,
+  "capability_result_created": false,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

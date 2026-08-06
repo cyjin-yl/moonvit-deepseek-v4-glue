@@ -1,0 +1,13 @@
+{
+  "format_version": "qwen3b-projector-structure-screen-attempt-v1",
+  "attempt": "attempt02_legacy_config_verifier",
+  "stage": "independent_structure_verification",
+  "arm": "baseline_none",
+  "command": "verify_qwen3b_projector_structure.py --arm baseline_none",
+  "started_before_gpu_training": true,
+  "gpu_started": false,
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

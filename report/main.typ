@@ -1770,3 +1770,9 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
 `ratio020` 也在 step 2 停止。固定 λ=`0.04074922031475636` 将 total loss 提高到 2.49668，但 projector/receiver spread ratio 仍为 0.2692/0.2255，receiver effective-rank ratio 为 0.3623；onset 仍为 `[1,2]`。control、ratio005、ratio020 三条轨迹的共同 onset 说明当前问题不能靠调大同一 geometry objective 的剂量解决。最后的 ratio080 只用于完成预注册筛选；若它也失败，停止 500-step 扩展并转 projector 结构/尺度路径。
 
 最后的 `ratio080`（λ=`0.16299688125902545`）也在 step 2 停止，total loss 为 2.67265，receiver spread/rank ratio 为 0.2258/0.3628。四臂的 passing set 为空，`DECISION.json` 因此取消完整 500-step expansion；这条决定遵守了预注册的“无 pass 就重设计”规则。当前证据支持“塌缩是首步更新方向/尺度的结构性问题”，反驳“继续增加同一几何损失剂量即可修复”。下一条本地实验从 projector 输出 LayerNorm/RMSNorm 与 matched CE-only control 开始，仍使用同一 3B、同一数据顺序、同一 health contract。
+
+== Package 15Q：先改输出结构，再看是否能活过前两步
+
+Package 15Q 已在任何新结构结果前冻结。它把一个结构变量放在 `linear_2` 之后的 canonical 4096 边界：affine-free LayerNorm 或 affine-free RMSNorm。两者不增加 projector 参数，仍输出 4096 维，所有 MLP 权重、MoonViT 特征、Qwen receiver、数据顺序和预算保持不变；`baseline_none` 是同一初始化的 CE-only control。每个 arm 都必须先通过独立 structure verifier，再用同一 `projector-health-v1` 高频探针训练。
+
+这一步回答一个很具体的问题：如果第一步更新把输出尺度推大并让图像表示共线，固定的无参数归一化能否在不改变迁移接口的前提下阻止它。健康通过只代表表示没有立刻塌缩，完整 ScreenSpot、TextVQA、DocVQA、OCRBench 和语言保持仍是能力晋升条件。若三个 arm 都失败，下一条只测试 residual/gated-residual 结构，继续保留自动止损。

@@ -1,0 +1,59 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-06T06:55:53.057646+00:00",
+  "root": "projector_structure_screen_v1",
+  "git_base_sha": "3ea8951e30c9577d123fdce53e7d59d77c01b9e2",
+  "files": {
+    "failures/attempt01_rmsnorm_test_tolerance/ATTEMPT.json": {
+      "bytes": 498,
+      "sha256": "34ae4da12e85d86c1f5c145fabe7aa5bd350f0e2738e61af32d793038fdb5e75"
+    },
+    "failures/attempt01_rmsnorm_test_tolerance/FAILURE.json": {
+      "bytes": 676,
+      "sha256": "ed92380cbda74f210b447c25e79d9495a83c95897e09fdf551f58a4d2f52ed71"
+    },
+    "failures/attempt01_rmsnorm_test_tolerance/REPAIR_RECORD.json": {
+      "bytes": 497,
+      "sha256": "d960c14347161a153c524611b7324c0acbe4e9254232194033532ff038b28c88"
+    },
+    "failures/attempt01_rmsnorm_test_tolerance/run.log": {
+      "bytes": 178,
+      "sha256": "6d003c41188e76a84822b239d7793e339677cc14e4530729b808c975ef5e14f6"
+    },
+    "failures/attempt02_legacy_config_verifier/ATTEMPT.json": {
+      "bytes": 480,
+      "sha256": "75e5cc021d6b03ff4e4f1d2054bce4a030df9b43c3f99a42e888e262738bf681"
+    },
+    "failures/attempt02_legacy_config_verifier/FAILURE.json": {
+      "bytes": 669,
+      "sha256": "ca89271249a8b55f32306350bb921ce631d8a2d8edb8c253a67ca665458f61b3"
+    },
+    "failures/attempt02_legacy_config_verifier/REPAIR_RECORD.json": {
+      "bytes": 503,
+      "sha256": "f4abf78b2fd0e9ae63f842d6d395bc19c3a215f5895e10918656fce7035ebe0d"
+    },
+    "failures/attempt02_legacy_config_verifier/run.log": {
+      "bytes": 226,
+      "sha256": "59383bb29c47e752b80d78dc1a4037886515537dea0b926b0419465edfdd0fce"
+    },
+    "initializations/layernorm/projector_config.json": {
+      "bytes": 158,
+      "sha256": "abc58e5778effc03c61b71a1ace58fb6a30e4303d3ed5be281753985b1367396"
+    },
+    "initializations/rmsnorm/projector_config.json": {
+      "bytes": 156,
+      "sha256": "dae388e77ac5a0afcc4c19f9461dcbbf1ab27059d7bba559439b836c2960d812"
+    },
+    "PREREGISTRATION.json": {
+      "bytes": 1794,
+      "sha256": "a4117680c9dcb39e8e970a107ff0bc5e7c67b185bf51e6f33807064a33df04e7"
+    },
+    "README.md": {
+      "bytes": 1272,
+      "sha256": "4a290c7e4d0b5cd61ea4c75cf3251f5d6bf5d493f26fb1217e70c6ee338f423a"
+    }
+  },
+  "file_count": 12,
+  "total_bytes": 7107,
+  "final_half_scored": false
+}

@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "tools/verify_qwen3b_projector_structure.py", line 64, in verify
+    raise ValueError(f"structure config field differs: {key}")
+ValueError: structure config field differs: output_norm

@@ -1,0 +1,12 @@
+{
+  "format_version": "qwen3b-projector-structure-screen-repair-v1",
+  "attempt": "attempt01_rmsnorm_test_tolerance",
+  "training_result_created_by_repair": false,
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "implementation_changed": false,
+  "contract_changed": false,
+  "screen_budget_changed": false,
+  "health_thresholds_changed": false,
+  "repair_description": "align the RMSNorm unit-test tolerance with the frozen eps=1e-5 numerical behavior"
+}

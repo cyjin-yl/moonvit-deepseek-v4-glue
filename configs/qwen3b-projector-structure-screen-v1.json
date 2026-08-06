@@ -1,0 +1,70 @@
+{
+  "format_version": "qwen3b-projector-structure-screen-contract-v1",
+  "frozen_before_any_structure_result": true,
+  "project_goal": "MoonViT-V2 -> canonical 4096 projector -> frozen Qwen proxy -> DeepSeek-V4-Flash-0731",
+  "proxy_contract_file_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+  "health_contract_file": "configs/qwen3b-projector-health-v1.json",
+  "health_contract_file_sha256": "c6b8f7c6fcefb2fcf11c4328e1cb1023b571ed36503f3d2519aeb2f257f9a325",
+  "projector_source_file": "src/moonvit_glue/projector.py",
+  "projector_source_file_sha256": "6c98a8232844eaf1acc7ed9dcad9d0199bfb5a26b4e52b1491127ed133dbabcb",
+  "base_projector": {
+    "config_source": "configs/deepseek-v4-flash-0731-projector-moonvit-v2.json",
+    "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+    "weights_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0",
+    "parameter_count": 33564672,
+    "canonical_output_width": 4096,
+    "same_weights_for_all_arms": true
+  },
+  "arms": [
+    {
+      "name": "baseline_none",
+      "output_norm": "none",
+      "config_path": "configs/deepseek-v4-flash-0731-projector-moonvit-v2.json",
+      "config_sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087",
+      "matched_role": "CE-only control"
+    },
+    {
+      "name": "post_layernorm",
+      "output_norm": "layernorm",
+      "config_path": "experiments/qwen3b_community_eval_20260805/projector_structure_screen_v1/initializations/layernorm/projector_config.json",
+      "config_sha256": "abc58e5778effc03c61b71a1ace58fb6a30e4303d3ed5be281753985b1367396",
+      "matched_role": "structure candidate"
+    },
+    {
+      "name": "post_rmsnorm",
+      "output_norm": "rmsnorm",
+      "config_path": "experiments/qwen3b_community_eval_20260805/projector_structure_screen_v1/initializations/rmsnorm/projector_config.json",
+      "config_sha256": "dae388e77ac5a0afcc4c19f9461dcbbf1ab27059d7bba559439b836c2960d812",
+      "matched_role": "structure candidate"
+    }
+  ],
+  "boundary": {
+    "normalization_position": "after linear_2 at canonical 4096 output",
+    "affine_parameters": false,
+    "projector_parameter_count_unchanged": true,
+    "receiver_is_frozen": true,
+    "text_backbone_is_frozen": true,
+    "qwen_native_vision_is_forbidden": true
+  },
+  "budget": {
+    "optimizer_steps": 100,
+    "examples_seen": 800,
+    "same_training_order": true,
+    "same_learning_rate": true,
+    "same_resolution": true,
+    "same_health_schedule": true,
+    "auto_stop_and_rollback": true
+  },
+  "selection": {
+    "health_pass_required_at_projector_and_receiver": true,
+    "requires_no_early_collapse_then_recovery": true,
+    "final_20_step_ce_ratio_to_baseline_max": 1.25,
+    "no_pass_action": "pre_register residual or gated-residual projector; do not spend a 500-step run",
+    "pass_action": "run full fixed ScreenSpot/TextVQA/DocVQA/OCRBench contract before promotion"
+  },
+  "interpretation_boundary": "health preservation is representation evidence and cannot establish visual ability",
+  "transfer_label": "directly_transferable",
+  "paid_resources_used": false,
+  "final_half_scored": false,
+  "capability_claim_allowed": false
+}

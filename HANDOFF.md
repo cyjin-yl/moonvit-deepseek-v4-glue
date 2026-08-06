@@ -69,6 +69,18 @@ before step 5. The final `ratio080` arm also stops at `[1,2]` (total loss
 The contract now points to a matched projector output-normalization/residual
 structure screen.
 
+### Package 15Q is frozen before results
+
+The next local screen is registered under
+`experiments/qwen3b_community_eval_20260805/projector_structure_screen_v1/`.
+It tests affine-free post-output LayerNorm and RMSNorm against the unchanged
+CE-only projector. The operation sits after `linear_2` at width 4096, adds no
+trainable parameters, and reuses the exact step0 weight bytes. The same 50-image
+health probe and auto-stop/rollback contract applies from step 0 onward. A
+structure candidate can proceed only if it avoids critical guards through the
+fixed 100-step screen and stays within the preregistered CE ratio; no health
+pass alone can promote a checkpoint to visual evaluation.
+
 ## ⚠️ ACTIVE V100 REAL-VISION BRIDGE (2026-08-06)
 
 **Current task / hard boundary**: the engineering mainline is now a fixed real-data bridge on pure-text `Qwen/Qwen2.5-3B-Instruct`, followed by transfer of the same MoonViT-V2/projector/data/eval contract to DeepSeek-V4-Flash-0731. The 0.5B/synthetic line remains mechanism evidence. Do not rent any server, create a paid resource, run the full DeepSeek weights, or inspect final evaluation halves without explicit authorization. Exact V100 environment evidence is under `experiments/v100_perception_20260804/infra/environment/`.

@@ -1,0 +1,14 @@
+{
+  "format_version": "qwen3b-projector-structure-screen-failure-v1",
+  "status": "verification_failure_preserved",
+  "stage": "independent_structure_verification",
+  "exception_type": "ValueError",
+  "failure": "structure config field differs: output_norm",
+  "root_cause": "the historical step0 JSON omits output_norm while ProjectorConfig correctly defaults the missing field to none",
+  "repair": "make the verifier apply the same legacy output_norm=none default and add a regression test",
+  "gpu_started": false,
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

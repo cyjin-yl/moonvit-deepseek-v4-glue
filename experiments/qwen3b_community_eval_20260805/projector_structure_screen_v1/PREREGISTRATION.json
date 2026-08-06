@@ -1,0 +1,38 @@
+{
+  "format_version": "qwen3b-projector-structure-screen-preregistration-v1",
+  "frozen_before_any_structure_result": true,
+  "contract": "configs/qwen3b-projector-structure-screen-v1.json",
+  "contract_sha256": "1b0cda91dfd1a51fc87654015cdce1e7f1c299bcbfc29019f4d8994ba1039d98",
+  "runner_source": "src/moonvit_glue/projector.py",
+  "runner_source_sha256": "6c98a8232844eaf1acc7ed9dcad9d0199bfb5a26b4e52b1491127ed133dbabcb",
+  "arms": ["baseline_none", "post_layernorm", "post_rmsnorm"],
+  "screen": {
+    "optimizer_steps": 100,
+    "examples_seen": 800,
+    "same_initial_mlp_weights": true,
+    "same_training_order": true,
+    "same_health_probe_schedule": true,
+    "selection_requires_no_critical_guard": true,
+    "selection_requires_final_20_step_ce_ratio_at_most": 1.25,
+    "no_pass_action": "pre-register residual or gated-residual structure; cancel any 500-step expansion"
+  },
+  "pre_result_repairs": [
+    {
+      "path": "failures/attempt01_rmsnorm_test_tolerance/REPAIR_RECORD.json",
+      "reason": "RMSNorm unit-test tolerance was tighter than the frozen eps=1e-5 numerical deviation; no GPU or training result existed.",
+      "implementation_changed": false,
+      "contract_budget_thresholds_unchanged": true
+    },
+    {
+      "path": "failures/attempt02_legacy_config_verifier/REPAIR_RECORD.json",
+      "reason": "The independent verifier did not apply the model loader's legacy default output_norm=none; no GPU or training result existed.",
+      "implementation_changed": true,
+      "contract_budget_thresholds_unchanged": true
+    }
+  ],
+  "capability_boundary": "representation health cannot establish visual ability",
+  "paid_resources_used": false,
+  "final_half_scored": false,
+  "capability_claim_allowed": false,
+  "transfer_label": "directly_transferable"
+}

@@ -1,0 +1,14 @@
+{
+  "format_version": "qwen3b-projector-structure-screen-failure-v1",
+  "status": "test_failure_preserved",
+  "stage": "focused_unit_tests",
+  "exception_type": "AssertionError",
+  "failure": "RMSNorm output RMS was 0.9997-1.0000 while the test required atol=2e-5; frozen epsilon is 1e-5",
+  "root_cause": "test tolerance was tighter than the deterministic epsilon-induced deviation",
+  "repair": "relax only the unit-test tolerance to 5e-4; implementation, contract, budget and thresholds unchanged",
+  "gpu_started": false,
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

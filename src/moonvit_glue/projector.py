@@ -10,6 +10,23 @@ from safetensors.torch import load_file, save_file
 from torch import Tensor, nn
 
 
+class _ParameterFreeRMSNorm(nn.Module):
+    """不引入新参数的 RMSNorm，用于结构筛选的可迁移输出边界。"""
+
+    def __init__(self, width: int, eps: float) -> None:
+        super().__init__()
+        self.width = int(width)
+        self.eps = float(eps)
+
+    def forward(self, hidden: Tensor) -> Tensor:
+        if hidden.shape[-1] != self.width:
+            raise ValueError(
+                f"RMSNorm width differs: expected {self.width}, got {hidden.shape[-1]}"
+            )
+        variance = hidden.to(torch.float32).pow(2).mean(dim=-1, keepdim=True)
+        return hidden * torch.rsqrt(variance + self.eps).to(hidden.dtype)
+
+
 @dataclass(frozen=True)
 class ProjectorConfig:
     vision_width: int
@@ -17,6 +34,7 @@ class ProjectorConfig:
     merge_factor: int = 4
     projector_width: int | None = None
     layer_norm_eps: float = 1e-5
+    output_norm: str = "none"
 
     @property
     def flattened_vision_width(self) -> int:
@@ -32,6 +50,10 @@ class ProjectorConfig:
                 raise ValueError(f"{field_name} must be positive")
         if self.projector_width is not None and self.projector_width <= 0:
             raise ValueError("projector_width must be positive when provided")
+        if self.output_norm not in {"none", "layernorm", "rmsnorm"}:
+            raise ValueError(
+                "output_norm must be one of none, layernorm, or rmsnorm"
+            )
 
 
 class PatchMergerProjector(nn.Module):
@@ -51,6 +73,19 @@ class PatchMergerProjector(nn.Module):
         self.linear_2 = nn.Linear(
             config.effective_projector_width, config.language_width
         )
+        if config.output_norm == "layernorm":
+            # affine=False 保持参数量和 DeepSeek 迁移边界不变。
+            self.output_norm = nn.LayerNorm(
+                config.language_width,
+                eps=config.layer_norm_eps,
+                elementwise_affine=False,
+            )
+        elif config.output_norm == "rmsnorm":
+            self.output_norm = _ParameterFreeRMSNorm(
+                config.language_width, config.layer_norm_eps
+            )
+        else:
+            self.output_norm = nn.Identity()
 
     def forward(self, feature_groups: Sequence[Tensor]) -> list[Tensor]:
         projected: list[Tensor] = []
@@ -68,7 +103,7 @@ class PatchMergerProjector(nn.Module):
             normalized = self.pre_norm(item)
             flattened = normalized.reshape(item.shape[0], -1)
             projected.append(
-                self.linear_2(self.activation(self.linear_1(flattened)))
+                self.output_norm(self.linear_2(self.activation(self.linear_1(flattened))))
             )
         return projected
 
