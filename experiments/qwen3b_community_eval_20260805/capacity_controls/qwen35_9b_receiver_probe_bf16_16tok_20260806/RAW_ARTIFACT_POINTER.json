@@ -12,6 +12,7 @@
   "vision_minus_shuffle_std": 0.3729058568870236,
   "vision_minus_blind_mean": 0.1992783546447754,
   "vision_minus_blind_std": 0.2141940092121861,
+  "vision_minus_random_projector_mean": -0.10969626903533936,
   "random_projector_seed": 20260806,
   "capability_claim_allowed": false
 }

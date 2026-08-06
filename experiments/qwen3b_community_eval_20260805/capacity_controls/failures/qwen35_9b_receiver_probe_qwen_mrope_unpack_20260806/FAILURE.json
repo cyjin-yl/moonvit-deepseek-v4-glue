@@ -1,0 +1,8 @@
+{
+  "schema_version": "failure-record-v1",
+  "status": "implementation_failure_before_first_probe",
+  "remote_raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_9b_receiver_probe_bf16_240tok_qwen_mrope_20260806",
+  "reason": "Qwen3.5 compute_3d_position_ids return arity differed from the assumed two-value tuple; no GPU probe result or checkpoint was produced",
+  "optimizer_steps_completed": 0,
+  "capability_claim_allowed": false
+}

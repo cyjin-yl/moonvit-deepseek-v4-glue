@@ -92,11 +92,12 @@ def eval_case(*, model, projector, receiver, tokenizer, sample, feature, placeho
         mm_token_type_ids = mm_token_type_ids.masked_fill(
             merged.routing_input_ids.eq(placeholder) & merged.attention_mask.bool(), 1
         )
-        position_ids, _ = model.model.compute_3d_position_ids(
+        rope_result = model.model.compute_3d_position_ids(
             input_ids=merged.routing_input_ids, inputs_embeds=merged.inputs_embeds,
             image_grid_thw=_grid_for_token_count(feature.shape[0], device),
             mm_token_type_ids=mm_token_type_ids, attention_mask=merged.attention_mask,
         )
+        position_ids = rope_result[0] if isinstance(rope_result, tuple) else rope_result
         with torch.no_grad():
             outputs = model(
                 inputs_embeds=merged.inputs_embeds, attention_mask=merged.attention_mask,
