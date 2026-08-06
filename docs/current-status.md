@@ -297,3 +297,16 @@ scale=`0.1` 是在 32-sample 预冻结 probe 中唯一值得继续做短训练�
 当前 Gate D 仍是 **NO-GO**。本地已经具备 MoonViT-V2 真权重、4096 projector、placeholder 展开、冻结 receiver 的 projector backward、自动 collapse guard、checkpoint/RNG/save-resume 和固定 benchmark 工具；Qwen2.5-7B 进一步证明 V100 上的低成本训练可以稳定执行。DeepSeek-V4-Flash-0731 仍缺完整权重加载、目标 FP4/FP8 input-gradient、完整 Hash-MoE 图像 forward/backward、batch/routing/activation-checkpointing 一致性、20-step 稳定 checkpoint 与真实 benchmark。
 
 按当前证据，V100 本地还需要约 1--3 个短实验周期（每周期数小时级，取决于远端 tmux 队列）来冻结 projector 结构/辅助目标候选、补齐独立 verifier 和文档。进入 DeepSeek 真实训练仍取决于付费硬件 Gate D；得到授权后，最小顺序是“单模块权重加载 → 单 batch forward → input DGRAD → projector-only backward → 20-step save/resume → 小规模真实评测”。在授权前不下载完整 0731、不租卡，也不把 Qwen 结果写成 DeepSeek 能力。
+
+## 2026-08-07 λ=0.5 paired margin screen
+
+为区分“paired 监督方向太弱”和“7B receiver 无法解码外部 token”，在已冻结的 scale=`0.1`、mean-pool 16、32-sample 真实答案合同上预注册 λ=`0.5`，并运行同初始化、同数据顺序的 CE-only control。两臂都 finite，scale 和 between-image RMS 稳定：
+
+| 条件 | CE step0→3 | vision−shuffle step0→3 | gradient peak |
+|---|---:|---:|---:|
+| λ=0 CE-only | `6.9045→5.8405` | `-0.0167→+0.1297` | `约 781` |
+| λ=0.5 paired margin | `6.9045→5.9831` | `-0.0167→+0.4874` | `约 459` |
+
+训练后 32-sample probe 的 2,000 次 bootstrap 给出：λ=0.5 的 `vision−shuffle=+0.4874`，95% CI `[+0.1423,+0.8786]`；`vision−blind=+1.9574`，CI `[+1.3909,+2.5699]`。相对同批 CE-only 的配对提升为 `+0.3577`，CI `[-0.1287,+0.8397]`；`vision−random_projector=-0.3397`，CI `[-0.7099,+0.0082]`。这是当前第一条在真实答案 32-sample receiver-prior probe 上通过 paired image attribution CI 的训练轨迹，但它仍是 teacher-forced、16 token、Qwen2.5-7B 的机制诊断，`capability_claim_allowed=false`，不能直接写成 ScreenSpot 或 VLM 成功。
+
+这轮支持“paired image-vs-shuffle 监督强度确实能改变局部图像归因”并反驳“所有正 margin 都只是随机波动”。它没有证明 7B 能完成坐标 grounding，也没有证明该 λ 可迁移到 DeepSeek。下一项从继续长训转为把 λ=0.5 轨迹接入一个可审查的 7B formal evaluator：先复用统一 parser、blind/shuffled/random-projector 条件和固定生成配置，确认自由生成与 teacher-forced 信号方向一致，再决定是否值得把同一目标带回 Qwen2.5-3B formal contract。大模型训练量暂不扩大。

@@ -663,3 +663,13 @@ scale=`0.1` 的 32-sample matched screen 已完成，使用冻结 manifest SHA `
 研究记录必须继续同时保存训练健康与真实能力：RMS、spread、rank、Gram、gradient、NaN/Inf 与 vision/blind/shuffled/random-projector paired 指标分开报告；旧 cache-only receiver-prior 结果已经降级为伪监督扰动诊断，真实答案 manifest 运行才可作监督接口证据。
 
 Gate D 仍为 **NO-GO**。Qwen 代理已证明 V100 上 projector-only 训练和安全止损链路可重复；完整 DeepSeek-V4-Flash-0731 的权重加载、FP4/FP8 input DGRAD、完整 Hash-MoE 图像 forward/backward、20-step 稳定 save/resume 和真实 benchmark 仍未通过。没有付费硬件授权前，不租卡、不下载完整 0731。
+
+## 2026-08-07 λ=0.5 训练结果
+
+在预注册 `configs/qwen25-7b-real-answer-scale01-margin-screen-v1.json` 下，固定 scale=`0.1`、mean-pool 16、32-sample manifest 和 exact step0，运行 CE-only control 与 paired margin λ=`0.5`。CE-only 的 CE `6.9045→5.8405`、`vision−shuffle -0.0167→+0.1297`；λ=0.5 的 CE `6.9045→5.9831`、`vision−shuffle -0.0167→+0.4874`。两臂 finite，gradient peak 约 781/459，between-image RMS 稳定。
+
+训练后 probe 的 2,000 bootstrap：λ=0.5 的 `vision−shuffle=+0.4874`，CI `[+0.1423,+0.8786]`；`vision−blind=+1.9574`，CI `[+1.3909,+2.5699]`；相对同批 CE-only 的 paired 提升 `+0.3577`，CI `[-0.1287,+0.8397]`；`vision−random_projector=-0.3397`，CI `[-0.7099,+0.0082]`。
+
+这是第一条通过 32-sample paired image attribution CI 的训练轨迹，证据仍限于 teacher-forced、16 visual tokens、Qwen2.5-7B receiver-prior diagnostic。`capability_claim_allowed=false`，不能替代 ScreenSpot、TextVQA、DocVQA、OCRBench，也不能直接改写 DeepSeek 配方。它支持“paired 监督强度能修正局部图像归因”，下一项优先做 7B formal evaluator 的统一 parser/blind/shuffled/random-projector 与自由生成检查；只有自由生成方向一致，才考虑把 λ=0.5 带回 3B 社区合同。
+
+新训练的 385 MB projector/optimizer 原始目录留在远端 V100 数据根，SHA 在 `qwen25_7b_scale01_margin05_20260807_RAW_POINTER.json`；Git 保留摘要、health、probe、bootstrap 和可审查指针。Gate D 仍为 **NO-GO**。

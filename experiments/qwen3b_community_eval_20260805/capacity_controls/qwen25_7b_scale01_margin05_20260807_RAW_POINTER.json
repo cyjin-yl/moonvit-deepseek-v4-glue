@@ -1,0 +1,40 @@
+{
+  "schema_version": "raw-pointer-v1",
+  "status": "remote_raw_preserved",
+  "remote_host": "ezra@100.94.73.9",
+  "remote_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls",
+  "local_summary_root": "experiments/qwen3b_community_eval_20260805/capacity_controls",
+  "runs": {
+    "ce_only_control": {
+      "remote_dir": "qwen25_7b_real_train32_ceonly_scale01_margin05control_meanpool16_20260807",
+      "files": {
+        "RUN_CONFIG.json": "fb0edb11415890106cb34ce94e71756f058ce3f76c69477593f1431785c41089",
+        "SUMMARY.json": "9cebbeaf5091ce98ed0882178908ac7d0a6bcf3a31ae061c3a24e6adfa6eb50a",
+        "train_health.jsonl": "6fabec38c91a6d7ba56e7bd25a488300647dc8c72231e46e730f83aa0f387262",
+        "projector_final/projector.safetensors": "ee7d7d9fbcbd8f48e2bae23296afe6d44ea3c8f360d2f629a83b06e7d6a5168e",
+        "projector_final/projector_config.json": "0f39cc8dd48e33921a546ffc236a5ff8a66388bbf41ddec08cb8abc1b95d7405",
+        "optimizer_final.pt": "c91605e86d6fd94906a1ca2176237f59302f84eab34c927211e350b4bb7d86b8"
+      }
+    },
+    "paired_margin_lambda050": {
+      "remote_dir": "qwen25_7b_real_train32_margin05_scale01_meanpool16_20260807",
+      "files": {
+        "RUN_CONFIG.json": "c1cbfdd48aa7400b88e46bb052058e41184083a111aaa6541843e014ab90f882",
+        "SUMMARY.json": "94ac5c2ca32435f7f566ad700519b049d702c0630df4cef19c6018a1e31c8722",
+        "train_health.jsonl": "95aca268feba23bd2b4b1c299ab38c88b868446b84e1d8c5a398cac38a355ae9",
+        "projector_final/projector.safetensors": "5a273f64dc9c7beff7ee816502b5cc89ea57afe6f24daea91b4e2161d24c9940",
+        "projector_final/projector_config.json": "0f39cc8dd48e33921a546ffc236a5ff8a66388bbf41ddec08cb8abc1b95d7405",
+        "optimizer_final.pt": "519ffb9247318c74a42afab3bae7199ff1f15e6ae573301dbe3e4b4f9e225398"
+      }
+    },
+    "trained_probe_ce_only": {
+      "remote_dir": "qwen25_7b_real_probe32_trained_ceonly_scale01_margin05control_meanpool16_20260807",
+      "local_summary_dir": "qwen25_7b_real_probe32_trained_ceonly_scale01_margin05control_meanpool16_20260807"
+    },
+    "trained_probe_margin050": {
+      "remote_dir": "qwen25_7b_real_probe32_trained_margin05_scale01_meanpool16_20260807",
+      "local_summary_dir": "qwen25_7b_real_probe32_trained_margin05_scale01_meanpool16_20260807"
+    }
+  },
+  "note": "Large projector and optimizer files remain on the remote raw archive; hashes above make the pointer auditable. Git stores compact summaries, health logs, probe rows and the bootstrap artifact."
+}

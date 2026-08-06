@@ -132,3 +132,9 @@ Package 15P 已完成预注册 geometry-repair 的固定 λ 校准。冻结 step
 - MoonViT V1/V2：在 3B/9B 对照中都没有稳定消除 paired attribution gap；V2 仍作为最终迁移塔，V1 只保留版本排错用途。
 
 因此 DeepSeek 真实训练还没有时间承诺。若本地最后一个结构/辅助目标短筛选通过，约需 1--3 个短实验周期冻结候选与 verifier；随后仍必须等待付费硬件授权完成权重、FP4/FP8 DGRAD、完整主干和稳定 checkpoint Gate。授权前不租卡或产生外部费用。
+
+### λ=0.5 后的证据边界
+
+固定 scale=`0.1`、mean-pool 16 和真实答案 32-sample 合同的 λ=`0.5` paired margin screen 已完成。CE-only control 的 `vision−shuffle` 为 `-0.0167→+0.1297`，λ=0.5 为 `-0.0167→+0.4874`；训练后 λ=0.5 的 2,000-bootstrap CI 为 `[+0.1423,+0.8786]`，首次在该 receiver-prior probe 上通过 paired image attribution 门槛。CE-only 与 λ=0.5 的配对提升 CI 为 `[-0.1287,+0.8397]`，随机 projector CI 上界仍略高于 0，说明这是一条局部 teacher-forced 信号，尚未完成 formal evaluator 的自由生成、ScreenSpot 和通用 VQA 验证。
+
+下一步会优先复用固定 parser 和四条件生成合同，把该 checkpoint 作为 7B capacity diagnostic 的 candidate screen；它有资格进入诊断队列，没有资格替换 3B `previous_best` 或进入 DeepSeek 正式候选。若自由生成不跟随 teacher-forced 方向，停止扩大训练，回到 projector/receiver 接口；若方向一致，再做 3B matched λ=0.5 health screen。

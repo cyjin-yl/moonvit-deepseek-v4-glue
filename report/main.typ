@@ -1952,3 +1952,11 @@ scale=`0.1` 的 32-sample matched training 使用同一真实答案 manifest、m
 == Gate D：当前边界
 
 Gate D 仍为 *NO-GO*。V100 已验证 MoonViT-V2 真权重、4096 projector、placeholder 展开、冻结 receiver 的 backward、自动止损和 checkpoint/RNG/save-resume；完整 DeepSeek-V4-Flash-0731 仍缺真实权重加载、目标 FP4/FP8 input DGRAD、Hash-MoE 图像 forward/backward、batch/routing/activation-checkpointing 一致性、20-step 稳定 checkpoint 以及固定真实 benchmark。按当前节奏，本地还需约 1--3 个短实验周期来冻结候选和补 verifier；真实 DeepSeek 训练仍需用户授权付费硬件，授权前不租卡、不下载完整模型，也不把 Qwen 结果写成 DeepSeek 能力。
+
+== 2026-08-07：lambda=0.5 paired margin screen
+
+在预注册配置下，固定 scale=`0.1`、mean-pool 16、32 条真实答案、同一循环 derangement、同一 exact step0 projector 与冻结 Qwen2.5-7B receiver，运行 CE-only control 和 paired margin lambda=`0.5`。CE-only 的 CE `6.9045→5.8405`、`vision-minus-shuffle -0.0167→+0.1297`；lambda=0.5 的 CE `6.9045→5.9831`、`vision-minus-shuffle -0.0167→+0.4874`。两臂全程 finite，gradient peak 约 `781/459`，between-image RMS 稳定。
+
+训练后 probe 的 2,000 次 paired bootstrap：lambda=0.5 的 `vision-minus-shuffle=+0.4874`，95% CI `[+0.1423,+0.8786]`；`vision-minus-blind=+1.9574`，CI `[+1.3909,+2.5699]`；相对同批 CE-only 的 paired 提升 `+0.3577`，CI `[-0.1287,+0.8397]`；`vision-minus-random-projector=-0.3397`，CI `[-0.7099,+0.0082]`。
+
+这是当前第一条通过真实答案 32-sample paired image attribution CI 的训练轨迹。证据仍限于 teacher-forced、16 visual tokens、Qwen2.5-7B receiver-prior 诊断，`capability_claim_allowed=false`；它不能替代 ScreenSpot、TextVQA、DocVQA、OCRBench，也不能直接改写 DeepSeek 配方。该结果支持 paired supervision 强度能够修正局部图像归因，下一步先把 λ=0.5 轨迹接入统一 7B formal evaluator，检查 parser、blind/shuffled/random-projector 和自由生成方向；方向一致后才决定是否回到 Qwen2.5-3B 社区合同。

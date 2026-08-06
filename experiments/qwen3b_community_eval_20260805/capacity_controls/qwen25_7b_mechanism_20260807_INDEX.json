@@ -10,7 +10,8 @@
     "samples": 2000,
     "seed": 20260805,
     "token_conditions": "qwen25_7b_real_probe32_bootstrap_20260807.json",
-    "scale_conditions": "qwen25_7b_probe32_scale_bootstrap_20260807.json"
+    "scale_conditions": "qwen25_7b_probe32_scale_bootstrap_20260807.json",
+    "scale01_margin_conditions": "qwen25_7b_trained_scale01_margin05_bootstrap_20260807.json"
   },
   "raw_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls",
   "runs": [
@@ -25,6 +26,12 @@
     {"name": "qwen25_7b_real_probe32_trained_ceonly_scale01_meanpool16_20260807", "kind": "trained_probe", "token_selection": "mean_pool", "max_visual_tokens": 16, "projector_scale": 0.1},
     {"name": "qwen25_7b_real_probe32_trained_margin01_scale01_meanpool16_20260807", "kind": "trained_probe", "token_selection": "mean_pool", "max_visual_tokens": 16, "projector_scale": 0.1},
     {"name": "qwen25_7b_trained_scale01_bootstrap_20260807.json", "kind": "bootstrap", "bootstrap_samples": 2000, "bootstrap_seed": 20260805},
+    {"name": "qwen25_7b_real_train32_ceonly_scale01_margin05control_meanpool16_20260807", "kind": "train", "token_selection": "mean_pool", "max_visual_tokens": 16, "projector_scale": 0.1, "lambda": 0.0},
+    {"name": "qwen25_7b_real_train32_margin05_scale01_meanpool16_20260807", "kind": "train", "token_selection": "mean_pool", "max_visual_tokens": 16, "projector_scale": 0.1, "lambda": 0.5},
+    {"name": "qwen25_7b_real_probe32_trained_ceonly_scale01_margin05control_meanpool16_20260807", "kind": "trained_probe", "token_selection": "mean_pool", "max_visual_tokens": 16, "projector_scale": 0.1},
+    {"name": "qwen25_7b_real_probe32_trained_margin05_scale01_meanpool16_20260807", "kind": "trained_probe", "token_selection": "mean_pool", "max_visual_tokens": 16, "projector_scale": 0.1},
+    {"name": "qwen25_7b_trained_scale01_margin05_bootstrap_20260807.json", "kind": "bootstrap", "bootstrap_samples": 2000, "bootstrap_seed": 20260805},
+    {"name": "qwen25_7b_scale01_margin05_20260807_RAW_POINTER.json", "kind": "raw_pointer"},
     {"name": "qwen25_7b_real_probe32_scale001_full240_20260807", "kind": "scale_probe", "projector_scale": 0.01},
     {"name": "qwen25_7b_real_probe32_scale003_full240_20260807", "kind": "scale_probe", "projector_scale": 0.03},
     {"name": "qwen25_7b_real_probe32_scale01_full240_20260807", "kind": "scale_probe", "projector_scale": 0.1},
