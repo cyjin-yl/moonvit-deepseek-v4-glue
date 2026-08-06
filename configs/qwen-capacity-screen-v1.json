@@ -1,0 +1,64 @@
+{
+  "schema_version": "qwen-capacity-screen-v1",
+  "status": "preregistered_capacity_and_receiver_prior_screen",
+  "frozen_on": "2026-08-06",
+  "project_target": "MoonViT-V2 -> canonical 4096 projector -> DeepSeek-V4-Flash-0731",
+  "shared_rules": {
+    "moonvit_tower": "MoonViT-V2 exact K3 PatchMergerMLPV2 input [tokens,4,1024]",
+    "projector_output_width": 4096,
+    "language_main_and_tower_frozen": true,
+    "projector_only_training": true,
+    "fixed_cache_and_prompt_contract": "qwen2.5-3b-community-eval-v1",
+    "native_vision_bypass_for_qwen35": "no pixel_values; external inputs_embeds only; native visual hook count must be zero",
+    "diagnostic_visual_token_cap": "16 only for numerical gate; capability evaluation uses the fixed 240/256-token cache",
+    "v100_runtime": "FP16 preferred; BF16 allowed only for finite-gradient gate because V100 BF16 is materially slower",
+    "automatic_stop": "NaN/Inf or zero/nonfinite projector gradient",
+    "capability_claim_allowed": false
+  },
+  "arms": {
+    "qwen25_3b_instruct": {
+      "repo": "Qwen/Qwen2.5-3B-Instruct",
+      "resolved_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "kind": "pure_text_proxy_baseline",
+      "hidden_size": 2048,
+      "receiver_adapter": "frozen signed-pair 4096->2048; existing community contract"
+    },
+    "qwen25_7b_instruct": {
+      "repo": "Qwen/Qwen2.5-7B-Instruct",
+      "resolved_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "kind": "pure_text_capacity_control",
+      "hidden_size": 3584,
+      "parameter_count_bf16": 7615665152,
+      "weight_index_total_bytes": 15231233024,
+      "receiver_adapter": "frozen grouped signed 4096->3584; diagnostic transfer label transferable_with_runtime_validation"
+    },
+    "qwen35_4b_stripped_native": {
+      "repo": "Qwen/Qwen3.5-4B",
+      "resolved_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "kind": "vision_pretrained_receiver_prior_diagnostic",
+      "hidden_size": 2560,
+      "native_vision_is_bypassed": true,
+      "receiver_adapter": "frozen grouped signed 4096->2560; diagnostic only"
+    },
+    "qwen35_9b_stripped_native": {
+      "repo": "Qwen/Qwen3.5-9B",
+      "resolved_revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+      "kind": "vision_pretrained_receiver_prior_and_capacity_diagnostic",
+      "hidden_size": 4096,
+      "parameter_count_bf16": 9653108224,
+      "weight_index_total_bytes": 19306216416,
+      "native_vision_is_bypassed": true,
+      "receiver_adapter": "identity; canonical 4096 projector direct"
+    },
+    "qwen25_14b_instruct": {
+      "repo": "Qwen/Qwen2.5-14B-Instruct",
+      "resolved_revision": "cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8",
+      "kind": "capacity_gate_only",
+      "hidden_size": 5120,
+      "weight_index_total_bytes": 29540067328,
+      "receiver_adapter": "requires preregistered frozen 4096->5120 injection; no canonical projector widening",
+      "runtime_rule": "only NF4/FP4 input-gradient gate may be attempted on V100; GGUF is inference-only and cannot enter projector ranking"
+    }
+  },
+  "promotion_rule": "Only a fixed-contract ScreenSpot/TextVQA/DocVQA/OCRBench result with positive vision-minus-blind and vision-minus-shuffled paired CIs can enter the Qwen proxy leaderboard. Stripped Qwen3.5 remains receiver-prior evidence even if it passes the numerical gate."
+}
