@@ -1,0 +1,65 @@
+{
+  "format_version": "qwen3b-architecture-health-result-v1",
+  "architecture_id": "local_v2_exact_k3",
+  "architecture_label": "Kimi-K3/MoonViT-V2 exact PatchMergerMLPV2 / paired image-shuffle margin",
+  "status": "auto_stopped_by_projector_health_guard",
+  "runner_git_sha": "afc76bdc04aff4545e36d74ec47ee01762fbe9b6",
+  "projector_learning_rate_contract": 0.0005,
+  "projector_learning_rate_override": 0.00005,
+  "causal_shuffle_margin_lambda": 0.1,
+  "causal_shuffle_margin": 0.1,
+  "optimizer_steps_completed": 2,
+  "examples_seen": 16,
+  "answer_tokens_seen": 97,
+  "loss_first": 4.852579563856125,
+  "loss_last": 5.640245917253196,
+  "trajectory": [
+    {
+      "step": 0,
+      "projector_rank_ratio": 1,
+      "receiver_rank_ratio": 1,
+      "projector_spread_ratio": 1,
+      "receiver_spread_ratio": 1,
+      "vision_preference": 0.625,
+      "shuffled_preference": 0.625,
+      "vision_minus_shuffle_correct_logp": -0.24043657535161733,
+      "causal_shuffle_hinge_loss": 0
+    },
+    {
+      "step": 1,
+      "projector_rank_ratio": 1.000496697923919,
+      "receiver_rank_ratio": 1.0010682291676014,
+      "projector_spread_ratio": 0.9955054526264367,
+      "receiver_spread_ratio": 0.9937103907011227,
+      "vision_preference": 0.625,
+      "shuffled_preference": 0.625,
+      "vision_minus_shuffle_correct_logp": -0.12358413467477058,
+      "causal_shuffle_hinge_loss": 0.7531431438401341
+    },
+    {
+      "step": 2,
+      "projector_rank_ratio": 0.9996131642338281,
+      "receiver_rank_ratio": 0.9993357473497612,
+      "projector_spread_ratio": 0.9925697374328819,
+      "receiver_spread_ratio": 0.9893487519681142,
+      "vision_preference": 0.625,
+      "shuffled_preference": 0.75,
+      "vision_minus_shuffle_correct_logp": -0.06098123740800565,
+      "causal_shuffle_hinge_loss": 0.44036406837403774
+    }
+  ],
+  "critical_reasons": [
+    "projector_rms_rising_spread_falling",
+    "receiver_rms_rising_spread_falling",
+    "vision_minus_shuffle_logp_critical"
+  ],
+  "collapse_onset_interval": [
+    1,
+    2
+  ],
+  "independent_verifier_status": "verified",
+  "capability_claim_allowed": false,
+  "qwen_proxy_conclusion": "The paired hinge moves vision-minus-shuffle log-prob toward zero while geometry stays healthy, but does not cross positive and shuffled preference rises; lambda 0.1 is insufficient and the within-batch derangement is not yet a capability result.",
+  "deepseek_transfer_label": "directly_transferable",
+  "paid_resources_used": false
+}

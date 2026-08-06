@@ -1,0 +1,16 @@
+{
+  "status": "verified",
+  "run": "D:/V100-artifacts/qwen3b_contract/architecture_controls/local_v2_exact_k3/health_run_100_v2_exact_causal_l01_20260806",
+  "auto_stopped": true,
+  "checkpoint_count": 3,
+  "guards_recomputed": 3,
+  "optimizer_step_rows": 2,
+  "probe_steps": [
+    0,
+    1,
+    2
+  ],
+  "artifact_file_count": 22,
+  "artifact_total_bytes": 1143368425,
+  "paid_resources_used": false
+}

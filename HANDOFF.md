@@ -586,3 +586,22 @@ stayed negative (-0.240, -0.211, -0.285). The causal guard stopped at step 2
 and the independent verifier was verified. The next registered direction is
 an image-vs-shuffle supervision screen, with the same geometry-safe LR and a
 matched CE-only control.
+
+The first paired image-shuffle margin screen used the geometry-safe learning
+rate 5e-5 with margin 0.1 and lambda 0.1. Projector/receiver rank ratios stayed
+near 1.0 through step 2, and vision-minus-shuffle correct-logp moved from
+-0.240 to -0.061. It did not cross zero: shuffled preference reached 0.750
+while vision stayed 0.625, so the causal guard stopped and rolled back the run.
+The independent verifier is `verified`; the raw archive is bound by the
+committed pointer and hashes. This supports the supervision direction having a
+small effect, but rejects lambda 0.1 as sufficient evidence of image use.
+
+The next discriminating branch is now a capacity/receiver-prior screen. Audit
+and try a pure-text Qwen2.5-7B projector-only arm first; gate any 9B/14B arm on
+V100 memory and finite input gradients before downloading/training. In
+parallel, a stripped-native Qwen3.5 diagnostic may retain its visual-pretrained
+language weights while bypassing the native vision tower, merger and
+cross-attention, accepting only MoonViT-V2/projector embeddings. Such a result
+is receiver-prior evidence and cannot be promoted as a DeepSeek capability
+result. All arms keep the fixed cache, health guards and community evaluation
+contract.

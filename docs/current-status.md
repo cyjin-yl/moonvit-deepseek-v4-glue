@@ -88,6 +88,16 @@ ratio 也保持在 0.996–0.998；这说明默认 LR 确实放大了前一条 V
 仍为 verified。结论是“更新尺度是几何塌缩的原因之一”，同时“降低 LR 就能
 获得视觉能力”被反驳；下一项应直接测试 image-vs-shuffle 的监督/目标接口。
 
+### Paired image-vs-shuffle margin λ=0.1（2026-08-06）
+
+在 geometry-safe 的 V2 LR `5e-5` 上加入 within-batch derangement hinge，margin
+`0.1`、lambda `0.1`，同一 batch 的正确图与轮换错误图共享 prompt 和答案。step 1/2
+的 hinge loss 为 `0.753/0.440`，vision-minus-shuffle 从 `-0.240` 改善到 `-0.061`，
+projector/receiver rank ratio 仍约 `1.000/1.000`。但 vision preference 没有超过
+shuffled，step 2 为 `0.625/0.750/0.625`（vision/shuffled/blind），因果 guard 仍止损。
+这支持“监督方向有一点作用”，反驳“当前权重已足以建立视觉因果”；该 derangement
+只覆盖 batch 内配对，暂时不能当作能力结果。完整 raw archive 和独立 verifier 已保存。
+
 ## 为什么前一套方案没有改进
 
 ### 1. 训练目标奖励了“会输出坐标”，没有奖励“从正确图片读取坐标”

@@ -1873,3 +1873,11 @@ Package 15Q 已在任何新结构结果前冻结。它把一个结构变量放�
 修复后的 `zero_init_residual` 通过 variant binding 后进入真实 Qwen2.5-3B 训练。它从同一 step0 输出开始，step 1 的 projector 梯度范数（clip 前）为 `189.33`，证明残差分支确实参与优化；然而 step 2 的 projector output RMS 已升到 `1.4244`，spread/rank ratio 降到 `0.1838/0.1799`，receiver RMS 为 `1.9779`，ratio 为 `0.1672/0.1358`。CE 从 `4.14400` 降到 `2.88565`，两条固定 RMS-rising/spread-falling critical guard 在 `[1,2]` 触发，运行自动回滚。
 
 独立 verifier 重算 3 个 probe、3 个 checkpoint 和 22 个 health artifact，状态为 `verified`，总字节数 `1,711,724,384`；完整 raw checkpoint、optimizer、RNG 与日志已保存并做 SHA 重算。该臂支持“梯度能进入残差支路，但 receiver-facing 更新仍会压扁图像差异”，反驳“zero-init residual 单独足以修复 projector”。它没有进入任何真实能力评测；最后的 gated arm 仍按同一合同执行。
+
+== Package 15S：V1/V2 对照与首个图像因果目标
+
+公开的 MoonViT-SO-400M/K2.6 线 V1（1152 维输出）和 K3/MoonViT-V2 exact `PatchMergerMLPV2` 已放进同一 Qwen2.5-3B projector-only health contract。两臂使用完全相同的 4,000-row 顺序、50 张 probe、receiver 与自动止损。V1 在 step 2 的 projector/receiver effective-rank ratio 降到 `0.264/0.212`；exact V2 在合同学习率 `5e-4` 下为 `0.910/0.830`，几何明显更健康，但 vision-minus-shuffle correct-logp 仍为负。V1 因此没有救活 3B 路径，结果削弱了“V2 embedding 压缩单独导致失败”的解释。
+
+exact V2 的 projector 学习率降到 `5e-5` 后，前两步 rank/spread 几乎保持 step0，说明更新尺度参与了 geometry collapse。视觉因果信号没有随之出现。首个 paired image-shuffle margin screen 固定 `margin=0.1`、`lambda=0.1`，hinge loss 从 `0.753` 降到 `0.440`，vision-minus-shuffle correct-logp 从 `-0.240` 移到 `-0.061`；step 2 的 vision/shuffled/blind preference 为 `0.625/0.750/0.625`。训练仍由因果 guard 自动止损，独立 verifier 为 `verified`。
+
+这里有一条有限的好消息：exact V2 加小学习率保住了图像表示差异，配对目标也把错误方向推近零。坏消息更关键：模型仍没有更信任正确图片，训练还不能进入完整 ScreenSpot 或长预算。下一项用相同 MoonViT-V2、projector、cache 和 guards 做文本主干容量/接收器先验对照：优先纯文本 Qwen2.5-7B；9B/14B 先通过 V100 32GB 的显存与 input-gradient gate；Qwen3.5 只保留视觉预训练后的语言权重，绕过原生 vision tower、merger 和 cross-attention，由我们的 MoonViT/projector 直接输入。Qwen3.5 结果只回答“有视觉预训练的 receiver 是否更容易读外部视觉 token”，不能替代 DeepSeek-V4-Flash-0731 的真实 Gate D。
