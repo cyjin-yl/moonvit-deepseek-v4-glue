@@ -29,6 +29,39 @@ from moonvit_glue.merge import expand_image_placeholders
 from moonvit_glue.projector import PatchMergerProjector
 
 
+class FixedGroupedReceiverAdapter(torch.nn.Module):
+    """4096->arbitrary-width parameter-free signed grouping for diagnostics."""
+
+    def __init__(self, canonical_width: int, receiver_width: int, seed: int) -> None:
+        super().__init__()
+        if canonical_width < receiver_width or receiver_width <= 0:
+            raise ValueError("receiver width must be in (0, canonical width]")
+        generator = torch.Generator(device="cpu").manual_seed(int(seed))
+        permutation = torch.randperm(canonical_width, generator=generator)
+        signs = torch.randint(0, 2, (canonical_width,), generator=generator, dtype=torch.int8)
+        signs = signs.mul_(2).sub_(1)
+        group_sizes = [2] * (canonical_width - receiver_width) + [1] * (2 * receiver_width - canonical_width)
+        if sum(group_sizes) != canonical_width or len(group_sizes) != receiver_width:
+            raise AssertionError("invalid grouped receiver layout")
+        self.register_buffer("permutation", permutation, persistent=True)
+        self.register_buffer("signs", signs, persistent=True)
+        self.register_buffer("group_sizes", torch.tensor(group_sizes, dtype=torch.long), persistent=True)
+        self.canonical_width = int(canonical_width)
+        self.receiver_width = int(receiver_width)
+        self.seed = int(seed)
+
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+        if inputs.shape[-1] != self.canonical_width:
+            raise ValueError(f"expected {self.canonical_width} dims, got {inputs.shape[-1]}")
+        values = inputs.index_select(-1, self.permutation) * self.signs.to(inputs.dtype)
+        outputs: list[torch.Tensor] = []
+        offset = 0
+        for size in self.group_sizes.tolist():
+            outputs.append(values[..., offset : offset + size].sum(dim=-1) / math.sqrt(float(size)))
+            offset += size
+        return torch.stack(outputs, dim=-1)
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -92,7 +125,7 @@ def build_inputs(
 
 def expanded_forward(
     *, model: torch.nn.Module, projector: PatchMergerProjector | None,
-    features: torch.Tensor | None, tokenizer: Any, sample: dict[str, Any],
+    receiver: FixedGroupedReceiverAdapter | None, features: torch.Tensor | None, tokenizer: Any, sample: dict[str, Any],
     placeholder_token_id: int, device: torch.device,
 ):
     supervision, input_ids, labels, attention = build_inputs(
@@ -109,6 +142,8 @@ def expanded_forward(
         return supervision, outputs, labels
     assert projector is not None
     projected = projector([features])[0]
+    if receiver is not None:
+        projected = receiver(projected)
     merged = expand_image_placeholders(
         input_ids=input_ids, text_embeddings=text_embeddings,
         image_embeddings=[projected], placeholder_token_id=placeholder_token_id,
@@ -152,6 +187,12 @@ def main() -> None:
 
     projector = PatchMergerProjector.from_pretrained(args.projector_dir, device=device)
     projector.train()
+    text_config = config.get("text_config") or config
+    receiver_width = int(text_config.get("hidden_size") or model.config.hidden_size)
+    receiver = (
+        FixedGroupedReceiverAdapter(4096, receiver_width, seed=20260806).to(device)
+        if receiver_width != 4096 else None
+    )
     optimizer = torch.optim.AdamW(projector.parameters(), lr=args.learning_rate)
     cache = FeatureCache(args.feature_cache)
     records = cache.manifest.get("records", [])
@@ -173,6 +214,11 @@ def main() -> None:
         "weights": weight_manifest, "model_type": config.get("model_type"),
         "architectures": config.get("architectures"),
         "text_hidden_size": (config.get("text_config") or {}).get("hidden_size"),
+        "receiver_adapter": {
+            "kind": "fixed_grouped_signed_projection" if receiver is not None else "identity",
+            "canonical_width": 4096, "receiver_width": receiver_width,
+            "seed": 20260806, "trainable_parameter_count": 0,
+        },
         "native_vision_bypassed": True, "native_vision_forward_calls": 0,
         "placeholder_token_id": placeholder_token_id, "dtype": args.dtype,
         "device": str(device), "steps": args.steps, "learning_rate": args.learning_rate,
@@ -188,7 +234,7 @@ def main() -> None:
         optimizer.zero_grad(set_to_none=True)
         _, vision_outputs, vision_labels = expanded_forward(
             model=model, projector=projector, features=feature, tokenizer=tokenizer,
-            sample=sample, placeholder_token_id=placeholder_token_id, device=device,
+            receiver=receiver, sample=sample, placeholder_token_id=placeholder_token_id, device=device,
         )
         loss = vision_outputs.loss
         if step < args.steps:
@@ -200,15 +246,15 @@ def main() -> None:
         with torch.no_grad():
             _, correct_eval, correct_labels = expanded_forward(
                 model=model, projector=projector, features=feature, tokenizer=tokenizer,
-                sample=sample, placeholder_token_id=placeholder_token_id, device=device,
+                receiver=receiver, sample=sample, placeholder_token_id=placeholder_token_id, device=device,
             )
             _, shuffle_eval, shuffle_labels = expanded_forward(
                 model=model, projector=projector, features=shuffled_feature, tokenizer=tokenizer,
-                sample=sample, placeholder_token_id=placeholder_token_id, device=device,
+                receiver=receiver, sample=sample, placeholder_token_id=placeholder_token_id, device=device,
             )
             _, blind_eval, blind_labels = expanded_forward(
                 model=model, projector=None, features=None, tokenizer=tokenizer,
-                sample=sample, placeholder_token_id=placeholder_token_id, device=device,
+                receiver=None, sample=sample, placeholder_token_id=placeholder_token_id, device=device,
             )
         health_rows.append({
             "optimizer_step": step, "ce_loss": float(loss.detach().float().item()),
