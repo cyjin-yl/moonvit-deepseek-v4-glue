@@ -1,0 +1,14 @@
+{
+  "format_version": "qwen3b-projector-structure-screen-failure-v1",
+  "status": "launcher_failure_preserved",
+  "stage": "background_launcher",
+  "exception_type": "shell_command_not_found",
+  "failure": "bash: command not found; the child shell received empty HDD/REPO/PY/OUT variables",
+  "root_cause": "outer shell variables were not exported before entering bash -lc",
+  "repair": "pass a fully expanded command with explicit environment assignments to the child shell; no model or contract change",
+  "gpu_started": false,
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

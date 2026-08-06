@@ -1776,3 +1776,5 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
 Package 15Q 已在任何新结构结果前冻结。它把一个结构变量放在 `linear_2` 之后的 canonical 4096 边界：affine-free LayerNorm 或 affine-free RMSNorm。两者不增加 projector 参数，仍输出 4096 维，所有 MLP 权重、MoonViT 特征、Qwen receiver、数据顺序和预算保持不变；`baseline_none` 是同一初始化的 CE-only control。每个 arm 都必须先通过独立 structure verifier，再用同一 `projector-health-v1` 高频探针训练。
 
 这一步回答一个很具体的问题：如果第一步更新把输出尺度推大并让图像表示共线，固定的无参数归一化能否在不改变迁移接口的前提下阻止它。健康通过只代表表示没有立刻塌缩，完整 ScreenSpot、TextVQA、DocVQA、OCRBench 和语言保持仍是能力晋升条件。若三个 arm 都失败，下一条只测试 residual/gated-residual 结构，继续保留自动止损。
+
+在 GPU 结果前，包内还保留了三次机械失败记录：RMSNorm 单测容差、旧配置省略 `output_norm` 导致的 verifier 误判，以及后台启动器变量未导出的 shell 错误。它们均没有产生 optimizer step；前两次修复了测试/校验默认值，第三次只修复启动过程，结构合同、预算和 guards 均未改变。

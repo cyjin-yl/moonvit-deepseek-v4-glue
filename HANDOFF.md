@@ -81,6 +81,12 @@ structure candidate can proceed only if it avoids critical guards through the
 fixed 100-step screen and stays within the preregistered CE ratio; no health
 pass alone can promote a checkpoint to visual evaluation.
 
+Before GPU results, three mechanical issues were preserved in the package
+failure archive: the RMSNorm test tolerance, the verifier's legacy omitted
+`output_norm` default, and a launcher variable-scope mistake. The first two
+were repaired in code/tests; the launcher repair only changes process setup.
+No optimizer step or capability result was created by any of them.
+
 ## ⚠️ ACTIVE V100 REAL-VISION BRIDGE (2026-08-06)
 
 **Current task / hard boundary**: the engineering mainline is now a fixed real-data bridge on pure-text `Qwen/Qwen2.5-3B-Instruct`, followed by transfer of the same MoonViT-V2/projector/data/eval contract to DeepSeek-V4-Flash-0731. The 0.5B/synthetic line remains mechanism evidence. Do not rent any server, create a paid resource, run the full DeepSeek weights, or inspect final evaluation halves without explicit authorization. Exact V100 environment evidence is under `experiments/v100_perception_20260804/infra/environment/`.

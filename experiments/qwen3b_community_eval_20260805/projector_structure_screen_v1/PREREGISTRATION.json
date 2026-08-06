@@ -28,6 +28,12 @@
       "reason": "The independent verifier did not apply the model loader's legacy default output_norm=none; no GPU or training result existed.",
       "implementation_changed": true,
       "contract_budget_thresholds_unchanged": true
+    },
+    {
+      "path": "failures/attempt03_launcher_variable_scope/REPAIR_RECORD.json",
+      "reason": "The first background launcher did not export its shell variables into the child bash process; Python was never invoked and no GPU result existed.",
+      "implementation_changed": false,
+      "contract_budget_thresholds_unchanged": true
     }
   ],
   "capability_boundary": "representation health cannot establish visual ability",

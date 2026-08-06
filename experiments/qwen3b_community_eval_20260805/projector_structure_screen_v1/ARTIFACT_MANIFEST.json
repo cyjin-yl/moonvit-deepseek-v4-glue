@@ -1,8 +1,8 @@
 {
   "format_version": "experiment-artifact-manifest-v1",
-  "created_at_utc": "2026-08-06T06:55:53.057646+00:00",
+  "created_at_utc": "2026-08-06T07:12:59.362052+00:00",
   "root": "projector_structure_screen_v1",
-  "git_base_sha": "3ea8951e30c9577d123fdce53e7d59d77c01b9e2",
+  "git_base_sha": "a12f053dbe8a279dd35b62d9cf132d09226e8fb4",
   "files": {
     "failures/attempt01_rmsnorm_test_tolerance/ATTEMPT.json": {
       "bytes": 498,
@@ -36,6 +36,22 @@
       "bytes": 226,
       "sha256": "59383bb29c47e752b80d78dc1a4037886515537dea0b926b0419465edfdd0fce"
     },
+    "failures/attempt03_launcher_variable_scope/ATTEMPT.json": {
+      "bytes": 470,
+      "sha256": "23f40314a5ce40da74acab0319479a1a52833b64ef7f45990cfa502a021492ed"
+    },
+    "failures/attempt03_launcher_variable_scope/FAILURE.json": {
+      "bytes": 680,
+      "sha256": "d677bbe10be470e771e5ae1630fc3b6bf20a4ef32abe1790db0800370cd0bc6c"
+    },
+    "failures/attempt03_launcher_variable_scope/REPAIR_RECORD.json": {
+      "bytes": 490,
+      "sha256": "cc4d67c8e05ad6311b9b812f995bc44935e183af6dda4962508600b417d651a9"
+    },
+    "failures/attempt03_launcher_variable_scope/run.log": {
+      "bytes": 67,
+      "sha256": "1a5e5cee640d9c2269ec94e24efc58179893632e5c1d907384421c2934ccb9cf"
+    },
     "initializations/layernorm/projector_config.json": {
       "bytes": 158,
       "sha256": "abc58e5778effc03c61b71a1ace58fb6a30e4303d3ed5be281753985b1367396"
@@ -45,15 +61,15 @@
       "sha256": "dae388e77ac5a0afcc4c19f9461dcbbf1ab27059d7bba559439b836c2960d812"
     },
     "PREREGISTRATION.json": {
-      "bytes": 1794,
-      "sha256": "a4117680c9dcb39e8e970a107ff0bc5e7c67b185bf51e6f33807064a33df04e7"
+      "bytes": 2141,
+      "sha256": "dc2f59d867a9f7737fbb94b8f09fc8df37b554b1fa644646488eff953123758a"
     },
     "README.md": {
       "bytes": 1272,
       "sha256": "4a290c7e4d0b5cd61ea4c75cf3251f5d6bf5d493f26fb1217e70c6ee338f423a"
     }
   },
-  "file_count": 12,
-  "total_bytes": 7107,
+  "file_count": 16,
+  "total_bytes": 9161,
   "final_half_scored": false
 }

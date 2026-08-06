@@ -1,0 +1,13 @@
+{
+  "format_version": "qwen3b-projector-structure-screen-attempt-v1",
+  "attempt": "attempt03_launcher_variable_scope",
+  "stage": "background_launcher",
+  "arm": "baseline_none",
+  "command": "background launch of the fixed 100-step baseline_none screen",
+  "started_before_gpu_training": true,
+  "gpu_started": false,
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}
