@@ -168,14 +168,17 @@ def main() -> None:
     dtype = getattr(torch, args.dtype)
     device = torch.device(args.device)
 
-    from transformers import AutoModelForImageTextToText, AutoTokenizer
+    from transformers import AutoModelForCausalLM, AutoModelForImageTextToText, AutoTokenizer
 
     config_path = args.model_dir / "config.json"
     config = json.loads(config_path.read_text(encoding="utf-8"))
     weight_manifest = json.loads(args.weight_manifest.read_text(encoding="utf-8"))
     tokenizer = AutoTokenizer.from_pretrained(str(args.model_dir), local_files_only=True)
     placeholder_token_id = int(config.get("image_token_id") or tokenizer.convert_tokens_to_ids("<|image_pad|>"))
-    model = AutoModelForImageTextToText.from_pretrained(
+    # Qwen3.5 走多模态类但不传 pixel_values；纯文本 Qwen2.5 走 CausalLM 类，
+    # 两者最终共享 inputs_embeds/labels 接口，避免把原生 VLM 层混入代理合同。
+    model_class = AutoModelForCausalLM if config.get("model_type") == "qwen2" else AutoModelForImageTextToText
+    model = model_class.from_pretrained(
         str(args.model_dir), dtype=dtype, local_files_only=True, low_cpu_mem_usage=True,
     ).to(device)
     model.requires_grad_(False)
@@ -219,8 +222,9 @@ def main() -> None:
         "weight_manifest": str(args.weight_manifest),
         "weight_manifest_sha256": sha256_file(args.weight_manifest),
         "weights": weight_manifest, "model_type": config.get("model_type"),
+        "model_loader": model_class.__name__,
         "architectures": config.get("architectures"),
-        "text_hidden_size": (config.get("text_config") or {}).get("hidden_size"),
+        "text_hidden_size": text_config.get("hidden_size"),
         "receiver_adapter": {
             "kind": "fixed_grouped_signed_projection" if receiver is not None else "identity",
             "canonical_width": 4096, "receiver_width": receiver_width,
