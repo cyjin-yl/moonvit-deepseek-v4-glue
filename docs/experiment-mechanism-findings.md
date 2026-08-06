@@ -88,3 +88,11 @@ vision-shuffled click-in-box 的 paired improvement 为 `+0.629` 个百分点，
 4. 候选只有同时通过 vision-blind、vision-shuffled、完整 ScreenSpot 和通用 VQA/OCR 合同，才进入 DeepSeek 正式配方。
 
 任何付费 DeepSeek 操作继续等待明确授权。
+
+## 2026-08-07 token-count matched screen
+
+同一个 Qwen2.5-7B λ=`0.5` checkpoint 在冻结的 GLM-format 50 条 subset 上改用 240-token full sequence，其他配置完全不变。四条件 parse rate 都为 100%；vision/blind/shuffled/random 的 click-in-box 为 `10%/10%/10%/8%`，Accuracy@50 为 `0%/2%/2%/0%`，Accuracy@100 为 `6%/6%/6%/6%`，Accuracy@200 为 `18%/18%/20%/18%`。
+
+独立 verifier 重算的中心距离均值为 `399.51/415.11/396.78/397.02`。vision-blind 的距离改善均值 `+15.59`，CI `[-13.51,+47.15]`；vision-shuffled 为 `-2.74`，CI `[-13.58,+9.96]`。click-in-box 的 vision-blind 和 vision-shuffled 都是 `0`，CI `[-6,+6]` 个百分点。
+
+这条结果没有支持“16-token mean-pool 的压缩是单一主要 grounding 瓶颈”这一假设。它支持停止扩大 token 数量筛选，优先测试 projector/辅助目标与 receiver 分布对齐。原始 evaluator summary 的 center-distance 字段为空，正式数字来自独立 category verifier；这个工具缺口已写入 raw pointer，不能静默混用两套统计。

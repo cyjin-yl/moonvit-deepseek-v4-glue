@@ -431,3 +431,11 @@ vision 相对 shuffled 的 click-in-box 改善为 `+0.629` 个百分点，独立
 进入完整 DeepSeek-V4-Flash-0731 pilot 前仍需通过：完整 resolved 权重加载和 SHA 固定；真实 FP4/FP8 kernel 的 finite input DGRAD；43 层 Hash-MoE 图像 forward/backward 与 routing 一致性；目标 batch、activation checkpointing、峰值显存和吞吐；20-step 稳定 checkpoint 与精确恢复；同一 ScreenSpot/TextVQA/DocVQA/OCRBench 合同。前五项依赖能够容纳完整模型的付费硬件。获得授权且权重/kernel 可用后，最小 Gate D 通常需要 1--2 个工作日；首个真实小规模训练和固定 benchmark 还需约 2--3 个工作日。现实估计为授权后 3--5 个工作日进入并完成首轮真实训练判断，kernel 或权重加载失败会延长该时间。
 
 当前状态仍为 **Gate D NO-GO**。本地研究不会因付费阶段暂缓而停止；下一项直接测试视觉 token 压缩是否导致当前弱 grounding。
+
+## 2026-08-07 token-count 对照完成
+
+同一个 Qwen2.5-7B λ=`0.5` checkpoint 在固定 `screenspot_glm50_v1` 上用 240-token full sequence 重跑。四条件 parse 都为 `50/50`；vision/blind/shuffled/random click-in-box 为 `10%/10%/10%/8%`，Accuracy@50 为 `0%/2%/2%/0%`，Accuracy@100 为 `6%/6%/6%/6%`，Accuracy@200 为 `18%/18%/20%/18%`。独立 verifier 的中心距离均值为 `399.51/415.11/396.78/397.02`。
+
+vision-blind click 差 `0` 个百分点，CI `[-6,+6]`；vision-shuffled click 差也为 `0`，CI `[-6,+6]`。距离改善分别为 `+15.59`（CI `[-13.51,+47.15]`）和 `-2.74`（CI `[-13.58,+9.96]`）。240 tokens 没有带来可重复 grounding 增益，token-count 扩展停止。这个结果支持把主要嫌疑转向 projector/辅助目标、尺度和 receiver 分布对齐，而非继续增加视觉 token。
+
+原始 240-token evaluator summary、generation rows、category verifier 和 pointer 已保存；evaluator summary 的 center-distance 字段为空，报告使用独立 verifier 重算值。`previous_best` 不变，候选不晋升。

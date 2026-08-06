@@ -2062,3 +2062,11 @@ vision 相对 shuffled 的 click-in-box 改善为 *+0.629 个百分点*；独立
 完整 0731 pilot 仍需：resolved 权重加载与 SHA 固定；真实 FP4/FP8 kernel finite input DGRAD；43 层 Hash-MoE 图像 forward/backward 和 routing 一致性；目标 batch、activation checkpointing、显存和吞吐；20-step 稳定 checkpoint 与精确恢复；同一 ScreenSpot/TextVQA/DocVQA/OCRBench 合同。获得付费硬件明确授权后，最小 Gate D 预计 1--2 个工作日，首个真实小规模训练和固定 benchmark 再需约 2--3 个工作日。权重与 kernel 路径顺利时，授权后 *3--5 个工作日*可以得到首轮真实训练判断。
 
 Gate D 继续为 *NO-GO*，任何租卡或完整 0731 下载等待用户明确授权。
+
+== 7B token-count matched screen
+
+同一个 λ=`0.5`、scale=`0.1`、Qwen2.5-7B checkpoint 在冻结的 50 条 GLM-format subset 上改用 240-token full sequence；其余图像、prompt、parser、生成和 bootstrap 配置不变。四条件 parse 均为 `50/50`，click-in-box 为 `10%/10%/10%/8%`，Accuracy\@50 为 `0%/2%/2%/0%`，Accuracy\@100 为 `6%/6%/6%/6%`，Accuracy\@200 为 `18%/18%/20%/18%`。
+
+独立 category verifier 重算中心距离均值为 `399.51/415.11/396.78/397.02`。vision-blind 距离改善 `+15.59`，CI `[-13.51,+47.15]`；vision-shuffled 为 `-2.74`，CI `[-13.58,+9.96]`。两个 click paired 差都为 `0`，CI `[-6,+6]` 个百分点。240-token full sequence 没有改善正确图像归因，因此停止扩大 token 数量筛选，下一项转向一个 projector/辅助目标变量并保留 matched CE-only control。
+
+原始 evaluator summary 的 center-distance summary fields 为 `null`，本节数字来自独立 verifier；缺口已在 raw pointer 中记录。运行 wall time 为 `1,310.98` 秒，其中含首次 Transformers import 和 339 个权重分片的 CPU 加载；后续真实批处理优化必须把这段冷启动与 GPU throughput 分开。

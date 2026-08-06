@@ -1,0 +1,65 @@
+{
+  "schema_version": "raw-artifact-pointer-v1",
+  "experiment": "qwen25_7b_stripped_screenspot_glm50_margin05_scale01_full240_20260807",
+  "status": "diagnostic_only_no_token_count_gain",
+  "capability_claim_allowed": false,
+  "deepseek_transfer_label": "transferable_with_runtime_validation",
+  "dataset": {
+    "name": "screenspot_glm50_v1",
+    "sample_count": 50,
+    "manifest_path": "experiments/qwen3b_community_eval_20260805/contract/datasets/screenspot_glm50_v1/MANIFEST.json",
+    "manifest_sha256": "b578229e72a59a983623514f259d2f49fc46cb66c0802a622682727d88151543"
+  },
+  "receiver": {
+    "repo_id": "Qwen/Qwen2.5-7B-Instruct",
+    "resolved_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "config_sha256": "7463bb0ea78315365e6c6b74de4e73bbcc8359dfb0c5a737584e077d42c0b03c",
+    "frozen": true
+  },
+  "projector": {
+    "source_run": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen25_7b_real_train32_margin05_scale01_meanpool16_20260807/projector_final",
+    "weights_sha256": "5a273f64dc9c7beff7ee816502b5cc89ea57afe6f24daea91b4e2161d24c9940",
+    "config_sha256": "0f39cc8dd48e33921a546ffc236a5ff8a66388bbf41ddec08cb8abc1b95d7405",
+    "scale": 0.1
+  },
+  "generation_contract": {
+    "conditions": ["vision", "blind", "shuffled", "random_projector"],
+    "max_visual_tokens": 240,
+    "token_selection": "prefix_full_sequence",
+    "do_sample": false,
+    "temperature": 0,
+    "max_new_tokens": 32,
+    "bootstrap_samples": 2000,
+    "bootstrap_seed": 20260805
+  },
+  "runtime": {
+    "wall_seconds": 1310.9819146292284,
+    "weight_shards": 339,
+    "cold_import_note": "First run spent about 16 minutes in Transformers/torch cold import and CPU weight loading before CUDA evaluation. This is evaluator startup overhead, not model throughput."
+  },
+  "raw_artifacts": {
+    "root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen25_7b_stripped_screenspot_glm50_margin05_scale01_full240_20260807",
+    "summary": {"bytes": 172575, "sha256": "c9b3e795ea3532ae47541b90e23f2e110545c7f3e00f51707e79f452d817d35d"},
+    "generation_rows": {"bytes": 125342, "sha256": "5333d37d4e7fd038be22437ba8689bc70d2f46e68c636b3fa7e09ac04054caba"}
+  },
+  "category_verifier": {
+    "root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen25_7b_stripped_screenspot_glm50_margin05_scale01_full240_categories_20260807",
+    "summary_sha256": "259951331112934273befdb5fd4e54b88f4e53984e2d7587b0e3d6db1044674b",
+    "artifact_manifest_sha256": "e7d4167982c75005273ab997990e9954e4cc0f1dd91101cf3d950b6ab96abd35",
+    "distance_fields_source": "independent category verifier; primary evaluator summary center distance fields are null"
+  },
+  "evaluator_tool_sha256": "c1301049adca28564842596cbd9e1ed39adc12782afc0e7e814ee84555f996ce",
+  "overall": {
+    "vision": {"parse_rate": 1.0, "accuracy_at_50": 0.0, "accuracy_at_100": 0.06, "accuracy_at_200": 0.18, "click_in_box": 0.10, "mean_center_distance": 399.5132657083118, "median_center_distance": 387.90785095589365},
+    "blind": {"parse_rate": 1.0, "accuracy_at_50": 0.02, "accuracy_at_100": 0.06, "accuracy_at_200": 0.18, "click_in_box": 0.10, "mean_center_distance": 415.10629402687647, "median_center_distance": 402.46415564930794},
+    "shuffled": {"parse_rate": 1.0, "accuracy_at_50": 0.02, "accuracy_at_100": 0.06, "accuracy_at_200": 0.20, "click_in_box": 0.10, "mean_center_distance": 396.7770110381716, "median_center_distance": 402.2125270914727},
+    "random_projector": {"parse_rate": 1.0, "accuracy_at_50": 0.0, "accuracy_at_100": 0.06, "accuracy_at_200": 0.18, "click_in_box": 0.08, "mean_center_distance": 397.0232927415598, "median_center_distance": 371.1945112142943}
+  },
+  "paired_improvement": {
+    "vision_minus_blind_click": {"mean": 0.0, "ci95": [-0.06, 0.06]},
+    "vision_minus_shuffled_click": {"mean": 0.0, "ci95": [-0.06, 0.06]},
+    "vision_minus_blind_mean_distance": {"mean": 15.593028318564677, "ci95": [-13.50859138803026, 47.149370958638286]},
+    "vision_minus_shuffled_mean_distance": {"mean": -2.7362546701402266, "ci95": [-13.580745330305094, 9.957643416211495]}
+  },
+  "decision": "240 full-sequence tokens did not improve click-in-box or correct-image attribution over 16-token mean-pool on the frozen GLM-format subset. Stop token-count expansion and test a DeepSeek-transferable projector or auxiliary objective next."
+}

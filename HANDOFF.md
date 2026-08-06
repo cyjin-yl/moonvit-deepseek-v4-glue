@@ -824,3 +824,27 @@ Local candidate/verifier work is estimated at 1--2 working days. After explicit
 paid-hardware authorization, the minimal Gate D and first small real training
 judgment are estimated at 3--5 working days if weights and kernels work as
 expected.
+
+## 240-token matched ScreenSpot50 result (2026-08-07)
+
+The same 7B lambda=0.5 checkpoint was rerun on the frozen 50-row GLM-format
+subset with 240 full-sequence tokens. Parse was `50/50` in all conditions;
+vision/blind/shuffled/random click-in-box was `10%/10%/10%/8%`, Accuracy@50
+`0%/2%/2%/0%`, Accuracy@100 `6%/6%/6%/6%`, and Accuracy@200
+`18%/18%/20%/18%`.
+
+The independent category verifier recomputed center-distance means
+`399.51/415.11/396.78/397.02`. Vision-blind distance improvement was `+15.59`
+with CI `[-13.51,+47.15]`; vision-shuffled was `-2.74` with CI
+`[-13.58,+9.96]`. Both click paired differences were exactly `0` with CI
+`[-6,+6]` percentage points. Full sequence therefore does not rescue the
+grounding gap. Stop expanding token count and move to one projector or
+auxiliary-objective variable that can transfer to DeepSeek, with a matched
+CE-only control.
+
+The raw evaluator summary has null center-distance summary fields; the category
+verifier is the authoritative distance source for this diagnostic and the gap
+is recorded in `...full240_20260807_RAW_POINTER.json`. The run took 1,310.98 s,
+including cold Transformers import and 339-shard CPU weight loading. That
+startup cost must be separated from generation throughput in future batching
+optimization.
