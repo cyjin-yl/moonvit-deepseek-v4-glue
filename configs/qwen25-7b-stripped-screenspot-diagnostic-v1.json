@@ -1,0 +1,30 @@
+{
+  "schema_version": "qwen25-7b-stripped-screenspot-diagnostic-v1",
+  "frozen_before_result": true,
+  "purpose": "验证 teacher-forced paired attribution 是否能转成正式格式的 ScreenSpot 自由生成",
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "visual_tower": "MoonViT-V2 exact K3",
+  "projector_output_width": 4096,
+  "receiver_adapter": "fixed_grouped_signed_4096_to_3584_seed_20260806",
+  "projector_checkpoint_role": "trained_margin_lambda050_scale01",
+  "projector_scale": 0.1,
+  "dataset": "screenspot_glm50_v1",
+  "sample_manifest": "experiments/qwen3b_community_eval_20260805/contract/datasets/screenspot_glm50_v1/MANIFEST.json",
+  "sample_manifest_sha256": "9583a75ef64b8e8f6d18fae5c846e77526dee9c07146803dece6f4612a9632b5",
+  "feature_cache_max_visual_tokens": 1024,
+  "max_visual_tokens": 16,
+  "token_selection": "mean_pool",
+  "generation": {
+    "do_sample": false,
+    "temperature": 0.0,
+    "max_new_tokens": 32,
+    "prompt_route": "grounding",
+    "parser": "anchored click(start_box=[x, y])"
+  },
+  "conditions": ["vision", "blind", "shuffled", "random_projector"],
+  "bootstrap": {"samples": 2000, "seed": 20260805},
+  "status": "diagnostic_only",
+  "capability_claim_allowed": false,
+  "deepseek_transfer_label": "transferable_with_runtime_validation"
+}
