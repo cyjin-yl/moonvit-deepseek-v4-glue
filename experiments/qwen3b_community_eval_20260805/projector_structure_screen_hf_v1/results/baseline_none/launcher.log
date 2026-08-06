@@ -1,0 +1,53 @@
+stage: contract_order_cache_verification
+stage: frozen_file_verification
+stage: tokenizer_config_supervision
+stage: cuda_and_model_load
+Loading weights:   0%|          | 0/434 [00:00<?, ?it/s]Loading weights:   0%|          | 1/434 [00:00<00:57,  7.52it/s]Loading weights:  20%|##        | 87/434 [00:00<00:00, 446.34it/s]Loading weights:  32%|###1      | 138/434 [00:00<00:00, 446.57it/s]Loading weights:  45%|####4     | 195/434 [00:00<00:00, 472.86it/s]Loading weights:  56%|#####6    | 245/434 [00:00<00:00, 473.27it/s]Loading weights:  70%|######9   | 303/434 [00:00<00:00, 482.86it/s]Loading weights:  81%|########1 | 353/434 [00:00<00:00, 480.74it/s]Loading weights:  94%|#########4| 410/434 [00:00<00:00, 497.35it/s]Loading weights: 100%|##########| 434/434 [00:00<00:00, 461.75it/s]
+stage: projector_receiver_optimizer_load
+stage: health_probe_step0_reference
+stage: projector_training
+stage: health_probe_step_1
+optimizer_step 1/100 loss=4.144004 examples_seen=8 answer_tokens_seen=73 step_wall=1.023s
+stage: health_probe_step_2
+health auto-stop at optimizer_step 2: ['projector_rms_rising_spread_falling', 'receiver_rms_rising_spread_falling']
+stage: health_auto_stopped
+{
+  "status": "auto_stopped_by_projector_health_guard",
+  "formal_training_complete": false,
+  "capability_claim_allowed": false,
+  "visual_ability_established": false,
+  "previous_best": "step0",
+  "final_half_scored": false,
+  "paid_resources_used": false,
+  "runner_git_sha": "a12f053dbe8a279dd35b62d9cf132d09226e8fb4",
+  "git_tracked_worktree_clean": true,
+  "target_optimizer_steps": 100,
+  "optimizer_steps_completed": 2,
+  "examples_seen": 16,
+  "answer_tokens_seen": 145,
+  "loss_first": 4.144003733992577,
+  "loss_last": 2.438019228167832,
+  "training_wall_seconds": 31.93998654326424,
+  "total_wall_seconds": 80.38179025007412,
+  "peak_gpu_memory_bytes": 13245345280,
+  "critical_reasons": [
+    "projector_rms_rising_spread_falling",
+    "receiver_rms_rising_spread_falling"
+  ],
+  "collapse_onset_interval": [
+    1,
+    2
+  ],
+  "failure_checkpoint": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_structure_screen_hf_v1/baseline_none/health_snapshots/checkpoints/failure-step-000002",
+  "last_healthy_checkpoint": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_structure_screen_hf_v1/baseline_none/health_snapshots/checkpoints/healthy-step-000001",
+  "rollback": {
+    "status": "rolled_back_to_last_healthy_checkpoint",
+    "source": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_structure_screen_hf_v1/baseline_none/health_snapshots/checkpoints/healthy-step-000001",
+    "restored_step": 1,
+    "failed_step": 2,
+    "critical_checkpoint_must_not_resume": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_structure_screen_hf_v1/baseline_none/health_snapshots/checkpoints/failure-step-000002"
+  },
+  "health_artifact_file_count": 22,
+  "health_artifact_total_bytes": 1141294547,
+  "transfer_label": "directly_transferable"
+}

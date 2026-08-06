@@ -1,0 +1,13 @@
+{
+  "format_version": "qwen3b-projector-structure-screen-attempt-v1",
+  "attempt": "attempt04_health_verifier_flag",
+  "stage": "post_run_independent_verification",
+  "arm": "baseline_none",
+  "command": "verify_qwen3b_training_health.py --contract ...",
+  "gpu_started": false,
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "result_already_exists": true,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

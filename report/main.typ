@@ -1778,3 +1778,9 @@ Package 15Q 已在任何新结构结果前冻结。它把一个结构变量放�
 这一步回答一个很具体的问题：如果第一步更新把输出尺度推大并让图像表示共线，固定的无参数归一化能否在不改变迁移接口的前提下阻止它。健康通过只代表表示没有立刻塌缩，完整 ScreenSpot、TextVQA、DocVQA、OCRBench 和语言保持仍是能力晋升条件。若三个 arm 都失败，下一条只测试 residual/gated-residual 结构，继续保留自动止损。
 
 在 GPU 结果前，包内还保留了三次机械失败记录：RMSNorm 单测容差、旧配置省略 `output_norm` 导致的 verifier 误判，以及后台启动器变量未导出的 shell 错误。它们均没有产生 optimizer step；前两次修复了测试/校验默认值，第三次只修复启动过程，结构合同、预算和 guards 均未改变。
+
+== Package 15Q control：结构筛选的匹配基线
+
+`baseline_none` 使用新 runner 在同一 100-step/800-example 合同下重新跑 control，结果在 step 2 自动止损，collapse onset 为 `[1,2]`。CE 从 4.14400 降到 2.43802，但 projector 的 spread/rank ratio 变为 0.2690/0.5022，receiver 变为 0.2254/0.3622；两条 RMS 上升、spread 下降 critical guard 同时触发。step 0/1/2 的 3 个 probe 和 3 个 checkpoint 经独立 verifier 重算通过，完整 checkpoint/optimizer/RNG 原始目录保存在 `D:/V100-artifacts/projector_structure_screen_hf_v1/baseline_none`，Git 只保留小型日志、配置、摘要和指针。
+
+这个 control 支持“当前故障在首两步可复现，健康合同能及时止损”，同时反驳“只要 CE 继续下降就可以进入长训”。它没有产生任何真实 grounding 证据，也没有改变 previous best；下一步继续跑 matched `post_layernorm` 和 `post_rmsnorm`。

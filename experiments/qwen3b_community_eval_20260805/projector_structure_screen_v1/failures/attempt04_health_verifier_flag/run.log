@@ -1,0 +1,2 @@
+usage: verify_qwen3b_training_health.py [-h] --run RUN --health-contract HEALTH_CONTRACT --out OUT
+verify_qwen3b_training_health.py: error: the following arguments are required: --health-contract

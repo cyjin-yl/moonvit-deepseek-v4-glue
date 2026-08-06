@@ -1,0 +1,83 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-06T07:36:02.638030+00:00",
+  "root": "projector_structure_screen_hf_v1",
+  "git_base_sha": "0a05f0e87c9d252759cd0cd675fc52275a5cf659",
+  "files": {
+    "README.md": {
+      "bytes": 816,
+      "sha256": "949f961a55a17f31402971db83315c98c9966dbd02d6c802dfdd68410e96214a"
+    },
+    "results/baseline_none/ATTEMPT.json": {
+      "bytes": 1674,
+      "sha256": "a144f3793c26ffd89c8ce7626a09a27c37dfba2b3cd0e7b1f89857e9676581cd"
+    },
+    "results/baseline_none/CACHE_VERIFICATION.json": {
+      "bytes": 752,
+      "sha256": "989d6e1bee684233d888860a6883d91419392537ecbf387c64d20db6da16ae1b"
+    },
+    "results/baseline_none/FAILURE.json": {
+      "bytes": 13295,
+      "sha256": "21865f8ed43ec7dc1f5f92e8da281793d99a04a6f27faa9c121a29a3ca1214a7"
+    },
+    "results/baseline_none/HEALTH_ARTIFACT_MANIFEST.json": {
+      "bytes": 4558,
+      "sha256": "bfebcbe06a7617223ac908312e423a26c9a2509c1a7938600fbf7b18df005593"
+    },
+    "results/baseline_none/HEALTH_VERIFIER.json": {
+      "bytes": 386,
+      "sha256": "dd8610e4b0393344939f103f7232982c1ce63a94153465d93fc61ccf1dff7e40"
+    },
+    "results/baseline_none/launcher.log": {
+      "bytes": 3003,
+      "sha256": "4661e125a21d355fe090d06b03eabc2fabf5860739ab48691eb2b61439539b05"
+    },
+    "results/baseline_none/probe_metrics.jsonl": {
+      "bytes": 22853,
+      "sha256": "441b1768756cf241e3021674ba5a24f1feba0ad9cdb21abac0ae47412fe10077"
+    },
+    "results/baseline_none/RAW_ARTIFACT_POINTER.json": {
+      "bytes": 1050,
+      "sha256": "ad30703278bed96ab536678a67d458b09b4332dd2fc0495ab0c6f6ce621d57ef"
+    },
+    "results/baseline_none/RESULT.json": {
+      "bytes": 4817,
+      "sha256": "674c287986fe5e9c5f78b104b664fda1bad404c30dd651b21af92b7692c7f7a2"
+    },
+    "results/baseline_none/ROLLBACK.json": {
+      "bytes": 458,
+      "sha256": "988ada419ebe2c09d2591c15931016362131256d21783156a37b446c8258b716"
+    },
+    "results/baseline_none/run.log": {
+      "bytes": 3003,
+      "sha256": "4661e125a21d355fe090d06b03eabc2fabf5860739ab48691eb2b61439539b05"
+    },
+    "results/baseline_none/RUN_CONFIG.json": {
+      "bytes": 13946,
+      "sha256": "24d58e6127d7d49d665c79b6af90838989573a2d901635cc6106fb63988f42dd"
+    },
+    "results/baseline_none/SUMMARY.json": {
+      "bytes": 1811,
+      "sha256": "62334206485268d782857eec8a549f24a80b4690839f0d445b6b62d60b023a3d"
+    },
+    "results/baseline_none/SUPERVISION_RECORDS.jsonl": {
+      "bytes": 2275709,
+      "sha256": "d90ea7515a67b2f4d77320fe061aef1cfc44ef877726d312366a309390ab5bc9"
+    },
+    "results/baseline_none/SUPERVISION_SUMMARY.json": {
+      "bytes": 452,
+      "sha256": "b48ccd66814269906b96bebc6a5c3b48727a2d1ea0f935468e1e19ba33d94a7e"
+    },
+    "results/baseline_none/train_health.jsonl": {
+      "bytes": 1708,
+      "sha256": "4dff47111b798bef689f6ecd0e09b62216c63d2477163772969b86881d8dcf02"
+    },
+    "results/baseline_none/TRAINING_HISTORY.jsonl": {
+      "bytes": 1266,
+      "sha256": "844c5d5a1409bddf4b9ae320b644fc8634c7a72e4a8ff345f763a183ebd1b10b"
+    }
+  },
+  "file_count": 18,
+  "total_bytes": 2351557,
+  "final_half_scored": false
+}

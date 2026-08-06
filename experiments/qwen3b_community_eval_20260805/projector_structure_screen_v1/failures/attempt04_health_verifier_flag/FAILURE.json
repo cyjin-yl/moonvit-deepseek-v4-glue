@@ -1,0 +1,15 @@
+{
+  "format_version": "qwen3b-projector-structure-screen-failure-v1",
+  "status": "verification_invocation_failure_preserved",
+  "stage": "post_run_independent_verification",
+  "exception_type": "argparse_error",
+  "failure": "verify_qwen3b_training_health.py: the following arguments are required: --health-contract",
+  "root_cause": "operator invocation used --contract instead of the tool's declared --health-contract flag",
+  "repair": "rerun the same verifier with the correct flag; no training or result file was changed",
+  "gpu_started": false,
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "result_already_exists": true,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

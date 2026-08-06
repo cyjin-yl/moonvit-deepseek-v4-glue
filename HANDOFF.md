@@ -87,6 +87,18 @@ failure archive: the RMSNorm test tolerance, the verifier's legacy omitted
 were repaired in code/tests; the launcher repair only changes process setup.
 No optimizer step or capability result was created by any of them.
 
+### Package 15Q baseline result
+
+The freshly matched `baseline_none` control also auto-stopped at optimizer
+step 2, with collapse onset `[1, 2]`. CE fell from `4.14400` to `2.43802`,
+while projector spread/rank ratios reached `0.2690/0.5022` and receiver
+spread/rank ratios reached `0.2254/0.3622`; both RMS-rising/spread-falling
+critical guards fired. The independent verifier recomputed all three probe
+points and all three checkpoints. This is a health failure result, not a
+grounding result; no ScreenSpot or capability checkpoint was promoted. The
+complete raw copy is outside Git at
+`D:/V100-artifacts/projector_structure_screen_hf_v1/baseline_none`.
+
 ## ⚠️ ACTIVE V100 REAL-VISION BRIDGE (2026-08-06)
 
 **Current task / hard boundary**: the engineering mainline is now a fixed real-data bridge on pure-text `Qwen/Qwen2.5-3B-Instruct`, followed by transfer of the same MoonViT-V2/projector/data/eval contract to DeepSeek-V4-Flash-0731. The 0.5B/synthetic line remains mechanism evidence. Do not rent any server, create a paid resource, run the full DeepSeek weights, or inspect final evaluation halves without explicit authorization. Exact V100 environment evidence is under `experiments/v100_perception_20260804/infra/environment/`.

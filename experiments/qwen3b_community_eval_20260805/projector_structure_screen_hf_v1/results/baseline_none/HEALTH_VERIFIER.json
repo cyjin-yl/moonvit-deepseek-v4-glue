@@ -1,0 +1,16 @@
+{
+  "artifact_file_count": 22,
+  "artifact_total_bytes": 1141294547,
+  "auto_stopped": true,
+  "checkpoint_count": 3,
+  "guards_recomputed": 3,
+  "optimizer_step_rows": 2,
+  "paid_resources_used": false,
+  "probe_steps": [
+    0,
+    1,
+    2
+  ],
+  "run": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_structure_screen_hf_v1/baseline_none",
+  "status": "verified"
+}
