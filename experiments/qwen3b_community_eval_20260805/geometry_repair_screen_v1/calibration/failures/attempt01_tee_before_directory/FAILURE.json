@@ -1,0 +1,15 @@
+{
+  "format_version": "qwen3b-geometry-calibration-failure-v1",
+  "status": "orchestration_failure_preserved",
+  "stage": "calibration",
+  "attempt": 1,
+  "failure_class": "shell_log_pipeline",
+  "command_condition": "tee opened calibration output/run.log before the calibration script created the output directory",
+  "exit_code": 1,
+  "script_result": "The calibration script completed and wrote SUMMARY.json, RUN_CONFIG.json, and CALIBRATION_POOLED.safetensors.",
+  "stderr": "tee: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/geometry_repair_calibration_v1/run.log: No such file or directory",
+  "rerun_required": false,
+  "rerun_policy": "The preserved valid output was independently verified; no GPU result was discarded or replaced.",
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

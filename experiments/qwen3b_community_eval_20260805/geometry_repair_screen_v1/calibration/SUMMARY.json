@@ -1,0 +1,99 @@
+{
+  "capability_claim_allowed": false,
+  "derived_arms": {
+    "control": {
+      "lambda": 0.0,
+      "target_gradient_ratio": 0.0
+    },
+    "ratio005": {
+      "lambda": 0.01018730507868909,
+      "target_gradient_ratio": 0.05
+    },
+    "ratio020": {
+      "lambda": 0.04074922031475636,
+      "target_gradient_ratio": 0.2
+    },
+    "ratio080": {
+      "lambda": 0.16299688125902545,
+      "target_gradient_ratio": 0.8
+    }
+  },
+  "final_half_scored": false,
+  "formal_calibration_complete": true,
+  "format_version": "qwen3b-geometry-calibration-summary-v1",
+  "geometry": {
+    "centered_gram": 0.5036343336105347,
+    "current_between_rms": 2.919761896133423,
+    "current_relative_spread": 0.07972410321235657,
+    "current_rms": 36.62332534790039,
+    "reference_between_rms": 0.052200451493263245,
+    "reference_relative_spread": 0.4034738540649414,
+    "reference_rms": 0.12937752902507782,
+    "relative_spread": 2.6293909549713135,
+    "relative_spread_ratio": 0.19759422540664673,
+    "rms_ratio": 283.07330322265625,
+    "scale": 31.873992919921875,
+    "total": 35.00701904296875
+  },
+  "gpu_name": "Tesla V100-PCIE-32GB",
+  "paid_resources_used": false,
+  "peak_gpu_memory_bytes": 703628800,
+  "per_parameter_gradients": [
+    {
+      "gradient_nonzero": 1024,
+      "gradient_norm": 0.5967691540718079,
+      "name": "pre_norm.weight",
+      "numel": 1024
+    },
+    {
+      "gradient_nonzero": 1024,
+      "gradient_norm": 0.8428378105163574,
+      "name": "pre_norm.bias",
+      "numel": 1024
+    },
+    {
+      "gradient_nonzero": 16777216,
+      "gradient_norm": 3.5340092182159424,
+      "name": "linear_1.weight",
+      "numel": 16777216
+    },
+    {
+      "gradient_nonzero": 4096,
+      "gradient_norm": 0.07053670287132263,
+      "name": "linear_1.bias",
+      "numel": 4096
+    },
+    {
+      "gradient_nonzero": 16777216,
+      "gradient_norm": 1.2163777351379395,
+      "name": "linear_2.weight",
+      "numel": 16777216
+    },
+    {
+      "gradient_nonzero": 4096,
+      "gradient_norm": 0.006181266624480486,
+      "name": "linear_2.bias",
+      "numel": 4096
+    }
+  ],
+  "pooled": {
+    "bytes": 524528,
+    "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/geometry_repair_calibration_v1/CALIBRATION_POOLED.safetensors",
+    "sha256": "92d57dd38d95c68a40e5e917792da21be91e4495429d3c3ffea82faabbb8e7ee",
+    "tensors": {
+      "current_pooled": [
+        8,
+        4096
+      ],
+      "reference_pooled": [
+        8,
+        4096
+      ]
+    }
+  },
+  "recorded_ce_gradient_norm_before_clip": 0.7901650667190552,
+  "status": "valid",
+  "unweighted_auxiliary_gradient_norm": 3.8781849596907043,
+  "visual_ability_established": false,
+  "wall_seconds": 2.650463144760579
+}

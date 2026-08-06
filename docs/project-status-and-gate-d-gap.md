@@ -59,6 +59,8 @@ Package 15N 随后触发预注册的两个 gross-collapse guards。projector cur
 
 Package 15O 把同一诊断扩到 steps 0/100/200/300/400/500。第一个保存的训练状态 step100/800 examples 已同时触发两个 guard：projector spread/rank ratio 为 `0.12985/0.07721`，sample RMS 从 0.124 放大到 35.74，top-1 variance 达 98.76%；receiver ratio 为 `0.12873/0.07596`。所有后续保存点仍塌缩。首个 100-step 窗口 loss 均值仍为 3.916，末步 loss 为 2.276，因此该失败属于早期优化动力学，继续相同 CE-only 训练没有恢复几何。精确 onset 只能限定在 steps 1–100。下一训练 screen 从首个 optimizer step 施加最小 scale/geometry-preservation treatment；counterfactual margin 暂缓。
 
+Package 15P 已完成预注册 geometry-repair 的固定 λ 校准。冻结 step100/batch100 的 unweighted auxiliary gradient norm 为 `3.8781849597`，记录的 CE gradient norm 为 `0.7901650667`；三档 λ 为 `0.0101873051/0.0407492203/0.1629968813`，control 为零。独立 verifier 状态为 `verified`，完整 pooled tensor、config、logs、manifest 与首次 shell 编排失败均已归档。该结果只证明校准链路和梯度绑定，尚未证明视觉能力；下一步运行四臂 100-step 短筛选。
+
 ## 5. Replay 与 sentinel 的收束结论
 
 包 13 已证明 fixed-budget preventive replay 在相同 1,200-example 预算内改善 count/shape preference `+0.255 [0.210, 0.300]` 和 generation `+0.120 [0.050, 0.190]`，donor 合并差异接近零。包 14 进一步确定：
@@ -107,7 +109,8 @@ Package 15O 把同一诊断扩到 steps 0/100/200/300/400/500。第一个保存�
 17. **已完成（Package 15M）**：同 checkpoint 的 GLM-format public-50 七条件 generation 与 2,000 bootstrap；vision/blind/shuffled click 为 6%/12%/6%，vision 与 shuffled distance 无差异，候选不扩大 full/三 seed。
 18. **已完成（Package 15N）**：projector/receiver 两个 gross-collapse guards 同时触发；projector effective rank 13.28→1.14、top-1 variance 17.48%→93.46%，receiver ratio 近似不变。pooled tensors、6,125 pair rows、50 per-sample rows及两项失败修复全部保留；17 files / 8,120,202 bytes，V100 full suite 347/347。
 19. **已完成（Package 15O）**：steps 0/100/200/300/400/500 的 frozen representation trajectory；首个保存点 step100 已 gross collapse，13 个 pooled tensors、15,925 pair rows、50 per-sample rows与 500 行训练历史由独立 verifier 重算。
-20. **下一训练 screen**：从 optimizer step one 生效的最小 projector scale/geometry-preservation treatment，保留匹配 CE-only control、exact step0、记录/顺序、500 steps 和 4,000 examples；先跑固定小 λ/短预算筛选，counterfactual margin 等表示修复后再评。
-21. **并行工程缺口**：补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 240-row language-retention evaluator；任何候选替换 previous-best 前必须跑完。
+20. **已完成（Package 15P calibration）**：从冻结 step100/batch100 状态独立重算 geometry loss、辅助梯度和三档 λ；`INDEPENDENT_VERIFICATION.json` 为 `verified`，无能力结论。
+21. **当前训练 screen**：运行 `control/ratio005/ratio020/ratio080` 四臂各 100 optimizer steps / 800 examples；仅按预注册 representation guards 与 final-20 CE 比例选择最小非零 arm，未通过则停止扩展并重设计。
+22. **并行工程缺口**：补齐 fixed-receiver TextVQA、DocVQA、OCRBench 与 240-row language-retention evaluator；任何候选替换 previous-best 前必须跑完。
 
 在完成以上本地证据后，若剩余阻塞只来自完整权重容量和量化 DGRAD，再提交最小付费 Gate D 的硬件、时价、GPU-hour、存储与止损上限，等待单独授权。

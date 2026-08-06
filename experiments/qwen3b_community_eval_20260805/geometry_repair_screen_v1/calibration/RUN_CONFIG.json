@@ -1,0 +1,132 @@
+{
+  "checkpoint_manifest_sha256": "99bef0b084bba8a17f0ae960d6a73d4aea0f36457c04dfde8112e61c845113fc",
+  "checkpoint_projector_sha256": "08bdda72d5f984edbf7931dc4eb3dad8f3b296b05c18afa0364071dd1fdc19b1",
+  "core_contract_file_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+  "feature_cache_manifest_file_sha256": "1f035374a0db01c8347dfcb2fb6aa6c5e4aad7128ccaa4e169e17f784a6c8a41",
+  "final_half_scored": false,
+  "formal_run": true,
+  "format_version": "qwen3b-geometry-calibration-run-v1",
+  "git_tracked_worktree_clean": true,
+  "paid_resources_used": false,
+  "record_ids": [
+    "showui_desktop_001540",
+    "docvqa_train_013657",
+    "showui_desktop_004133",
+    "textvqa_train_016391",
+    "showui_desktop_003854",
+    "train_006489",
+    "showui_desktop_001562",
+    "textvqa_train_028980"
+  ],
+  "reference_projector_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0",
+  "runner_git_sha": "5a71531d4c23120f537c9a4f4122ecce390bd0ce",
+  "runtime_source_files": [
+    {
+      "bytes": 13953,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15p/tools/calibrate_qwen3b_geometry_regularization.py",
+      "sha256": "6e3994043e8471605b874d8e76118afbe704c50510349db65eb3cd4f4bad6e57"
+    },
+    {
+      "bytes": 6084,
+      "path": "/run/media/ezra/13D010B6FDBC1A06/moonvit-package15p/src/moonvit_glue/geometry_regularization.py",
+      "sha256": "cc720346f091befd1b1fb6c3b1ee5dfaa283fbf2235a8e7620f67e54d95a36f1"
+    }
+  ],
+  "screen_contract": {
+    "calibration": {
+      "batch_record_ids_sha256": "c8c2fcee84da94aad7c019c2722a4baabeaea571750edf5130106ed73f1ee2b3",
+      "checkpoint_manifest_sha256": "99bef0b084bba8a17f0ae960d6a73d4aea0f36457c04dfde8112e61c845113fc",
+      "checkpoint_projector_sha256": "08bdda72d5f984edbf7931dc4eb3dad8f3b296b05c18afa0364071dd1fdc19b1",
+      "checkpoint_step": 100,
+      "lambda_formula": "target_gradient_ratio * recorded_ce_gradient_norm_before_clip / unweighted_auxiliary_gradient_norm",
+      "optimizer_batch_step": 100,
+      "record_indices": [
+        792,
+        793,
+        794,
+        795,
+        796,
+        797,
+        798,
+        799
+      ],
+      "recorded_ce_gradient_norm_before_clip": 0.7901650667190552,
+      "target_gradient_ratios": [
+        0.05,
+        0.2,
+        0.8
+      ],
+      "training_history_sha256": "c22a01631598d4ca4850347474f39171853cc9ba22da4176e0a0fac6067df3a8"
+    },
+    "core_contract_file_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+    "feature_cache_manifest_file_sha256": "1f035374a0db01c8347dfcb2fb6aa6c5e4aad7128ccaa4e169e17f784a6c8a41",
+    "final_half_allowed": false,
+    "format_version": "qwen3b-geometry-repair-screen-contract-v1",
+    "frozen_before_calibration_and_screen": true,
+    "geometry_objective": {
+      "batch_pooling": "concatenate feature groups per image, then arithmetic mean over visual tokens",
+      "boundary": "canonical_projector_4096",
+      "centered_gram_loss": "squared Frobenius distance between unit-Frobenius centered sample Gram matrices",
+      "component_weights": {
+        "centered_gram": 1.0,
+        "relative_spread": 1.0,
+        "scale": 1.0
+      },
+      "epsilon": 1e-08,
+      "orientation_freedom": "normalized centered Gram permits a shared orthogonal rotation while preserving cross-image geometry",
+      "reference": "exact frozen step0 projector on the same eight cached MoonViT feature groups",
+      "relative_spread_loss": "squared log ratio of current and reference between-image-RMS/sample-RMS",
+      "scale_loss": "squared log ratio of current and reference batch RMS"
+    },
+    "interpretation_boundary": "A short-screen pass only establishes representation preservation under early optimization. It does not establish grounding or visual ability.",
+    "paid_resources_allowed": false,
+    "reference_projector_sha256": "efd942e0d8cbece08d3a8fab5d192eb4a2772211817ac5e733aa0f55aebb06b0",
+    "screen": {
+      "answer_tokens_seen": 7362,
+      "arms": [
+        {
+          "name": "control",
+          "target_gradient_ratio": 0.0
+        },
+        {
+          "name": "ratio005",
+          "target_gradient_ratio": 0.05
+        },
+        {
+          "name": "ratio020",
+          "target_gradient_ratio": 0.2
+        },
+        {
+          "name": "ratio080",
+          "target_gradient_ratio": 0.8
+        }
+      ],
+      "examples_seen": 800,
+      "no_pass_action": "do_not_spend_full_4k_budget_and_redesign_projector_structure_or_objective",
+      "optimization_guard": {
+        "final_20_step_ce_loss_mean_over_control_at_most": 1.25,
+        "finite_nonzero_projector_gradients_required": true
+      },
+      "optimizer_steps": 100,
+      "pass_action": "train_selected_arm_for_exact_500_steps_then_run_representation_preference_and_generation_gates",
+      "representation_guard": {
+        "current_over_step0_effective_rank_at_least": 0.5,
+        "current_over_step0_relative_spread_at_least": 0.25,
+        "requires_all": true
+      },
+      "same_initial_projector": true,
+      "same_optimizer_steps_and_examples_seen": true,
+      "same_resolution_and_receiver": true,
+      "same_training_records_and_order": true,
+      "selection_rule": "choose the smallest nonzero target-gradient-ratio arm passing both representation guards at projector and receiver plus the CE-loss guard",
+      "selection_stage": "fixed_receiver_2048"
+    },
+    "training_order_manifest_file_sha256": "640b36840d96e765e694d888f4db801b216b16081d52c963c34d4e0bfa93d5ee",
+    "training_order_manifest_sha256": "d632ecc2c9bc216a552f240e87b9733904b67dcfe30c489a62ba03df25370bf1",
+    "training_order_records_sha256": "f3c3dec199a30927fb715b2d4fbc890baa8e3f3a456b56707f46490164b915ab",
+    "transfer_label": "directly_transferable"
+  },
+  "screen_contract_file_sha256": "4b23e708e1fb0ff4c4bfa9f974d2680128f579bf43e60ce2ab5d3436f2170e8e",
+  "training_history_sha256": "c22a01631598d4ca4850347474f39171853cc9ba22da4176e0a0fac6067df3a8",
+  "training_order_manifest_file_sha256": "640b36840d96e765e694d888f4db801b216b16081d52c963c34d4e0bfa93d5ee"
+}

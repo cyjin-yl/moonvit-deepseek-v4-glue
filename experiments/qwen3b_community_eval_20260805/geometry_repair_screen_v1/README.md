@@ -23,3 +23,9 @@ while keeping final-20-step CE loss within 1.25× control advances to the exact
 500-step budget. A short-screen pass is representation evidence only; capability
 still requires paired preference and generation gates. No paid resource or
 frozen final half is allowed.
+
+Calibration is complete and independently verified under `calibration/`. The
+derived auxiliary-gradient ratios are 0.05, 0.20, and 0.80 with fixed λ values
+0.01018730507868909, 0.04074922031475636, and 0.16299688125902545. The first
+shell logging attempt is retained under `calibration/failures/`; it was an
+output-directory ordering error and did not invalidate the GPU result.

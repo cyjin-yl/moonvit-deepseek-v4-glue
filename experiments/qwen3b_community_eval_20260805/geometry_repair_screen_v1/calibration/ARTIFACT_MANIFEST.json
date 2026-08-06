@@ -1,0 +1,43 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-06T03:05:27.996851+00:00",
+  "root": "calibration",
+  "git_base_sha": "5a71531d4c23120f537c9a4f4122ecce390bd0ce",
+  "files": {
+    "CALIBRATION_POOLED.safetensors": {
+      "bytes": 524528,
+      "sha256": "92d57dd38d95c68a40e5e917792da21be91e4495429d3c3ffea82faabbb8e7ee"
+    },
+    "failures/attempt01_tee_before_directory/FAILURE.json": {
+      "bytes": 814,
+      "sha256": "b52f93a9e1b8e710dd2de48f73c8ae9dfaa865d03c669c7eba04a08e2eeee05a"
+    },
+    "failures/attempt01_tee_before_directory/stderr.log": {
+      "bytes": 125,
+      "sha256": "aa83a8a48a9a03064bea3b08ff715dcb751fc658cbad9b2183ced35ce2438b7d"
+    },
+    "INDEPENDENT_VERIFICATION.json": {
+      "bytes": 2435,
+      "sha256": "a24ddb94b26b72aa3df82e56c2ad4a05e95e205cdcc9451f97a61ed9d354baf1"
+    },
+    "run.log": {
+      "bytes": 2722,
+      "sha256": "c0e8ebeeae8259513e005a5656c64e60685e881c6e982feb6f64a9d310d86c0c"
+    },
+    "RUN_CONFIG.json": {
+      "bytes": 6110,
+      "sha256": "aaa1d2f5acd38a0358096d4f7b69dc1efddb35c09380480a5d1e74f25aa78c74"
+    },
+    "SUMMARY.json": {
+      "bytes": 2722,
+      "sha256": "72df66a2e228739cd5f6d4cbb58d0cc75c4f908da9776b7d30c6bb8fb7f29013"
+    },
+    "verify.log": {
+      "bytes": 2435,
+      "sha256": "6708c965198fc2f5cc288a4d814d217bc6e8eacc45bba810c8ea6640b813f80a"
+    }
+  },
+  "file_count": 8,
+  "total_bytes": 541891,
+  "final_half_scored": false
+}
