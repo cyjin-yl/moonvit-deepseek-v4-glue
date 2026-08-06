@@ -99,6 +99,22 @@ def test_online_health_extension_is_frozen_before_next_screen_result():
     assert repair["screen_budget_changed"] is False
 
 
+def test_health_probe_supervision_failure_is_preserved_without_a_checkpoint():
+    failure_root = PACKAGE / "failures" / "attempt04_health_shuffled_supervision"
+    failure = _load(failure_root / "FAILURE.json")
+    repair = _load(failure_root / "REPAIR_RECORD.json")
+    manifest = _load(failure_root / "ARTIFACT_MANIFEST.json")
+    assert failure["stage"] == "health_probe_step0_reference"
+    assert failure["exception_type"] == "KeyError"
+    assert repair["optimizer_step_created"] is False
+    assert repair["checkpoint_or_capability_result_created"] is False
+    assert manifest["file_count"] == 8
+    for relative, expected in manifest["files"].items():
+        path = failure_root / relative
+        assert path.stat().st_size == expected["bytes"]
+        assert _sha256(path) == expected["sha256"]
+
+
 def test_test_collection_failure_is_archived():
     failure_root = PACKAGE / "failures" / "attempt02_test_import"
     failure = _load(failure_root / "FAILURE.json")

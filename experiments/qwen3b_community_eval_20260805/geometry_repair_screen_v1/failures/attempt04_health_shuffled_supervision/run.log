@@ -1,0 +1,17 @@
+stage: contract_order_cache_verification
+stage: frozen_file_verification
+stage: tokenizer_config_supervision
+stage: cuda_and_model_load
+Loading weights:   0%|          | 0/434 [00:00<?, ?it/s]Loading weights:   0%|          | 1/434 [00:00<01:21,  5.29it/s]Loading weights:  26%|##6       | 113/434 [00:00<00:00, 464.09it/s]Loading weights:  40%|###9      | 173/434 [00:00<00:00, 441.71it/s]Loading weights:  52%|#####1    | 225/434 [00:00<00:00, 456.79it/s]Loading weights:  64%|######4   | 279/434 [00:00<00:00, 437.13it/s]Loading weights:  76%|#######5  | 328/434 [00:00<00:00, 451.69it/s]Loading weights:  87%|########6 | 376/434 [00:00<00:00, 458.92it/s]Loading weights:  98%|#########7| 424/434 [00:00<00:00, 462.76it/s]Loading weights: 100%|##########| 434/434 [00:00<00:00, 438.16it/s]
+stage: projector_receiver_optimizer_load
+stage: health_probe_step0_reference
+{
+  "status": "failed",
+  "stage": "health_probe_step0_reference",
+  "exception_type": "KeyError",
+  "exception": "'shuffled'",
+  "traceback": "Traceback (most recent call last):\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_qwen3b_proxy.py\", line 1978, in main\n    _run(args, stage)\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_qwen3b_proxy.py\", line 1333, in _run\n    initial_probe = run_health_probe(\n                    ^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_qwen3b_proxy.py\", line 842, in run_health_probe\n    payload[\"causal\"] = run_health_causal_probe(\n                        ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_qwen3b_proxy.py\", line 739, in run_health_causal_probe\n    condition: _score_health_condition(\n               ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/utils/_contextlib.py\", line 124, in decorate_context\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_qwen3b_proxy.py\", line 667, in _score_health_condition\n    all_supervisions = [item[condition] for item in rows]\n                        ~~~~^^^^^^^^^^^\nKeyError: 'shuffled'\n",
+  "capability_claim_allowed": false,
+  "final_half_scored": false,
+  "paid_resources_used": false
+}

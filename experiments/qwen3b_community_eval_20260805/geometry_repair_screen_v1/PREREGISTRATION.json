@@ -27,8 +27,8 @@
       "sha256": "9d824eb3b93f08b649f5ea27286f94611f30cf84dfd9188d72cc8893f97c4c5f"
     },
     "tools/train_qwen3b_proxy.py": {
-      "bytes": 86167,
-      "sha256": "0d67a0a29b8106a6050ecf8e07c8f516c81b8e457d5a65bc70dd73896bfbe0b3"
+      "bytes": 86258,
+      "sha256": "f246ec8c2db0b9e05dc606576636bb381cb8ffd1e9075382bdb13b264d0f9941"
     },
     "src/moonvit_glue/training_health.py": {
       "bytes": 20204,

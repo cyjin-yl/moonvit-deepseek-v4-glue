@@ -664,7 +664,8 @@ def _score_health_condition(
     pad_token_id: int,
     device: torch.device,
 ) -> list[dict[str, Any]]:
-    all_supervisions = [item[condition] for item in rows]
+    supervision_condition = "vision" if condition == "shuffled" else condition
+    all_supervisions = [item[supervision_condition] for item in rows]
     flat_supervisions = [supervision for pair in all_supervisions for supervision in pair]
     input_ids, attention_mask, labels = _health_supervision_batch(
         flat_supervisions, pad_token_id=pad_token_id, device=device

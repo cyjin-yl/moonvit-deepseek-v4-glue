@@ -1,0 +1,13 @@
+{
+  "format_version": "qwen3b-geometry-repair-pre-result-repair-v1",
+  "status": "failed_before_optimizer_step",
+  "reason": "The first health-enabled GPU run constructed vision/blind supervision but the shuffled condition was incorrectly looked up as a separate key.",
+  "exception": "KeyError: shuffled",
+  "stage": "health_probe_step0_reference",
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "fix": "shuffled now reuses the exact vision answer supervision while replacing only the image feature ID",
+  "schedule_thresholds_and_geometry_objective_unchanged": true,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}

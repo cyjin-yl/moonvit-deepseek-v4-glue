@@ -1,0 +1,10 @@
+{
+  "capability_claim_allowed": false,
+  "exception": "'shuffled'",
+  "exception_type": "KeyError",
+  "final_half_scored": false,
+  "paid_resources_used": false,
+  "stage": "health_probe_step0_reference",
+  "status": "failed",
+  "traceback": "Traceback (most recent call last):\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_qwen3b_proxy.py\", line 1978, in main\n    _run(args, stage)\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_qwen3b_proxy.py\", line 1333, in _run\n    initial_probe = run_health_probe(\n                    ^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_qwen3b_proxy.py\", line 842, in run_health_probe\n    payload[\"causal\"] = run_health_causal_probe(\n                        ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_qwen3b_proxy.py\", line 739, in run_health_causal_probe\n    condition: _score_health_condition(\n               ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/utils/_contextlib.py\", line 124, in decorate_context\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_qwen3b_proxy.py\", line 667, in _score_health_condition\n    all_supervisions = [item[condition] for item in rows]\n                        ~~~~^^^^^^^^^^^\nKeyError: 'shuffled'\n"
+}
