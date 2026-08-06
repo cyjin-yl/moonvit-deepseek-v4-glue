@@ -23,6 +23,7 @@ import moonvit_glue.chat_contract as chat_contract_module
 import moonvit_glue.checkpointing as checkpointing_module
 import moonvit_glue.feature_cache as feature_cache_module
 import moonvit_glue.fixed_budget as fixed_budget_module
+import moonvit_glue.geometry_regularization as geometry_regularization_module
 import moonvit_glue.merge as merge_module
 import moonvit_glue.model as model_module
 import moonvit_glue.projector as projector_module
@@ -39,6 +40,12 @@ from moonvit_glue.fixed_budget import (
     route_training_example,
     validate_fixed_budget_contract,
     validate_resume_history,
+)
+from moonvit_glue.geometry_regularization import (
+    geometry_payload,
+    geometry_regularization_loss,
+    global_gradient_norm,
+    pool_projector_batch,
 )
 from moonvit_glue.model import VisionCausalLM
 from moonvit_glue.projector import PatchMergerProjector
@@ -141,6 +148,7 @@ def runtime_source_files() -> list[dict[str, Any]]:
         Path(checkpointing_module.__file__).resolve(),
         Path(feature_cache_module.__file__).resolve(),
         Path(fixed_budget_module.__file__).resolve(),
+        Path(geometry_regularization_module.__file__).resolve(),
         Path(merge_module.__file__).resolve(),
         Path(model_module.__file__).resolve(),
         Path(projector_module.__file__).resolve(),
@@ -250,8 +258,103 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--checkpoint-every", type=int, default=100)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--development-max-optimizer-steps", type=int)
+    parser.add_argument("--geometry-screen-contract", type=Path)
+    parser.add_argument("--geometry-calibration", type=Path)
+    parser.add_argument("--geometry-reference-projector", type=Path)
+    parser.add_argument("--geometry-arm")
     parser.add_argument("--allow-dirty-development-run", action="store_true")
     return parser.parse_args()
+
+
+def load_geometry_setup(
+    args: argparse.Namespace, *, core_contract_path: Path, core_contract: dict[str, Any]
+) -> dict[str, Any] | None:
+    """校验并加载 Package 15P 的固定几何辅助项配置。"""
+
+    fields = (
+        args.geometry_screen_contract,
+        args.geometry_calibration,
+        args.geometry_reference_projector,
+        args.geometry_arm,
+    )
+    if all(value is None for value in fields):
+        return None
+    if any(value is None for value in fields):
+        raise ValueError("geometry screen arguments must be supplied together")
+    screen_path = args.geometry_screen_contract
+    calibration_path = args.geometry_calibration
+    reference_dir = args.geometry_reference_projector
+    assert screen_path is not None and calibration_path is not None
+    assert reference_dir is not None and args.geometry_arm is not None
+    screen = json.loads(screen_path.read_text(encoding="utf-8"))
+    calibration = json.loads(calibration_path.read_text(encoding="utf-8"))
+    if sha256_file(core_contract_path) != screen["core_contract_file_sha256"]:
+        raise ValueError("geometry screen core contract hash differs")
+    if calibration.get("status") != "valid" or calibration.get(
+        "formal_calibration_complete"
+    ) is not True:
+        raise ValueError("geometry calibration is not a formal valid result")
+    if calibration.get("screen_contract_file_sha256") != sha256_file(screen_path):
+        raise ValueError("geometry calibration is bound to a different screen contract")
+    reference_sha = sha256_file(reference_dir / "projector.safetensors")
+    if (
+        reference_sha != screen["reference_projector_sha256"]
+        or reference_sha
+        != core_contract["canonical_projector"]["initialization_contract"]["step0"][
+            "weights_sha256"
+        ]
+    ):
+        raise ValueError("geometry reference projector differs from exact step0")
+    arm_name = str(args.geometry_arm)
+    derived = calibration.get("derived_arms", {})
+    if arm_name not in derived:
+        raise ValueError(f"geometry arm is absent from calibration: {arm_name}")
+    arm = derived[arm_name]
+    target_ratio = float(arm["target_gradient_ratio"])
+    geometry_lambda = float(arm["lambda"])
+    if target_ratio < 0.0 or geometry_lambda < 0.0:
+        raise ValueError("geometry target ratio and lambda must be non-negative")
+    objective = screen["geometry_objective"]
+    weights = objective["component_weights"]
+    return {
+        "screen_contract": screen,
+        "screen_contract_file_sha256": sha256_file(screen_path),
+        "calibration_summary": calibration,
+        "calibration_summary_file_sha256": sha256_file(calibration_path),
+        "reference_projector_dir": str(reference_dir.resolve()),
+        "reference_projector_sha256": reference_sha,
+        "arm": arm_name,
+        "target_gradient_ratio": target_ratio,
+        "geometry_lambda": geometry_lambda,
+        "geometry_kwargs": {
+            "scale_weight": float(weights["scale"]),
+            "relative_spread_weight": float(weights["relative_spread"]),
+            "centered_gram_weight": float(weights["centered_gram"]),
+            "epsilon": float(objective["epsilon"]),
+        },
+    }
+
+
+def compute_geometry_auxiliary_gradients(
+    *,
+    projector: PatchMergerProjector,
+    reference_projector: PatchMergerProjector,
+    feature_batches: list[list[torch.Tensor]],
+    geometry_kwargs: dict[str, float],
+) -> tuple[Any, tuple[torch.Tensor, ...], float]:
+    """对一个真实 global batch 计算无权重 geometry loss 及其 projector 梯度。"""
+
+    current_outputs = [projector(groups) for groups in feature_batches]
+    current_pooled = pool_projector_batch(current_outputs)
+    with torch.no_grad():
+        reference_outputs = [reference_projector(groups) for groups in feature_batches]
+        reference_pooled = pool_projector_batch(reference_outputs)
+    result = geometry_regularization_loss(
+        current_pooled, reference_pooled, **geometry_kwargs
+    )
+    gradients = torch.autograd.grad(result.total, tuple(projector.parameters()))
+    gradient_norm = float(global_gradient_norm(gradients))
+    return result, gradients, gradient_norm
 
 
 def prepare_supervision(
@@ -442,6 +545,15 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
     )
     if target_steps <= 0 or target_steps > total_steps:
         raise ValueError("development max optimizer steps falls outside the 4k budget")
+    geometry_setup = load_geometry_setup(
+        args, core_contract_path=args.contract, core_contract=contract
+    )
+    if geometry_setup is not None:
+        expected_screen_steps = int(
+            geometry_setup["screen_contract"]["screen"]["optimizer_steps"]
+        )
+        if target_steps != expected_screen_steps:
+            raise ValueError("geometry screen optimizer-step budget differs")
     formal_run = (
         tracked_clean
         and not args.allow_dirty_development_run
@@ -463,6 +575,25 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         "initial_projector_sha256": expected_projector_sha,
         "proxy_receiver_sha256": expected_receiver_sha,
     }
+    if geometry_setup is not None:
+        checkpoint_binding.update(
+            {
+                "geometry_screen_contract_file_sha256": geometry_setup[
+                    "screen_contract_file_sha256"
+                ],
+                "geometry_calibration_summary_file_sha256": geometry_setup[
+                    "calibration_summary_file_sha256"
+                ],
+                "geometry_reference_projector_sha256": geometry_setup[
+                    "reference_projector_sha256"
+                ],
+                "geometry_arm": geometry_setup["arm"],
+                "geometry_target_gradient_ratio": geometry_setup[
+                    "target_gradient_ratio"
+                ],
+                "geometry_lambda": geometry_setup["geometry_lambda"],
+            }
+        )
     run_config = {
         "format_version": "qwen3b-fixed-budget-training-run-v1",
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -492,6 +623,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         "checkpoint_every": args.checkpoint_every,
         "resume": str(args.resume.resolve()) if args.resume else None,
         "supervision": supervision_summary,
+        "geometry_setup": geometry_setup,
     }
     write_json(args.out / "RUN_CONFIG.json", run_config)
 
@@ -539,6 +671,13 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
     )
     if sum(parameter.numel() for parameter in receiver.parameters()) != 0:
         raise ValueError("proxy receiver unexpectedly has trainable parameters")
+    reference_projector = None
+    if geometry_setup is not None:
+        reference_projector = PatchMergerProjector.from_pretrained(
+            geometry_setup["reference_projector_dir"],
+            device=device,
+            dtype=torch.float32,
+        ).requires_grad_(False).eval()
     model = VisionCausalLM(
         language_model=language_model,
         projector=projector,
@@ -615,10 +754,41 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
             optimizer.zero_grad(set_to_none=True)
             micro_losses = []
             batch_answer_tokens = 0
-            for index in indices:
+            batch_feature_groups = None
+            auxiliary_result = None
+            auxiliary_gradients: tuple[torch.Tensor, ...] | None = None
+            auxiliary_gradient_norm = 0.0
+            if geometry_setup is not None:
+                assert reference_projector is not None
+                batch_feature_groups = [
+                    cache.get(
+                        prepared[index]["id"], device=device, dtype=torch.float32
+                    )
+                    for index in indices
+                ]
+                (
+                    auxiliary_result,
+                    auxiliary_gradients,
+                    auxiliary_gradient_norm,
+                ) = compute_geometry_auxiliary_gradients(
+                    projector=projector,
+                    reference_projector=reference_projector,
+                    feature_batches=batch_feature_groups,
+                    geometry_kwargs=geometry_setup["geometry_kwargs"],
+                )
+                geometry_lambda = float(geometry_setup["geometry_lambda"])
+                if geometry_lambda > 0.0:
+                    for parameter, gradient in zip(
+                        projector.parameters(), auxiliary_gradients, strict=True
+                    ):
+                        parameter.grad = gradient.detach().mul(geometry_lambda)
+
+            for micro_index, index in enumerate(indices):
                 item = prepared[index]
-                feature_groups = cache.get(
-                    item["id"], device=device, dtype=torch.float32
+                feature_groups = (
+                    batch_feature_groups[micro_index]
+                    if batch_feature_groups is not None
+                    else cache.get(item["id"], device=device, dtype=torch.float32)
                 )
                 input_ids = torch.tensor(
                     [item["input_ids"]], dtype=torch.long, device=device
@@ -640,6 +810,50 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
                 micro_losses.append(float(loss.detach().item()))
                 batch_answer_tokens += int(item["answer_tokens"])
                 del outputs, loss, input_ids, labels, attention_mask, feature_groups
+
+            geometry_history = None
+            if geometry_setup is not None:
+                assert auxiliary_result is not None and auxiliary_gradients is not None
+                geometry_lambda = float(geometry_setup["geometry_lambda"])
+                ce_squared = torch.zeros((), device=device, dtype=torch.float64)
+                auxiliary_squared = torch.zeros((), device=device, dtype=torch.float64)
+                dot = torch.zeros((), device=device, dtype=torch.float64)
+                for parameter, auxiliary_gradient in zip(
+                    projector.parameters(), auxiliary_gradients, strict=True
+                ):
+                    if parameter.grad is None:
+                        raise ValueError("projector CE gradient is absent")
+                    weighted = auxiliary_gradient.detach().mul(geometry_lambda)
+                    ce_gradient = parameter.grad.detach() - weighted
+                    ce_norm = torch.linalg.vector_norm(ce_gradient.to(torch.float32))
+                    auxiliary_norm = torch.linalg.vector_norm(weighted.to(torch.float32))
+                    ce_squared += ce_norm.to(torch.float64).square()
+                    auxiliary_squared += auxiliary_norm.to(torch.float64).square()
+                    dot += torch.sum(
+                        ce_gradient.to(torch.float32) * weighted.to(torch.float32)
+                    ).to(torch.float64)
+                ce_gradient_norm = float(torch.sqrt(ce_squared))
+                weighted_auxiliary_gradient_norm = float(torch.sqrt(auxiliary_squared))
+                denominator = ce_gradient_norm * weighted_auxiliary_gradient_norm
+                geometry_history = {
+                    **geometry_payload(auxiliary_result),
+                    "arm": geometry_setup["arm"],
+                    "target_gradient_ratio": geometry_setup[
+                        "target_gradient_ratio"
+                    ],
+                    "lambda": geometry_lambda,
+                    "unweighted_auxiliary_gradient_norm": auxiliary_gradient_norm,
+                    "weighted_auxiliary_gradient_norm": weighted_auxiliary_gradient_norm,
+                    "ce_gradient_norm_before_clip": ce_gradient_norm,
+                    "weighted_auxiliary_over_ce_gradient_norm": (
+                        weighted_auxiliary_gradient_norm / ce_gradient_norm
+                        if ce_gradient_norm > 0.0
+                        else None
+                    ),
+                    "ce_auxiliary_gradient_cosine": (
+                        float(dot) / denominator if denominator > 0.0 else None
+                    ),
+                }
 
             parameter_gradients = []
             for name, parameter in projector.named_parameters():
@@ -705,6 +919,8 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
                 "peak_gpu_memory_bytes": int(torch.cuda.max_memory_allocated(device)),
                 "learning_rate": float(optimizer.param_groups[0]["lr"]),
             }
+            if geometry_history is not None:
+                history_row["geometry"] = geometry_history
             history.append(history_row)
             history_stream.write(
                 json.dumps(history_row, ensure_ascii=False, sort_keys=True) + "\n"
@@ -752,6 +968,7 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
     )
     set_stage(stage, "complete")
     losses = [float(row["loss"]) for row in history]
+    geometry_rows = [row["geometry"] for row in history if "geometry" in row]
     summary = {
         "status": "valid" if formal_run else "development_only",
         "formal_training_complete": formal_run,
@@ -802,6 +1019,22 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
         "supervision_records_sha256": supervision_summary["records_file_sha256"],
         "transfer_label": "transferable_with_runtime_validation",
     }
+    if geometry_setup is not None:
+        if len(geometry_rows) != target_steps:
+            raise ValueError("geometry history is missing optimizer steps")
+        summary["geometry_arm"] = geometry_setup["arm"]
+        summary["geometry_target_gradient_ratio"] = geometry_setup[
+            "target_gradient_ratio"
+        ]
+        summary["geometry_lambda"] = geometry_setup["geometry_lambda"]
+        summary["geometry_first"] = geometry_rows[0]
+        summary["geometry_last"] = geometry_rows[-1]
+        summary["geometry_auxiliary_total_mean"] = sum(
+            float(row["total"]) for row in geometry_rows
+        ) / len(geometry_rows)
+        summary["geometry_weighted_auxiliary_over_ce_mean"] = sum(
+            float(row["weighted_auxiliary_over_ce_gradient_norm"]) for row in geometry_rows
+        ) / len(geometry_rows)
     write_json(args.out / "SUMMARY.json", summary)
     print(json.dumps(summary, ensure_ascii=False, indent=2), flush=True)
     return summary

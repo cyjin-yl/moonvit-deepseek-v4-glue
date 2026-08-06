@@ -1,0 +1,62 @@
+{
+  "format_version": "qwen3b-geometry-repair-screen-preregistration-v1",
+  "frozen_before_calibration_and_screen": true,
+  "runner_base_commit": "6be017add062e24c375ac3218a45a9afeb8707d1",
+  "triggering_result": {
+    "path": "experiments/qwen3b_community_eval_20260805/representation_trajectory_v1/DECISION.json",
+    "bytes": 2307,
+    "sha256": "5e003ceec317b2e9aef8f6f77dc78936bf777685a08af7e97c747da0da9a33ab",
+    "onset_step": 100,
+    "onset_examples_seen": 800
+  },
+  "source_files": {
+    "configs/qwen3b-geometry-repair-screen-v1.json": {
+      "bytes": 3925,
+      "sha256": "4b23e708e1fb0ff4c4bfa9f974d2680128f579bf43e60ce2ab5d3436f2170e8e"
+    },
+    "src/moonvit_glue/geometry_regularization.py": {
+      "bytes": 6084,
+      "sha256": "cc720346f091befd1b1fb6c3b1ee5dfaa283fbf2235a8e7620f67e54d95a36f1"
+    },
+    "tools/calibrate_qwen3b_geometry_regularization.py": {
+      "bytes": 13953,
+      "sha256": "6e3994043e8471605b874d8e76118afbe704c50510349db65eb3cd4f4bad6e57"
+    },
+    "tools/verify_qwen3b_geometry_calibration.py": {
+      "bytes": 8226,
+      "sha256": "b274af1088919e753f976fb05ea78c8bf225ef22e7fe216de06b6dae1305641d"
+    },
+    "tools/train_qwen3b_proxy.py": {
+      "bytes": 47757,
+      "sha256": "5337a126b8a7fea6724eb53ea09087df9787fbbc9bf171b93abf9e3a5b3d6240"
+    }
+  },
+  "calibration": {
+    "checkpoint_step": 100,
+    "optimizer_batch_step": 100,
+    "record_indices": [792, 793, 794, 795, 796, 797, 798, 799],
+    "recorded_ce_gradient_norm_before_clip": 0.7901650667190552,
+    "target_gradient_ratios": [0.05, 0.2, 0.8],
+    "lambda_values_known_at_freeze": false,
+    "lambda_derivation_frozen_at_freeze": true
+  },
+  "screen": {
+    "arms": ["control", "ratio005", "ratio020", "ratio080"],
+    "optimizer_steps_per_arm": 100,
+    "examples_seen_per_arm": 800,
+    "same_step0_order_resolution_receiver_optimizer": true,
+    "selection_rule": "smallest nonzero arm passing both representation guards at projector and receiver and final20 CE/control <= 1.25",
+    "no_pass_action": "do_not_spend_full_4k_budget_and_redesign_projector_structure_or_objective",
+    "pass_action": "train_selected_arm_for_exact_500_steps_then_run_representation_preference_and_generation_gates"
+  },
+  "hypotheses": {
+    "supported_if_pass": "early common-direction and rank collapse is a preventable objective-geometry failure",
+    "refuted_if_no_pass": "this initialization-geometry objective is sufficient at an acceptable CE tradeoff"
+  },
+  "interpretation_boundary": "A screen pass cannot establish grounding or visual ability and cannot advance previous-best.",
+  "transfer_label": "directly_transferable",
+  "paid_resources_used": false,
+  "final_half_scored": false,
+  "calibration_result_exists_at_freeze": false,
+  "screen_result_exists_at_freeze": false
+}
