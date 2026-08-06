@@ -1764,3 +1764,5 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
 这条轨迹把已知故障从“step 1--100 的某处”缩小到 `[1,2]`。CE 在两步内下降约 41%，projector 与 receiver 的 RMS 同时上升，跨图 spread 和有效秩同时下降；触发原因是 `projector_rms_rising_spread_falling` 与 `receiver_rms_rising_spread_falling`。八条 teacher-forced probe 在 step 2 的 vision/shuffled preference 为 0.625/0.375，但这只是早期小探针，且没有完整 ScreenSpot 能力证据，不能提升 checkpoint。
 
 结果支持两个判断：早期 common-direction collapse 确实是训练主故障，在线监控能在昂贵的长跑前保存可恢复现场。结果反驳“loss 下降就足以证明模型看到了图像”，也说明 lambda-zero control 不能直接进入 500-step 扩展。当前 `previous_best` 仍为 step0，Gate D 仍为 *NO-GO*；下一项按同一预算和同一停止规则运行 `ratio005`，随后依次处理另外两条预注册臂。完整 1.1 GB raw checkpoint/optimizer 现场保存在本地 V100 归档目录，Git 只提交可审查日志、manifest 和路径绑定。
+
+`ratio005` 的 matched 结果没有改变这个判断。它使用固定的 λ=`0.01018730507868909`，在 step 2 的 total loss 为 2.45268（CE 2.43802，geometry 1.43947），projector 与 receiver 的 spread ratio 为 0.2691 与 0.2254，receiver effective-rank ratio 为 0.3622，同样触发两条 adverse-trend guard 并回滚到 step 1。control 与 ratio005 的 onset 都是 `[1,2]`，所以“control 由于没有几何项才失败”目前被反驳；需要继续跑 λ=`0.04074922031475636` 与 `0.16299688125902545`，再按预注册规则决定是否重设计 projector。

@@ -19,6 +19,10 @@ copy, including the 1.1 GB checkpoint/optimizer payload, is retained at
 `D:/V100-artifacts/geometry_repair_screen_hf_v1/control` and on the V100 HDD;
 `control/RAW_ARTIFACT_POINTER.json` binds both roots and the manifest SHA-256.
 
+The matched `ratio005` arm is now also archived here. It stops at the same
+`[1,2]` onset, so the smallest pre-registered geometry dose does not rescue the
+early trajectory. Its raw pointer and result are under `ratio005/`.
+
 This result keeps Gate D at `NO-GO`, leaves `previous_best=step0`, and requires
 the matched `ratio005`, `ratio020`, and `ratio080` arms to run under the same
 early-stop contract before any 500-step expansion or capability evaluation.

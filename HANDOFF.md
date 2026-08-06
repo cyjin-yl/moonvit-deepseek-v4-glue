@@ -51,6 +51,14 @@ automatic stop/rollback. It does not establish visual ability, does not promote
 `ratio020`, and `ratio080` arms remain required; if they all stop or exceed the
 frozen CE/geometry rule, the next experiment is projector structure repair.
 
+The first matched repair arm, `ratio005` (`lambda=0.01018730507868909`), also
+stopped at step 2 with onset `[1,2]`. At that point total loss was 2.45268
+(CE 2.43802 plus geometry 1.43947), while projector/receiver spread ratios
+were `0.2691/0.2254` and receiver rank ratio was `0.3622`. The tiny loss change
+relative to control did not preserve image geometry. This refutes the idea that
+the minimum calibrated dose alone is enough; `ratio020` is the next matched
+run.
+
 ## ⚠️ ACTIVE V100 REAL-VISION BRIDGE (2026-08-06)
 
 **Current task / hard boundary**: the engineering mainline is now a fixed real-data bridge on pure-text `Qwen/Qwen2.5-3B-Instruct`, followed by transfer of the same MoonViT-V2/projector/data/eval contract to DeepSeek-V4-Flash-0731. The 0.5B/synthetic line remains mechanism evidence. Do not rent any server, create a paid resource, run the full DeepSeek weights, or inspect final evaluation halves without explicit authorization. Exact V100 environment evidence is under `experiments/v100_perception_20260804/infra/environment/`.
@@ -69,7 +77,7 @@ frozen CE/geometry rule, the next experiment is projector structure repair.
 | Paired preference 机制判定 | **完成 / 无 content-specific readout** | trained vision/blind/shuffled 为 46%/56%/52%；训练显著降低坐标 NLL，但正确图与错图的 correct-logp 无差异 |
 | Grounding-enriched fixed-budget treatment | **训练通过 / preference+generation 拒绝** | preference 52%/56%/54%；generation click 6%/12%/6%，vision−blind mean distance 显著恶化 109.47 |
 | Projector representation retention | **step1–2 已触发在线止损** | Package 15P control 在 step2 停止；projector spread/rank ratio 0.2690/0.5022，receiver 0.2254/0.3622，RMS 0.1235→0.6598；CE 仍 4.144→2.438 |
-| Package 15P geometry calibration | **已完成；control 高频轨迹已验证止损** | unweighted auxiliary grad 3.8782；λ=0.0101873/0.0407492/0.162997；control onset [1,2]；独立 health verifier `verified` |
+| Package 15P geometry calibration | **已完成；control/ratio005 高频轨迹均止损** | unweighted auxiliary grad 3.8782；λ=0.0101873/0.0407492/0.162997；两臂 onset 均 [1,2]；独立 health verifier `verified` |
 | 通用 train/save/resume/generate 链路 | 通过（含 3B 代理） | Qwen2.5-3B + 真 MoonViT 图像完成生成、梯度、一步 AdamW 与 checkpoint/optimizer/RNG 精确恢复 |
 | 完整 DeepSeek-V4-Flash-0731 闭环 | **未通过** | 完整权重从未完成图像 forward/backward/train/save/resume/generate |
 | Gate D 量化 DGRAD | **未通过（本地 harness 完成）** | 三模式接口/reference 通过；真实 FP8/FP4 module 仍 `hardware_pending` |

@@ -1,8 +1,8 @@
 {
   "format_version": "experiment-artifact-manifest-v1",
-  "created_at_utc": "2026-08-06T05:41:43.701475+00:00",
+  "created_at_utc": "2026-08-06T05:58:27.199313+00:00",
   "root": "geometry_repair_screen_hf_v1",
-  "git_base_sha": "60031ff87b030ad1b24100b38310c33b03ab902c",
+  "git_base_sha": "7343e333aaf5ece237c53263468718fcc88d3e01",
   "files": {
     "control/ATTEMPT.json": {
       "bytes": 2048,
@@ -69,8 +69,8 @@
       "sha256": "5b6446c135b0b69838fc77983e2a0f3633593f7cb7bd8ea2c726a3fec2f99a88"
     },
     "control/RAW_ARTIFACT_POINTER.json": {
-      "bytes": 828,
-      "sha256": "ac55c42f4be9d617fdff256409d47f5f862915cf147566453e838c02eee9625c"
+      "bytes": 865,
+      "sha256": "0b5e424f66be36d97be73fa2a28b9f31212182bfa7cdd0b8f89abaaac7848e93"
     },
     "control/RESULT.json": {
       "bytes": 4716,
@@ -112,12 +112,120 @@
       "bytes": 1547,
       "sha256": "2783bfa668d47f006874373fa23383cf29326b4805f12ff83ad2c8c7eaf3ccd8"
     },
+    "ratio005/ATTEMPT.json": {
+      "bytes": 2050,
+      "sha256": "e0fbcc3092efeec58ba07105d5a444689d071b13a975849097cd01e36943f0a6"
+    },
+    "ratio005/CACHE_VERIFICATION.json": {
+      "bytes": 752,
+      "sha256": "989d6e1bee684233d888860a6883d91419392537ecbf387c64d20db6da16ae1b"
+    },
+    "ratio005/FAILURE.json": {
+      "bytes": 13307,
+      "sha256": "17cee19bec6edfc0a03f79d160751fc733bb2792c052ed0a63cb98c6e750a789"
+    },
+    "ratio005/HEALTH_ARTIFACT_MANIFEST.json": {
+      "bytes": 4559,
+      "sha256": "4f393bc1fd7b2303809e45f0554c97782df225940d5211be3af324884040fc2e"
+    },
+    "ratio005/health_snapshots/checkpoints/failure-step-000002/CHECKPOINT_MANIFEST.json": {
+      "bytes": 2890,
+      "sha256": "085e345ffd25ffef595b12f46fd23aa79a5de91de5d8273b5251b2fcd2b21280"
+    },
+    "ratio005/health_snapshots/checkpoints/failure-step-000002/history.json": {
+      "bytes": 3442,
+      "sha256": "98a7c0204c21be6adc37dbc790c82e2ceffeb245c257c779e3bc39f465a0bbb6"
+    },
+    "ratio005/health_snapshots/checkpoints/failure-step-000002/projector_config.json": {
+      "bytes": 128,
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    "ratio005/health_snapshots/checkpoints/healthy-step-000000/CHECKPOINT_MANIFEST.json": {
+      "bytes": 2860,
+      "sha256": "d472a17f96a5ba6fd320b17bf0064e5689a30a5896ef797f24ffbad5dac69016"
+    },
+    "ratio005/health_snapshots/checkpoints/healthy-step-000000/history.json": {
+      "bytes": 33,
+      "sha256": "14a770dff8ee1382261970572c8e0c62554c19e22c3ea97513c5315e13909387"
+    },
+    "ratio005/health_snapshots/checkpoints/healthy-step-000000/projector_config.json": {
+      "bytes": 128,
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    "ratio005/health_snapshots/checkpoints/healthy-step-000001/CHECKPOINT_MANIFEST.json": {
+      "bytes": 2888,
+      "sha256": "23ca119853e8d9a14c83f5971b3ae566aac6a96973190643cdefcc5cb5d5c0fa"
+    },
+    "ratio005/health_snapshots/checkpoints/healthy-step-000001/history.json": {
+      "bytes": 1663,
+      "sha256": "b182d5094a32e5b82356a5ea7d93ee49d27932787c38350735ede2af5f87d322"
+    },
+    "ratio005/health_snapshots/checkpoints/healthy-step-000001/projector_config.json": {
+      "bytes": 128,
+      "sha256": "751382bd31ac272ad39f815f1bcfff458a5b0b8e8cd6b5ab243fb0173dd32087"
+    },
+    "ratio005/HEALTH_VERIFIER.json": {
+      "bytes": 377,
+      "sha256": "ed243cc911b4d85763d55a2498a20b07dc0c1cbe41b68572d1d8e8e735a1a946"
+    },
+    "ratio005/probe_metrics.jsonl": {
+      "bytes": 22865,
+      "sha256": "683057566c0cd336d98e59cab6a99358b64892873d0ebc077880dac31fc44999"
+    },
+    "ratio005/ratio005.launcher.log": {
+      "bytes": 2968,
+      "sha256": "fec5c6f5fd8082b6be05593828c2facd49114e2065daddc7da3718bcfda83a26"
+    },
+    "ratio005/RAW_ARTIFACT_POINTER.json": {
+      "bytes": 876,
+      "sha256": "a4bb1f9359fcdee01ebcc50520c0abbe88cda0854886c3369b92e8d409d0394e"
+    },
+    "ratio005/README.md": {
+      "bytes": 795,
+      "sha256": "e3949e14917e4e10186082a6af675f59795d68ec7658edfc12eeb0b188e2726b"
+    },
+    "ratio005/RESULT.json": {
+      "bytes": 4078,
+      "sha256": "b492bc502dcaa0589e80ba2b0c0e5cba3fadc951dca8a711677cacfe349c4d1d"
+    },
+    "ratio005/ROLLBACK.json": {
+      "bytes": 440,
+      "sha256": "5e66ef4f87a5190e61a4da9f1b409547b8c1b86a01fac6e518d8f5ed66b81ef7"
+    },
+    "ratio005/run.log": {
+      "bytes": 2968,
+      "sha256": "fec5c6f5fd8082b6be05593828c2facd49114e2065daddc7da3718bcfda83a26"
+    },
+    "ratio005/RUN_CONFIG.json": {
+      "bytes": 23462,
+      "sha256": "a078a00b2b4a87c47d4e3f197589e2d6cafdb115aed45ccac70ed0e05e55adc5"
+    },
+    "ratio005/SUMMARY.json": {
+      "bytes": 1776,
+      "sha256": "80d200f12896599eab8156d89761233c90718bf238485dc4da816adde9046e39"
+    },
+    "ratio005/SUPERVISION_RECORDS.jsonl": {
+      "bytes": 2275709,
+      "sha256": "d90ea7515a67b2f4d77320fe061aef1cfc44ef877726d312366a309390ab5bc9"
+    },
+    "ratio005/SUPERVISION_SUMMARY.json": {
+      "bytes": 452,
+      "sha256": "b48ccd66814269906b96bebc6a5c3b48727a2d1ea0f935468e1e19ba33d94a7e"
+    },
+    "ratio005/train_health.jsonl": {
+      "bytes": 1726,
+      "sha256": "1b825a0839fe6bbfb718a5538c382a3b1634b62c58a2fbb43bcfb14f7696046f"
+    },
+    "ratio005/TRAINING_HISTORY.jsonl": {
+      "bytes": 2821,
+      "sha256": "5c70101c70d6be0616a7307d371d7e194d88667cec643c876e7ae098feb337a0"
+    },
     "README.md": {
-      "bytes": 1414,
-      "sha256": "75b55d05d524ff4fa071c08aa0b1c889527b00a8a4f63b6d3b90bc9c45de533e"
+      "bytes": 1638,
+      "sha256": "b237624d03170a5e1b96d900585a91fa784ce409a497ebf22debcd797edca575"
     }
   },
-  "file_count": 28,
-  "total_bytes": 2378618,
+  "file_count": 55,
+  "total_bytes": 4755020,
   "final_half_scored": false
 }
