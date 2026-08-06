@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_qwen3b_proxy.py", line 2001, in <module>
+    main()
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_qwen3b_proxy.py", line 1956, in main
+    raise FileExistsError(f"refusing to overwrite training run: {args.out}")
+FileExistsError: refusing to overwrite training run: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/baseline_none

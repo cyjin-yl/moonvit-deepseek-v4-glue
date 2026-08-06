@@ -67,6 +67,18 @@ def test_scalar_hash_failure_is_archived_without_gpu_result():
     assert repair["screen_budget_changed"] is False
 
 
+def test_launcher_setup_failure_is_archived_without_gpu_result():
+    failure_root = PACKAGE / "failures" / "attempt03_precreate_output"
+    attempt = _load(failure_root / "ATTEMPT.json")
+    failure = _load(failure_root / "FAILURE.json")
+    repair = _load(failure_root / "REPAIR_RECORD.json")
+    assert attempt["gpu_started"] is False
+    assert failure["optimizer_step_created"] is False
+    assert failure["checkpoint_or_capability_result_created"] is False
+    assert repair["contract_changed"] is False
+    assert repair["screen_budget_changed"] is False
+
+
 def test_initialization_pointer_is_complete_and_bound():
     pointer = _load(PACKAGE / "INITIALIZATION_ARTIFACT_POINTER.json")
     assert pointer["complete_copy"] is True

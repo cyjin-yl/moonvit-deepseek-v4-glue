@@ -1802,3 +1802,11 @@ Package 15Q 已在任何新结构结果前冻结。它把一个结构变量放�
 15Q 的三条轨迹都在 step 2 止损后，15R 把原始 projector 保留为主通路，在 `linear_2` 后增加一条 4096 宽度残差：`zero_init_residual` 将分支权重全部置零，`gated_residual` 使用正常初始化分支并将 scalar gate 置零。两者的 step0 输出逐元素等于旧 projector，base MLP 权重 SHA 完全相同；参数量分别为 50,341,888 和 50,341,889。control 仍是同一 step0 projector，训练主干、receiver、数据顺序、学习率和 health schedule 全部固定。
 
 15R 的首阶段只跑 100 optimizer steps/800 examples，要求 projector 与 receiver 都没有 critical guard、没有早期塌缩后恢复，且 CE 代价满足预注册上限。健康通过才进入固定 ScreenSpot/TextVQA/DocVQA/OCRBench 合同；健康本身不能作为视觉能力结论。初始化 hash、独立 verifier、失败记录和迁移边界已冻结，下一步在 V100 上按 control、zero-init、gated 顺序执行。
+
+== Package 15R：baseline control 先验复现
+
+启动器的第一次尝试在 GPU 初始化前失败：包装脚本预先创建了输出叶目录，训练器按“拒绝覆盖已有 run”合同退出。该次日志已归档到 `projector_residual_screen_v1/failures/attempt03_precreate_output/`，没有 optimizer step、checkpoint 或能力结果；修复只改变目录创建时机。
+
+修复后的 `baseline_none` 使用提交 `5682265c` 在 V100 上加载真实 Qwen2.5-3B、冻结 MoonViT-V2 特征和同一 receiver。step 1 probe 尚未触发 critical guard；step 2 的 projector probe RMS 为 `0.6598`，spread/rank ratio 为 `0.2690/0.5022`，receiver 为 `0.8810` 与 `0.2254/0.3622`。CE 从 `4.14400` 降到 `2.43802`，两条 RMS-rising/spread-falling critical guard 在 `[1,2]` 区间触发，训练自动停止并回滚到 step 1。
+
+独立 verifier 重算了 3 个 probe、3 个 checkpoint 与 22 个 health artifact，状态为 `verified`，health manifest 总字节数 `1,141,294,624`。完整 checkpoint、optimizer、RNG、batch IDs 和日志已完成本地/远端双份保存；Git 只保留可审查结果和 raw pointer。该 control 只证明健康合同能复现并止损，不能证明视觉能力，也没有进入 ScreenSpot、TextVQA、DocVQA 或 OCRBench。下一步运行零初始化残差臂；若它仍在 step 2 失败，优先检查残差分支的梯度接口，而不扩大训练预算。

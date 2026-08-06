@@ -1,0 +1,75 @@
+{
+  "format_version": "experiment-artifact-manifest-v1",
+  "created_at_utc": "2026-08-06T09:03:20.108954+00:00",
+  "root": "projector_residual_screen_hf_v1",
+  "git_base_sha": "5682265c1640c5526929b48209b69c6d0b74cefb",
+  "files": {
+    "README.md": {
+      "bytes": 1024,
+      "sha256": "6791d57866a06be384c41e64c405f200e493c110337a26e0288a592204b5b8e1"
+    },
+    "results/baseline_none/ATTEMPT.json": {
+      "bytes": 1664,
+      "sha256": "516420b576c7eb5b38bb799d44276a1dd247e0cde6b80fa0d0ac952b919cad5e"
+    },
+    "results/baseline_none/CACHE_VERIFICATION.json": {
+      "bytes": 752,
+      "sha256": "989d6e1bee684233d888860a6883d91419392537ecbf387c64d20db6da16ae1b"
+    },
+    "results/baseline_none/FAILURE.json": {
+      "bytes": 13293,
+      "sha256": "09fe22a4b03eec0700075bb0f4eda6db5c6f163d9e912da5b3de6e6209c39564"
+    },
+    "results/baseline_none/HEALTH_ARTIFACT_MANIFEST.json": {
+      "bytes": 4558,
+      "sha256": "e2f1330402de9323102eff8fd38449375824e7b7a183eec81cd89ae730e8cdee"
+    },
+    "results/baseline_none/HEALTH_VERIFIER.json": {
+      "bytes": 385,
+      "sha256": "8479875e5529d7e8faf83183510a6abd05a78f56eb057c0b0e12f7a8e386e296"
+    },
+    "results/baseline_none/probe_metrics.jsonl": {
+      "bytes": 22853,
+      "sha256": "6692afe7c142a138ee85d3d9df60f6926f12220366ea8f77b9caa7ac9823ab90"
+    },
+    "results/baseline_none/RAW_ARTIFACT_POINTER.json": {
+      "bytes": 1135,
+      "sha256": "280e58076c15605ab09d8bf38f30b6b9e3669e629265c010606c0cf855b30853"
+    },
+    "results/baseline_none/ROLLBACK.json": {
+      "bytes": 456,
+      "sha256": "dc5b50a865199d164ec86bf8f18389bffecc09c268f3ab0511b376db5f049e09"
+    },
+    "results/baseline_none/run.log": {
+      "bytes": 3069,
+      "sha256": "8f5cd6ef47ec024a0786bdf488268cffcd00b632f70ef2161685c09f2fab5227"
+    },
+    "results/baseline_none/RUN_CONFIG.json": {
+      "bytes": 13937,
+      "sha256": "0d8e8d6673b850627baf6206b415aee35fcf8853a8b82fb81d472c2a0ee3585d"
+    },
+    "results/baseline_none/SUMMARY.json": {
+      "bytes": 1807,
+      "sha256": "46769410af77591a8f897192227f981f2f3220a6a161bcde7ae9c340c2209685"
+    },
+    "results/baseline_none/SUPERVISION_RECORDS.jsonl": {
+      "bytes": 2275709,
+      "sha256": "d90ea7515a67b2f4d77320fe061aef1cfc44ef877726d312366a309390ab5bc9"
+    },
+    "results/baseline_none/SUPERVISION_SUMMARY.json": {
+      "bytes": 452,
+      "sha256": "b48ccd66814269906b96bebc6a5c3b48727a2d1ea0f935468e1e19ba33d94a7e"
+    },
+    "results/baseline_none/train_health.jsonl": {
+      "bytes": 1708,
+      "sha256": "4dff47111b798bef689f6ecd0e09b62216c63d2477163772969b86881d8dcf02"
+    },
+    "results/baseline_none/TRAINING_HISTORY.jsonl": {
+      "bytes": 1266,
+      "sha256": "75d5e22c373b962fa84e3dfcacdc16fb2124e467f16053a568fa755aa8a40779"
+    }
+  },
+  "file_count": 16,
+  "total_bytes": 2344068,
+  "final_half_scored": false
+}

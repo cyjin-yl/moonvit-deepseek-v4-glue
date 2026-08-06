@@ -137,11 +137,36 @@ next local package will test a residual/gated-residual projector with a
 matched CE-only control, then return to the fixed real-vision evaluation
 contract only if the health screen survives.
 
+### Package 15R baseline control result (2026-08-06 UTC)
+
+The first arm of the frozen residual screen re-ran the unchanged step0
+projector under the new runner commit `5682265c`. It reproduced the known
+failure exactly: the health probe found collapse onset `[1, 2]`, CE fell from
+`4.14400` to `2.43802`, projector probe RMS rose `0.1235 → 0.6598`, and
+projector spread/rank ratios fell to `0.2690/0.5022`. Receiver ratios fell to
+`0.2254/0.3622`. The two fixed RMS-rising/spread-falling critical guards
+stopped the run at step 2 and rolled it back to the healthy step-1 checkpoint.
+
+The independent verifier recomputed 3 probes, 3 checkpoints and 22 hashed
+health artifacts (`1,141,294,624` bytes) with status `verified`. The complete
+raw copy, including optimizer/RNG/checkpoint state, is bound by the committed
+pointer at `D:/V100-artifacts/projector_residual_screen_hf_v1/baseline_none`;
+the Git-sized result files are under
+`experiments/qwen3b_community_eval_20260805/projector_residual_screen_hf_v1/results/baseline_none/`.
+No capability score was run, no checkpoint was promoted, and Gate D remains
+NO-GO.
+
+This control supports that the early collapse is reproducible after the 15R
+code sync and that the automatic stop/rollback path is trustworthy. It
+refutes any claim that the residual candidates can be judged by a lower CE
+alone. The next arm is `zero_init_residual`; it must keep the same first-step
+geometry healthy before we spend time on full grounding evaluation.
+
 ## ⚠️ ACTIVE V100 REAL-VISION BRIDGE (2026-08-06)
 
 **Current task / hard boundary**: the engineering mainline is now a fixed real-data bridge on pure-text `Qwen/Qwen2.5-3B-Instruct`, followed by transfer of the same MoonViT-V2/projector/data/eval contract to DeepSeek-V4-Flash-0731. The 0.5B/synthetic line remains mechanism evidence. Do not rent any server, create a paid resource, run the full DeepSeek weights, or inspect final evaluation halves without explicit authorization. Exact V100 environment evidence is under `experiments/v100_perception_20260804/infra/environment/`.
 
-**Experiment packages 1–14 COMPLETE; Packages 15A–15R establish, diagnose and redirect the 3B bridge**: packages 1–12 established auditable caching and mechanism controls. Package 13 fixes preventive replay; Package 14 fixes the smallest reliable sentinel and V100 cost. Package 15A freezes the Qwen2.5-3B model/data/generation/scoring/budget contract before any 3B output. Package 15B closes the real-image load/gradient/optimizer/checkpoint smoke. Package 15C freezes the exact first-4,000 training prefix and teacher targets. Package 15D independently verifies the content-addressed MoonViT cache. Package 15E completes exact 4k projector-only training. Package 15F rejects the first GLM-format ScreenSpot50 candidate. Package 15G confirms the failure on all 1,272 public ScreenSpot rows. Package 15H shows that training raises coordinate-answer probability without learning correct-image coordinate preference. Package 15I preregisters the matched 2,000-grounding/2,000-short-answer treatment before its cache or training result exists. Package 15J independently verifies its content-addressed MoonViT cache. Package 15K completes the exact matched-budget training and checkpoint audit. Packages 15L/15M reject it by preference and free generation: vision/blind/shuffled preference is 52%/56%/54%, while click is 6%/12%/6%. Package 15N localizes a scale/rank collapse at the projector output; Package 15O shows that both collapse guards already fire at the first saved checkpoint, step 100/800 examples. Package 15P freezes a directly transferable step-one geometry repair and completes its independent λ calibration. Package 15Q tests output LayerNorm/RMSNorm and cancels its 500-step expansion after all three arms stop at step 2. Package 15R is the active residual/gated-residual structure screen.
+**Experiment packages 1–14 COMPLETE; Packages 15A–15R establish, diagnose and redirect the 3B bridge**: packages 1–12 established auditable caching and mechanism controls. Package 13 fixes preventive replay; Package 14 fixes the smallest reliable sentinel and V100 cost. Package 15A freezes the Qwen2.5-3B model/data/generation/scoring/budget contract before any 3B output. Package 15B closes the real-image load/gradient/optimizer/checkpoint smoke. Package 15C freezes the exact first-4,000 training prefix and teacher targets. Package 15D independently verifies the content-addressed MoonViT cache. Package 15E completes exact 4k projector-only training. Package 15F rejects the first GLM-format ScreenSpot50 candidate. Package 15G confirms the failure on all 1,272 public ScreenSpot rows. Package 15H shows that training raises coordinate-answer probability without learning correct-image coordinate preference. Package 15I preregisters the matched 2,000-grounding/2,000-short-answer treatment before its cache or training result exists. Package 15J independently verifies its content-addressed MoonViT cache. Package 15K completes the exact matched-budget training and checkpoint audit. Packages 15L/15M reject it by preference and free generation: vision/blind/shuffled preference is 52%/56%/54%, while click is 6%/12%/6%. Package 15N localizes a scale/rank collapse at the projector output; Package 15O shows that both collapse guards already fire at the first saved checkpoint, step 100/800 examples. Package 15P freezes a directly transferable step-one geometry repair and completes its independent λ calibration. Package 15Q tests output LayerNorm/RMSNorm and cancels its 500-step expansion after all three arms stop at step 2. Package 15R freezes the residual/gated-residual screen and has completed its matched baseline control; `zero_init_residual` is next.
 
 **Pre-rental go/no-go (authoritative top-level table)**:
 

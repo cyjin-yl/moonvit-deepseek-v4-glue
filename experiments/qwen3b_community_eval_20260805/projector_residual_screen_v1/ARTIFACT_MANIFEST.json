@@ -1,8 +1,8 @@
 {
   "format_version": "experiment-artifact-manifest-v1",
-  "created_at_utc": "2026-08-06T08:36:06.843415+00:00",
+  "created_at_utc": "2026-08-06T09:02:42.054879+00:00",
   "root": "projector_residual_screen_v1",
-  "git_base_sha": "95931d2f9e524d52639463782e0bfe34d962c776",
+  "git_base_sha": "5682265c1640c5526929b48209b69c6d0b74cefb",
   "files": {
     "failures/attempt01_scalar_gate_hash/ATTEMPT.json": {
       "bytes": 440,
@@ -36,6 +36,22 @@
       "bytes": 66,
       "sha256": "8024b80f62efc3299de9357a5b5aa6e724f455f524073fe37f558c612977f5e6"
     },
+    "failures/attempt03_precreate_output/ATTEMPT.json": {
+      "bytes": 398,
+      "sha256": "d4df24243d5223ecc4d7946d3c76076518c44344147bd0fb4707e4f16c52f98c"
+    },
+    "failures/attempt03_precreate_output/FAILURE.json": {
+      "bytes": 1083,
+      "sha256": "c71cd6760dd475dd80398242fe6dedab10c23d79d636c40b9cb5c2f1db04d453"
+    },
+    "failures/attempt03_precreate_output/REPAIR_RECORD.json": {
+      "bytes": 437,
+      "sha256": "f9bc2fea252d5605abb2e787115e09d4fc5f89206d8608a167e48011f5b029d9"
+    },
+    "failures/attempt03_precreate_output/run.log": {
+      "bytes": 510,
+      "sha256": "4d5fc10de1c59c9750472998a79dc07b66a5bcad9b255e058478ed82a0e203b3"
+    },
     "INITIALIZATION_ARTIFACT_POINTER.json": {
       "bytes": 1725,
       "sha256": "7d89280c4d25701fac8680ca4e4e6da72e436a8de8d59b79efe1d57c3d5fff44"
@@ -57,7 +73,7 @@
       "sha256": "ce9533e79e85ad705b0d44cc99dfca24154fd575e74e0337f194e2c5644ffbd2"
     }
   },
-  "file_count": 13,
-  "total_bytes": 9321,
+  "file_count": 17,
+  "total_bytes": 11749,
   "final_half_scored": false
 }

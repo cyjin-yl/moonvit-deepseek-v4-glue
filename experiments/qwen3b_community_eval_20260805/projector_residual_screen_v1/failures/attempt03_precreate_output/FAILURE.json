@@ -1,0 +1,17 @@
+{
+  "format_version": "qwen3b-projector-residual-screen-failure-v1",
+  "status": "launcher_setup_failure_preserved",
+  "stage": "training_launcher_setup",
+  "arm": "baseline_none",
+  "exception_type": "FileExistsError",
+  "failure": "refusing to overwrite training run: output directory already existed",
+  "root_cause": "the wrapper created the leaf output directory before train_qwen3b_proxy.py, whose contract refuses any pre-existing run directory",
+  "repair": "move the empty failed output directory to the raw failure archive and let the trainer create the leaf directory; contract, seeds, budget and health thresholds unchanged",
+  "remote_raw_failure_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/failures/attempt01_precreate_output",
+  "local_raw_failure_root": "D:/V100-artifacts/projector_residual_screen_hf_v1_failures/attempt01_precreate_output",
+  "gpu_started": false,
+  "optimizer_step_created": false,
+  "checkpoint_or_capability_result_created": false,
+  "paid_resources_used": false,
+  "final_half_scored": false
+}
