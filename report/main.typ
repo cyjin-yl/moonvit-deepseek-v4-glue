@@ -1960,3 +1960,5 @@ Gate D 仍为 *NO-GO*。V100 已验证 MoonViT-V2 真权重、4096 projector、p
 训练后 probe 的 2,000 次 paired bootstrap：lambda=0.5 的 `vision-minus-shuffle=+0.4874`，95% CI `[+0.1423,+0.8786]`；`vision-minus-blind=+1.9574`，CI `[+1.3909,+2.5699]`；相对同批 CE-only 的 paired 提升 `+0.3577`，CI `[-0.1287,+0.8397]`；`vision-minus-random-projector=-0.3397`，CI `[-0.7099,+0.0082]`。
 
 这是当前第一条通过真实答案 32-sample paired image attribution CI 的训练轨迹。证据仍限于 teacher-forced、16 visual tokens、Qwen2.5-7B receiver-prior 诊断，`capability_claim_allowed=false`；它不能替代 ScreenSpot、TextVQA、DocVQA、OCRBench，也不能直接改写 DeepSeek 配方。该结果支持 paired supervision 强度能够修正局部图像归因，下一步先把 λ=0.5 轨迹接入统一 7B formal evaluator，检查 parser、blind/shuffled/random-projector 和自由生成方向；方向一致后才决定是否回到 Qwen2.5-3B 社区合同。
+
+随后对同一 λ=0.5 checkpoint 做 8 条 ShowUI 的自由生成检查，固定社区 grounding prompt、贪心解码和 32 个新 token。vision、blind、shuffled、random-projector 的 parse rate 都为 `8/8`；到目标点的平均 L2 距离为 `491.73/514.31/493.97/499.97`，vision 相对 shuffled 的逐样本距离改善均值仅 `+2.24`。预测主要集中在窄坐标先验，teacher-forced 的正向 paired attribution 没有转化为可靠自由坐标 grounding。generic prompt 和 derangement 假设的两次实现失败均保留在实验索引与 failure artifact 中。

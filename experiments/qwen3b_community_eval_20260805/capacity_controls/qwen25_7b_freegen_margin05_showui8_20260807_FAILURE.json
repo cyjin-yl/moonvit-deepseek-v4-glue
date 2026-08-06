@@ -1,0 +1,11 @@
+{
+  "schema_version": "failure-v1",
+  "status": "failed_before_generation",
+  "run": "qwen25_7b_freegen_margin05_showui8_20260807",
+  "failure_class": "implementation_contract_mismatch",
+  "error": "The frozen probe manifest does not store an explicit shuffled_sample_id; the first generator assumed one instead of reproducing the registered cycle derangement.",
+  "optimizer_steps": 0,
+  "capability_claim_allowed": false,
+  "repair": "Use the manifest row order and (index + 1) modulo sample count, matching probe_stripped_receiver.py; rerun into a fresh retry directory.",
+  "replacement_run": "qwen25_7b_freegen_margin05_showui8_20260807_retry2_grounding"
+}

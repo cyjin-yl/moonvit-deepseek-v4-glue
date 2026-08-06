@@ -310,3 +310,9 @@ scale=`0.1` 是在 32-sample 预冻结 probe 中唯一值得继续做短训练�
 训练后 32-sample probe 的 2,000 次 bootstrap 给出：λ=0.5 的 `vision−shuffle=+0.4874`，95% CI `[+0.1423,+0.8786]`；`vision−blind=+1.9574`，CI `[+1.3909,+2.5699]`。相对同批 CE-only 的配对提升为 `+0.3577`，CI `[-0.1287,+0.8397]`；`vision−random_projector=-0.3397`，CI `[-0.7099,+0.0082]`。这是当前第一条在真实答案 32-sample receiver-prior probe 上通过 paired image attribution CI 的训练轨迹，但它仍是 teacher-forced、16 token、Qwen2.5-7B 的机制诊断，`capability_claim_allowed=false`，不能直接写成 ScreenSpot 或 VLM 成功。
 
 这轮支持“paired image-vs-shuffle 监督强度确实能改变局部图像归因”并反驳“所有正 margin 都只是随机波动”。它没有证明 7B 能完成坐标 grounding，也没有证明该 λ 可迁移到 DeepSeek。下一项从继续长训转为把 λ=0.5 轨迹接入一个可审查的 7B formal evaluator：先复用统一 parser、blind/shuffled/random-projector 条件和固定生成配置，确认自由生成与 teacher-forced 信号方向一致，再决定是否值得把同一目标带回 Qwen2.5-3B formal contract。大模型训练量暂不扩大。
+
+### 7B 自由生成一致性检查
+
+对 λ=0.5 checkpoint 取冻结的 8 条 ShowUI click 样本，使用社区 grounding prompt、`do_sample=false`、`max_new_tokens=32` 和四种条件。vision、blind、shuffled、random-projector 的格式解析率都是 `8/8`，但预测高度集中在默认坐标附近；到目标点的平均 L2 距离分别为 `491.73/514.31/493.97/499.97`。逐样本 vision 相对 shuffled 的距离改善均值仅 `+2.24`，8 条样本没有 bootstrap 证据；vision 相对 blind 为 `+22.58`，主要体现“有图像 token 会改变输出”，没有体现正确图片归因。
+
+这条结果把 teacher-forced 与自由生成的差异钉实：λ=0.5 能让正确图的答案 log-prob 在 32-sample probe 上显著高于 shuffled，生成阶段仍输出窄坐标先验。第一次自由生成尝试还记录了两个实现缺口：manifest 的 derangement 必须按冻结行序重建，generic VQA prompt 不能拿来评估 click parser；两次失败/修复均保留在 raw index。当前 λ=0.5 因此仍是机制候选，不能进入 ScreenSpot previous-best，也不能进入 DeepSeek 正式配方。

@@ -673,3 +673,7 @@ Gate D 仍为 **NO-GO**。Qwen 代理已证明 V100 上 projector-only 训练和
 这是第一条通过 32-sample paired image attribution CI 的训练轨迹，证据仍限于 teacher-forced、16 visual tokens、Qwen2.5-7B receiver-prior diagnostic。`capability_claim_allowed=false`，不能替代 ScreenSpot、TextVQA、DocVQA、OCRBench，也不能直接改写 DeepSeek 配方。它支持“paired 监督强度能修正局部图像归因”，下一项优先做 7B formal evaluator 的统一 parser/blind/shuffled/random-projector 与自由生成检查；只有自由生成方向一致，才考虑把 λ=0.5 带回 3B 社区合同。
 
 新训练的 385 MB projector/optimizer 原始目录留在远端 V100 数据根，SHA 在 `qwen25_7b_scale01_margin05_20260807_RAW_POINTER.json`；Git 保留摘要、health、probe、bootstrap 和可审查指针。Gate D 仍为 **NO-GO**。
+
+7B λ=0.5 checkpoint 的自由生成 companion 已完成。固定 8 条 ShowUI 样本、社区 grounding prompt、greedy decoding、`max_new_tokens=32` 下，四种条件都能解析 `click(start_box=[x, y])`（8/8），但 vision/blind/shuffled/random 的到目标点平均距离为 `491.73/514.31/493.97/499.97`；vision 相对 shuffled 的逐样本距离改善只有 `+2.24`，8 条样本不足以做 bootstrap。输出大多落在 `[450,300]` 一类窄坐标附近，说明 teacher-forced 的正向归因尚未转成可靠自由 grounding。
+
+第一次 generic prompt 运行全部无法解析 click，随后发现这是 prompt route 不匹配；第一次 generator 还错误假设 manifest 含 shuffled_sample_id。两次失败/修复均有 `FAILURE.json` 和 retry raw 目录。结论：λ=0.5 仍只能列为 receiver-prior mechanism candidate，不能替换 ScreenSpot previous-best；下一条实验应先修复/统一 7B formal evaluator，避免把 prompt 退化或 coordinate prior 当视觉能力。

@@ -138,3 +138,5 @@ Package 15P 已完成预注册 geometry-repair 的固定 λ 校准。冻结 step
 固定 scale=`0.1`、mean-pool 16 和真实答案 32-sample 合同的 λ=`0.5` paired margin screen 已完成。CE-only control 的 `vision−shuffle` 为 `-0.0167→+0.1297`，λ=0.5 为 `-0.0167→+0.4874`；训练后 λ=0.5 的 2,000-bootstrap CI 为 `[+0.1423,+0.8786]`，首次在该 receiver-prior probe 上通过 paired image attribution 门槛。CE-only 与 λ=0.5 的配对提升 CI 为 `[-0.1287,+0.8397]`，随机 projector CI 上界仍略高于 0，说明这是一条局部 teacher-forced 信号，尚未完成 formal evaluator 的自由生成、ScreenSpot 和通用 VQA 验证。
 
 下一步会优先复用固定 parser 和四条件生成合同，把该 checkpoint 作为 7B capacity diagnostic 的 candidate screen；它有资格进入诊断队列，没有资格替换 3B `previous_best` 或进入 DeepSeek 正式候选。若自由生成不跟随 teacher-forced 方向，停止扩大训练，回到 projector/receiver 接口；若方向一致，再做 3B matched λ=0.5 health screen。
+
+最小自由生成检查随后给出“未跟随”：8 条 ShowUI 样本的四条件 parse rate 都为 100%，vision/blind/shuffled/random 到目标点的平均距离为 `491.73/514.31/493.97/499.97`，vision 相对 shuffled 只改善 `+2.24`。输出集中在窄坐标先验。λ=0.5 因此继续停留在机制候选层；下一项优先统一 7B formal evaluator 的 prompt、parser、四条件和 bbox/point 评分，再决定是否把目标带回 3B。
