@@ -2,7 +2,7 @@
   "schema_version": "deepseek-v4-tiny-e2e-placeholder-pointer-v1",
   "status": "software_tiny_pass_hardware_pending",
   "tool": "tools/gate_d_tiny_deepseek_e2e.py",
-  "tool_sha256": "a886ea1247f6af8aea2398330e9671c2a4490c2cdda7bc7856fe57db7e78e6a5",
+  "tool_sha256": "f1e98bbb7c9617983c95d2fe20956c4069f769be8b0ad42174dbc939cd359d4d",
   "output_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/deepseek_gate_d_tiny_e2e_placeholder129279_20260807",
   "summary_sha256": "38cd87a9073a9e3e69e1b413977f57610709b42a0130df2da7d2290079cde65a",
   "trace_uninterrupted_sha256": "fee5335e292203439dcf5668f7336d2bc15880bbab63926fd8c0020025873da1",
