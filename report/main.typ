@@ -1964,3 +1964,17 @@ Gate D 仍为 *NO-GO*。V100 已验证 MoonViT-V2 真权重、4096 projector、p
 随后对同一 λ=0.5 checkpoint 做 8 条 ShowUI 的自由生成检查，固定社区 grounding prompt、贪心解码和 32 个新 token。vision、blind、shuffled、random-projector 的 parse rate 都为 `8/8`；到目标点的平均 L2 距离为 `491.73/514.31/493.97/499.97`，vision 相对 shuffled 的逐样本距离改善均值仅 `+2.24`。预测主要集中在窄坐标先验，teacher-forced 的正向 paired attribution 没有转化为可靠自由坐标 grounding。generic prompt 和 derangement 假设的两次实现失败均保留在实验索引与 failure artifact 中。
 
 随后把 λ=0.5 checkpoint 接入 50 条 `screenspot_glm50_v1` 的 stripped ScreenSpot 诊断。固定 16 个 mean-pool token、scale=`0.1`、grounding prompt、贪心解码、四种条件和 2,000 次 bootstrap。四种条件 parse rate 均为 `50/50`；vision/blind/shuffled/random 的 click-in-box 均为 `10%`，`Accuracy@50/@100/@200` 均为 `2%/6%/18%`，中心距离均值为 `380.73/415.11/384.45/390.22`。vision 相对 blind 的中心距离差为 `-34.38`，CI `[-70.63,-3.30]`；vision 相对 shuffled 为 `-3.72`，CI `[-9.91,+1.54]`。视觉 token 能改变距离分布，正确图像却没有带来相对 shuffled 的 grounding 增益。Qwen7B 候选拒绝晋升，后续冻结训练量。
+
+== Qwen3.5-9B receiver-prior diagnostic
+
+The first 50-row stripped run is retained as a decoding-contract failure:
+Qwen3.5's default reasoning template consumed the 32-token budget before a
+click action, so every condition parsed 0/50. After adding
+`enable_thinking=false`, an 8-row repair parsed 8/8 in every condition, but
+click-in-box was 0%. Vision--blind center distance was -42.74 with CI
+[-127.74,+13.77]; vision--shuffled was +88.69 with CI [+3.00,+199.15], where
+positive means the correct-image prediction was farther from the target. This
+receiver-prior diagnostic does not support an automatic capacity or
+visual-pretraining rescue. The next variables are placeholder semantics,
+projector scale, position encoding and receiver-distribution alignment; the
+result remains outside formal Qwen and DeepSeek capability claims.

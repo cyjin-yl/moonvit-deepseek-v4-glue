@@ -324,3 +324,18 @@ scale=`0.1` 是在 32-sample 预冻结 probe 中唯一值得继续做短训练�
 vision 相对 blind 的中心距离差为 `-34.38`（视觉更近），bootstrap CI `[-70.63,-3.30]`；vision 相对 shuffled 的差为 `-3.72`，CI `[-9.91,+1.54]`。点击命中和阈值命中在 vision/shuffled 间完全相同，正确图像没有带来可重复的 grounding 增益。这个结果与 32-sample teacher-forced 正向 CI 放在一起，形成了清晰的层级：λ=0.5 修正了答案 log-prob 的局部归因，尚未修正 ScreenSpot 的内容选择。Qwen7B 候选因此拒绝晋升，训练预算冻结。
 
 下一步停止继续增加 λ、数据或步数，优先把 formal evaluator 的结果和 receiver-prior 机制记录统一起来；只有出现 vision 相对 shuffled 的 click/threshold/距离显著改善，才重新考虑 3B matched λ=0.5 或 projector 结构实验。
+
+### Qwen3.5-9B stripped receiver 诊断（2026-08-07）
+
+第一轮 50 条运行完整保留，但四个条件均 parse `0/50`：Qwen3.5 默认 chat template
+开启 reasoning，`max_new_tokens=32` 在输出 click action 前截断。这个结果只登记为
+decoding-contract failure，不能当作视觉能力负例。修复模板后用
+`enable_thinking=false` 做 8 条最小重试，四条件均 parse `8/8`，但 click-in-box
+全部为 0%。vision 相对 blind 的中心距离为 `-42.74`，CI
+`[-127.74,+13.77]`；vision 相对 shuffled 为 `+88.69`，CI
+`[+3.00,+199.15]`（正值代表 vision 更远）。在这个 receiver-prior 诊断里，
+视觉预训练权重没有把外部 MoonViT token 变成 grounding，shuffled 甚至更近。
+因此换更大的 receiver 或换成原生视觉预训练 receiver并没有自动解决 projector；
+后续重点转向 placeholder/token 语义、projector 输出尺度、位置编码和与 receiver
+训练分布的对齐。该结果仍不进入 Qwen 社区排行榜，也不改变 DeepSeek 最终配置，
+原始 JSONL 和失败目录保留在 V100 artifact 路径。

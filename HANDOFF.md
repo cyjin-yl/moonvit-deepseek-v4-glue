@@ -679,3 +679,18 @@ Gate D 仍为 **NO-GO**。Qwen 代理已证明 V100 上 projector-only 训练和
 第一次 generic prompt 运行全部无法解析 click，随后发现这是 prompt route 不匹配；第一次 generator 还错误假设 manifest 含 shuffled_sample_id。两次失败/修复均有 `FAILURE.json` 和 retry raw 目录。结论：λ=0.5 仍只能列为 receiver-prior mechanism candidate，不能替换 ScreenSpot previous-best；下一条实验应先修复/统一 7B formal evaluator，避免把 prompt 退化或 coordinate prior 当视觉能力。
 
 随后完成 50 条 `screenspot_glm50_v1` 的 7B stripped ScreenSpot 诊断（16 mean-pool tokens、scale 0.1、四条件、固定 parser 和 2,000 bootstrap）。四条件 parse rate 均为 50/50；vision/blind/shuffled/random 的 click-in-box 均 10%，Accuracy@50/@100/@200 均为 2%/6%/18%；中心距离均值为 380.73/415.11/384.45/390.22。vision-blind 中心距离差为 -34.38，CI [-70.63,-3.30]；vision-shuffled 为 -3.72，CI [-9.91,+1.54]。因此视觉 token 让输出更接近某些目标，但正确图和 shuffled 图的 grounding 指标完全相同，Qwen7B 候选拒绝晋升。当前停止增加 λ、数据和训练步数，转文档归纳与 DeepSeek runtime Gate 设计。
+
+## Qwen3.5-9B stripped receiver result (2026-08-07)
+
+The first 50-row run is retained as a decoding-contract failure: Qwen3.5's
+default reasoning template spent the 32-token budget before emitting a click,
+so every condition parsed 0/50. After adding `enable_thinking=false`, an 8-row
+repair parsed 8/8 in every condition, yet click-in-box was 0%; vision-minus-
+blind center distance was `-42.74` with CI `[-127.74,+13.77]`, while
+vision-minus-shuffled was `+88.69` with CI `[+3.00,+199.15]`. Positive means
+the correct-image prediction was farther from the target. This receiver-prior
+diagnostic rejects an automatic capacity or visual-pretraining rescue, while
+remaining outside the formal Qwen leaderboard and DeepSeek capability claims.
+Raw summaries, JSONL rows and the initial format failure remain on the V100
+artifact path; the next design variables are placeholder semantics, projector
+scale, position encoding and receiver-distribution alignment.

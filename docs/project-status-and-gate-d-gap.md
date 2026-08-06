@@ -142,3 +142,13 @@ Package 15P 已完成预注册 geometry-repair 的固定 λ 校准。冻结 step
 最小自由生成检查随后给出“未跟随”：8 条 ShowUI 样本的四条件 parse rate 都为 100%，vision/blind/shuffled/random 到目标点的平均距离为 `491.73/514.31/493.97/499.97`，vision 相对 shuffled 只改善 `+2.24`。输出集中在窄坐标先验。λ=0.5 因此继续停留在机制候选层；下一项优先统一 7B formal evaluator 的 prompt、parser、四条件和 bbox/point 评分，再决定是否把目标带回 3B。
 
 50 条 `screenspot_glm50_v1` 的统一格式诊断已经完成：四条件 parse rate 均为 100%，click-in-box 均 10%，Accuracy@50/@100/@200 均为 2%/6%/18%。vision 的中心距离均值 380.73，shuffled 为 384.45；vision-shuffled 差值 CI `[-9.91,+1.54]` 跨零。该 checkpoint 没有满足真实 grounding 改进规则，训练量冻结。
+
+## Qwen3.5-9B receiver-prior 结果（2026-08-07）
+
+首轮 50-row stripped ScreenSpot 运行保留为 decoding-contract failure：Qwen3.5
+默认 reasoning 消耗了 `max_new_tokens=32`，四条件 parse 为 0/50。显式关闭
+`enable_thinking` 后的 8-row repair 四条件 parse 为 8/8，但 click-in-box 为 0%；
+vision-shuffled center distance 为 `+88.69 [+3.00,+199.15]`，vision-blind 为
+`-42.74 [-127.74,+13.77]`。这个 receiver-prior 结果不支持视觉预训练 receiver
+或模型规模可以自动修复外部 projector；后续主变量收敛为 placeholder/token 语义、
+projector 尺度、位置编码以及 receiver 训练分布的对齐。
