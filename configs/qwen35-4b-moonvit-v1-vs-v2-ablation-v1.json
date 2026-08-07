@@ -25,7 +25,8 @@
       "step0_projector_sha256": "f24f677f61905e259a6648802b6f4f4a681aa3d3a8965dbccdc8b1cd46d786cf",
       "step0_projector_config_sha256": "10d1517cd5e54c9cd5f6a53d006178291efee91982b03b04e7c83be62349c86c",
       "training_feature_cache_manifest_sha256": "b2755fb7ef3120639b9386f58bb99dbb522ee13a9770dce2faf1e8931aee7976",
-      "screenspot_feature_cache_manifest_sha256": "pending_pre_result_cache_materialization"
+      "screenspot_feature_cache_manifest_sha256": "115e074497b3a354d28be506b78baffd63714bc7193e48ec48cfb5fd236c3760",
+      "screenspot_feature_cache": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_4b_v1_screenspot_cache_20260808_retry1"
     },
     "v2_exact_k3_reference": {
       "result_pointer": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen35-4b-external-moonvit-ablation-pointer-20260808.json",

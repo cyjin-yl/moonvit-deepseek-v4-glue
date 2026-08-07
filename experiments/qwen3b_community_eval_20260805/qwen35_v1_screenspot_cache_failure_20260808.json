@@ -1,0 +1,11 @@
+{
+  "schema_version": "qwen35-v1-screenspot-cache-failure-v1",
+  "stage": "pre_result_cache_materialization",
+  "attempt_out": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_4b_v1_screenspot_cache_20260808",
+  "failure_type": "FileExistsError",
+  "failure_message": "refusing to overwrite feature cache: output directory existed",
+  "optimizer_steps": 0,
+  "features_written": false,
+  "recovery": "verified the directory was empty and reran to qwen35_4b_v1_screenspot_cache_20260808_retry1",
+  "promotion_effect": "none"
+}
