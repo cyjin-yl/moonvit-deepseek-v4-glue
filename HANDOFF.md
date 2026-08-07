@@ -1,6 +1,6 @@
 # Handoff
 
-> **Live run (2026-08-08 03:26–03:41 CST):** the corrected Qwen2.5-7B V1 arm loaded all 339 shards and V1 step0, then hit the hard NaN/Inf health guard at optimizer step 2 (128 examples seen). Its failure checkpoint, health log and immutable failure artifact are saved. Diagnosis: FP16 projector plus FP16 AdamW state under a 5e-4 update produced non-finite optimizer state after step1; the trainer now defaults to an FP32 projector/optimizer state whenever the frozen receiver is FP16. V2 is building its cache in moonvit:qwen7_v2_followon3; V1 retry4 is queued after it. Attempts 1–2 were engineering failures, not capability measurements.
+> **Live run (2026-08-08 03:26–04:48 CST):** Qwen2.5-7B V1 retry4 loaded all 339 shards and V1 step0, then passed the former step-2 NaN point. Step1/2 losses are `12.7361/12.4078`; both health rows are finite, with step2 projector/receiver RMS ratios `3.0678/3.2231` and spread ratios `0.4167/0.4029`, so the hard guard remains false. This validates the FP32 projector/AdamW-state repair, not visual ability. The immutable step-2 snapshot is under `experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v1_retry4_step2/`; the 900-step run continues. V2 is still caching; Qwen3.5-4B was deferred before its first optimizer step to keep the single V100 scheduler deterministic.
 
 ## Current authority (2026-08-08)
 

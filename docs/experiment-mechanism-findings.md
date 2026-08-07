@@ -25,6 +25,16 @@ FP32（视觉输出在 merge 边界再转成 receiver dtype），V1 retry4 将�
 低精度 optimizer state 的实现性混淆。该失败记录与 raw artifact 已提交到
 failure_artifacts/qwen25_7b_v1_attempt3/，不能写进能力排行榜。
 
+### V1 retry4 step-2 数值修复验证（2026-08-08）
+
+retry4 保持同一视觉塔、初始化、数据顺序、学习率和 global batch，���把 projector 与 AdamW
+state 从 FP16 改为 FP32。它在 step1/2（64/128 examples seen）均保持 finite；step2 loss
+为 `12.4078`，projector/receiver RMS ratio 为 `3.0678/3.2231`，relative-spread ratio
+为 `0.4167/0.4029`，未触发 critical guard。换句话说，之前的 step-2 NaN 是低精度优化器
+状态的工程故障，修复后能继续训练；RMS 上升和 spread 变化仍只说明训练健康，不能说明模型已经
+学会使用正确图片。原始两行 health、训练日志、validation manifest 与 SHA 清单保存在
+`experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v1_retry4_step2/`。
+
 ## 主线重置：用社区训练量做条件消融，而不是继续堆 verifier（2026-08-08）
 
 历史脚本、权重和数据 verifier 已经足够支撑可信实验；继续重复它们不会回答当前最重要的问题：视觉塔版本、
