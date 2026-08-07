@@ -1,0 +1,69 @@
+{
+  "schema_version": "qwen35-4b-external-v1-scale-screen-v1",
+  "status": "preregistered",
+  "purpose": "single-variable projector output-scale screen after matched MoonViT V1/V2 causal rejection",
+  "hypothesis": "A smaller canonical projector scale may reduce receiver-facing distribution mismatch; it is useful only if the correct image beats both blind and shuffled on the fixed ScreenSpot50 contract.",
+  "receiver": {
+    "repo_id": "Qwen/Qwen3.5-4B",
+    "resolved_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "frozen": true,
+    "native_vision_bypassed": true,
+    "receiver_adapter": "fixed_grouped_signed_projection(seed=20260806)"
+  },
+  "tower": {
+    "repo_id": "moonshotai/MoonViT-SO-400M",
+    "resolved_revision": "a889d399ff2306053e4e28d499d3b8f97d3e5007",
+    "family": "V1",
+    "input_width": 1152,
+    "projector_output_width": 4096
+  },
+  "fixed": {
+    "train_sample_manifest": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_real_probe32_manifest.json",
+    "feature_cache": "local_v1_family_proxy/feature_cache_4k",
+    "screening_dataset": "screenspot_glm50_v1",
+    "sample_count": 32,
+    "max_visual_tokens": 16,
+    "token_selection": "mean_pool",
+    "dtype": "bfloat16",
+    "learning_rate": 0.00005,
+    "optimizer": "AdamW",
+    "steps": 3,
+    "generation": {
+      "do_sample": false,
+      "temperature": 0,
+      "max_new_tokens": 32
+    },
+    "bootstrap": {
+      "samples": 2000,
+      "seed": 20260805
+    }
+  },
+  "arms": [
+    {
+      "id": "scale003_ce_only",
+      "projector_scale": 0.03,
+      "shuffle_margin_lambda": 0.0,
+      "matched_control": "scale01_ce_only_existing_qwen35_v1"
+    },
+    {
+      "id": "scale01_ce_only_matched_control",
+      "projector_scale": 0.1,
+      "shuffle_margin_lambda": 0.0,
+      "matched_control": null,
+      "existing_reference": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen35-4b-moonvit-v1-ablation-pointer-20260808.json"
+    }
+  ],
+  "promotion_gate": {
+    "first_stage": "screenspot_glm50_v1",
+    "require_vision_minus_blind_click_ci_lower_gt_zero": true,
+    "require_vision_minus_shuffled_click_ci_lower_gt_zero": true,
+    "require_no_parse_rate_regression": true,
+    "expand_full_public_only_if_first_stage_passes": true,
+    "capability_claim_allowed": false
+  },
+  "deepseek_transfer": {
+    "label_if_health_and_causal_gain": "transferable_with_runtime_validation",
+    "label_if_only_qwen_chat_behavior": "qwen_specific_not_transferable",
+    "output_width_must_remain": 4096
+  }
+}
