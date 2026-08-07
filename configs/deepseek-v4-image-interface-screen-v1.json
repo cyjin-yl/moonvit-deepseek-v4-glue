@@ -1,0 +1,28 @@
+{
+  "schema_version": "deepseek-v4-image-interface-screen-prereg-v1",
+  "experiment": "local_software_interface_screen_v1",
+  "created": "2026-08-07",
+  "seed": 20260805,
+  "placeholder_token_id": 129279,
+  "position_policy": "expanded_contiguous",
+  "routing_policy": "repeat_placeholder_id_over_image_span",
+  "image_label_policy": "ignore_index_-100",
+  "image_token_count": 3,
+  "tiny_receiver": {
+    "model_type": "deepseek_v4",
+    "hidden_size": 32,
+    "num_hidden_layers": 1,
+    "n_routed_experts": 4,
+    "num_experts_per_tok": 2
+  },
+  "checks": [
+    "placeholder expands to exactly the projected image token count",
+    "routing_input_ids repeat the frozen image placeholder ID",
+    "position_ids are contiguous over the expanded active sequence",
+    "image labels are ignore_index=-100 and text labels remain aligned",
+    "projector gradients are finite and nonzero while language gradients are absent",
+    "tiny real DeepSeek-V4 logits change when routing IDs are ablated with embeddings held fixed",
+    "tiny real DeepSeek-V4 logits change when position IDs are ablated with embeddings and routing IDs held fixed"
+  ],
+  "interpretation_rule": "A pass is software seam evidence only. It does not pass Gate D and cannot substitute for full DeepSeek-V4-Flash-0731 weights, real runtime loading, FP4/FP8 input-gradient, memory/throughput, checkpoint recovery, or real-image capability evaluation."
+}
