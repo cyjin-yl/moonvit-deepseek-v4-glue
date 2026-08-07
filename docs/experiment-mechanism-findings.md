@@ -42,6 +42,7 @@ state 从 FP16 改为 FP32。它在 step1/2（64/128 examples seen）均保持 f
 step33（2,112 examples seen）触发了预注册的 critical guard：receiver output RMS ratio 为 `50.7792`，超过 `50×`；projector ratio 为 `47.8930`，relative-spread ratio 为 `0.4563/0.4593`，CE 为 `3.4664` 且没有 NaN/Inf。也就是说，FP32 只修复了“第二步就数值爆炸”，没有修复 projector 的尺度漂移：它可以把 CE 降下来，却在 33 步内把 receiver 输入放大到不可接受范围。该臂现在是正式的 `failed_health_guard`，不能继续从 failure checkpoint 训练，也没有进入视觉能力排行榜。
 
 此次运行暴露一个 checkpoint 合同缺口：`checkpoint-every=64` 导致 onset（step33）之前没有周期性 healthy checkpoint；failure checkpoint 和 step0 projector 均已保留，但后续矩阵 runner 必须在 step0/每个早期 health 节点保存可回滚的 optimizer/RNG 状态，不能只依赖 64-step 周期。
+该缺口已在后续 runner 中修复：健康 checkpoint 采用冻结的 step0/1/2/5/10/20/30/50/75/100 及每50步 schedule，guard failure 会额外写出 `STOP_REASON.json` 指向最近健康回滚点；三组相关测试在正确环境下 `12 passed`。
 
 ## 主线重置：用社区训练量做条件消融，而不是继续堆 verifier（2026-08-08）
 

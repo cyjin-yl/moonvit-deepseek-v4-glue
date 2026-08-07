@@ -81,6 +81,15 @@ class _Tee:
             stream.flush()
 
 
+HEALTH_CHECKPOINT_STEPS = frozenset({0, 1, 2, 5, 10, 20, 30, 50, 75, 100})
+
+
+def health_checkpoint_due(step: int) -> bool:
+    """Frozen early rollback schedule for projector collapse detection."""
+
+    return step in HEALTH_CHECKPOINT_STEPS or (step > 100 and step % 50 == 0)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument(
@@ -476,6 +485,19 @@ def main() -> None:
     if not args.resume:
         health_path.write_text("", encoding="utf-8")
     health_baseline = None
+    healthy_checkpoint_dir = args.out / "healthy-checkpoints"
+    existing_healthy = sorted(healthy_checkpoint_dir.glob("step-*")) if args.resume else []
+    last_healthy_checkpoint = existing_healthy[-1] if existing_healthy else None
+    if not args.resume and not (healthy_checkpoint_dir / "step-000000").exists():
+        last_healthy_checkpoint = save_training_checkpoint(
+            directory=healthy_checkpoint_dir / "step-000000",
+            projector=projector,
+            optimizer=optimizer,
+            step=0,
+            history=history,
+            rng=rng,
+        )
+        print(f"healthy checkpoint saved: {last_healthy_checkpoint}", flush=True)
     for step in range(start_step + 1, args.steps + 1):
         if device.type == "cuda":
             torch.cuda.synchronize(device)
@@ -600,6 +622,20 @@ def main() -> None:
                 history=history,
                 rng=rng,
             )
+            (failure_dir / "STOP_REASON.json").write_text(
+                json.dumps(
+                    {
+                        "optimizer_step": step,
+                        "examples_seen": progress.examples_seen,
+                        "health": health_row,
+                        "last_healthy_checkpoint": str(last_healthy_checkpoint) if last_healthy_checkpoint else None,
+                        "rollback_available": last_healthy_checkpoint is not None,
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                ) + "\n",
+                encoding="utf-8",
+            )
             raise RuntimeError(f"collapse/NaN health guard triggered at step {step}: {failure_dir}")
         if device.type == "cuda":
             torch.cuda.synchronize(device)
@@ -616,6 +652,16 @@ def main() -> None:
             ),
             **progress.snapshot(),
         })
+        if health_checkpoint_due(step):
+            last_healthy_checkpoint = save_training_checkpoint(
+                directory=args.out / "healthy-checkpoints" / f"step-{step:06d}",
+                projector=projector,
+                optimizer=optimizer,
+                step=step,
+                history=history,
+                rng=rng,
+            )
+            print(f"healthy checkpoint saved: {last_healthy_checkpoint}", flush=True)
         if step % args.log_every == 0 or step == 1:
             window = [row["loss"] for row in history[-args.log_every :]]
             print(
@@ -772,6 +818,8 @@ def main() -> None:
             else None
         ),
         "projector_dir": str(args.out),
+        "healthy_checkpoint_schedule": sorted(HEALTH_CHECKPOINT_STEPS),
+        "last_healthy_checkpoint": str(last_healthy_checkpoint) if last_healthy_checkpoint else None,
     }
     (args.out / "overfit_report.json").write_text(
         json.dumps(

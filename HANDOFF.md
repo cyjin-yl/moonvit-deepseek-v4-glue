@@ -4,6 +4,9 @@
 
 ## Current authority (2026-08-08)
 
+The trainer has since been repaired to save full healthy projector/optimizer/RNG checkpoints at the frozen early-node schedule and to write `STOP_REASON.json` on guard failure. The targeted checkpoint/health/projector tests pass (`12 passed` with `PYTHONPATH=src:tools`).
+
+
 Read [`docs/current-status.md`](docs/current-status.md) first for the live state and
 [`docs/architecture-matrix.md`](docs/architecture-matrix.md) for architecture IDs.
 The immutable evaluation rules remain in

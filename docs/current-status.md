@@ -4,6 +4,8 @@
 
 > **live matrix execution (03:26–05:03 CST):** qwen25_7b_v1 retry4 已加载全部 339 个 Qwen2.5-7B 分片并越过此前 step-2 NaN 点，但在 optimizer step 33（2,112 examples seen）触发冻结的 RMS critical guard：receiver RMS ratio `50.7792× > 50×`，relative-spread ratio `0.4593`，CE 仍 finite（`3.4664`）。因此 FP32 projector/AdamW 修复得到“数值稳定到 step32”，但 V1 社区规模臂正式记为 `failed_health_guard`，不能写成视觉能力结果。完整 failure checkpoint、optimizer/RNG、health/log、SHA 与失败原因已封存于 `experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v1_retry4/`，MATRIX_SUMMARY 已登记。V2 cache 仍在构建；Qwen3.5-4B/9B 和 controls 等待 GPU 排程。
 
+> **health-checkpoint repair (2026-08-08 05:08 CST):** V1 step33 暴露的 `checkpoint-every=64` 回滚缺口已修复进 `tools/train_overfit.py`：新鲜训练在 step0、1、2、5、10、20、30、50、75、100 及之后每50步保存完整 healthy checkpoint，failure checkpoint 写入 `STOP_REASON.json` 并记录最近回滚点。三组相关 pytest 在设置 `PYTHONPATH=src:tools` 后为 `12 passed`。
+
 ## 一句话结论
 
 软件 glue 与代理训练链路已经跑通，真实视觉能力尚未建立，当前没有 checkpoint
