@@ -120,6 +120,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-image-side", type=int, default=448)
     parser.add_argument("--dtype", default="float32")
     parser.add_argument(
+        "--projector-dtype",
+        default=None,
+        choices=["float16", "float32", "bfloat16"],
+        help="Trainable projector dtype. Defaults to float32 when the frozen receiver is float16, avoiding FP16 AdamW state overflow.",
+    )
+    parser.add_argument(
         "--canonical-projector",
         action="store_true",
         help="Keep the trainable projector at canonical 4096 dims and use a fixed parameter-free receiver adapter.",
@@ -260,6 +266,10 @@ def main() -> None:
     torch.manual_seed(args.seed)
     rng = random.Random(args.seed)
     dtype = getattr(torch, args.dtype)
+    projector_dtype = getattr(
+        torch,
+        args.projector_dtype or ("float32" if dtype == torch.float16 else args.dtype),
+    )
     device = torch.device(args.device)
     if device.type == "cuda":
         torch.cuda.reset_peak_memory_stats(device)
@@ -347,10 +357,10 @@ def main() -> None:
             projector_variant=args.projector_variant,
         )
     )
-    projector.to(device=device, dtype=dtype)
+    projector.to(device=device, dtype=projector_dtype)
     if args.init_projector:
         donor = PatchMergerProjector.from_pretrained(
-            args.init_projector, device=device, dtype=dtype
+            args.init_projector, device=device, dtype=projector_dtype
         )
         # None and an explicit flattened width are semantically identical.
         # Compare effective structure so canonical step0 checkpoints remain reusable.
@@ -691,6 +701,8 @@ def main() -> None:
         "canonical_projector": bool(args.canonical_projector),
         "canonical_projector_width": canonical_width,
         "projector_variant": args.projector_variant,
+        "language_model_dtype": str(dtype),
+        "projector_dtype": str(projector_dtype),
         "init_projector": args.init_projector,
         "receiver_adapter": {
             "kind": "fixed_grouped_signed_projection" if receiver_adapter is not None else "identity",
