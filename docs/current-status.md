@@ -450,3 +450,11 @@ vision-blind click 差 `0` 个百分点，CI `[-6,+6]`；vision-shuffled click �
 gated 首步的零梯度仅出现在允许的 `residual.weight`，gate 和其余 projector 参数仍为 finite/non-zero；step 2 `vision_minus_shuffle_correct_logp=+0.1071`，但 projector/receiver relative-spread ratio 已到 `0.2690/0.2254`，effective-rank ratio `0.5008/0.3611`，仍触发硬几何趋势守卫。结论是：修复确实消除了实现缺陷，gated residual 结构本身仍未解决早期 receiver-facing collapse；15R 不进入 500-step 扩展，也没有能力评测资格。
 
 这轮反驳“残差旁路能在不改变 step0 行为的情况下自动保住视觉几何”，并支持“当前冻结 3B receiver 的读出动力学才是共同瓶颈之一”。下一项停止继续堆 residual 变体，选择一个可迁移的 projector 输出尺度/辅助目标单变量，并保留完全匹配的 CE-only control；若几何再次在 step 1--2 失败，转 projector 结构重设计，不增加训练量。
+
+## 2026-08-07 Package 15T：exact K3 + causal margin λ=0.5
+
+监督接口先经过独立审计：正式 4,000-row order 确实按冻结 ID、source row 和 record SHA 重建，2,000 条 grounding 与 2,000 条 short-answer 均有真实 target；grounding 有 1,066 个不同 click 坐标，`click(start_box=[500,500])` 为 0，每个 8-sample cyclic negative 都没有同图 SHA。审计也明确一个边界：训练 target 是上游 ShowUI point 转成的 click 字符串，当前数据没有独立保存 bbox 字段，因此只能称 point-derived click supervision，不能声称独立 bbox join。历史 stripped-receiver cache-only 伪监督运行继续排除在正式 Qwen3B 结果之外；完整审计在 `SUPERVISION_PROVENANCE_AUDIT_20260807.json`。
+
+在 exact Kimi-K3/MoonViT-V2 projector 上，把已 geometry-safe 的 LR `5e-5`、同 step0、同 4,000-row order、同 cache 和 receiver 固定，只把 causal hinge λ 从 `0.1` 提到 `0.5`。`health_run_100_v2_exact_causal_l05_20260807` 通过独立 verifier 后在 step 2 自动止损：projector/receiver relative-spread ratio `1.000→0.990` / `1.000→0.986`，effective-rank ratio `1.000→1.000` / `1.000→1.000`，说明几何保持；但 `vision_minus_shuffle_correct_logp` 只从 `-0.2404` 走到 `-0.0515`，vision/shuffled preference 最终都是 `0.625`，仍触发 `vision_minus_shuffle_logp_critical`。CE 从 `4.8526` 变为 `5.6925`，没有能力评测资格。
+
+这轮支持“paired objective 的方向确实能把错误归因推近零”，反驳“增大 λ 就能在冻结纯文本 3B 上自动产生正确图像优势”。结合 15R，这说明 geometry 保留与视觉因果是两条独立门：15T 保住几何却没有 grounding，15R 改结构却保不住几何。停止继续扫 λ 或扩展 500 steps；下一项转向 placeholder/位置语义与 receiver 分布对齐的单变量实验，或直接冻结 Qwen 代理配方进入 DeepSeek runtime Gate 代码准备。

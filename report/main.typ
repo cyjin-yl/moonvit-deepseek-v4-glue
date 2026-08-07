@@ -2080,3 +2080,11 @@ Gate D 继续为 *NO-GO*，任何租卡或完整 0731 下载等待用户明确�
 gated 的 step 1 只允许 `residual.weight` 零梯度，gate 和其他参数通过 finite/non-zero 检查；step 2 `vision_minus_shuffle_correct_logp=+0.1071`，但 projector/receiver relative-spread ratio 已降至 `0.2690/0.2254`，effective-rank ratio 为 `0.5008/0.3611`，仍触发几何守卫。结果支持“修复训练守卫后仍存在共同的 receiver-facing collapse”，反驳“zero-gated residual 能自动保住视觉几何”。因此 15R 不进入 500-step、ScreenSpot 或 DeepSeek 候选，raw manifest 与四个目录的 SHA 指针见 `REPAIR_RESULT_POINTER_20260807.json`；`previous_best` 不变，Gate D 仍为 *NO-GO*。
 
 下一项只注册一个可迁移的 projector 输出尺度或辅助目标变量，并保留完全匹配的 CE-only control。若该变量仍在 step 1--2 触发相同 guard，停止继续堆训练量，转 projector 结构重设计。
+
+== Package 15T：exact K3 causal margin lambda=0.5
+
+正式 Qwen3B supervision 在本轮前完成审计：4,000-row frozen order 按 ID、source row 和 SHA 重建真实 `train_mix.jsonl`，包含 2,000 条 grounding 与 2,000 条 short-answer；grounding 有 1,066 个不同坐标、`click(start_box=[500,500])` 为零，循环 batch 负例没有同图 SHA。上游保存的是 ShowUI point 转成的 click 字符串，当前 pack 没有独立 bbox/raw point 字段，因此只能称 point-derived click supervision；旧 cache-only stripped-receiver 的统一 500,500 fallback 只作为历史诊断。审计 pointer 为 `SUPERVISION_PROVENANCE_AUDIT_20260807.json`。
+
+在 exact K3/MoonViT-V2 projector 上固定 geometry-safe LR `5e-5`、step0、order、cache、receiver 和 health schedule，只把 paired correct-vs-shuffled hinge lambda 从 `0.1` 提到 `0.5`。独立 verifier 重新计算 3 个 probes 与 3 个 checkpoints；step 2 自动停止，onset `[1,2]`。projector/receiver relative-spread ratio 为 `0.9903/0.9859`，effective-rank ratio 为 `1.0002/1.0001`，表示几何保持；`vision_minus_shuffle_correct_logp` 仅从 `-0.2404` 到 `-0.0515`，vision/shuffled preference 最终 `0.625/0.625`，仍触发 causal critical。CE 为 `4.8526→5.6925`，不进入 ScreenSpot 或通用能力评测；raw pointer 为 `CAUSAL_MARGIN05_RAW_POINTER_20260807.json`。
+
+结果支持“paired 目标能把错误方向推近零”，反驳“增大 lambda 即可让冻结纯文本 3B 获得真实 grounding”。15R 与 15T 合起来说明几何健康和视觉因果是两道独立门：gated residual 没保住几何，强 paired objective 保住几何却仍没让正确图像胜过 shuffled。停止继续扫 lambda 或做 500-step 扩展；下一项只选一个 DeepSeek 可迁移的 placeholder/位置语义或 receiver 分布对齐变量，并保留 matched CE-only control。

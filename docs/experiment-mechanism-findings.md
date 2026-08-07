@@ -104,3 +104,15 @@ vision-shuffled click-in-box 的 paired improvement 为 `+0.629` 个百分点，
 在当前 main 源码和独立 repair contract 下，matched canonical CE-only control (`baseline_none_repair_v3`) 与 gated residual (`gated_residual_repair_v2`) 都通过独立 health verifier，然后在 optimizer step 2 自动止损。两者都出现 projector/receiver RMS 上升、relative spread 下降的 adverse trend；gated 的 step-2 projector/receiver spread ratios 为 `0.2690/0.2254`，effective-rank ratios 为 `0.5008/0.3611`，虽然 `vision_minus_shuffle_correct_logp=+0.1071`，仍未通过几何硬门槛。首步允许的零梯度只在 `residual.weight`，step 2 已无允许零梯度参数。
 
 这条证据支持“修复训练守卫后，gated residual 仍然没有改变共同的 receiver-facing collapse”，反驳“zero-init residual 旁路本身足以保留图像差异”。健康指标仍然只是训练安全证据，不能当作 grounding 能力；该 arm 不进入 500-step、ScreenSpot 或 DeepSeek 候选。后续应把研究预算转向一个可迁移的输出尺度/辅助目标单变量，并保留 matched CE-only control。
+
+## Package 15T：更强 paired objective 只修正方向，不建立因果
+
+在 exact K3/MoonViT-V2 projector 的 geometry-safe 小学习率 `5e-5` 上，固定 step0、order、cache、receiver 和 100-step health 合同，只把 within-batch correct-vs-shuffled hinge 的 lambda 从 `0.1` 提到 `0.5`。独立 verifier 确认 step 0/1/2 的 3 个 probe 与 3 个 checkpoint 完整存在，训练在 `[1,2]` 自动止损。
+
+step 2 的 projector/receiver relative-spread ratio 为 `0.9903/0.9859`，effective-rank ratio 为 `1.0002/1.0001`，所以表示几何没有崩；但 vision/shuffled preference 都为 `0.625`，`vision_minus_shuffle_correct_logp=-0.05155`，仍未通过 causal guard。相较 parent lambda=`0.1` 的 `-0.06098`，λ=`0.5` 只带来有限的方向改善；CE 从 `4.8526` 升到 `5.6925`，没有进入 ScreenSpot 或通用能力评测。
+
+这组结果把“几何健康”和“真实 grounding”进一步分开：更强的 paired loss 能把错误方向推近零，却不能让冻结纯文本 3B 选择正确图像。继续增大 λ 或延长该 arm 没有判别力；下一项应测试 placeholder/位置语义、输出尺度与 receiver 分布的可迁移单变量，或者冻结 Qwen 代理训练配方推进 DeepSeek runtime Gate。
+
+## 正式 Qwen3B 监督 provenance 审计
+
+当前 `train_qwen3b_proxy.py` 的正式路径按 order manifest 的 ID、source row 和 SHA 重建 `train_mix.jsonl`，4,000 行中 grounding/short-answer 各 2,000；grounding 有 1,066 个唯一 click 坐标、0 个 `[500,500]`，每个训练 batch 的循环负例都没有同图 SHA。这个证据支持“15R/15T 的 CE supervision 不是统一坐标 fallback”。数据上游把 ShowUI `point` 转成 click 字符串，却没有把独立 bbox/raw point 字段保存在训练 manifest；因此当前结论只能写成 point-derived click supervision，不能声称独立 bbox join。旧 stripped-receiver cache-only 运行的 `[500,500]` fallback 已在文档中单独标为历史诊断，不得混入正式排行榜。

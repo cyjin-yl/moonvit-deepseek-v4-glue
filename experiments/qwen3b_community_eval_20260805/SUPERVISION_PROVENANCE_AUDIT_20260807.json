@@ -1,0 +1,30 @@
+{
+  "format_version": "qwen3b-supervision-provenance-audit-v1",
+  "date": "2026-08-07",
+  "formal_training_path": "tools/train_qwen3b_proxy.py",
+  "raw_run_checked": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/baseline_none_repair_v3",
+  "order_manifest": "experiments/qwen3b_community_eval_20260805/training_order_grounding_enriched_4k_v1/MANIFEST.json",
+  "counts": {
+    "records": 4000,
+    "grounding_records": 2000,
+    "short_answer_records": 2000,
+    "unique_record_ids": 4000,
+    "unique_image_sha256": 2013,
+    "grounding_unique_image_sha256": 72,
+    "grounding_target_unique_clicks": 1066,
+    "grounding_click_500_500": 0,
+    "grounding_strict_parse_failures": 0,
+    "cyclic_batch_same_image_negatives": 0,
+    "showui_source_rows_checked": 5167
+  },
+  "training_binding": {
+    "order_id_to_train_mix_row_join": true,
+    "source_row_sha256_rechecked": true,
+    "target_answer_taken_from_order_manifest": true,
+    "feature_cache_id_image_sha_join": true,
+    "feature_cache_alias_sha_checked": true
+  },
+  "important_caveat": "The formal target is point-derived click supervision encoded in the source answer string. The current train_mix/source adapter does not preserve an independent bbox field; do not claim an independent bbox join until upstream point/bbox provenance is stored.",
+  "historical_cache_only_caveat": "Older stripped-receiver/cache-only diagnostics used a build_inputs fallback when supervision fields were absent; those artifacts remain diagnostic and are excluded from the formal Qwen3B contract.",
+  "paid_resources_used": false
+}

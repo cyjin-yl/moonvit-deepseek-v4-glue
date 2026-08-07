@@ -1,0 +1,62 @@
+{
+  "format_version": "qwen3b-exact-k3-causal-margin-result-pointer-v1",
+  "package": "15T_exact_k3_causal_margin05_screen",
+  "date": "2026-08-07",
+  "paid_resources_used": false,
+  "capability_claim_allowed": false,
+  "preregistration_path": "configs/qwen3b-exact-k3-causal-margin05-screen-v1.json",
+  "preregistration_git_commit": "d6693557eab59193b908774b46d31f0ee58468a8",
+  "raw_path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/architecture_controls/local_v2_exact_k3/health_run_100_v2_exact_causal_l05_20260807",
+  "matched_parent": "health_run_100_v2_exact_causal_l01_20260806",
+  "status": "verified_auto_stopped",
+  "summary": {
+    "optimizer_steps_completed": 2,
+    "examples_seen": 16,
+    "answer_tokens_seen": 97,
+    "loss_first": 4.852579563856125,
+    "loss_last": 5.692514194641262,
+    "collapse_onset_interval": [1, 2],
+    "critical_reasons": [
+      "projector_rms_rising_spread_falling",
+      "receiver_rms_rising_spread_falling",
+      "vision_minus_shuffle_logp_critical"
+    ],
+    "step0_step1_step2": {
+      "vision_minus_shuffle_correct_logp": [-0.2404365754, -0.0878042345, -0.0515490508],
+      "vision_preference": [0.625, 0.625, 0.625],
+      "shuffled_preference": [0.625, 0.5, 0.625],
+      "projector_relative_spread_ratio": [1.0, 0.9940596056, 0.9903247577],
+      "receiver_relative_spread_ratio": [1.0, 0.9914715184, 0.9859063855],
+      "projector_effective_rank_ratio": [1.0, 1.0004905684, 1.0001591327],
+      "receiver_effective_rank_ratio": [1.0, 1.0009489162, 1.0000775336]
+    },
+    "peak_gpu_memory_bytes": 13156467336,
+    "training_wall_seconds": 33.266477989032865,
+    "total_wall_seconds": 164.29135317914188,
+    "runner_git_sha": "d6693557eab59193b908774b46d31f0ee58468a8"
+  },
+  "independent_health_verifier": {
+    "status": "verified",
+    "artifact_file_count": 22,
+    "artifact_total_bytes": 1141083344,
+    "probe_steps": [0, 1, 2],
+    "optimizer_step_rows": 2,
+    "checkpoint_count": 3,
+    "guards_recomputed": 3,
+    "auto_stopped": true,
+    "file_sha256": "15ce7bcc9b06e02dbb21cb37865381d5405e1674d7913f9184bd4756ccccc57e"
+  },
+  "raw_sha256": {
+    "SUMMARY.json": "d8c3097c8d8075c67e343a438978193e60f7d5242a024b3351997c50ab78e4ae",
+    "FAILURE.json": "b3f182c0bf9ebae85f256535f5b14abfb1af9f3ae9dd6ef32213ef0e39d1309a",
+    "ROLLBACK.json": "b211760747853ca28c3e4e4e1d907ff930b9081d086436409b9b03f6a79ec768",
+    "RUN_CONFIG.json": "eb6e4cf8f36d6eaff389b58f763b41a48b1f742d19631ae0241910c3d1ace95b",
+    "HEALTH_ARTIFACT_MANIFEST.json": "9eb61d70a8b5d50551ca59fb07e28a9d38113b99c7df0840c8337e9be12f81eb",
+    "INDEPENDENT_HEALTH_VERIFIER.json": "15ce7bcc9b06e02dbb21cb37865381d5405e1674d7913f9184bd4756ccccc57e",
+    "TRAINING_HISTORY.jsonl": "ae73db50fafa226a88d45159596a55259974ae2250487160484da9eb36f517dd",
+    "train_health.jsonl": "26941090f99341301d6e0dd64be0a2c656706d8774df7d2829c6b468ac00892c",
+    "probe_metrics.jsonl": "117b3ecec7f6de518c19e0b6eb2af86ff9f1e118f6735db82b484aa37d23a762"
+  },
+  "qwen_proxy_conclusion": "A stronger paired objective moved the negative causal log-prob margin toward zero while preserving geometry, but did not make vision beat shuffled. The exact K3 projector remains a healthy interface with no established grounding ability.",
+  "deepseek_transfer_label": "directly_transferable"
+}

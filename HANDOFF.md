@@ -876,3 +876,37 @@ Decision: gated residual does not address the shared early receiver-facing
 collapse. Keep `previous_best` unchanged and move to one DeepSeek-transferable
 projector scale/auxiliary-objective variable with a matched CE-only control.
 Gate D remains **NO-GO**.
+
+## Package 15T exact K3 causal margin 0.5 (2026-08-07)
+
+Before this screen, the formal Qwen3B supervision path was audited. The frozen
+order joins real `train_mix.jsonl` rows by ID/source SHA; it contains 2,000
+grounding and 2,000 short-answer records, 1,066 unique grounding coordinates,
+zero `[500,500]` targets, and no same-image cyclic negatives in an 8-row batch.
+The target is point-derived click text from ShowUI; the current source pack does
+not preserve an independent bbox field, so future prose must say
+“point-derived click supervision,” not “independent bbox join.” Historical
+cache-only stripped-receiver runs that used the old `[500,500]` fallback remain
+diagnostic only. See `SUPERVISION_PROVENANCE_AUDIT_20260807.json`.
+
+The preregistered 15T screen held exact K3/MoonViT-V2, step0, order, cache,
+receiver, resolution and health schedule fixed. It used projector LR `5e-5`
+and increased the within-batch correct-vs-shuffled hinge lambda from `0.1` to
+`0.5`. Raw artifacts are at
+`/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/architecture_controls/local_v2_exact_k3/health_run_100_v2_exact_causal_l05_20260807`,
+with pointer
+`architecture_controls/local_v2_exact_k3/CAUSAL_MARGIN05_RAW_POINTER_20260807.json`.
+Independent health verification passed, but the arm stopped at step 2 with
+onset `[1,2]`. Geometry stayed healthy (projector/receiver spread ratios
+`0.990/0.986`, rank ratios `1.000/1.000`), while
+`vision_minus_shuffle_correct_logp` improved only from `-0.2404` to `-0.0515`
+and final vision/shuffled preference was `0.625/0.625`. The loss rose
+`4.8526→5.6925`; no capability claim or ScreenSpot run is allowed.
+
+Interpretation: stronger paired supervision moves the causal direction toward
+zero but does not create correct-image grounding in the frozen 3B receiver.
+Combined with 15R, geometry preservation and grounding are independent gates.
+Do not sweep lambda or expand to 500 steps. Keep `previous_best=step0`, retain
+the exact K3 projector as the structural candidate, and next test one
+DeepSeek-transferable placeholder/position or receiver-distribution alignment
+variable before deciding whether the Qwen proxy has exhausted its value.
