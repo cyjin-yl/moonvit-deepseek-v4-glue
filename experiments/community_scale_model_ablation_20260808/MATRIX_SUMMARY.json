@@ -1,0 +1,61 @@
+{
+  "completion_rule": "every active arm has a valid result or immutable failure artifact",
+  "created_at": "2026-08-07T19:12:22.479416+00:00",
+  "matrix_config": "configs/community-scale-model-ablation-v1.json",
+  "rows": {
+    "native_qwen_vlm_positive": {
+      "failure_history": [],
+      "result": null,
+      "status": "pending"
+    },
+    "no_vision_control": {
+      "failure_history": [],
+      "result": null,
+      "status": "pending"
+    },
+    "qwen25_7b_v1": {
+      "attempts": 2,
+      "current_attempt": {
+        "attempt": 2,
+        "contract_examples_seen": 57600,
+        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v1_train_57600_retry2"
+      },
+      "failure_history": [
+        {
+          "artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v1_attempt1/FAILURE.json",
+          "attempt": 1,
+          "class": "implementation_config_mismatch"
+        }
+      ],
+      "result": null,
+      "status": "retry_in_progress"
+    },
+    "qwen25_7b_v2": {
+      "failure_history": [],
+      "result": null,
+      "status": "pending"
+    },
+    "qwen35_4b_v1_stripped": {
+      "failure_history": [],
+      "result": null,
+      "status": "pending"
+    },
+    "qwen35_4b_v2_stripped": {
+      "failure_history": [],
+      "result": null,
+      "status": "pending"
+    },
+    "qwen35_9b_v1_stripped": {
+      "failure_history": [],
+      "result": null,
+      "status": "pending"
+    },
+    "qwen35_9b_v2_stripped": {
+      "failure_history": [],
+      "result": null,
+      "status": "pending"
+    }
+  },
+  "schema_version": "community-matrix-summary-v1",
+  "updated_at": "2026-08-07T19:12:22.479430+00:00"
+}
