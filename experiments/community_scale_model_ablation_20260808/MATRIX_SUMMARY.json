@@ -45,17 +45,38 @@
     "qwen25_7b_v2": {
       "failure_history": [],
       "result": null,
-      "status": "pending"
+      "status": "cache_in_progress",
+      "attempts": 1,
+      "current_attempt": {
+        "attempt": 1,
+        "contract_examples_seen": 57600,
+        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_train_57600_retry1",
+        "cache_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/v2_cache_57600"
+      }
     },
     "qwen35_4b_v1_stripped": {
       "failure_history": [],
       "result": null,
-      "status": "pending"
+      "status": "queued_after_qwen7",
+      "attempts": 1,
+      "current_attempt": {
+        "attempt": 1,
+        "contract_examples_seen": 57600,
+        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen35_4b_v1_train_57600",
+        "native_vision_stripped": true
+      }
     },
     "qwen35_4b_v2_stripped": {
       "failure_history": [],
       "result": null,
-      "status": "pending"
+      "status": "queued_after_qwen7",
+      "attempts": 1,
+      "current_attempt": {
+        "attempt": 1,
+        "contract_examples_seen": 57600,
+        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen35_4b_v2_train_57600",
+        "native_vision_stripped": true
+      }
     },
     "qwen35_9b_v1_stripped": {
       "failure_history": [],
@@ -69,5 +90,5 @@
     }
   },
   "schema_version": "community-matrix-summary-v1",
-  "updated_at": "2026-08-07T19:51:27.658578+00:00"
+  "updated_at": "2026-08-07T20:08:44.652567+00:00"
 }
