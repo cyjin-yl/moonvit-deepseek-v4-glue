@@ -10,6 +10,28 @@ MoonViT 特征可以经过 canonical 4096 projector 注入纯文本 Qwen2.5 和 
 
 项目已经从“接口能否运行”推进到“正确图片是否稳定改变答案”的阶段。还没有任何 checkpoint 满足正式晋升合同，`previous_best` 不变。
 
+## 主线重置：用社区训练量做条件消融，而不是继续堆 verifier（2026-08-08）
+
+历史脚本、权重和数据 verifier 已经足够支撑可信实验；继续重复它们不会回答当前最重要的问题：视觉塔版本、
+receiver 容量和视觉预训练先验中，到底哪一个决定外接 projector 能否学会图像。后续把模型消融放在主线，
+把本节的健康诊断放在护栏位置。
+
+固定 arm 包括：V1（MoonViT-SO-400M/K2.6-lineage）、V2（K3/MoonViT-V2）、无视觉、random projector；
+纯文本 Qwen2.5-3B/7B；去掉原生视觉层的 Qwen3.5-4B/9B；以及独立的原生 Qwen VLM 阳性对照。每个
+receiver×tower 都重新初始化 projector，不能把旧 receiver 的 projector 直接搬过来。所有 arm 共享真实图文
+数据顺序、预处理、token 上限、prompt、parser 和 greedy decoding，并在 vision/blind/shuffled/random 四条件
+下报告结果。
+
+训练量按社区 GLM-5.2V 的数量级复现：约 66k 条短 QA、global batch 64、constant LR `5e-4`、约 2 epochs，
+约 2,070 optimizer steps；社区报告的能力突变约在 step 900（约 57.6k examples seen）。因此 step 20/100
+只用于发现 NaN 或塌缩，不能作为“没有视力”的结论。主节点为 4k/8k/16k/32k/57.6k/66k/132k examples seen，
+每个节点保留完整 raw rows、bootstrap CI 和语言保持结果。
+
+表征 rank/spread/RMS、梯度和 NaN/Inf 只用于在线止损与回滚；CE 下降或表示健康都不等于视觉能力。只有
+ScreenSpot click-in-box、Accuracy@50/100/200、TextVQA/DocVQA/OCRBench 以及 vision−blind/shuffled 的配对 CI
+同时支持，才允许称为 grounding 改进。旧 3-step/32-row/geometry/replay 结果在后文统一视为 **archived**，
+用于解释失败机制，不再阻塞社区规模训练。
+
 ## Receiver 差异
 
 | Receiver | 本机能力边界 | 观察到的现象 | 当前解释 |

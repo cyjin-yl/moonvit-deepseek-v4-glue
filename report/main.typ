@@ -34,6 +34,28 @@ input-gradient，以及 tiny DeepSeek BF16/FP32 的 20-step save/resume/generate
 forward/backward/generate、真实 checkpoint round-trip 和因果 benchmark 均未完成。
 Gate D 因此保持 *NO-GO*。
 
+== 实验主线重置：社区规模模型消融优先
+
+本报告从本节开始采用新的执行优先级：把 GPU 时间用于判断模型条件，而不是继续重复证明脚本能够运行。
+pytest、strict-load、manifest、checkpoint 和独立 verifier 保留为短 preflight；projector 的
+collapse/NaN/Inf/gradient/RMS/spread/rank 监控保留为在线止损与回滚。它们保障数据可信，但不能代替视觉能力。
+
+消融矩阵固定包含 MoonViT-SO-400M/K2.6-lineage V1、K3/MoonViT-V2、无视觉与 random-projector，接收器包含
+纯文本 Qwen2.5-3B/7B、去掉原生视觉模块的 Qwen3.5-4B/9B，以及独立的原生 Qwen VLM 阳性对照。原生 VLM
+不得写入 external-MoonViT 排名；每个 receiver×tower 必须重新训练 projector，旧 checkpoint 只能作 step0
+接口诊断。所有 arm 共享 vision/blind/shuffled/random_projector 四条件、样本顺序、图像预处理、prompt、parser
+和 greedy decoding。
+
+训练量按社区 GLM-5.2V 的公开数量级对齐：约 66,000 条短答案图文数据、global batch 64、constant learning
+rate `5e-4`、约 2 epochs/2,070 optimizer steps；报告中的能力突变约在 step 900（约 57,600 examples seen）。
+主评测节点为 4k/8k/16k/32k/57.6k/66k/132k examples seen。20/100 steps 仅是健康筛选，不能宣布能力成功
+或失败。只有 ScreenSpot、TextVQA、DocVQA、OCRBench 和 vision−blind/shuffled 配对 CI 通过，checkpoint
+才可晋升；历史 3-step、32-row、geometry/replay 结果保留为 archived mechanism evidence。
+
+下一阶段先完成社区规模数据顺序冻结，然后跑 Qwen2.5-3B/7B 的 V1/V2 matched 对照，并同时保存无视觉、随机
+projector 和原生 Qwen VLM 阳性对照。结果若显示稳定的正确图像优势，再进入更大 receiver 与 DeepSeek runtime
+Gate；完整 DeepSeek-V4-Flash-0731 仍未加载，Gate D 保持 *NO-GO*。
+
 最近 7B/Qwen3.5 训练使用的 `tools/train_stripped_receiver_prior.py` 是 3-step
 `diagnostic_only` runner；`tools/train_overfit.py` 是共享全循环骨架；完整
 health/stop/rollback 和绑定 checkpoint 只在 3B 专用 `tools/train_qwen3b_proxy.py`。

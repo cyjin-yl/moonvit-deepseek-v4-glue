@@ -16,6 +16,29 @@ Qwen3.5-4B external MoonViT 的 matched V1/V2 ScreenSpot50 也都未通过因果
 运行入口与硬阻塞的权威地图见
 [`docs/runtime-entrypoint-audit.md`](docs/runtime-entrypoint-audit.md)。
 
+## 当前实验主线：模型消融优先（2026-08-08）
+
+项目从“反复证明脚本不会报错”切换回“在社区训练条件下判断模型是否真的获得视觉能力”。
+pytest、strict-load、manifest 和 checkpoint 检查仍是每轮的短 preflight；它们是防止产生假数据的护栏，
+不是本轮研究目标。主实验必须比较模型条件，而不是只比较 loss：
+
+| 消融因素 | 固定条件 |
+|---|---|
+| 视觉输入 | MoonViT-SO-400M/K2.6-lineage V1、K3/MoonViT-V2、无视觉、random projector |
+| 接收器 | 纯文本 Qwen2.5-3B、Qwen2.5-7B；Qwen3.5-4B/9B stripped-native；原生 Qwen VLM 只作独立阳性对照 |
+| 训练 | 每个 receiver×tower 重新初始化并重新训练 projector；不跨模型复用旧 projector |
+| 评测 | vision、blind、shuffled、random_projector 四条件，固定样本顺序、预处理、prompt、parser 和 greedy decoding |
+
+第一批 scaled reproduction 对齐社区 GLM-5.2V 的公开数量级：短答案图文数据约 66k 条，global batch 64，
+constant learning rate `5e-4`，约 2 epochs、约 2,070 optimizer steps；社区报告的突变/grokking 观察点约在
+step 900（约 57.6k examples seen）。因此 20/100 steps 只用于健康止损和接口烟雾检查，不能宣布能力失败或成功。
+所有 arm 在 `examples_seen=4k/8k/16k/32k/57.6k/66k/132k` 保存并跑同一合同；只有真实
+ScreenSpot、TextVQA、DocVQA、OCRBench 及 vision−blind/shuffled 配对 CI 才能晋升 checkpoint。
+
+表示塌缩、NaN/Inf、梯度异常和 RMS/spread/rank 只作在线止损：发现坏轨迹就保存并回滚，不能用“健康”替代
+视觉能力。旧的 3-step receiver-prior、32-row 和 geometry/replay 结果保留在文档中并标为 archived，
+用于解释失败机制，不再阻塞社区规模消融主线。
+
 项目把视觉塔、projector、文本主干保持为三个独立 checkpoint，并实现：
 
 - Kimi 风格的 2×2 PatchMerger projector；

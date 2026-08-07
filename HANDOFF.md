@@ -14,6 +14,31 @@ vision-vs-blind. Gate D is **NO-GO**. The authoritative entrypoint and blocker
 map is [`docs/runtime-entrypoint-audit.md`](docs/runtime-entrypoint-audit.md).
 The dedicated workstation pane is `moonvit:0.0`; capture every V100 run.
 
+## New execution priority: community-scale model ablation (2026-08-08)
+
+The next turn must spend experiment time on the model, not on endlessly extending script-verification work. Keep
+pytest, strict weight checks, manifests and checkpoint checks as a short preflight, and keep the online collapse/NaN/
+gradient guards as automatic stop-loss. They are data-safety controls, not evidence of visual ability.
+
+The preregistered comparison matrix is:
+
+- MoonViT-SO-400M/K2.6-lineage V1, K3/MoonViT-V2, no-vision, and random-projector controls;
+- frozen pure-text Qwen2.5-3B and Qwen2.5-7B;
+- Qwen3.5-4B and 9B with native vision modules stripped (receiver-prior diagnostics);
+- native Qwen VLM as a separate positive control, never merged into the external-MoonViT leaderboard;
+- a DeepSeek-V4-Flash-0731 runtime arm only after the real-weight Gate D is authorized and passed.
+
+Every receiver×tower arm gets a fresh projector trained under the same data order and budget. Every checkpoint runs
+vision/blind/shuffled/random_projector with identical preprocessing, prompt, parser and greedy decoding. The scaled
+reproduction follows the community GLM-5.2V order of magnitude: about 66k short-answer image-text examples, global
+batch 64, constant LR `5e-4`, about 2 epochs/2,070 optimizer steps, with the reported grokking region near step 900
+(about 57.6k examples seen). Evaluate and preserve raw artifacts at 4k/8k/16k/32k/57.6k/66k/132k examples seen.
+Twenty or one hundred steps are health screens only; they cannot support a capability claim.
+
+The archived 3-step receiver-prior, 32-row and geometry/replay packages remain useful mechanism evidence, but they no
+longer define the mainline or block the scaled ablation. A candidate can replace `previous_best` only after real
+ScreenSpot, TextVQA, DocVQA and OCRBench plus paired vision−blind and vision−shuffled confidence intervals pass.
+
 Token boundary already audited: Qwen2.5 `<|image_pad|>` is ID 151655 and its
 reserved rows are dummy pure-text initialization; DeepSeek `<｜image｜>` is ID
 129279 and is retained for Hash-MoE routing. Neither path extends the vocabulary.

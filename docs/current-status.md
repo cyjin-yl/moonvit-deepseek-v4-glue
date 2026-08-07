@@ -13,6 +13,42 @@ FP4/FP8 input-DGRAD、43 层 Hash-MoE 图像 forward/backward/generate 与真实
 恢复仍未运行，Gate D 为 **NO-GO**。运行入口审计见
 [`runtime-entrypoint-audit.md`](runtime-entrypoint-audit.md)。
 
+## 研究方向重置：社区规模模型消融优先（2026-08-08）
+
+此前几天的工作偏向验证入口和 verifier；这保证了数据可信，但没有继续回答“哪个模型条件能看懂图片”。
+从现在起，工程检查只作为每轮的短 preflight 和在线止损，主要计算预算给真实模型消融和社区数量级复现。
+
+### 固定消融矩阵
+
+| 维度 | 必须包含的 arm | 解释 |
+|---|---|---|
+| 视觉塔 | MoonViT-SO-400M/K2.6-lineage V1、K3/MoonViT-V2、无视觉、random projector | 判断 V1/V2、视觉输入和随机信号的贡献 |
+| 接收器 | 纯文本 Qwen2.5-3B、7B；Qwen3.5-4B、9B stripped-native；原生 Qwen VLM 阳性对照 | 区分语言容量、视觉预训练先验和真正的外接 projector 能力 |
+| 训练 | 每个 receiver×tower 从相同初始化重新训练 projector；旧 projector 仅可作 step0 接口诊断 | 防止把跨模型 checkpoint 当作结果 |
+| 条件 | vision、blind、shuffled、random_projector，外加 step0/previous_best/current_candidate | 同一顺序、图像处理、prompt、parser 和 greedy decoding |
+
+### 社区数量级训练合同
+
+主 reproduction 对齐社区 GLM-5.2V 的公开配方：约 66,000 条短答案图文数据、global batch 64、constant
+learning rate `5e-4`、约 2 epochs，约 2,070 optimizer steps；社区报告的能力突变约在 step 900（约
+57,600 examples seen）。因此 20/100 steps 只能判定数值稳定或触发止损，不能作为能力结论。所有 arm
+固定保存并评测 `examples_seen=4k/8k/16k/32k/57.6k/66k/132k`；比较时记录 optimizer steps、answer
+tokens、真实 global batch、wall time 和 peak VRAM。
+
+### 诊断的地位
+
+每 step 的 collapse/NaN/Inf/gradient/RMS/spread/rank 监控必须继续保留，但它只负责尽早停止错误轨迹并回滚到
+最近健康 checkpoint。它不能替代 ScreenSpot click-in-box、GLM-format Accuracy、TextVQA、DocVQA、OCRBench，
+也不能把 CE 下降写成“获得视力”。旧 3-step、32-row、replay/geometry 分支全部保留为 **archived mechanism
+evidence**；它们不再阻塞 scaled model ablation。
+
+### 下一项工作
+
+先固定并审计社区规模数据顺序和 66k/132k examples-seen 节点，然后在 V100 上启动 Qwen2.5-3B、Qwen2.5-7B
+的 V1/V2 matched projector-only 训练；同步保留无视觉、random projector 和原生 Qwen VLM 阳性对照。每到一个节点
+立即跑四条件 benchmark 和语言保持测试。只有出现稳定的 vision−blind 与 vision−shuffled 正向 CI，才扩展到
+更大 receiver 或进入 DeepSeek runtime Gate；Gate D 仍为 **NO-GO**，不自动租机。
+
 ## 给本科生的整体进度判断（2026-08-07）
 
 把项目想成一条流水线：MoonViT 负责把图片变成视觉特征，projector 负责把特征翻译到语言模型能接收的 4096 维接口，DeepSeek 负责根据这些接口生成答案。现在已经证明这条“接线、反向传播、保存、恢复、生成”的软件链路可以工作；还没有证明语言模型会按照图片内容回答。训练 loss 下降只能说明它学会了更容易的答案模式，不能单独证明图片被使用。
