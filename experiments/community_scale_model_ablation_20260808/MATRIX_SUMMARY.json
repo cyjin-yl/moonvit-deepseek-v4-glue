@@ -6,12 +6,25 @@
     "native_qwen_vlm_positive": {
       "failure_history": [],
       "result": null,
-      "status": "pending"
+      "status": "queued_after_qwen35_9b",
+      "attempts": 1,
+      "current_attempt": {
+        "attempt": 1,
+        "screen_count": 50,
+        "out": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/native_qwen_vlm_positive_screenspot50.json",
+        "leaderboard": "separate_positive_control"
+      }
     },
     "no_vision_control": {
       "failure_history": [],
       "result": null,
-      "status": "pending"
+      "status": "queued_after_qwen35_9b",
+      "attempts": 1,
+      "current_attempt": {
+        "attempt": 1,
+        "screen_count": 50,
+        "out": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/no_vision_control_screenspot_glm50"
+      }
     },
     "qwen25_7b_v1": {
       "attempts": 4,
@@ -106,5 +119,5 @@
     }
   },
   "schema_version": "community-matrix-summary-v1",
-  "updated_at": "2026-08-07T20:12:53.718417+00:00"
+  "updated_at": "2026-08-07T20:20:44.448659+00:00"
 }
