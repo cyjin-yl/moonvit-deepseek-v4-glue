@@ -21,8 +21,48 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
 from train_qwen3b_proxy import (
     load_architecture_overlay,
     save_bound_checkpoint,
+    _zero_gradient_allowed_for_projector,
     verify_bound_checkpoint,
 )
+
+
+def test_gated_residual_zero_branch_gradient_is_explicitly_allowed_at_zero_gate():
+    torch.manual_seed(20260807)
+    projector = PatchMergerProjector(
+        ProjectorConfig(
+            vision_width=3,
+            language_width=5,
+            merge_factor=4,
+            projector_width=6,
+            residual_mode="gated",
+        )
+    )
+    assert _zero_gradient_allowed_for_projector(projector, "residual.weight") == (
+        True,
+        "gated_residual_branch_at_zero_gate",
+    )
+    assert _zero_gradient_allowed_for_projector(projector, "residual_gate") == (
+        False,
+        None,
+    )
+    with torch.no_grad():
+        projector.residual_gate.fill_(0.1)
+    assert _zero_gradient_allowed_for_projector(projector, "residual.weight") == (
+        False,
+        None,
+    )
+
+    # 真实反向传播回归：gate=0 时分支权重梯度为零，但 gate 本身必须
+    # 通过链式法则收到非零梯度；否则 gated residual 会变成永久死分支。
+    with torch.no_grad():
+        projector.residual_gate.zero_()
+    features = [torch.randn(2, 4, 3)]
+    loss = projector(features)[0].square().mean()
+    loss.backward()
+    assert projector.residual.weight.grad is not None
+    assert int(torch.count_nonzero(projector.residual.weight.grad).item()) == 0
+    assert projector.residual_gate.grad is not None
+    assert int(torch.count_nonzero(projector.residual_gate.grad).item()) > 0
 
 
 def _contract() -> dict:

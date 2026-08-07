@@ -75,6 +75,28 @@ from moonvit_glue.training_order import (
 from verify_feature_cache import verify_feature_cache
 
 
+def _zero_gradient_allowed_for_projector(
+    projector: torch.nn.Module, name: str
+) -> tuple[bool, str | None]:
+    """只允许 gated residual 在 gate=0 首步的分支权重梯度为零。
+
+    gate=0 时残差分支输出为 ``gate * residual(x)``，首步对
+    ``residual.weight`` 的链式梯度按数学上必为零；scalar gate 本身仍必须
+    收到非零梯度。其他参数、其他步骤和其他 projector 变体继续执行原有
+    zero-gradient hard guard。
+    """
+    config = getattr(projector, "config", None)
+    gate = getattr(projector, "residual_gate", None)
+    if (
+        name == "residual.weight"
+        and getattr(config, "residual_mode", None) == "gated"
+        and gate is not None
+        and float(gate.detach().cpu()) == 0.0
+    ):
+        return True, "gated_residual_branch_at_zero_gate"
+    return False, None
+
+
 class _Tee:
     """日志文件始终保留；交互 stdout 断开时不杀训练。"""
 
@@ -1841,10 +1863,19 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
                 if not bool(torch.isfinite(parameter.grad).all()):
                     raise ValueError(f"projector gradient is non-finite: {name}")
                 nonzero = int(torch.count_nonzero(parameter.grad).item())
-                if nonzero == 0:
+                zero_allowed, zero_allowed_reason = (
+                    _zero_gradient_allowed_for_projector(projector, name)
+                )
+                if nonzero == 0 and not zero_allowed:
                     raise ValueError(f"projector gradient is exactly zero: {name}")
                 parameter_gradients.append(
-                    {"name": name, "nonzero": nonzero, "numel": parameter.grad.numel()}
+                    {
+                        "name": name,
+                        "nonzero": nonzero,
+                        "numel": parameter.grad.numel(),
+                        "zero_gradient_allowed": zero_allowed,
+                        "zero_gradient_allowed_reason": zero_allowed_reason,
+                    }
                 )
             language_gradient_tensors = sum(
                 parameter.grad is not None for parameter in language_model.parameters()
@@ -1879,6 +1910,16 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
                 "gradient_norm_before_clip": float(gradient_norm.detach().item()),
                 "gradient_norm_after_clip": gradient_norm_after_clip,
                 "parameter_gradients": parameter_gradients,
+                "zero_gradient_parameters": [
+                    row["name"]
+                    for row in parameter_gradients
+                    if row["zero_gradient_allowed"]
+                ],
+                "zero_gradient_allowed_reasons": {
+                    row["name"]: row["zero_gradient_allowed_reason"]
+                    for row in parameter_gradients
+                    if row["zero_gradient_allowed_reason"] is not None
+                },
                 "language_parameter_gradient_tensors": language_gradient_tensors,
             }
             if first_gradient_report is None:
@@ -1965,6 +2006,12 @@ def _run(args: argparse.Namespace, stage: dict[str, str]) -> dict[str, Any]:
                         gradient_norm.detach().item()
                     ),
                     "projector_gradient_norm_after_clip": gradient_norm_after_clip,
+                    "zero_gradient_parameters": gradient_report[
+                        "zero_gradient_parameters"
+                    ],
+                    "zero_gradient_allowed_reasons": gradient_report[
+                        "zero_gradient_allowed_reasons"
+                    ],
                     "ce_loss": ce_loss_value,
                     "geometry_loss": geometry_loss_value,
                     "causal_shuffle_hinge_loss": causal_shuffle_loss_value,
