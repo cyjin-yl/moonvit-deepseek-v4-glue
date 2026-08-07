@@ -29,9 +29,9 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--dtype", choices=("float16", "bfloat16"), default="float16")
     p.add_argument("--device", default="cuda")
-    p.add_argument("--max-visual-tokens", type=int, default=16)
-    p.add_argument("--token-selection", choices=("prefix", "uniform", "mean_pool"), default="mean_pool")
-    p.add_argument("--projector-scale", type=float, default=0.1)
+    p.add_argument("--max-visual-tokens", type=int, default=256)
+    p.add_argument("--token-selection", choices=("prefix", "uniform", "mean_pool"), default="prefix")
+    p.add_argument("--projector-scale", type=float, default=1.0)
     p.add_argument("--random-seed", type=int, default=20260806)
     p.add_argument("--max-new-tokens", type=int, default=32)
     p.add_argument("--sample-indices", default=None, help="只跑指定的冻结样本下标，逗号分隔；用于失败后的最小重试")
@@ -84,7 +84,7 @@ def main() -> None:
         str(args.model_dir), dtype=dtype, local_files_only=True, low_cpu_mem_usage=True,
     ).to(device).eval()
     model.requires_grad_(False)
-    projector = PatchMergerProjector.from_pretrained(args.projector_dir, device=device).eval()
+    projector = PatchMergerProjector.from_pretrained(args.projector_dir, device=device, dtype=dtype).eval()
     text_config = config.get("text_config") or config
     receiver_width = int(text_config.get("hidden_size") or model.config.hidden_size)
     receiver = FixedGroupedReceiverAdapter(4096, receiver_width, seed=20260806).to(device) if receiver_width != 4096 else None
@@ -137,6 +137,15 @@ def main() -> None:
         "max_visual_tokens": args.max_visual_tokens,
         "token_selection": args.token_selection,
         "projector_scale": args.projector_scale,
+        "community_contract": {
+            "global_batch": 64,
+            "learning_rate": 5e-4,
+            "max_visual_tokens": 256,
+            "token_selection": "prefix",
+            "do_sample": False,
+            "temperature": 0.0,
+            "bootstrap_samples": args.bootstrap_samples,
+        },
         "max_new_tokens": args.max_new_tokens,
         "generation": {"do_sample": False, "temperature": 0.0, "prompt_route": "grounding"},
         "condition_summaries": {k: summarize_click_scores(v) for k, v in rows_by_condition.items()},
