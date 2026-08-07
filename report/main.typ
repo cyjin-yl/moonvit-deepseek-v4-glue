@@ -2158,3 +2158,8 @@ the same ScreenSpot parser and paired CIs will be used for that table and for tr
 #heading[Qwen3.5-4B MoonViT V1/V2 回归]
 
 在相同冻结 receiver、32 条真实答案训练 probe、16-token mean-pool、projector-only 预算和 50 条 ScreenSpot 合同下，V1 CE-only 的 vision click-in-box 为 `0%`，V1 paired-margin 为 `2%`；两者 blind 均为 `2%`。V1 paired-margin 的 vision-minus-blind click CI 为 `[-6,+6]` 个百分点，vision-minus-shuffled 为 `[0,0]` 个百分点，严格门槛仍未通过。匹配的 V2 paired-margin reference 为 vision `4%`、blind `2%`、shuffled `4%`，同样没有正的因果下界。V1 没有救活 external MoonViT，版本差异不再是首要故障解释。
+#heading[固定 baseline matrix 与下一步]
+
+`regression_baseline_matrix_v1.json` binds the comparable rows to one receiver/tower/evaluation contract. Qwen3.5-4B external V1 and V2 both fail the causal ScreenSpot50 gate: neither has a positive lower confidence bound for both vision-minus-blind and vision-minus-shuffled click-in-box. Qwen2.5-7B exact V2 has only a weak shuffle attribution and fails the blind comparison. The old Qwen2.5-3B full-public row is marked as a legacy V2 proxy, not exact K3 V2; the native Qwen3.5 VLM is a separate positive control.
+
+The version-only explanation is therefore rejected. The next local experiment is one DeepSeek-transferable interface/scale/target-alignment variable with a matched CE-only control, screened on the frozen 50-row set before any full-public expansion or long training. DeepSeek-V4-Flash-0731 Gate D remains NO-GO until real weights, FP4/FP8 input gradients, full routing, checkpoint round-trip and causal gains are verified.

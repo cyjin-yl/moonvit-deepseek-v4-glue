@@ -185,3 +185,8 @@ tiny synthetic route 结果只证明 wrapper 传递了 placeholder/routing/posit
 ScreenSpot50 没有形成能力增益：V1 CE-only vision click `0%`，V1 paired-margin `2%`，blind 都是 `2%`；V1 paired-margin 的 vision−blind click CI 为 `[-6,+6] pp`，vision−shuffled 为 `[0,0] pp`。exact V2 paired-margin reference 为 vision `4%`、blind `2%`、shuffled `4%`，同样没有正的 paired causal CI。
 
 这条回归反驳“换回社区 V1 就能直接修复当前失败”。当前优先级转向 receiver-facing 分布对齐、视觉 token 监督/位置和输入尺度；V1 仍保留为 DeepSeek runtime validation 的可迁移架构候选，不进入 previous best。
+## Fixed regression baseline matrix
+
+`regression_baseline_matrix_v1.json` is the machine-readable index for the current Qwen contract. It binds every row to its receiver, tower, evaluation scope and evidence pointer. The old Qwen2.5-3B full-public result is explicitly a legacy V2 proxy, not exact K3 V2; the native Qwen3.5 VLM remains a separate positive control. Qwen2.5-7B gives a weak positive vision-minus-shuffled click interval but fails vision-minus-blind, while Qwen3.5-4B external V1 and V2 both fail the 50-row causal gate.
+
+This is why a receiver response, lower CE, or positive teacher-forced margin cannot be promoted to visual ability. The next experiment changes one DeepSeek-transferable interface/scale/target-alignment variable and keeps a matched CE-only control; no replay or token-count sweep is opened before that causal screen improves.

@@ -1,0 +1,130 @@
+{
+  "schema_version": "qwen3b-regression-baseline-matrix-v1",
+  "generated_at": "2026-08-08",
+  "contract": "configs/qwen2.5-3b-community-eval-v1.json",
+  "fixed_evaluation": {
+    "glmsubset": "screenspot_glm50_v1",
+    "full_public": "screenspot_public_test_v1",
+    "conditions": [
+      "vision",
+      "blind",
+      "shuffled",
+      "random_projector"
+    ],
+    "generation": {
+      "do_sample": false,
+      "temperature": 0,
+      "max_new_tokens": 32,
+      "bootstrap_samples": 2000,
+      "bootstrap_seed": 20260805
+    }
+  },
+  "rows": [
+    {
+      "id": "qwen25_3b_legacy_v2_full_public_previous_best",
+      "receiver": "Qwen/Qwen2.5-3B-Instruct",
+      "tower": "legacy V2 projector (historical proxy; not exact K3)",
+      "scope": "full_public_screenspot",
+      "evidence": "experiments/qwen3b_community_eval_20260805/screenspot_public_4k_v1/scoring/SUMMARY.json",
+      "vision_click": 0.026729559748427674,
+      "blind_click": 0.030660377358490566,
+      "shuffled_click": 0.027515723270440252,
+      "parse_rate": 0.964622641509434,
+      "vision_minus_blind_ci95": [-0.01650943396226415, 0.007861635220125788],
+      "vision_minus_shuffled_ci95": [-0.007861635220125784, 0.0062893081761006275],
+      "decision": "historical_reference_reject_no_causal_grounding",
+      "capability_claim_allowed": false,
+      "deepseek_transfer_label": "transferable_with_runtime_validation"
+    },
+    {
+      "id": "qwen25_7b_exact_v2_full_public_margin05",
+      "receiver": "Qwen/Qwen2.5-7B-Instruct",
+      "tower": "MoonViT-V2 exact K3 projector",
+      "scope": "full_public_screenspot",
+      "evidence": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_stripped_screenspot_public_margin05_scale01_20260807_RAW_POINTER.json",
+      "vision_click": 0.0330188679245283,
+      "blind_click": 0.03459119496855346,
+      "shuffled_click": 0.026729559748427674,
+      "parse_rate": 1.0,
+      "vision_minus_blind_ci95": [-0.009433962264150941, 0.0062893081761006275],
+      "vision_minus_shuffled_ci95": [0.0015723270440251569, 0.01179245283018868],
+      "decision": "reject_blind_gate",
+      "capability_claim_allowed": false,
+      "deepseek_transfer_label": "transferable_with_runtime_validation"
+    },
+    {
+      "id": "qwen25_7b_v1_teacher_forced_only",
+      "receiver": "Qwen/Qwen2.5-7B-Instruct",
+      "tower": "MoonViT-SO-400M V1 family proxy",
+      "scope": "teacher_forced_probe_only",
+      "evidence": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_v1_community_screen_20260808_POINTER.json",
+      "vision_minus_shuffled_ci95": [-0.02580, 0.04766],
+      "decision": "diagnostic_no_screen",
+      "capability_claim_allowed": false,
+      "deepseek_transfer_label": "transferable_with_runtime_validation"
+    },
+    {
+      "id": "qwen35_4b_external_v2_margin05_glm50",
+      "receiver": "Qwen/Qwen3.5-4B",
+      "tower": "MoonViT-V2 exact K3 projector; native vision bypassed",
+      "scope": "screenspot_glm50_v1",
+      "evidence": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen35-4b-external-moonvit-ablation-pointer-20260808.json",
+      "vision_click": 0.04,
+      "blind_click": 0.02,
+      "shuffled_click": 0.04,
+      "parse_rate": 1.0,
+      "vision_minus_blind_ci95": [-0.04, 0.10],
+      "vision_minus_shuffled_ci95": [0.0, 0.0],
+      "decision": "reject_no_shuffled_margin",
+      "capability_claim_allowed": false,
+      "deepseek_transfer_label": "transferable_with_runtime_validation"
+    },
+    {
+      "id": "qwen35_4b_external_v1_margin05_glm50",
+      "receiver": "Qwen/Qwen3.5-4B",
+      "tower": "MoonViT-SO-400M V1 family proxy; native vision bypassed",
+      "scope": "screenspot_glm50_v1",
+      "evidence": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen35-4b-moonvit-v1-ablation-pointer-20260808.json",
+      "vision_click": 0.02,
+      "blind_click": 0.02,
+      "shuffled_click": 0.02,
+      "parse_rate": 1.0,
+      "vision_minus_blind_ci95": [-0.06, 0.06],
+      "vision_minus_shuffled_ci95": [0.0, 0.0],
+      "decision": "reject_no_causal_grounding",
+      "capability_claim_allowed": false,
+      "deepseek_transfer_label": "transferable_with_runtime_validation"
+    },
+    {
+      "id": "qwen35_4b_native_vlm_positive_control",
+      "receiver": "Qwen/Qwen3.5-4B",
+      "tower": "Qwen3.5 native visual tower and merger",
+      "scope": "positive_control_separate",
+      "evidence": "existing_native_qwen35_vlm_selection_reports",
+      "not_comparable_to_projector_rank": true,
+      "decision": "positive_control_only",
+      "capability_claim_allowed": false,
+      "deepseek_transfer_label": "qwen_specific_not_transferable"
+    },
+    {
+      "id": "qwen35_9b_stripped_native_short_probe",
+      "receiver": "Qwen/Qwen3.5-9B",
+      "tower": "MoonViT-V2 external projector; native vision bypassed",
+      "scope": "receiver_prior_short_probe",
+      "evidence": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen35_9b_screenspot_diagnostic_20260807_RAW_POINTER.json",
+      "decision": "diagnostic_only",
+      "capability_claim_allowed": false,
+      "deepseek_transfer_label": "transferable_with_runtime_validation"
+    }
+  ],
+  "interpretation": "The fixed regression matrix contains engineering and causal screens, not a single leaderboard. Qwen3.5 V1 and V2 both fail the causal ScreenSpot gate; Qwen2.5-7B has a weak vision-minus-shuffled signal but fails vision-minus-blind; the 3B previous-best and 9B probes do not establish usable visual ability. No row is promoted to a DeepSeek training recipe.",
+  "gate_d": {
+    "status": "NO-GO",
+    "missing": [
+      "real DeepSeek-V4-Flash-0731 weight load",
+      "real FP4/FP8 finite non-zero input gradient",
+      "full Hash-MoE forward/backward and checkpoint round-trip",
+      "fixed ScreenSpot/TextVQA/DocVQA/OCRBench causal gain on DeepSeek"
+    ]
+  }
+}

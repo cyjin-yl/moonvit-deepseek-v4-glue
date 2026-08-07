@@ -1,6 +1,6 @@
 # 当前工程状态与下一步
 
-更新日期：2026-08-07
+更新日期：2026-08-08
 
 ## 一句话结论
 
@@ -538,3 +538,8 @@ projector input-DGRAD 能进入接收器；真实 0731 权重仍要在 Gate D �
 | V2 paired-margin reference | 4% | 2% | 4% | `[-4,+10] pp` | `[0,0] pp` | 未通过 |
 
 三条 V1 运行均 parse 率 100%，训练 finite；paired-margin 末步 teacher-forced vision−shuffle 为 `+0.0547`，但没有转化成可靠 grounding。V1 没有改善 V2，版本差异暂时排除为首要故障解释。完整 ScreenSpot、VQA/OCR 不扩展到这组诊断性拒绝结果；原始训练、逐行生成、类别摘要、cache manifest 和 verifier 已保存。
+## 固定 baseline matrix（2026-08-08）
+
+统一索引见 `regression_baseline_matrix_v1.json`。它把 receiver、视觉塔、评测范围和证据指针绑定在一起：3B full-public 行明确是历史 legacy V2 proxy（不是 exact K3 V2）；7B exact V2 只有弱的 vision−shuffled 信号但 blind 仍不劣；Qwen3.5-4B external V1/V2 都没有通过 ScreenSpot50 因果门；原生 Qwen3.5 VLM 只作独立阳性对照。
+
+下一轮只预注册一个 DeepSeek 可迁移的 receiver-interface、placeholder/位置、输出尺度或 image-vs-shuffle 目标变量，并保留匹配 CE-only control。50 条 causal gate 不改善前，不扩展完整公共集或长训练。
