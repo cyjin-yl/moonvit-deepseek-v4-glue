@@ -1,0 +1,79 @@
+{
+  "schema_version": "qwen25-7b-v1-community-screen-result-pointer-v1",
+  "experiment": "qwen25_7b_v1_community_screen_20260808",
+  "date": "2026-08-08",
+  "preregistration": "configs/qwen25-7b-v1-community-margin-screen-v1.json",
+  "preregistration_commit": "27b9845",
+  "runner": "tools/train_stripped_receiver_prior.py",
+  "runner_sha256": "6eba63ce327dd4cdb25d35b15c917aae2ca31690f755bbff27fdb0e9d05ddef1",
+  "raw_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls",
+  "raw_runs": {
+    "train_ceonly": "qwen25_7b_v1_real_train32_ceonly_meanpool16_20260808",
+    "train_margin05": "qwen25_7b_v1_real_train32_margin05_meanpool16_20260808",
+    "probe_ceonly": "qwen25_7b_v1_probe32_ceonly_meanpool16_20260808",
+    "probe_margin05": "qwen25_7b_v1_probe32_margin05_meanpool16_20260808",
+    "bootstrap_all": "qwen25_7b_v1_v2_matched_bootstrap_20260808.json",
+    "bootstrap_v1_margin_vs_ce": "qwen25_7b_v1_margin_vs_ce_bootstrap_20260808.json",
+    "bootstrap_v1_vs_v2_margin05": "qwen25_7b_v1_vs_v2_margin05_bootstrap_20260808.json"
+  },
+  "compact_artifacts": {
+    "train_ceonly_summary_sha256": "171ebab7ff12811b02da19456ce0ad97a01cf4bda98eb5ee58287d97a3e4811c",
+    "train_ceonly_health_sha256": "15e2c4b1dfe5e25b600ec0f96d4b38da9cd556cf95a7f21b4184af366c60538c",
+    "train_margin05_summary_sha256": "1250326506eb1d0aa2fada412a157e844539e5365f6f33e9a11a0708c52a1910",
+    "train_margin05_health_sha256": "5183d368574db11c1d3480151197d65d9248137b0e256543fbeec2f437e7b74b",
+    "probe_ceonly_summary_sha256": "60abaf39702853f3f0e184efbc1c4f382f109dd6413e9b41b42e7be785a77b2e",
+    "probe_ceonly_rows_sha256": "d629937ebc67277a109947263f6632663568945a04c79877bb2b54f7f8fb0730",
+    "probe_margin05_summary_sha256": "4b2c0f47385a7010bd2db8be94a259b6ea7cf454bcb13820afaf6935f6211017",
+    "probe_margin05_rows_sha256": "62b42165862e9f90a97bae8417f41ad66755967f48325aabf9654b0654639be4",
+    "bootstrap_all_sha256": "8ec974ccbe5147fb2a7beab5d90a57b3fda25cd7b8253e8c789ea904d9a750be",
+    "bootstrap_v1_margin_vs_ce_sha256": "f3e119cced0c56375dc107c51e082d8924cf69228962d0c08aafb5f7a4d2f71b",
+    "bootstrap_v1_vs_v2_margin05_sha256": "b4a66484c23cf73149154954b3e8f91aa8387f92e958dc804de7d29cf6e2094f"
+  },
+  "fixed_contract": {
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "vision_revision": "a889d399ff2306053e4e28d499d3b8f97d3e5007",
+    "sample_manifest_sha256": "c726ebfd3eefa9521e9342fd88c2423ef3c98bb4d8c72d189622ef687a5a629f",
+    "token_selection": "mean_pool",
+    "max_visual_tokens": 16,
+    "projector_scale": 0.1,
+    "learning_rate": 0.00005,
+    "steps": 3,
+    "dtype": "bfloat16",
+    "receiver_adapter_seed": 20260806,
+    "trainable": "projector_only"
+  },
+  "metrics": {
+    "v1_ceonly": {
+      "vision_minus_shuffle_mean": 0.0061503351,
+      "vision_minus_shuffle_ci95": [-0.017604, 0.031817],
+      "vision_minus_blind_mean": 0.839302,
+      "vision_minus_blind_ci95": [0.58501, 1.114307],
+      "vision_minus_random_projector_mean": -2.051139,
+      "vision_minus_random_projector_ci95": [-2.817436, -1.359208]
+    },
+    "v1_margin05": {
+      "vision_minus_shuffle_mean": 0.0114462376,
+      "vision_minus_shuffle_ci95": [-0.0258, 0.047657],
+      "vision_minus_blind_mean": 0.527046,
+      "vision_minus_blind_ci95": [0.396293, 0.67691],
+      "vision_minus_random_projector_mean": -2.363395,
+      "vision_minus_random_projector_ci95": [-3.145322, -1.659918]
+    },
+    "v1_margin05_minus_v1_ce": {
+      "mean": 0.005296,
+      "ci95": [-0.048825, 0.057577]
+    },
+    "v1_margin05_minus_v2_margin05": {
+      "mean": -0.475997,
+      "ci95": [-0.873494, -0.131017]
+    }
+  },
+  "decision": {
+    "status": "verified_diagnostic_reject",
+    "capability_claim_allowed": false,
+    "promote_v1_to_previous_best": false,
+    "deepseek_transfer_label": "transferable_with_runtime_validation",
+    "interpretation": "V1 receives image information and beats blind/random-projector teacher-forced controls, but correct-image versus shuffled-image attribution remains indistinguishable. V1 margin is significantly below the matched V2 margin. The community-family/V1 version hypothesis is rejected as the main explanation for the grounding gap; frozen receiver readout, supervision and optimization remain stronger explanations. No full ScreenSpot promotion is allowed."
+  }
+}

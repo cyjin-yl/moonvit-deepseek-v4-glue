@@ -2098,3 +2098,20 @@ gated 的 step 1 只允许 `residual.weight` 零梯度，gate 和其他参数通
 这个结果确认当前 wrapper 的 placeholder、position、routing 和 loss-mask 接缝能被真实 Transformers tiny DeepSeek 实现消费。tiny synthetic route table 只用于验证旁路确实连通，不能代替 0731 的真实 `tid2eid`、完整 43 层 Hash-MoE、FP4/FP8 input-DGRAD、显存吞吐、恢复和能力 benchmark；Gate D 继续为 *NO-GO*。
 
 本地还需约 `1--2` 个工作日完成候选冻结、独立 verifier 和报告整理；明确授权付费硬件后，权重/kernel Gate D 约 `1--2` 个工作日，首轮固定合同训练与评测约 `2--3` 个工作日，前提是权重和 kernel 可用。
+
+== 2026-08-08：Qwen2.5-7B V1 family proxy matched screen
+
+预注册 screen 固定同一个 Qwen2.5-7B-Instruct receiver、32 条真实答案、同一循环 derangement、mean-pool 16、projector scale `0.1`、BF16、LR `5e-5`、3 steps、同一 receiver adapter 和 λ=`0/0.5` 两臂，只把视觉塔和 projector 换成 pinned `moonshotai/MoonViT-SO-400M` family proxy（revision `a889d399...d3e5007`）。
+
+两臂训练都 finite 并完成 4 个 health points。V1 CE-only 的 `vision-minus-shuffle` 为 `-0.03749→+0.00615`；λ=`0.5` 为 `-0.03749→+0.01145`。32 条 teacher-forced probe 的 2,000-bootstrap 结果如下：
+
+#table(
+  columns: 5,
+  table.header([臂], [vision-shuffle], [95% CI], [vision-blind], [95% CI]),
+  [V1 CE-only], [+0.00615], [-0.01760,+0.03182], [+0.83930], [+0.58501,+1.11431],
+  [V1 lambda=0.5], [+0.01145], [-0.02580,+0.04766], [+0.52705], [+0.39629,+0.67691],
+)
+
+V1 λ=`0.5` 相对 V1 CE-only 的 paired 差为 `+0.00530`，CI `[-0.04882,+0.05758]`；相对匹配的 V2 λ=`0.5` 为 `-0.47600`，CI `[-0.87349,-0.13102]`。因此 V1 能让 receiver 响应视觉 token，也明显优于 random projector，但正确图和 shuffled 图仍无法区分；V1 的弱归因显著低于 V2 λ=`0.5`。这条结果把“V2 embedding 压缩是主要失败根因”降为低优先级，也不支持把 V1 family proxy 替换进正式配置。没有 ScreenSpot 晋升资格，Gate D 继续为 *NO-GO*。
+
+完整 raw pointer、compact summaries、health/probe/bootstrap 和独立 verifier 位于 `experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_v1_community_screen_20260808_POINTER.json` 及同名目录；V1 大 checkpoint 与 optimizer 仍保留在 V100 数据盘。

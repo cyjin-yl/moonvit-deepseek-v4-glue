@@ -95,3 +95,20 @@ vision-minus-shuffled click signal, while vision-minus-blind remains non-positiv
 and the promotion contract fails. The next discriminating screen is 16-token
 mean-pool versus 240-token full sequence on the same checkpoint. This addendum
 overrides older "next" notes below; historical entries remain for provenance.
+
+## Live result override: Qwen2.5-7B V1/V2 matched screen (2026-08-08)
+
+The older table rows that say V1 benchmark is pending and exact K3 V2 has no
+Qwen3B result are historical. The current evidence is recorded in
+`qwen25_7b_v1_community_screen_20260808_POINTER.json`: a matched Qwen2.5-7B
+screen used the same 32 real-answer samples, BF16, LR `5e-5`, mean-pool 16,
+scale `0.1`, receiver adapter and three-step budget for V1 and V2.
+
+V1 CE-only and λ=`0.5` both had finite health trajectories. Their
+vision-shuffle CIs crossed zero (`[-0.01760,+0.03182]` and
+`[-0.02580,+0.04766]`). V1 λ=`0.5` was below matched V2 λ=`0.5` by
+`-0.47600`, CI `[-0.87349,-0.13102]`. V1 remains
+`transferable_with_runtime_validation` as an architecture diagnostic, while
+its capability promotion status is rejected. The result lowers the priority of
+the “V2 compression is the main failure” hypothesis and raises receiver
+readout/alignment and supervision/optimization explanations.

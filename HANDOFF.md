@@ -945,3 +945,37 @@ working days from the candidate freeze; an authorized paid pilot still needs
 roughly 1--2 days for weight/kernel Gate D and 2--3 days for the first fixed-
 contract training/evaluation, conditional on runtime availability. No paid
 work is started without explicit authorization.
+
+## 2026-08-08 Qwen2.5-7B V1 family-proxy matched screen
+
+The preregistered V1 architecture screen used the same Qwen2.5-7B-Instruct
+receiver, 32 real-answer samples, cyclic derangement, mean-pool 16 visual
+tokens, projector scale `0.1`, BF16, LR `5e-5`, three optimizer steps and the
+same frozen receiver adapter as the V2 λ=`0.5` control. Only the MoonViT family
+and projector changed to the pinned `moonshotai/MoonViT-SO-400M` proxy at
+revision `a889d399...d3e5007`.
+
+Both V1 arms were finite and completed all four health points. CE-only moved
+`vision−shuffle` from `-0.03749` to `+0.00615`; λ=`0.5` moved it to
+`+0.01145`. The 2,000-bootstrap teacher-forced probe gave:
+
+- V1 CE-only: `vision−shuffle=+0.00615`, CI `[-0.01760,+0.03182]`; `vision−blind=+0.83930`, CI `[+0.58501,+1.11431]`.
+- V1 λ=`0.5`: `vision−shuffle=+0.01145`, CI `[-0.02580,+0.04766]`; `vision−blind=+0.52705`, CI `[+0.39629,+0.67691]`.
+- V1 λ=`0.5` minus V1 CE-only: `+0.00530`, CI `[-0.04882,+0.05758]`.
+- V1 λ=`0.5` minus matched V2 λ=`0.5`: `-0.47600`, CI `[-0.87349,-0.13102]`.
+
+V1 therefore produces a receiver response to image tokens and beats its random
+projector control, but it cannot distinguish the correct image from the fixed
+shuffled image. Its paired margin is significantly below the V2 margin. This
+rejects “V2 embedding compression alone explains the grounding failure” and
+also rejects V1 as a replacement projector. No full ScreenSpot promotion is
+allowed because the paired causal screen fails. Compact summaries, health,
+probe rows, bootstrap files and the independent verifier are recorded in
+`experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_v1_community_screen_20260808/`; the raw V1 weights and optimizer remain on the V100 data disk. Pointer:
+`qwen25_7b_v1_community_screen_20260808_POINTER.json`.
+
+Updated hypothesis ranking: receiver readout/alignment, supervision semantics
+and optimization remain stronger explanations than V1/V2 family identity. The
+next local variable should be one DeepSeek-transferable receiver-interface or
+projector-scale/target-alignment test with a matched CE-only control; further
+V1/V2 token sweeps are low priority. Gate D remains **NO-GO**.

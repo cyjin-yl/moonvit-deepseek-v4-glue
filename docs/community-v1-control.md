@@ -38,3 +38,18 @@ max-side、视觉 token 上限，并在 manifest 中记录 processor hash 与 to
 相同 prompt 和
 ScreenSpot/TextVQA/DocVQA/OCRBench 合同下跑完 matched control，才会判断它是否
 比当前 V2 候选更接近社区路线；V1 的高分也不能直接改写 DeepSeek 正式配置。
+
+## Matched Qwen2.5-7B result (2026-08-08)
+
+The preregistered V1 control was run with the same Qwen2.5-7B receiver, real
+answer probe, token budget, scale, BF16 dtype, optimizer and receiver adapter as
+the exact-K3 V2 control. Both CE-only and λ=`0.5` completed three steps with
+finite health. V1 λ=`0.5` reached `vision−shuffle=+0.01145`, CI
+`[-0.02580,+0.04766]`, and `vision−blind=+0.52705`, CI
+`[+0.39629,+0.67691]`. V1 λ=`0.5` minus V2 λ=`0.5` was `-0.47600`, CI
+`[-0.87349,-0.13102]`.
+
+The family proxy therefore demonstrates receiver activation without reliable
+correct-image grounding. It does not replace V2 and does not enter the formal
+leaderboard. The raw pointer and independent verifier are in the capacity
+controls directory named `qwen25_7b_v1_community_screen_20260808`.

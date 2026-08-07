@@ -123,3 +123,11 @@ tiny DeepSeek screen 的首版失败已保留：随机 tiny 配置的 `tid2eid` 
 机制含义有明确边界。Qwen 训练里的“image token 能改变 receiver”可以由这条软件接缝复现，但 full DSV4 仍需加载其真实 `tid2eid` 表，确认 `129279` 及视觉 span 在 43 层 Hash-MoE 中的实际路由，并在目标 FP4/FP8 runtime 上复测。tiny synthetic route table 不能作为视觉能力证据；它只排除了 wrapper 丢失 routing/position 信息这一类工程错误。
 
 这条经验与既有现象合并后的工作假设是：projector collapse、CE 降低而 vision/shuffle attribution 不升、token 数量扩展无效和 receiver prior 差异都指向“接缝连通后，冻结语言主干能否把视觉 token 解码成正确任务监督”这一瓶颈。后续实验仍必须把健康指标和真实 grounding 指标分开记录。
+
+## Qwen2.5-7B：V1 family proxy 与 exact V2 的直接对照（2026-08-08）
+
+为了回答“社区 GLM-5.2V 使用的 K2.6/MoonViT-3d 家族是否更容易被 receiver 读取”，固定 Qwen2.5-7B、32 条真实答案、同一 derangement、mean-pool 16、scale `0.1`、BF16、LR `5e-5`、3 steps 和 receiver adapter，仅替换 V1/V2 视觉塔与 projector。V1 使用 `MoonViT-SO-400M` family proxy 的 1152 维输入、community-shaped pre-norm MLP；V2 使用 exact K3/MoonViT-V2。
+
+V1 CE-only 的 `vision−shuffle` 为 `+0.00615`，CI `[-0.01760,+0.03182]`；V1 λ=`0.5` 为 `+0.01145`，CI `[-0.02580,+0.04766]`。两臂 `vision−blind` 的 CI 为正，random-projector 差值显著为负，说明 projector 输出会改变 receiver，且训练后的 projector 不是随机映射；正确图与 shuffled 图仍没有稳定区别。
+
+V1 λ=`0.5` 相对 V1 CE-only 的差为 `+0.00530`，CI `[-0.04882,+0.05758]`；相对 V2 λ=`0.5` 的差为 `-0.47600`，CI `[-0.87349,-0.13102]`。这是一条重要的版本结论：V1 family proxy 没有改善 grounding，V2 的 embedding 压缩不能单独解释失败，V2 在同一 receiver 和同一监督合同下反而更强。后续优先级转向 receiver readout/alignment、监督目标和 projector 输出尺度，停止继续做 V1/V2 token 数量扫参。
