@@ -910,3 +910,38 @@ Do not sweep lambda or expand to 500 steps. Keep `previous_best=step0`, retain
 the exact K3 projector as the structural candidate, and next test one
 DeepSeek-transferable placeholder/position or receiver-distribution alignment
 variable before deciding whether the Qwen proxy has exhausted its value.
+
+## 2026-08-07 DeepSeek image interface screen v1/v2
+
+The first interface screen is preserved as an excluded implementation failure.
+The tiny Transformers DeepSeek-V4 fixture had an all-zero `tid2eid` table, so
+changing routing IDs could not change logits; the first runner also failed to
+include routing/position causal deltas in its aggregate pass condition. Its raw
+summary SHA is `ca975531...8eddf8` under
+`.../deepseek_interface/local_software_interface_screen_v1_20260807`.
+
+The preregistered v2 repair installs a frozen non-degenerate synthetic table
+`tid2eid[token,k]=(token+k) mod num_experts`, keeps the real target placeholder
+ID `129279`, and requires both causal deltas to be positive. On the V100 it
+passed all merge invariants, finite non-zero projector input-DGRAD with frozen
+language gradients, and exact canonical expansion: raw length 5 became length
+7, three image labels were `-100`, routing IDs repeated `129279`, and positions
+were contiguous `0..6`. With embeddings held fixed, routing-ID ablation changed
+tiny DeepSeek logits by max `0.0015277863`; with embeddings and routing IDs held
+fixed, position-ID ablation changed logits by max `0.0193590522`. Projector grad
+norm was `0.22719674`, loss `11.75953`. The final raw pointer is
+`experiments/deepseek_interface_screen_v2_pointer.json`; full artifacts remain
+on the V100 data disk at the path recorded there.
+
+This closes a software interface question: our wrapper preserves the two
+receiver-side signals that a full DeepSeek runtime can consume. It does not
+verify the 0731 checkpoint's actual `tid2eid` mapping, full 43-layer routing,
+FP4/FP8 kernels, memory, throughput, checkpoint recovery, or visual ability.
+The tiny synthetic table is explicitly excluded from capability claims. Gate D
+remains **NO-GO**.
+
+Current schedule: local code, verifier and documentation work is about 1--2
+working days from the candidate freeze; an authorized paid pilot still needs
+roughly 1--2 days for weight/kernel Gate D and 2--3 days for the first fixed-
+contract training/evaluation, conditional on runtime availability. No paid
+work is started without explicit authorization.

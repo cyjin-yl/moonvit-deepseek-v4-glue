@@ -1,0 +1,42 @@
+{
+  "schema_version": "deepseek-v4-image-interface-screen-result-pointer-v2",
+  "experiment": "local_software_interface_screen_v2",
+  "date": "2026-08-07",
+  "git_commit": "eaf34f8",
+  "preregistration": "configs/deepseek-v4-image-interface-screen-v2.json",
+  "runner": "tools/audit_deepseek_image_interface.py",
+  "raw_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/deepseek_interface",
+  "raw_run": "local_software_interface_screen_v2_20260807",
+  "raw_files": {
+    "summary": {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/deepseek_interface/local_software_interface_screen_v2_20260807/SUMMARY.json",
+      "sha256": "b2e06b616e2b369320c28f8de9d69bf040e9d08b66faa21bfd059ecdfa1ff319"
+    },
+    "merged_tensors": {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/deepseek_interface/local_software_interface_screen_v2_20260807/MERGED_TENSORS.pt",
+      "sha256": "d3fb56cd0ec04b6c4efe872b824bb4da5efe2ce3100a1bb90910d9ec386c6ba0"
+    }
+  },
+  "result": {
+    "status": "software_interface_pass_hardware_pending",
+    "gate_d_status": "NO-GO",
+    "device": "Tesla V100-PCIE-32GB",
+    "placeholder_token_id": 129279,
+    "routing_id_ablation_max_abs_logit_delta": 0.0015277862548828125,
+    "position_id_ablation_max_abs_logit_delta": 0.019359052181243896,
+    "projector_gradient_norm": 0.22719673812389374,
+    "loss": 11.759532928466797
+  },
+  "excluded_failure": {
+    "raw_run": "local_software_interface_screen_v1_20260807",
+    "summary_sha256": "ca9755315080dccaf55461650b15c96faf31c829ad19284395505356068eddf8",
+    "reason": "tiny tid2eid table was all zero and the first runner did not include routing/position causal deltas in its aggregate pass condition",
+    "replacement_policy": "preserved for audit; excluded from conclusions"
+  },
+  "pre_schema_copy": {
+    "raw_run": "local_software_interface_screen_v2_20260807_pre_schema_fix",
+    "summary_sha256": "73e0f97151b984f482e59b0a362a7cc2fe90c71a04fa3f4885241ef6497f2ed8",
+    "reason": "same valid v2 run before schema-version-only artifact repair; preserved, superseded by raw_run"
+  },
+  "interpretation": "This is software-seam evidence using a synthetic non-degenerate tiny hash route table. It does not verify full DeepSeek-V4-Flash-0731 weights, its real tid2eid mapping, FP4/FP8 input-DGRAD, memory, throughput, checkpoint recovery, or visual capability."
+}

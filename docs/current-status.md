@@ -458,3 +458,12 @@ gated 首步的零梯度仅出现在允许的 `residual.weight`，gate 和其余
 在 exact Kimi-K3/MoonViT-V2 projector 上，把已 geometry-safe 的 LR `5e-5`、同 step0、同 4,000-row order、同 cache 和 receiver 固定，只把 causal hinge λ 从 `0.1` 提到 `0.5`。`health_run_100_v2_exact_causal_l05_20260807` 通过独立 verifier 后在 step 2 自动止损：projector/receiver relative-spread ratio `1.000→0.990` / `1.000→0.986`，effective-rank ratio `1.000→1.000` / `1.000→1.000`，说明几何保持；但 `vision_minus_shuffle_correct_logp` 只从 `-0.2404` 走到 `-0.0515`，vision/shuffled preference 最终都是 `0.625`，仍触发 `vision_minus_shuffle_logp_critical`。CE 从 `4.8526` 变为 `5.6925`，没有能力评测资格。
 
 这轮支持“paired objective 的方向确实能把错误归因推近零”，反驳“增大 λ 就能在冻结纯文本 3B 上自动产生正确图像优势”。结合 15R，这说明 geometry 保留与视觉因果是两条独立门：15T 保住几何却没有 grounding，15R 改结构却保不住几何。停止继续扫 λ 或扩展 500 steps；下一项转向 placeholder/位置语义与 receiver 分布对齐的单变量实验，或直接冻结 Qwen 代理配方进入 DeepSeek runtime Gate 代码准备。
+
+## 2026-08-07 DeepSeek image-interface screen
+
+The repaired v2 screen also passed placeholder expansion, contiguous positions,
+routing IDs, image-label masking, finite projector input-DGRAD and tiny receiver
+causal ablations. The v1 all-zero `tid2eid` implementation failure remains
+preserved and excluded. This uses a synthetic tiny route table and only proves
+software signal plumbing; Gate D remains *NO-GO* until the real 0731 route table,
+FP4/FP8 backward and full-weight runtime are tested.

@@ -1,0 +1,19 @@
+{
+  "schema_version": "deepseek-v4-image-interface-screen-verifier-v1",
+  "pointer": "experiments/deepseek_interface_screen_v2_pointer.json",
+  "verified": true,
+  "checks": {
+    "pointer_schema": true,
+    "summary_exists": true,
+    "merged_tensors_exists": true,
+    "summary_sha256": true,
+    "merged_tensors_sha256": true,
+    "summary_schema": true,
+    "software_pass": true,
+    "gate_d_no_go": true,
+    "merge_and_gradient_checks": true,
+    "positive_causal_deltas": true,
+    "synthetic_table_declared": true
+  },
+  "interpretation": "Independent artifact and invariant verification only; Gate D remains NO-GO and full 0731 runtime is pending."
+}

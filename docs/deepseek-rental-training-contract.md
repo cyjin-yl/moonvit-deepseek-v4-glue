@@ -264,3 +264,20 @@ input DGRAD, full 43-layer Hash-MoE routing/forward/backward, memory and
 activation-checkpointing measurements, exact full-checkpoint resume and the
 fixed grounding/VQA/OCR contract. No rental or full-model download is authorized
 by this addendum.
+
+## DeepSeek image-interface contract addendum (2026-08-07)
+
+Before any paid 0731 run, the local wrapper must pass
+`configs/deepseek-v4-image-interface-screen-v2.json`. The required invariants
+are target placeholder `129279`, repeated routing IDs over the expanded image
+span, contiguous expanded positions, `-100` image-label masking, finite
+non-zero projector input-DGRAD with frozen language gradients, and positive
+routing-ID/position-ID causal deltas with embeddings held fixed. The v2 result
+is recorded in `deepseek_interface_screen_v2_pointer.json`.
+
+The tiny screen uses a synthetic non-degenerate `tid2eid` table to test signal
+plumbing. It does not satisfy the paid Gate D. The paid contract still requires
+the resolved 0731 checkpoint and SHA manifest, its real image-token routing
+table, FP4/FP8 finite input gradients, full 43-layer Hash-MoE forward/backward,
+memory/throughput and activation-checkpointing measurements, exact full
+checkpoint resume, and the fixed ScreenSpot/TextVQA/DocVQA/OCRBench contract.

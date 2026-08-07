@@ -116,3 +116,10 @@ step 2 的 projector/receiver relative-spread ratio 为 `0.9903/0.9859`，effect
 ## 正式 Qwen3B 监督 provenance 审计
 
 当前 `train_qwen3b_proxy.py` 的正式路径按 order manifest 的 ID、source row 和 SHA 重建 `train_mix.jsonl`，4,000 行中 grounding/short-answer 各 2,000；grounding 有 1,066 个唯一 click 坐标、0 个 `[500,500]`，每个训练 batch 的循环负例都没有同图 SHA。这个证据支持“15R/15T 的 CE supervision 不是统一坐标 fallback”。数据上游把 ShowUI `point` 转成 click 字符串，却没有把独立 bbox/raw point 字段保存在训练 manifest；因此当前结论只能写成 point-derived click supervision，不能声称独立 bbox join。旧 stripped-receiver cache-only 运行的 `[500,500]` fallback 已在文档中单独标为历史诊断，不得混入正式排行榜。
+## DeepSeek 接口旁路的可归因验证
+
+tiny DeepSeek screen 的首版失败已保留：随机 tiny 配置的 `tid2eid` 全零，routing ID 改动没有任何输出差异。修复版在预注册 synthetic 非退化 hash 表上重跑，结果确认两条旁路都实际进入 receiver：embedding 固定时 routing-ID 消融的最大 logit 差为 `0.0015277863`，embedding/routing 固定时 position-ID 消融为 `0.0193590522`。同时，视觉 placeholder 展开、连续位置、视觉 label mask、projector 输入梯度和冻结语言梯度均通过。
+
+机制含义有明确边界。Qwen 训练里的“image token 能改变 receiver”可以由这条软件接缝复现，但 full DSV4 仍需加载其真实 `tid2eid` 表，确认 `129279` 及视觉 span 在 43 层 Hash-MoE 中的实际路由，并在目标 FP4/FP8 runtime 上复测。tiny synthetic route table 不能作为视觉能力证据；它只排除了 wrapper 丢失 routing/position 信息这一类工程错误。
+
+这条经验与既有现象合并后的工作假设是：projector collapse、CE 降低而 vision/shuffle attribution 不升、token 数量扩展无效和 receiver prior 差异都指向“接缝连通后，冻结语言主干能否把视觉 token 解码成正确任务监督”这一瓶颈。后续实验仍必须把健康指标和真实 grounding 指标分开记录。

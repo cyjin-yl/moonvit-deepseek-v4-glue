@@ -2088,3 +2088,13 @@ gated 的 step 1 只允许 `residual.weight` 零梯度，gate 和其他参数通
 在 exact K3/MoonViT-V2 projector 上固定 geometry-safe LR `5e-5`、step0、order、cache、receiver 和 health schedule，只把 paired correct-vs-shuffled hinge lambda 从 `0.1` 提到 `0.5`。独立 verifier 重新计算 3 个 probes 与 3 个 checkpoints；step 2 自动停止，onset `[1,2]`。projector/receiver relative-spread ratio 为 `0.9903/0.9859`，effective-rank ratio 为 `1.0002/1.0001`，表示几何保持；`vision_minus_shuffle_correct_logp` 仅从 `-0.2404` 到 `-0.0515`，vision/shuffled preference 最终 `0.625/0.625`，仍触发 causal critical。CE 为 `4.8526→5.6925`，不进入 ScreenSpot 或通用能力评测；raw pointer 为 `CAUSAL_MARGIN05_RAW_POINTER_20260807.json`。
 
 结果支持“paired 目标能把错误方向推近零”，反驳“增大 lambda 即可让冻结纯文本 3B 获得真实 grounding”。15R 与 15T 合起来说明几何健康和视觉因果是两道独立门：gated residual 没保住几何，强 paired objective 保住几何却仍没让正确图像胜过 shuffled。停止继续扫 lambda 或做 500-step 扩展；下一项只选一个 DeepSeek 可迁移的 placeholder/位置语义或 receiver 分布对齐变量，并保留 matched CE-only control。
+
+== DeepSeek image interface screen：软件接缝通过，Gate D 仍未通过
+
+第一版 screen 被保留为实现失败：tiny Transformers DeepSeek-V4 的 `tid2eid` 默认表全为零，routing-ID 消融没有改变 logits；首版 runner 也没有把 routing/position 因果差异纳入总通过条件。原始摘要 SHA 为 `ca975531...8eddf8`，目录和排除理由见 `deepseek_interface_screen_v2_pointer.json`。
+
+修复后的 v2 使用预注册的冻结非退化 tiny hash 表 `tid2eid[token,k]=(token+k) mod num_experts`，真实目标 placeholder `129279`、canonical 4096 projector 边界和冻结 DeepSeek receiver 不变。V100 上所有接口检查通过：5 个 raw token 展开为 7 个 active token；3 个视觉 label 为 `-100`；routing ID 在视觉 span 重复；position ID 为连续 `0..6`；projector gradient finite/non-zero，语言主干无梯度。保持 embedding 不变时替换 routing ID，logit 最大变化 `0.0015277863`；保持 embedding 和 routing ID 不变时替换 position ID，logit 最大变化 `0.0193590522`；loss `11.75953`，projector grad norm `0.22719674`。原始结果指针为 `deepseek_interface_screen_v2_pointer.json`。
+
+这个结果确认当前 wrapper 的 placeholder、position、routing 和 loss-mask 接缝能被真实 Transformers tiny DeepSeek 实现消费。tiny synthetic route table 只用于验证旁路确实连通，不能代替 0731 的真实 `tid2eid`、完整 43 层 Hash-MoE、FP4/FP8 input-DGRAD、显存吞吐、恢复和能力 benchmark；Gate D 继续为 *NO-GO*。
+
+本地还需约 `1--2` 个工作日完成候选冻结、独立 verifier 和报告整理；明确授权付费硬件后，权重/kernel Gate D 约 `1--2` 个工作日，首轮固定合同训练与评测约 `2--3` 个工作日，前提是权重和 kernel 可用。
