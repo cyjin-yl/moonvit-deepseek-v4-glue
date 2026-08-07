@@ -1,0 +1,54 @@
+{
+  "schema_version": "qwen25-7b-v1-community-margin-screen-v1",
+  "frozen_before_result": true,
+  "purpose": "在 Qwen2.5-7B 上用同一真实答案 probe、同一训练和生成预算直接比较社区形状 V1 family proxy 与 exact K3 V2 projector",
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "model_weight_manifest": "configs/qwen2.5-7b-hf-sha256.json",
+  "visual_tower": "moonshotai/MoonViT-SO-400M family proxy",
+  "visual_revision": "a889d399ff2306053e4e28d499d3b8f97d3e5007",
+  "vision_width": 1152,
+  "projector_output_width": 4096,
+  "projector_variant": "legacy_pre_norm",
+  "projector_width": 4608,
+  "projector_step0_safetensors_sha256": "f24f677f61905e259a6648802b6f4f4a681aa3d3a8965dbccdc8b1cd46d786cf",
+  "projector_config_sha256": "10d1517cd5e54c9cd5f6a53d006178291efee91982b03b04e7c83be62349c86c",
+  "feature_cache_manifest_sha256": "b2755fb7ef3120639b9386f58bb99dbb522ee13a9770dce2faf1e8931aee7976",
+  "sample_manifest": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_real_probe32_manifest.json",
+  "sample_manifest_sha256": "c726ebfd3eefa9521e9342fd88c2423ef3c98bb4d8c72d189622ef687a5a629f",
+  "comparison_control": {
+    "projector": "local_v2_exact_k3",
+    "projector_config": "configs/qwen25-7b-real-answer-scale01-margin-screen-v1.json",
+    "same_samples": true,
+    "same_order": true,
+    "same_learning_rate": 0.00005,
+    "same_projector_scale": 0.1,
+    "same_token_selection": "mean_pool",
+    "same_max_visual_tokens": 16,
+    "same_steps": 3,
+    "same_dtype": "bfloat16",
+    "same_receiver_adapter_seed": 20260806
+  },
+  "arms": [
+    {"name": "v1_ce_only_control", "shuffle_margin_lambda": 0.0, "shuffle_margin": 0.1},
+    {"name": "v1_paired_margin_lambda050", "shuffle_margin_lambda": 0.5, "shuffle_margin": 0.1}
+  ],
+  "optimizer": {
+    "name": "AdamW",
+    "learning_rate": 0.00005,
+    "steps": 3,
+    "micro_batch_size": 1,
+    "gradient_accumulation": 1,
+    "trainable": "projector_only",
+    "frozen_receiver": true
+  },
+  "fixed_generation_contract": {
+    "do_sample": false,
+    "temperature": 0,
+    "max_new_tokens": 32,
+    "conditions": ["vision", "blind", "shuffled", "random_projector"],
+    "promotion_requires": "full ScreenSpot click-in-box and vision-vs-blind/vs-shuffled paired CI under the Qwen3B community contract"
+  },
+  "bootstrap": {"samples": 2000, "seed": 20260805},
+  "interpretation_rule": "A V1 advantage would support a transferable visual-tower/projector-family hypothesis and still require DeepSeek runtime validation. Similar V1/V2 failure strengthens the frozen receiver, supervision, or optimization explanation. Neither result alone permits a capability claim."
+}
