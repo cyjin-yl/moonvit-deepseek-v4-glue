@@ -17,7 +17,6 @@ import hashlib
 import json
 import platform
 import time
-from dataclasses import asdict
 from pathlib import Path
 
 import torch
@@ -234,8 +233,7 @@ def run_screen(*, out: Path, device: torch.device, seed: int, placeholder_token_
     }
     out.mkdir(parents=True, exist_ok=True)
     (out / "SUMMARY.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
-    (out / "MERGED_TENSORS.pt").write_bytes(torch.save(merged, out / "_tmp.pt") or (out / "_tmp.pt").read_bytes())
-    (out / "_tmp.pt").unlink(missing_ok=True)
+    torch.save(merged, out / "MERGED_TENSORS.pt")
     return summary
 
 

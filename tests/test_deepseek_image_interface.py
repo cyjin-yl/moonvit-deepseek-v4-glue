@@ -1,6 +1,6 @@
 import torch
 
-from deepseek_interface_screen_v1 import build_model, merge_invariants
+from audit_deepseek_image_interface import build_model, merge_invariants
 from moonvit_glue.merge import expand_image_placeholders
 
 
@@ -27,4 +27,3 @@ def test_interface_screen_merge_invariants_are_explicit_and_frozen():
     assert checks["pass"] is True
     assert merged.routing_input_ids.tolist() == [[1, placeholder, placeholder, placeholder, 5, 7, 2]]
     assert merged.position_ids.tolist() == [[0, 1, 2, 3, 4, 5, 6]]
-
