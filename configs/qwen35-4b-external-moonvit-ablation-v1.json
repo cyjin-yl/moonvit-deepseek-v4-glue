@@ -1,0 +1,73 @@
+{
+  "schema_version": "qwen35-4b-external-moonvit-ablation-v1",
+  "frozen_before_result": true,
+  "frozen_on": "2026-08-08",
+  "purpose": "Matched trained projector ablation for a vision-pretrained Qwen3.5 receiver with the native visual tower and merger bypassed.",
+  "model": {
+    "repo": "Qwen/Qwen3.5-4B",
+    "resolved_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "architecture": "Qwen3_5ForConditionalGeneration",
+    "config_sha256": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670",
+    "tokenizer_sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+    "weight_manifest": "configs/qwen3.5-4b-hf-sha256.json",
+    "weight_manifest_sha256": "e79926d0793a18501315d4d197359518192536ba0b2d3e0cc0f77375838bd220",
+    "receiver_hidden_size": 2560,
+    "receiver_adapter": {
+      "kind": "fixed_grouped_signed_projection",
+      "input_width": 4096,
+      "output_width": 2560,
+      "seed": 20260806,
+      "trainable": false
+    },
+    "native_visual_path": "bypassed; pixel_values omitted; native visual forward count must remain zero"
+  },
+  "visual_interface": {
+    "tower": "Kimi-K3 extracted MoonViT-V2",
+    "tower_weights_sha256": "01436a95939965185bb853ddf984e09c00f597b9c2f6708ba302ffbaf75ced24",
+    "projector": "local_v2_exact_k3",
+    "step0_projector_sha256": "bec6e8bffbc6b08fe8f2c33691d4653a417becb87692db2496b8fc3449f54815",
+    "step0_projector_config_sha256": "0f39cc8dd48e33921a546ffc236a5ff8a66388bbf41ddec08cb8abc1b95d7405",
+    "canonical_output_width": 4096,
+    "max_visual_tokens": 16,
+    "token_selection": "mean_pool",
+    "projector_scale": 0.1,
+    "position_rule": "contiguous_1d_transferable",
+    "dtype": "bfloat16"
+  },
+  "training": {
+    "trainable_modules": ["projector"],
+    "receiver_frozen": true,
+    "tower_frozen_cached": true,
+    "real_answer_probe_manifest": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_real_probe32_manifest.json",
+    "real_answer_probe_manifest_sha256": "c726ebfd3eefa9521e9342fd88c2423ef3c98bb4d8c72d189622ef687a5a629f",
+    "feature_cache_manifest_sha256": "09df2f2cbd502cdf84422eabd499922e7c0cda4fb3368eb0c7cbac4ac21cc023",
+    "sample_count": 32,
+    "sample_order": "manifest order 0..31",
+    "optimizer": "AdamW",
+    "learning_rate": 0.00005,
+    "optimizer_steps": 3,
+    "arms": {
+      "ce_only": {"shuffle_margin_lambda": 0.0, "shuffle_margin": 0.1},
+      "paired_margin05": {"shuffle_margin_lambda": 0.5, "shuffle_margin": 0.1}
+    }
+  },
+  "evaluation": {
+    "dataset": "screenspot_glm50_v1",
+    "dataset_manifest_sha256": "b578229e72a59a983623514f259d2f49fc46cb66c0802a622682727d88151543",
+    "feature_cache_manifest_sha256": "03f35d8cee962a97996f3250e41c351978f28c0ca9a8fe74d4f8d41c411ae7f3",
+    "checkpoint_roles": ["step0", "ce_only", "paired_margin05"],
+    "conditions": ["vision", "blind", "shuffled", "random_projector"],
+    "generation": {
+      "do_sample": false,
+      "temperature": 0.0,
+      "max_new_tokens": 32,
+      "enable_thinking": false,
+      "prompt_route": "grounding",
+      "parser": "anchored click(start_box=[x, y])"
+    },
+    "bootstrap_samples": 2000,
+    "bootstrap_seed": 20260805
+  },
+  "promotion_rule": "Diagnostic comparator only. Report the full matched table, but do not promote into the pure-text Qwen2.5 contract or DeepSeek candidate list. Correct-image causality requires positive vision-minus-blind and vision-minus-shuffled CIs.",
+  "deepseek_transfer_label": "transferable_with_runtime_validation"
+}
