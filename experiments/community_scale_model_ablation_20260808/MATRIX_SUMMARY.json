@@ -74,13 +74,23 @@
     "qwen25_7b_v2": {
       "failure_history": [],
       "result": null,
-      "status": "cache_in_progress",
+      "status": "screenspot_cache_in_progress",
       "attempts": 1,
       "current_attempt": {
         "attempt": 1,
         "contract_examples_seen": 57600,
         "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_train_57600_retry1",
-        "cache_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/v2_cache_57600"
+        "cache_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/v2_cache_57600",
+        "cache_status": "complete",
+        "cache_manifest": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/v2_cache_57600/MANIFEST.json",
+        "cache_summary": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/v2_cache_57600/SUMMARY.json",
+        "cache_requested": 57600,
+        "cache_cached": 57600,
+        "cache_failed": 0,
+        "cache_shards": 75,
+        "cache_tower_forwards": 29999,
+        "cache_reused_by_image_sha256": 27601,
+        "cache_manifest_records_sha256": "055d7f9dde1f65af576ace9fe3ee874a427bd9fac7770bc39137ae2b0dcc1ba7"
       }
     },
     "qwen35_4b_v1_stripped": {
@@ -135,5 +145,5 @@
     }
   },
   "schema_version": "community-matrix-summary-v1",
-  "updated_at": "2026-08-08T05:03:05+08:00"
+  "updated_at": "2026-08-08T06:39:35.792534+08:00"
 }
