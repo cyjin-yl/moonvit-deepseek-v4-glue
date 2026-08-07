@@ -1,0 +1,53 @@
+{
+  "format_version": "qwen3b-exact-k3-causal-margin-screen-v1",
+  "package": "15T_exact_k3_causal_margin05_screen",
+  "frozen_before_result": true,
+  "frozen_on": "2026-08-07",
+  "goal": "Test whether a stronger correct-image-vs-within-batch-shuffle objective creates causal attribution in the exact Kimi-K3/MoonViT-V2 projector while a geometry-safe small learning rate is held fixed.",
+  "parent_evidence": {
+    "parent_run": "experiments/qwen3b_community_eval_20260805/architecture_controls/local_v2_exact_k3/health_run_100_v2_exact_causal_l01_20260806",
+    "parent_result": "lambda=0.1 preserved geometry but ended with vision_minus_shuffle_correct_logp=-0.06098 and shuffled preference 0.75 versus vision 0.625",
+    "matched_control": "health_run_100_v2_exact_lr5e-5_20260806"
+  },
+  "immutable_bindings": {
+    "core_contract_sha256": "8013a77a7b54a5e561ab77e1c4e1bc2a55453e0ff23120f3ac9da7bf18bd51b7",
+    "architecture_control_sha256": "6b6682aad8b9e0e5811f2bba773f3bab0834f0e14d96adaa4bc58ae7166bee57",
+    "architecture_arm": "local_v2_exact_k3",
+    "projector_source_sha256": "188db381c570225f38237d6e404cca09f4462b7f5b586df3607dc2bf7ba21b30",
+    "runner_source_sha256": "6d55f7b4cb9b4cb74e9aedc61991b9999098ae0fbf0a0d53466f6d7268c43a4b",
+    "training_order_manifest_sha256": "a6bbb8e2e63376e3dc1294f4110c1527a4d30b94d54ed1b2a0c0610e284bf1f4",
+    "feature_cache_manifest_sha256": "09df2f2cbd502cdf84422eabd499922e7c0cda4fb3368eb0c7cbac4ac21cc023",
+    "health_contract_sha256": "c6b8f7c6fcefb2fcf11c4328e1cb1023b571ed36503f3d2519aeb2f257f9a325",
+    "probe_manifest_sha256": "00bc648b15edfffd5af4b8ee3e9ea1c378d941ba5462729c385a3117cdb99d2e",
+    "initial_projector_sha256": "bec6e8bffbc6b08fe8f2c33691d4653a417becb87692db2496b8fc3449f54815"
+  },
+  "variable": {
+    "projector_learning_rate": 0.00005,
+    "causal_shuffle_margin_lambda": 0.5,
+    "causal_shuffle_margin": 0.1
+  },
+  "matched_control": {
+    "projector_learning_rate": 0.00005,
+    "causal_shuffle_margin_lambda": 0.0,
+    "causal_shuffle_margin": 0.1,
+    "same_initial_projector": true,
+    "same_order_cache_resolution_receiver": true
+  },
+  "budget": {
+    "max_optimizer_steps": 100,
+    "examples_seen_budget": 800,
+    "health_probe_steps": [0, 1, 2, 5, 10, 20, 30, 50, 75, 100],
+    "auto_stop_and_rollback": true,
+    "no_500_step_expansion_if_any_critical_guard": true
+  },
+  "promotion_rule": {
+    "requires_no_critical_guard": true,
+    "requires_vision_minus_shuffle_positive_at_two_probe_points": true,
+    "requires_vision_preference_above_shuffled": true,
+    "requires_ce_ratio_to_matched_control_at_most": 1.25,
+    "capability_claim_allowed": false,
+    "deepseek_transfer_label_if_selected": "directly_transferable"
+  },
+  "paid_resources_used": false,
+  "final_half_scored": false
+}
