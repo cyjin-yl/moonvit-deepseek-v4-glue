@@ -1,0 +1,15 @@
+{
+  "schema_version": "qwen35-v1-execution-contract-correction-v1",
+  "date": "2026-08-08",
+  "affected_pointer": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen35-4b-moonvit-v1-ablation-pointer-20260808.json",
+  "frozen_contract": "configs/qwen35-4b-moonvit-v1-vs-v2-ablation-v1.json",
+  "finding": "Both V1 training RUN_CONFIG files contain sample_indices 0-7, not the contract-required 0-31. The V2 matched reference contains 0-31.",
+  "impact": {
+    "old_v1_standalone_metrics": "preserved as an eight-row pilot",
+    "old_v1_vs_v2_matched_claim": "invalid until the full32 V1 repair completes",
+    "capability_claim": "remains false",
+    "previous_best": "unchanged"
+  },
+  "repair_contract": "configs/qwen35-4b-moonvit-v1-full32-repair-v1.json",
+  "verifier_requirement": "Future verifier must load RUN_CONFIG.json and require sample_indices to equal the preregistered ordered list."
+}

@@ -1,0 +1,68 @@
+{
+  "schema_version": "qwen35-4b-moonvit-v1-full32-repair-v1",
+  "status": "preregistered_before_repair_results",
+  "frozen_on": "2026-08-08",
+  "parent_contract": "configs/qwen35-4b-moonvit-v1-vs-v2-ablation-v1.json",
+  "reason": "The original V1 execution omitted --sample-indices and therefore used the runner default 0-7, while the frozen contract and matched V2 reference use all 32 records.",
+  "old_v1_result": {
+    "pointer": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen35-4b-moonvit-v1-ablation-pointer-20260808.json",
+    "preserved_as": "eight_row_pilot_not_matched_v1_v2_evidence",
+    "actual_sample_indices": [0, 1, 2, 3, 4, 5, 6, 7],
+    "actual_rows_per_optimizer_step": 8,
+    "contract_rows_per_optimizer_step": 32
+  },
+  "receiver": {
+    "repo_id": "Qwen/Qwen3.5-4B",
+    "resolved_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "frozen": true,
+    "native_vision_bypassed": true,
+    "canonical_adapter": "fixed_grouped_signed_projection(4096->2560, seed=20260806)"
+  },
+  "tower": {
+    "repo_id": "moonshotai/MoonViT-SO-400M",
+    "resolved_revision": "a889d399ff2306053e4e28d499d3b8f97d3e5007",
+    "vision_width": 1152,
+    "projector_output_width": 4096,
+    "projector_variant": "legacy_pre_norm",
+    "step0_projector_sha256": "f24f677f61905e259a6648802b6f4f4a681aa3d3a8965dbccdc8b1cd46d786cf"
+  },
+  "training": {
+    "sample_manifest": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_real_probe32_manifest.json",
+    "sample_manifest_sha256": "c726ebfd3eefa9521e9342fd88c2423ef3c98bb4d8c72d189622ef687a5a629f",
+    "sample_indices": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
+    "rows_per_optimizer_step": 32,
+    "strata": {
+      "textvqa": 8,
+      "docvqa": 8,
+      "showui_grounding": 8,
+      "art_vqa": 8
+    },
+    "optimizer": "AdamW",
+    "optimizer_steps": 3,
+    "learning_rate": 0.00005,
+    "dtype": "bfloat16",
+    "max_visual_tokens": 16,
+    "token_selection": "mean_pool",
+    "projector_scale": 0.1,
+    "arms": {
+      "ce_only": {"shuffle_margin_lambda": 0.0, "shuffle_margin": 0.1},
+      "paired_margin05": {"shuffle_margin_lambda": 0.5, "shuffle_margin": 0.1}
+    }
+  },
+  "matched_v2_reference": {
+    "pointer": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen35-4b-external-moonvit-ablation-pointer-20260808.json",
+    "confirmed_sample_indices": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+  },
+  "evaluation": {
+    "dataset": "screenspot_glm50_v1",
+    "conditions": ["vision", "blind", "shuffled", "random_projector"],
+    "do_sample": false,
+    "temperature": 0.0,
+    "max_new_tokens": 32,
+    "bootstrap_samples": 2000,
+    "bootstrap_seed": 20260805
+  },
+  "decision_rule": "Replace the old V1 pilot row only with verified full32 results. Expand beyond ScreenSpot50 only if both vision-minus-blind and vision-minus-shuffled click-in-box CI lower bounds are positive without parse-rate regression.",
+  "promotion": "diagnostic only; no previous-best replacement",
+  "deepseek_transfer_label": "transferable_with_runtime_validation"
+}
