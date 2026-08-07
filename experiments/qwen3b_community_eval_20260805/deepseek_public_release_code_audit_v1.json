@@ -1,0 +1,31 @@
+{
+  "schema_version": "deepseek-v4-public-release-code-audit-v1",
+  "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+  "resolved_revision": "7872f01b1d1fe23eabc4c98b48bffcef5a386062",
+  "public_runtime": {
+    "inference_model_sha256": "c0c19e6c9fa439bac7fbb1c5bc1868232dfd5aa2f439a548d0e33dcc2a9edd3f",
+    "forward_signature": "DeepSeekV4.forward(input_ids, start_pos=0)",
+    "multimodal_injection_symbols_found": [],
+    "image_vision_multimodal_mentions_in_model_py": [],
+    "readme_keyword_hits": [
+      "DSPARK"
+    ],
+    "readme_sha256": "252acafdc9204d0dba3fde1b0a93d71cd1664a4ceadfe222b60117ed0ccc56ff"
+  },
+  "config": {
+    "inference_config_sha256": "c90861f3d10a9e4ef5954f8f1a34c529d480da1c5799f84660028f4e38e14e71",
+    "dtype": "fp8",
+    "expert_dtype": "fp4",
+    "vocab_size": 129280,
+    "dim": 4096,
+    "n_layers": 43,
+    "vision_config_present": false
+  },
+  "tokenizer_seam": "Reserved multimodal tokens remain in tokenizer.json, but public inference code consumes only input_ids and does not implement image-to-embedding injection.",
+  "interpretation": "The release contains a multimodal-looking tokenizer seam without a public vision tower/projector or image injection path. A hidden training-time visual route is possible but not observable from the released runtime; real-weight receiver-prior and backward gates remain mandatory.",
+  "limitations": [
+    "code audit covers the public inference subpackage, not private training code",
+    "absence of symbols does not prove no historical multimodal training",
+    "full weights were not loaded on V100"
+  ]
+}

@@ -175,3 +175,5 @@ tiny synthetic route 结果只证明 wrapper 传递了 placeholder/routing/posit
 公开 `DeepSeek-V4-Flash-0731` 的 tokenizer 保留了 415 个 multimodal span placeholder 及 image/region 标记。我们进一步对 `embed.weight` 做了 range 抽样：预留行均值范数约为普通 token 的 6.8%，且与普通 token 均值几乎正交。这个模式更像零初始化或专门保留、等待运行时视觉向量写入的槽位；它能解释为什么 DeepSeek 可能比纯文本 Qwen 更容易接入 MoonViT projector，也说明直接把 image token 当普通词表 token 训练并不合理。
 
 这条证据的边界很重要：embedding 行低范数不能说明 hidden layers 具备视觉能力，也不能替代真实权重上的图像 forward、视觉梯度和 vision/blind/shuffle 对照。当前 DeepSeek Gate D 仍为 NO-GO；下一项最短路径是用真实 0731 权重完成 step0 receiver-prior、placeholder 替换、input-gradient 与 checkpoint round-trip gate，合格后才进入最小 projector-only 训练。
+
+同时审计了公开 `inference/model.py`：forward 只接收 `input_ids`，没有图像到 embedding 的公开注入实现；`config.json` 没有 `vision_config`。这使“曾经有私有视觉训练环节”的猜想仍然可能，但公开发布物本身不能直接复现该环节。工程上应把它当作一个有利的接口先验，不能当作已经存在的视觉能力。
