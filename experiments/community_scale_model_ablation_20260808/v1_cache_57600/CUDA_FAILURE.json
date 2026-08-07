@@ -1,0 +1,20 @@
+{
+  "schema_version": "community-scale-cache-failure-v1",
+  "status": "hardware_environment_failure",
+  "timestamp": "2026-08-07T15:56:01.753029+00:00",
+  "experiment": "qwen25_7b_v1 community-scale MoonViT V1 cache",
+  "command_log": "/tmp/community_v1_cache_57600.log",
+  "command_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "result": "no feature rows produced; no model result",
+  "failure": "CUDA initialization hangs; nvidia-smi reports Driver/library version mismatch",
+  "driver_kernel": "580.159.04",
+  "nvidia_ml_user_library": "580.173",
+  "torch": "2.10.0+cu128",
+  "checks": [
+    "nvidia-smi -L failed with Driver/library version mismatch",
+    "torch.cuda.is_available() exceeded 34s timeout",
+    "cache process was terminated before any artifact row was written"
+  ],
+  "recovery": "requires workstation driver synchronization/reboot or equivalent administrator-approved local repair; no cloud or paid resource requested",
+  "rerun_rule": "resume from scratch after CUDA health check passes; do not count this as a capability arm"
+}\n

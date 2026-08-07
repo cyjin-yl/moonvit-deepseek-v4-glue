@@ -1,0 +1,46 @@
+{
+  "schema_version": "community-scale-model-ablation-v1",
+  "status": "preregistered_hardware_pending",
+  "frozen_on": "2026-08-08",
+  "goal": "Compare MoonViT V1/V2, visual ablations, and receiver capacity before DeepSeek-V4-Flash-0731 Gate D.",
+  "final_path": "MoonViT-V1/V2 -> projector -> receiver -> DeepSeek-V4-Flash-0731",
+  "community_reference": {
+    "source": "GLM-5.2V report notes recorded in report/main.typ",
+    "short_answer_examples_order_of_magnitude": 66000,
+    "global_batch": 64,
+    "learning_rate": 0.0005,
+    "scheduler": "constant",
+    "reported_grokking_step": 900,
+    "reported_grokking_examples_seen": 57600,
+    "reported_total_optimizer_steps": 2070,
+    "reported_total_examples_seen": 132480
+  },
+  "local_data": {
+    "path": "/run/media/ezra/13D010B6FDBC1A06/data/train_v1/train_mix.jsonl",
+    "records": 59198,
+    "order_seed": 20260805,
+    "max_image_side": 448,
+    "max_visual_tokens": 256,
+    "shortfall_rule": "report actual maximum unique records; repeat frozen order only for exposure beyond one pass"
+  },
+  "examples_seen_checkpoints": [4096, 8192, 16384, 32768, 57600, 59136, 132480],
+  "arms": [
+    {"id": "qwen25_7b_v1", "receiver": "Qwen2.5-7B-Instruct", "receiver_kind": "pure_text", "tower": "MoonViT-SO-400M V1", "trainable": "projector_only"},
+    {"id": "qwen25_7b_v2", "receiver": "Qwen2.5-7B-Instruct", "receiver_kind": "pure_text", "tower": "MoonViT-V2", "trainable": "projector_only"},
+    {"id": "qwen35_4b_v1_stripped", "receiver": "Qwen3.5-4B", "receiver_kind": "native_vision_stripped", "tower": "MoonViT-SO-400M V1", "trainable": "projector_only"},
+    {"id": "qwen35_4b_v2_stripped", "receiver": "Qwen3.5-4B", "receiver_kind": "native_vision_stripped", "tower": "MoonViT-V2", "trainable": "projector_only"},
+    {"id": "qwen35_9b_v1_stripped", "receiver": "Qwen3.5-9B", "receiver_kind": "native_vision_stripped", "tower": "MoonViT-SO-400M V1", "trainable": "projector_only", "hardware_note": "run only if V100 memory and throughput permit"},
+    {"id": "qwen35_9b_v2_stripped", "receiver": "Qwen3.5-9B", "receiver_kind": "native_vision_stripped", "tower": "MoonViT-V2", "trainable": "projector_only", "hardware_note": "run only if V100 memory and throughput permit"},
+    {"id": "no_vision_control", "receiver": "matched pure_text receiver", "receiver_kind": "text_only_control", "tower": "none", "trainable": "none"},
+    {"id": "native_qwen_vlm_positive", "receiver": "Qwen3.5 native VLM", "receiver_kind": "native_vlm_positive_control", "tower": "native_tower", "trainable": "none", "leaderboard": "separate"}
+  ],
+  "conditions": ["vision", "blind", "shuffled", "random_projector", "step0", "previous_best", "current_candidate"],
+  "promotion_gate": [
+    "vision click-in-box exceeds previous_best at matched examples_seen",
+    "paired vision-minus-blind CI lower bound > 0",
+    "paired vision-minus-shuffled CI lower bound > 0",
+    "parse rate does not regress",
+    "TextVQA/DocVQA/OCRBench have no unexplained severe regression"
+  ],
+  "deepseek_transfer": "Only transferable_with_runtime_validation or directly_transferable methods enter DeepSeek candidates; Gate D remains NO-GO until real-weight forward/backward and checkpoint restore pass."
+}
