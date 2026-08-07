@@ -44,6 +44,7 @@ from moonvit_glue.checkpointing import (
     load_training_checkpoint,
     save_training_checkpoint,
 )
+from moonvit_glue.proxy_receiver import FixedGroupedReceiverAdapter
 from tools_common import (
     build_prompt_ids,
     encode_image,
@@ -117,6 +118,23 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--grad-clip", type=float, default=1.0)
     parser.add_argument("--max-image-side", type=int, default=448)
     parser.add_argument("--dtype", default="float32")
+    parser.add_argument(
+        "--canonical-projector",
+        action="store_true",
+        help="Keep the trainable projector at canonical 4096 dims and use a fixed parameter-free receiver adapter.",
+    )
+    parser.add_argument("--receiver-adapter-seed", type=int, default=20260806)
+    parser.add_argument(
+        "--projector-variant",
+        choices=["legacy_pre_norm", "kimi_k3_v2"],
+        default="legacy_pre_norm",
+        help="Projector structure; V1 uses legacy_pre_norm and V2 uses kimi_k3_v2.",
+    )
+    parser.add_argument(
+        "--init-projector",
+        default=None,
+        help="Load the complete frozen step0 projector from a matching directory.",
+    )
     parser.add_argument("--image-token", default=None,
                         help="Placeholder token; default auto-detects DeepSeek/Qwen candidates")
     parser.add_argument("--placeholder-token-id", type=int, default=None)
@@ -319,22 +337,42 @@ def main() -> None:
     else:
         placeholder_token_id = resolve_placeholder_token_id(tokenizer, args.image_token)
 
+    canonical_width = 4096 if args.canonical_projector else int(language_model.config.hidden_size)
     projector = PatchMergerProjector(
         ProjectorConfig(
             vision_width=vision_width,
-            language_width=int(language_model.config.hidden_size),
+            language_width=canonical_width,
             merge_factor=merge_factor,
+            projector_variant=args.projector_variant,
         )
     )
     projector.to(device=device, dtype=dtype)
+    if args.init_projector:
+        donor = PatchMergerProjector.from_pretrained(
+            args.init_projector, device=device, dtype=dtype
+        )
+        if donor.config != projector.config:
+            raise ValueError(
+                f"init projector config differs: {donor.config} != {projector.config}"
+            )
+        projector.load_state_dict(donor.state_dict(), strict=True)
+        print(f"loaded complete step0 projector from {args.init_projector}", flush=True)
     if args.init_projector_trunk:
         projector.load_trunk(args.init_projector_trunk)
         print(f"warm-started trunk (pre_norm + linear_1) from {args.init_projector_trunk}", flush=True)
 
     pad_token_id = tokenizer.pad_token_id if tokenizer.pad_token_id is not None else 0
+    receiver_adapter = None
+    if args.canonical_projector and int(language_model.config.hidden_size) != canonical_width:
+        receiver_adapter = FixedGroupedReceiverAdapter(
+            canonical_width,
+            int(language_model.config.hidden_size),
+            seed=args.receiver_adapter_seed,
+        ).to(device=device)
     model = VisionCausalLM(
         language_model=language_model,
         projector=projector,
+        receiver_adapter=receiver_adapter,
         placeholder_token_id=placeholder_token_id,
         backbone_kind="auto",
         freeze_language_model=True,
@@ -529,6 +567,16 @@ def main() -> None:
         "actual_batched_forward": False,
         "forward_backward_calls_per_optimizer_step": accumulation_steps,
         "feature_cache": str(args.feature_cache) if args.feature_cache else None,
+        "canonical_projector": bool(args.canonical_projector),
+        "canonical_projector_width": canonical_width,
+        "projector_variant": args.projector_variant,
+        "init_projector": args.init_projector,
+        "receiver_adapter": {
+            "kind": "fixed_grouped_signed_projection" if receiver_adapter is not None else "identity",
+            "seed": args.receiver_adapter_seed if receiver_adapter is not None else None,
+            "receiver_width": int(language_model.config.hidden_size),
+            "trainable_parameter_count": 0,
+        },
         "vision_tower_instantiated": moonvit is not None,
         "training_max_image_side": args.max_image_side,
         "evaluation_max_image_side": args.max_image_side,

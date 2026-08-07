@@ -116,3 +116,42 @@ class FixedPairwiseReceiverAdapter(nn.Module):
         if set(adapter.signs.tolist()) - {-1, 1}:
             raise ValueError("saved receiver signs must be -1 or +1")
         return adapter.to(device=device)
+
+
+class FixedGroupedReceiverAdapter(nn.Module):
+    """Deterministic parameter-free 4096->receiver-width readout.
+
+    The canonical projector stays 4096-dimensional for DeepSeek transfer. A
+    proxy receiver with a different hidden width gets a fixed signed grouping;
+    no receiver-specific trainable cross-attention or visual layer is added.
+    """
+
+    def __init__(self, canonical_width: int, receiver_width: int, *, seed: int) -> None:
+        super().__init__()
+        if not 0 < receiver_width <= canonical_width:
+            raise ValueError("receiver width must be in (0, canonical width]")
+        generator = torch.Generator(device="cpu").manual_seed(int(seed))
+        permutation = torch.randperm(canonical_width, generator=generator)
+        signs = torch.randint(0, 2, (canonical_width,), generator=generator, dtype=torch.int8)
+        signs = signs.mul_(2).sub_(1)
+        pair_count = canonical_width - receiver_width
+        group_sizes = [2] * pair_count + [1] * (2 * receiver_width - canonical_width)
+        if len(group_sizes) != receiver_width or sum(group_sizes) != canonical_width:
+            raise AssertionError("invalid grouped receiver layout")
+        self.register_buffer("permutation", permutation, persistent=True)
+        self.register_buffer("signs", signs, persistent=True)
+        self.register_buffer("group_sizes", torch.tensor(group_sizes, dtype=torch.long), persistent=True)
+        self.canonical_width = int(canonical_width)
+        self.receiver_width = int(receiver_width)
+        self.seed = int(seed)
+
+    def forward(self, inputs: Tensor) -> Tensor:
+        if inputs.shape[-1] != self.canonical_width:
+            raise ValueError(f"expected last dimension {self.canonical_width}, got {inputs.shape[-1]}")
+        values = inputs.index_select(-1, self.permutation) * self.signs.to(inputs.dtype)
+        outputs = []
+        offset = 0
+        for size in self.group_sizes.tolist():
+            outputs.append(values[..., offset:offset + size].sum(dim=-1) / math.sqrt(float(size)))
+            offset += size
+        return torch.stack(outputs, dim=-1)
