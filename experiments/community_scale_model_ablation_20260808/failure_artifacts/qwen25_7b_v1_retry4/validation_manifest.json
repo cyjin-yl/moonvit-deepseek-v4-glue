@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "seed": 20260805,
+  "total_samples": 32,
+  "counts_by_source": {
+    "art": 8,
+    "docvqa": 8,
+    "showui": 8,
+    "textvqa": 8
+  },
+  "records": [
+    {
+      "id": "train_000117",
+      "source": "art"
+    },
+    {
+      "id": "train_000337",
+      "source": "art"
+    },
+    {
+      "id": "train_000762",
+      "source": "art"
+    },
+    {
+      "id": "train_001938",
+      "source": "art"
+    },
+    {
+      "id": "train_003399",
+      "source": "art"
+    },
+    {
+      "id": "train_005025",
+      "source": "art"
+    },
+    {
+      "id": "train_006434",
+      "source": "art"
+    },
+    {
+      "id": "train_007006",
+      "source": "art"
+    },
+    {
+      "id": "docvqa_train_001512",
+      "source": "docvqa"
+    },
+    {
+      "id": "docvqa_train_002474",
+      "source": "docvqa"
+    },
+    {
+      "id": "docvqa_train_002711",
+      "source": "docvqa"
+    },
+    {
+      "id": "docvqa_train_003424",
+      "source": "docvqa"
+    },
+    {
+      "id": "docvqa_train_004237",
+      "source": "docvqa"
+    },
+    {
+      "id": "docvqa_train_007591",
+      "source": "docvqa"
+    },
+    {
+      "id": "docvqa_train_010776",
+      "source": "docvqa"
+    },
+    {
+      "id": "docvqa_train_014837",
+      "source": "docvqa"
+    },
+    {
+      "id": "showui_desktop_000163",
+      "source": "showui"
+    },
+    {
+      "id": "showui_desktop_001178",
+      "source": "showui"
+    },
+    {
+      "id": "showui_desktop_001436",
+      "source": "showui"
+    },
+    {
+      "id": "showui_desktop_002171",
+      "source": "showui"
+    },
+    {
+      "id": "showui_desktop_002544",
+      "source": "showui"
+    },
+    {
+      "id": "showui_desktop_003244",
+      "source": "showui"
+    },
+    {
+      "id": "showui_desktop_003473",
+      "source": "showui"
+    },
+    {
+      "id": "showui_desktop_004841",
+      "source": "showui"
+    },
+    {
+      "id": "textvqa_train_002259",
+      "source": "textvqa"
+    },
+    {
+      "id": "textvqa_train_004719",
+      "source": "textvqa"
+    },
+    {
+      "id": "textvqa_train_007535",
+      "source": "textvqa"
+    },
+    {
+      "id": "textvqa_train_010218",
+      "source": "textvqa"
+    },
+    {
+      "id": "textvqa_train_010626",
+      "source": "textvqa"
+    },
+    {
+      "id": "textvqa_train_010986",
+      "source": "textvqa"
+    },
+    {
+      "id": "textvqa_train_017811",
+      "source": "textvqa"
+    },
+    {
+      "id": "textvqa_train_023615",
+      "source": "textvqa"
+    }
+  ]
+}

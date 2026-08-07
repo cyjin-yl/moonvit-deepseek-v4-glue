@@ -37,6 +37,12 @@ state 从 FP16 改为 FP32。它在 step1/2（64/128 examples seen）均保持 f
 
 截至 step17（1,088 examples seen），CE loss 继续下降到 `3.3788`，但 projector/receiver RMS ratio 已到 `30.58/32.41`；relative-spread ratio 仍为 `0.4605/0.4633`，且所有值 finite。这个轨迹把“loss 降低”和“表示尺度膨胀”同时展示出来：即使尚未触发 50× critical guard，也不能把它解释成视觉对齐。step17 的原始快照保存在 `experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v1_retry4_step17/`，后续要看它是否在前 100 steps 内触发自动止损或保持健康。
 
+### V1 retry4 自动止损结果（step33）
+
+step33（2,112 examples seen）触发了预注册的 critical guard：receiver output RMS ratio 为 `50.7792`，超过 `50×`；projector ratio 为 `47.8930`，relative-spread ratio 为 `0.4563/0.4593`，CE 为 `3.4664` 且没有 NaN/Inf。也就是说，FP32 只修复了“第二步就数值爆炸”，没有修复 projector 的尺度漂移：它可以把 CE 降下来，却在 33 步内把 receiver 输入放大到不可接受范围。该臂现在是正式的 `failed_health_guard`，不能继续从 failure checkpoint 训练，也没有进入视觉能力排行榜。
+
+此次运行暴露一个 checkpoint 合同缺口：`checkpoint-every=64` 导致 onset（step33）之前没有周期性 healthy checkpoint；failure checkpoint 和 step0 projector 均已保留，但后续矩阵 runner 必须在 step0/每个早期 health 节点保存可回滚的 optimizer/RNG 状态，不能只依赖 64-step 周期。
+
 ## 主线重置：用社区训练量做条件消融，而不是继续堆 verifier（2026-08-08）
 
 历史脚本、权重和数据 verifier 已经足够支撑可信实验；继续重复它们不会回答当前最重要的问题：视觉塔版本、

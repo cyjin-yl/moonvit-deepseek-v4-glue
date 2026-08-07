@@ -2,7 +2,7 @@
 
 更新日期：2026-08-08
 
-> **live matrix execution (03:26–04:55 CST):** qwen25_7b_v1 retry4 已加载全部 339 个 Qwen2.5-7B 分片和 V1 step0，并越过此前 step-2 NaN 点：step1/2 的 loss 为 `12.7361/12.4078`，两步均 finite，step2 projector/receiver RMS ratio 为 `3.0678/3.2231`，relative-spread ratio 为 `0.4167/0.4029`，`critical_guard=false`。截至 step17（1,088 examples seen），loss 已降到 `3.3788`，但 RMS ratio 上升到 `30.58/32.41`，仍未过 50× critical guard；这是尺度膨胀预警，不是视觉能力证据。step2 与 step17 原始健康快照已封存于 `experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v1_retry4_step2/` 和 `_step17/`。V2 cache 已到约 `6.7k/57.6k`；Qwen3.5-4B 因共享 V100 的排程暂缓，未进入 optimizer step。
+> **live matrix execution (03:26–05:03 CST):** qwen25_7b_v1 retry4 已加载全部 339 个 Qwen2.5-7B 分片并越过此前 step-2 NaN 点，但在 optimizer step 33（2,112 examples seen）触发冻结的 RMS critical guard：receiver RMS ratio `50.7792× > 50×`，relative-spread ratio `0.4593`，CE 仍 finite（`3.4664`）。因此 FP32 projector/AdamW 修复得到“数值稳定到 step32”，但 V1 社区规模臂正式记为 `failed_health_guard`，不能写成视觉能力结果。完整 failure checkpoint、optimizer/RNG、health/log、SHA 与失败原因已封存于 `experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v1_retry4/`，MATRIX_SUMMARY 已登记。V2 cache 仍在构建；Qwen3.5-4B/9B 和 controls 等待 GPU 排程。
 
 ## 一句话结论
 
