@@ -467,3 +467,52 @@ causal ablations. The v1 all-zero `tid2eid` implementation failure remains
 preserved and excluded. This uses a synthetic tiny route table and only proves
 software signal plumbing; Gate D remains *NO-GO* until the real 0731 route table,
 FP4/FP8 backward and full-weight runtime are tested.
+## Qwen3.5-4B 外接 MoonViT 完整对照（2026-08-08）
+
+用户要求把“视觉预训练 receiver + 我们的视觉塔”放到同一张可比较的表里。本轮固定
+`Qwen/Qwen3.5-4B` revision `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a`，绕过
+Qwen3.5 原生 visual/merger，使用 Kimi-K3 抽取的 MoonViT-V2、exact K3 projector、
+4096→2560 的固定 grouped-signed receiver adapter，只训练 projector。训练使用 32 条
+真实答案 probe、mean-pool 16 tokens、scale `0.1`、BF16、AdamW `5e-5`、3 steps；
+评测固定 `screenspot_glm50_v1` 50 条、同一 prompt/parser/greedy decoding 和
+vision/blind/shuffled/random-projector 四条件。预注册合同为
+`configs/qwen35-4b-external-moonvit-ablation-v1.json`，完整指针为
+`qwen35-4b-external-moonvit-ablation-pointer-20260808.json`。
+
+### ScreenSpot50 对照表
+
+| projector 角色 | vision click | blind click | shuffled click | random click | vision A@50/@100/@200 | vision mean distance | V−blind click CI | V−shuffle click CI |
+|---|---:|---:|---:|---:|---|---:|---|---|
+| step0 | 2% | 2% | 2% | 4% | 0/6/24% | 469.54 | 0.0 pp `[-6,+6]` | 0.0 pp `[0,0]` |
+| CE-only | 0% | 2% | 4% | 4% | 0/8/22% | 470.49 | −2.0 pp `[-6,0]` | −4.0 pp `[-10,0]` |
+| paired margin λ=0.5 | 4% | 2% | 4% | 4% | 2/10/20% | 484.96 | +2.0 pp `[-4,+10]` | 0.0 pp `[0,0]` |
+
+三臂 parse rate 几乎为 100%；paired-margin 的 shuffled 条件有 1 条格式失败，
+其余均为 50/50。所有 CI 都没有形成“正确图片稳定优于 blind 和 shuffled”的证据。
+paired-margin 的 teacher-forced `vision−shuffle` 在 32 条 probe 上由 `-0.1361`
+走到 `+0.0162`，但自由生成的 click-in-box 仍与 shuffled 相同。CE-only 的 loss
+由 `8.3974` 降到 `7.5631`，视觉归因仍未出现。
+
+判定：这是完整的 Qwen3.5-4B external-MoonViT 对照表，结果保留为
+`diagnostic_only`，`capability_claim_allowed=false`，不改变 Qwen2.5 previous-best，
+也不进入 DeepSeek 正式候选。它支持“视觉预训练 receiver 比纯文本 receiver 更容易
+产生局部 token 响应”，暂未支持“换 receiver 就能让 projector 获得 grounding”。
+50 条固定集未通过 paired causal screen，因此没有把这一失败臂扩展到完整 1,272 条，
+避免在已被固定门槛否决的方向上消耗 V100 时间。训练、逐行生成、分类 summary、
+2,000 bootstrap 和原始 HDD 路径均由 pointer 绑定。
+
+### DeepSeek 残留多模态接口假设
+
+对公开 `DeepSeek-V4-Flash-0731` 文件的只读审计发现 tokenizer 保留
+`<｜rl_image_pad｜>`、`<｜rl_image_start｜>`、`<｜image2｜>`、`<｜image｜>`，并含
+415 个 `place_holder_mm_span` 以及 box/point/ref/polygon 标记；vocab size 为
+129280，hidden size 为 4096。公开 `config.json` 仍声明 `DeepseekV4ForCausalLM`，
+没有 `vision_config`，HF 仓库也没有视觉 tower/projector 文件。这个组合支持“公开版
+保留过多模态接缝或训练遗留”的假设，但无法单独证明语言权重曾经看过图像。
+当前 tiny synthetic route screen 只证明 placeholder、routing、position 和
+projector input-DGRAD 能进入接收器；真实 0731 权重仍要在 Gate D 通过后测量。
+
+因此 DeepSeek 最短路径新增一项：在真实权重上先做 step0 receiver-prior 四条件表，
+再做同预算 projector-only 小训练；若 step0 已有稳定 vision−shuffle，说明公开版
+保留的接口/先验确实降低了迁移难度。无论结果如何，都要和 Qwen3.5-4B 这张表使用
+相同的 ScreenSpot、parser 和 paired CI。

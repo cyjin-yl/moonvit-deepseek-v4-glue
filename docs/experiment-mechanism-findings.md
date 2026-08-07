@@ -131,3 +131,42 @@ tiny DeepSeek screen 的首版失败已保留：随机 tiny 配置的 `tid2eid` 
 V1 CE-only 的 `vision−shuffle` 为 `+0.00615`，CI `[-0.01760,+0.03182]`；V1 λ=`0.5` 为 `+0.01145`，CI `[-0.02580,+0.04766]`。两臂 `vision−blind` 的 CI 为正，random-projector 差值显著为负，说明 projector 输出会改变 receiver，且训练后的 projector 不是随机映射；正确图与 shuffled 图仍没有稳定区别。
 
 V1 λ=`0.5` 相对 V1 CE-only 的差为 `+0.00530`，CI `[-0.04882,+0.05758]`；相对 V2 λ=`0.5` 的差为 `-0.47600`，CI `[-0.87349,-0.13102]`。这是一条重要的版本结论：V1 family proxy 没有改善 grounding，V2 的 embedding 压缩不能单独解释失败，V2 在同一 receiver 和同一监督合同下反而更强。后续优先级转向 receiver readout/alignment、监督目标和 projector 输出尺度，停止继续做 V1/V2 token 数量扫参。
+## Qwen3.5-4B：完整 external-MoonViT 对照表（2026-08-08）
+
+本轮把 Qwen3.5 的“有视觉预训练的 receiver”从单样本/8 样本诊断提升到固定
+`screenspot_glm50_v1` 的完整 50 条四条件对照。原生 visual tower、merger 和
+pixel path 全部绕过，外部 Kimi-K3/MoonViT-V2 特征经 exact K3 projector 输出
+4096 维，再通过固定 4096→2560 grouped-signed adapter 送入 Qwen3.5 language
+receiver。三种 projector 角色共享 step0、数据顺序、32 条真实答案训练 probe、
+16-token mean-pool、scale、prompt、parser 和 greedy decode。
+
+| 角色 | V click | blind click | shuffled click | random click | V A50/A100/A200 | V mean distance | V−B click CI | V−S click CI |
+|---|---:|---:|---:|---:|---|---:|---|---|
+| step0 | 2% | 2% | 2% | 4% | 0/6/24% | 469.54 | 0 `[-6,+6]` pp | 0 `[0,0]` pp |
+| CE-only | 0% | 2% | 4% | 4% | 0/8/22% | 470.49 | −2 `[-6,0]` pp | −4 `[-10,0]` pp |
+| λ=0.5 paired margin | 4% | 2% | 4% | 4% | 2/10/20% | 484.96 | +2 `[-4,+10]` pp | 0 `[0,0]` pp |
+
+训练 health 与自由生成再次分离。CE-only 的 CE `8.3974→7.5631`，
+`vision−shuffle` `-0.1361→-0.0165`；paired-margin 的 CE `8.3974→8.1195`，
+`vision−shuffle` `-0.1361→+0.0162`。这两个训练信号都没有转化成正的
+ScreenSpot paired causal CI。paired-margin 在 teacher-forced probe 上把方向推近零，
+生成时仍无法区分正确图与确定性错误图。三臂均 `native_vision_forward_calls=0`，
+所以这组结果确实测到 external projector 路径，不包含 Qwen3.5 原生视觉塔的结果。
+
+机制结论：视觉预训练 receiver prior 能让外部 token 改变分布，但“receiver 有视觉
+预训练”本身不足以完成 projector alignment；projector 仍需要针对 receiver 重新训练，
+而训练目标必须直接约束 correct-image attribution。由于固定 50 条 causal gate 未通过，
+本轮不扩展完整 1,272 条公共集，也不把 Qwen3.5 checkpoint 送入 DeepSeek 候选。
+
+## DeepSeek-V4-Flash-0731：多模态残留接口假设
+
+公开 tokenizer 的 added-token 区保留图像与区域标记，包括 `<｜image｜>` ID `129279`、
+`<｜image2｜>`、`<｜rl_image_start｜>`、`<｜rl_image_pad｜>`，以及 415 个
+`place_holder_mm_span`、box/point/ref/polygon 标记。公开 config 没有 `vision_config`，
+HF 文件树没有视觉塔或 projector。这种“词表/路由接口保留、公开视觉模块缺失”的组合
+使内部曾经接过多模态训练成为合理假设，但它仍缺少权重层面的证据。
+
+可检验预测是：真实 DSV4 step0 在正确图/盲图/打乱图之间应出现比纯文本 Qwen 更稳定的
+teacher-forced 差异；若出现，projector-only 小训练的样本效率应更高。Gate D 因此新增
+step0 receiver-prior 表和 trained-vs-step0 配对表，使用同一 ScreenSpot parser 与 CI；
+tiny synthetic route 结果只证明 wrapper 传递了 placeholder/routing/position，不能替代真实权重。

@@ -979,3 +979,48 @@ and optimization remain stronger explanations than V1/V2 family identity. The
 next local variable should be one DeepSeek-transferable receiver-interface or
 projector-scale/target-alignment test with a matched CE-only control; further
 V1/V2 token sweeps are low priority. Gate D remains **NO-GO**.
+## 2026-08-08 Qwen3.5-4B external MoonViT full matched ablation
+
+To answer whether a vision-pretrained receiver makes our external tower easier to
+adapt, a preregistered Qwen3.5-4B screen was run with the native visual tower and
+merger bypassed. The contract is
+`configs/qwen35-4b-external-moonvit-ablation-v1.json`; the compact pointer is
+`experiments/qwen3b_community_eval_20260805/capacity_controls/qwen35-4b-external-moonvit-ablation-pointer-20260808.json`.
+
+Qwen3.5-4B revision `851bf6e...b7c8d0a`, MoonViT-V2 exact K3, canonical projector
+width 4096 and fixed 4096→2560 receiver adapter were held fixed. Projector-only
+training used 32 real-answer rows, mean-pool 16 tokens, scale 0.1, BF16, AdamW
+5e-5 and 3 optimizer steps. CE-only and paired-margin λ=0.5 both completed with
+`native_vision_forward_calls=0` and finite health.
+
+The full fixed GLM-format 50-row ScreenSpot table used four conditions and 2,000
+bootstrap resamples:
+
+| role | vision click | blind click | shuffled click | random click | vision A@50/@100/@200 | vision mean distance |
+|---|---:|---:|---:|---:|---|---:|
+| step0 | 2% | 2% | 2% | 4% | 0/6/24% | 469.54 |
+| CE-only | 0% | 2% | 4% | 4% | 0/8/22% | 470.49 |
+| margin λ=0.5 | 4% | 2% | 4% | 4% | 2/10/20% | 484.96 |
+
+V−blind click CIs were `[−6,+6]`, `[−6,0]`, `[−4,+10]` percentage points;
+V−shuffled CIs were `[0,0]`, `[−10,0]`, `[0,0]`. The trained margin arm moved
+teacher-forced V−shuffle from −0.1361 to +0.0162, but generation did not acquire
+correct-image causal grounding. `capability_claim_allowed=false`, no previous-best
+or DeepSeek candidate changed, and the 50-row gate failure justifies stopping before
+the 1,272-row expansion.
+
+The result narrows the hypothesis: Qwen3.5's vision-pretrained receiver responds to
+external MoonViT tokens, yet prior multimodal training alone does not make a new
+projector usable. The projector still needs receiver-specific alignment and a direct
+correct-image objective.
+
+## DeepSeek residual multimodal interface hypothesis
+
+The public V4 Flash tokenizer retains `<｜image｜>` (129279), `<｜image2｜>`,
+`<｜rl_image_start｜>`, `<｜rl_image_pad｜>`, 415 `place_holder_mm_span` tokens and
+box/point/ref/polygon markup. The public config is still `DeepseekV4ForCausalLM`, has
+no `vision_config`, and the HF file tree has no visual tower/projector. This makes a
+hidden or removed multimodal-training seam plausible, but does not prove visual
+knowledge in the released weights. Gate D now requires a real-weight step0
+receiver-prior table before projector training, followed by the matched four-condition
+ScreenSpot table. Tiny synthetic routing remains software-seam evidence only.

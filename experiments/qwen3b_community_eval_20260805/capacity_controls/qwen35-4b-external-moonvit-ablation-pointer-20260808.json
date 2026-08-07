@@ -1,0 +1,86 @@
+{
+  "schema_version": "qwen35-4b-external-moonvit-ablation-pointer-v1",
+  "status": "verified_diagnostic_reject",
+  "contract": "configs/qwen35-4b-external-moonvit-ablation-v1.json",
+  "model": "Qwen/Qwen3.5-4B",
+  "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "native_vision_bypassed": true,
+  "native_vision_forward_calls": 0,
+  "visual_tower": "Kimi-K3 extracted MoonViT-V2",
+  "projector_output_width": 4096,
+  "receiver_width": 2560,
+  "receiver_adapter": "fixed_grouped_signed_projection(seed=20260806)",
+  "training": {
+    "sample_count": 32,
+    "steps": 3,
+    "max_visual_tokens": 16,
+    "token_selection": "mean_pool",
+    "projector_scale": 0.1,
+    "learning_rate": 0.00005,
+    "ce_only": {
+      "raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_4b_external_moonvit_ceonly_meanpool16_20260808",
+      "summary_sha256": "f86c5d2f05b200f28787d5f2fb483afeae3699f6267a909061ba74f6780f420b",
+      "health_sha256": "b6a8e6282759e61c43c53152ab4be38e0bc970e7f038e63d215687062641c4bc",
+      "final_trajectory": {
+        "ce_loss": 7.5630598068237305,
+        "vision_minus_shuffle": -0.016523405909538,
+        "projector_output_rms": 0.994035542011261,
+        "between_image_rms": 0.5341019034385681,
+        "native_vision_forward_calls": 0
+      }
+    },
+    "paired_margin05": {
+      "raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_4b_external_moonvit_margin05_meanpool16_20260808",
+      "summary_sha256": "54f546fbff652f30b6b73d54c2724b20ce506d1501960ec0a91fe4b0f845b98a",
+      "health_sha256": "2a7a62055c2f68e70034b075d890c5a8487d3337e93fd39bc7056f969a962fe3",
+      "final_trajectory": {
+        "optimizer_step": 3,
+        "ce_loss": 8.119519233703613,
+        "vision_minus_shuffle": 0.028276368975639343,
+        "projector_output_rms": 0.9940534830093384,
+        "between_image_rms": 0.5341629385948181,
+        "native_vision_forward_calls": 0
+      }
+    }
+  },
+  "evaluation": {
+    "dataset": "screenspot_glm50_v1",
+    "sample_count": 50,
+    "bootstrap_samples": 2000,
+    "bootstrap_seed": 20260805,
+    "roles": {
+      "step0": {
+        "rows_sha256": "56176cc55d1abe27e7791e99f25031bf70aefed089ace0751ed6e557a424f84a",
+        "summary_sha256": "ea0cf637e6383bef894c4d6fec12dad20b703a31455c0c7f397602105dcb1f64",
+        "category_summary_sha256": "0cbaa6a2e0b7d24adb6e9860932749c86b41c508fa582d5e8a5d86157ed5db3f",
+        "vision": {"parse_rate": 1.0, "click_in_box": 0.02, "accuracy_at_50": 0.0, "accuracy_at_100": 0.06, "accuracy_at_200": 0.24, "mean_distance": 469.5445891236987},
+        "blind": {"click_in_box": 0.02, "accuracy_at_50": 0.06, "accuracy_at_100": 0.10, "accuracy_at_200": 0.26, "mean_distance": 475.15582945597447},
+        "shuffled": {"click_in_box": 0.02, "accuracy_at_50": 0.0, "accuracy_at_100": 0.10, "accuracy_at_200": 0.24, "mean_distance": 469.2919673830441},
+        "random_projector": {"click_in_box": 0.04, "accuracy_at_50": 0.04, "accuracy_at_100": 0.06, "accuracy_at_200": 0.20, "mean_distance": 480.1024952077808},
+        "paired_click_ci": {"vision_minus_blind": [0.0, -0.06, 0.06], "vision_minus_shuffled": [0.0, 0.0, 0.0]}
+      },
+      "ce_only": {
+        "rows_sha256": "cb3402ca00a5151e7c7a4287155c90f0c408acdb237e8e846f789aa0f9f3acf2",
+        "summary_sha256": "f59d9ca7f79e9e1568b7240d5f36a08b2fc4ebeb6861433751b66269dac34b6f",
+        "category_summary_sha256": "cac02ddb3eec09195537ed67e5263f1adad17a179d065be3f25113a2d7fe16b0",
+        "vision": {"parse_rate": 1.0, "click_in_box": 0.0, "accuracy_at_50": 0.0, "accuracy_at_100": 0.08, "accuracy_at_200": 0.22, "mean_distance": 470.485},
+        "blind": {"click_in_box": 0.02, "accuracy_at_50": 0.06, "accuracy_at_100": 0.10, "accuracy_at_200": 0.26, "mean_distance": 475.15582945597447},
+        "shuffled": {"click_in_box": 0.04, "accuracy_at_50": 0.02, "accuracy_at_100": 0.06, "accuracy_at_200": 0.22, "mean_distance": 472.708},
+        "random_projector": {"click_in_box": 0.04, "accuracy_at_50": 0.04, "accuracy_at_100": 0.06, "accuracy_at_200": 0.20, "mean_distance": 480.1024952077808},
+        "paired_click_ci": {"vision_minus_blind": [-0.02, -0.06, 0.0], "vision_minus_shuffled": [-0.04, -0.10, 0.0]}
+      },
+      "paired_margin05": {
+        "rows_sha256": "40234231376a0a0f2ad7c3c92c5bdf47e0286ac130d864ecc2ae1be4c224bee2",
+        "summary_sha256": "257d87c2f8e966204b1ebf1c20ba8f45c0dd192cf4f376fa85c5f4e77274c217",
+        "category_summary_sha256": "6f88c96c0ac7b404e567815e4df4d04b2de35a791cb3ac71fa89a8dcb19dee98",
+        "vision": {"parse_rate": 1.0, "click_in_box": 0.04, "accuracy_at_50": 0.02, "accuracy_at_100": 0.10, "accuracy_at_200": 0.20, "mean_distance": 484.96},
+        "blind": {"click_in_box": 0.02, "accuracy_at_50": 0.06, "accuracy_at_100": 0.10, "accuracy_at_200": 0.26, "mean_distance": 475.15582945597447},
+        "shuffled": {"parse_rate": 0.98, "click_in_box": 0.04, "accuracy_at_50": 0.02, "accuracy_at_100": 0.06, "accuracy_at_200": 0.28, "mean_distance": 475.53},
+        "random_projector": {"click_in_box": 0.04, "accuracy_at_50": 0.04, "accuracy_at_100": 0.06, "accuracy_at_200": 0.20, "mean_distance": 480.1024952077808},
+        "paired_click_ci": {"vision_minus_blind": [0.02, -0.04, 0.10], "vision_minus_shuffled": [0.0, 0.0, 0.0]}
+      }
+    }
+  },
+  "interpretation": "Qwen3.5-4B native visual receiver weights respond to external MoonViT tokens, and paired margin moves teacher-forced vision-minus-shuffle slightly positive. No trained arm has a positive lower CI for vision-minus-blind or vision-minus-shuffled click-in-box on the fixed 50-row contract; this is not usable visual grounding.",
+  "promotion": {"previous_best_changed": false, "capability_claim_allowed": false, "deepseek_transfer_label": "transferable_with_runtime_validation"}
+}

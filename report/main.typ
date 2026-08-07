@@ -2115,3 +2115,37 @@ gated 的 step 1 只允许 `residual.weight` 零梯度，gate 和其他参数通
 V1 λ=`0.5` 相对 V1 CE-only 的 paired 差为 `+0.00530`，CI `[-0.04882,+0.05758]`；相对匹配的 V2 λ=`0.5` 为 `-0.47600`，CI `[-0.87349,-0.13102]`。因此 V1 能让 receiver 响应视觉 token，也明显优于 random projector，但正确图和 shuffled 图仍无法区分；V1 的弱归因显著低于 V2 λ=`0.5`。这条结果把“V2 embedding 压缩是主要失败根因”降为低优先级，也不支持把 V1 family proxy 替换进正式配置。没有 ScreenSpot 晋升资格，Gate D 继续为 *NO-GO*。
 
 完整 raw pointer、compact summaries、health/probe/bootstrap 和独立 verifier 位于 `experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_v1_community_screen_20260808_POINTER.json` 及同名目录；V1 大 checkpoint 与 optimizer 仍保留在 V100 数据盘。
+== 2026-08-08：Qwen3.5-4B external MoonViT matched ablation
+
+为了把视觉预训练 receiver 的作用放进同一张表，本轮固定 Qwen3.5-4B revision
+`851bf6e...b7c8d0a`，绕过原生 visual/merger，使用 Kimi-K3/MoonViT-V2、exact K3
+projector 和固定 4096→2560 receiver adapter，只训练 projector。训练为 32 条真实答案、
+mean-pool 16 tokens、scale `0.1`、BF16、AdamW `5e-5`、3 steps；评测为固定
+`screenspot_glm50_v1` 50 条、四条件和 2,000 bootstrap。合同与 pointer 分别为
+`configs/qwen35-4b-external-moonvit-ablation-v1.json` 和
+`qwen35-4b-external-moonvit-ablation-pointer-20260808.json`。
+
+#table(
+  columns: 9,
+  table.header([projector], [vision click], [blind], [shuffled], [random], [V A50], [V A100], [V A200], [V mean dist]),
+  [step0], [2%], [2%], [2%], [4%], [0%], [6%], [24%], [469.54],
+  [CE-only], [0%], [2%], [4%], [4%], [0%], [8%], [22%], [470.49],
+  [paired margin λ=0.5], [4%], [2%], [4%], [4%], [2%], [10%], [20%], [484.96],
+)
+
+V−blind click 95% CIs for step0, CE-only and paired-margin were `[-6,+6]`, `[-6,0]`
+and `[-4,+10]` percentage points; V−shuffled CIs were `[0,0]`, `[-10,0]` and `[0,0]`.
+The margin arm moved teacher-forced V−shuffle from `-0.1361` to `+0.0162`, while CE-only
+reduced CE `8.3974→7.5631`; free generation still had no reliable correct-image grounding.
+All three arms remain diagnostic-only and do not alter the Qwen previous-best or DeepSeek
+candidate list. Since the 50-row causal gate failed, the 1,272-row expansion was not run.
+
+== DeepSeek residual multimodal-interface hypothesis
+
+The public V4 Flash tokenizer retains `<｜image｜>` ID `129279`, `<｜image2｜>`,
+`<｜rl_image_start｜>`, `<｜rl_image_pad｜>`, 415 `place_holder_mm_span` entries and
+box/point/ref/polygon markup. The public config has hidden size 4096 but no `vision_config`,
+and its HF file tree contains no visual tower/projector. This is consistent with a removed or
+internal multimodal seam, but it cannot prove that the released weights learned visual features.
+Gate D therefore adds a real-weight step0 receiver-prior table before any projector training;
+the same ScreenSpot parser and paired CIs will be used for that table and for trained checkpoints.
