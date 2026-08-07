@@ -1,0 +1,70 @@
+{
+  "schema_version": "qwen35-4b-moonvit-v1-ablation-pointer-v1",
+  "status": "verified_diagnostic_reject",
+  "contract": "configs/qwen35-4b-moonvit-v1-vs-v2-ablation-v1.json",
+  "model": "Qwen/Qwen3.5-4B",
+  "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "tower": "moonshotai/MoonViT-SO-400M",
+  "tower_revision": "a889d399ff2306053e4e28d499d3b8f97d3e5007",
+  "tower_width": 1152,
+  "projector_variant": "legacy_pre_norm",
+  "projector_output_width": 4096,
+  "receiver_width": 2560,
+  "native_vision_bypassed": true,
+  "native_vision_forward_calls": 0,
+  "training": {
+    "sample_count": 32,
+    "steps": 3,
+    "max_visual_tokens": 16,
+    "token_selection": "mean_pool",
+    "projector_scale": 0.1,
+    "learning_rate": 0.00005,
+    "ce_only": {
+      "raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_4b_v1_ceonly_meanpool16_20260808",
+      "summary_sha256": "a4c9bae6da76e84b853338e63b5dedc0a94a3010d227899985273f6810fdf4e6",
+      "health_sha256": "f14a5f16cf2ae357e4f3f3f779fcc6c642d95f7f2123e07566b926dc1f8715df",
+      "final": {"ce_loss": 6.6645355224609375, "vision_minus_shuffle": 0.05307018756866455, "projector_output_rms": 0.2369215041399002, "between_image_rms": 0.008283696137368679}
+    },
+    "paired_margin05": {
+      "raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_4b_v1_margin05_meanpool16_20260808",
+      "summary_sha256": "16ca05572835246829bccf2dc05e1ca0ad3d82591ceda300a36cda2124cd7175",
+      "health_sha256": "41afe1100510bfd8da1f2bba34266d3fe8e660fa2aefedadab1270a9fdc2ba7f",
+      "final": {"ce_loss": 9.27225112915039, "vision_minus_shuffle": 0.0547182559967041, "projector_output_rms": 0.24175725877285004, "between_image_rms": 0.008367219939827919}
+    }
+  },
+  "evaluation": {
+    "dataset": "screenspot_glm50_v1",
+    "sample_count": 50,
+    "bootstrap_samples": 2000,
+    "bootstrap_seed": 20260805,
+    "feature_cache_manifest_sha256": "115e074497b3a354d28be506b78baffd63714bc7193e48ec48cfb5fd236c3760",
+    "roles": {
+      "step0": {
+        "summary_sha256": "9c22bbcec263d326c02fa1b6bf9b74c4a698546196e85230dd3435eaed867e3c",
+        "rows_sha256": "4bcbae9f5c61c8fcb424f93f9323220bac1b223fa5c590d0ceb5f237d84b4365",
+        "vision": {"click": 0.02, "accuracy_at_50": 0.02, "accuracy_at_100": 0.08, "accuracy_at_200": 0.20},
+        "blind": {"click": 0.02, "accuracy_at_50": 0.06, "accuracy_at_100": 0.10, "accuracy_at_200": 0.26},
+        "shuffled": {"click": 0.00, "accuracy_at_50": 0.02, "accuracy_at_100": 0.06, "accuracy_at_200": 0.14},
+        "paired_click_ci": {"vision_minus_blind": [0.0, -0.06, 0.06], "vision_minus_shuffled": [0.02, 0.0, 0.06]}
+      },
+      "ce_only": {
+        "summary_sha256": "ac73520701ce968ebcedbe650c59f5da42af559c0efb28d27d68a64ddecddbc5",
+        "rows_sha256": "b9a10a4f8aa3cce6a4be66cd89d3ac4b0d55665997cdba1ad8174c19a689c1d6",
+        "vision": {"click": 0.00, "accuracy_at_50": 0.00, "accuracy_at_100": 0.00, "accuracy_at_200": 0.00},
+        "blind": {"click": 0.02, "accuracy_at_50": 0.06, "accuracy_at_100": 0.10, "accuracy_at_200": 0.26},
+        "shuffled": {"click": 0.00, "accuracy_at_50": 0.00, "accuracy_at_100": 0.00, "accuracy_at_200": 0.00},
+        "paired_click_ci": {"vision_minus_blind": [-0.02, -0.06, 0.0], "vision_minus_shuffled": [0.0, 0.0, 0.0]}
+      },
+      "paired_margin05": {
+        "summary_sha256": "68d55abe9da20ee3af982cffbd5ed6cbb442d8b4a895f0c25dfdab0bf4016d89",
+        "rows_sha256": "456dadff6e2002ed0b9b5dbc33a858ad65d3052a56347f6cb2f252adce36a824",
+        "vision": {"click": 0.02, "accuracy_at_50": 0.02, "accuracy_at_100": 0.08, "accuracy_at_200": 0.14},
+        "blind": {"click": 0.02, "accuracy_at_50": 0.06, "accuracy_at_100": 0.10, "accuracy_at_200": 0.26},
+        "shuffled": {"click": 0.02, "accuracy_at_50": 0.02, "accuracy_at_100": 0.06, "accuracy_at_200": 0.18},
+        "paired_click_ci": {"vision_minus_blind": [0.0, -0.06, 0.06], "vision_minus_shuffled": [0.0, 0.0, 0.0]}
+      }
+    }
+  },
+  "interpretation": "V1 is numerically healthy and changes the receiver, but neither trained arm has a positive lower CI for vision-minus-blind or vision-minus-shuffled click-in-box. V1 therefore does not rescue external MoonViT grounding on Qwen3.5-4B and does not replace the V2 reference or enter the DeepSeek candidate list.",
+  "promotion": {"previous_best_changed": false, "capability_claim_allowed": false, "deepseek_transfer_label": "transferable_with_runtime_validation"}
+}

@@ -525,3 +525,16 @@ projector input-DGRAD 能进入接收器；真实 0731 权重仍要在 Gate D �
 结论：DeepSeek 路径值得优先做真实权重 step0 receiver-prior gate，但不能因为 token 表和低范数预留槽就跳过真实 forward/backward、视觉归因和 checkpoint gate。审计原始 range 文件保存在 V100 数据盘，摘要与独立 verifier 为 `experiments/qwen3b_community_eval_20260805/deepseek_interface_mm_token_embedding_audit_v1.json` 和对应 verifier；这项结果把假设从“可能有隐藏视觉能力”收窄为“很可能有预留注入接口，视觉能力是否保留仍未知”。
 
 公开 `inference/model.py` 的 forward 入口仍是 `input_ids`，代码中没有 image-to-embedding 或 vision/projector 注入符号；公开 `config.json` 也没有 `vision_config`。所以当前最稳妥的判断是：发布包保留了多模态 tokenizer/占位接口，公开推理路径没有随包发布视觉塔。历史训练是否使用过视觉数据仍是未知变量，必须用真实权重的 receiver-prior gate 实测。
+
+## Qwen3.5-4B MoonViT V1/V2 回归（2026-08-08）
+
+在同一冻结 Qwen3.5-4B receiver、同一固定 32 条训练 probe、同一 50 条 GLM-format ScreenSpot、同一 16-token mean-pool、同一 projector-only 预算下，重新训练了 V1 family proxy 的 CE-only 与 paired-margin 两条臂，并与已完成的 exact K3/MoonViT-V2 表严格匹配。
+
+| arm | vision click | blind click | shuffled click | vision−blind click CI | vision−shuffled click CI | 判定 |
+|---|---:|---:|---:|---|---|---|
+| V1 step0 | 2% | 2% | 0% | `[-6,+6] pp` | `[0,+6] pp` | 未通过 |
+| V1 CE-only | 0% | 2% | 0% | `[-6,0] pp` | `[0,0] pp` | 未通过 |
+| V1 paired-margin | 2% | 2% | 2% | `[-6,+6] pp` | `[0,0] pp` | 未通过 |
+| V2 paired-margin reference | 4% | 2% | 4% | `[-4,+10] pp` | `[0,0] pp` | 未通过 |
+
+三条 V1 运行均 parse 率 100%，训练 finite；paired-margin 末步 teacher-forced vision−shuffle 为 `+0.0547`，但没有转化成可靠 grounding。V1 没有改善 V2，版本差异暂时排除为首要故障解释。完整 ScreenSpot、VQA/OCR 不扩展到这组诊断性拒绝结果；原始训练、逐行生成、类别摘要、cache manifest 和 verifier 已保存。

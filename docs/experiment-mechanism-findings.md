@@ -177,3 +177,11 @@ tiny synthetic route 结果只证明 wrapper 传递了 placeholder/routing/posit
 这条证据的边界很重要：embedding 行低范数不能说明 hidden layers 具备视觉能力，也不能替代真实权重上的图像 forward、视觉梯度和 vision/blind/shuffle 对照。当前 DeepSeek Gate D 仍为 NO-GO；下一项最短路径是用真实 0731 权重完成 step0 receiver-prior、placeholder 替换、input-gradient 与 checkpoint round-trip gate，合格后才进入最小 projector-only 训练。
 
 同时审计了公开 `inference/model.py`：forward 只接收 `input_ids`，没有图像到 embedding 的公开注入实现；`config.json` 没有 `vision_config`。这使“曾经有私有视觉训练环节”的猜想仍然可能，但公开发布物本身不能直接复现该环节。工程上应把它当作一个有利的接口先验，不能当作已经存在的视觉能力。
+
+## Qwen3.5-4B：MoonViT V1/V2 回归对照（2026-08-08）
+
+固定 receiver、数据顺序、32 条真实答案训练 probe、16-token mean-pool、projector scale `0.1`、BF16、3 steps 和 50 条 ScreenSpot 合同，只替换 V1/V2 视觉塔与对应 projector。V1 的 projector 健康，CE-only 和 paired-margin 都 finite；paired-margin 末步 teacher-forced vision−shuffle 为 `+0.0547`。
+
+ScreenSpot50 没有形成能力增益：V1 CE-only vision click `0%`，V1 paired-margin `2%`，blind 都是 `2%`；V1 paired-margin 的 vision−blind click CI 为 `[-6,+6] pp`，vision−shuffled 为 `[0,0] pp`。exact V2 paired-margin reference 为 vision `4%`、blind `2%`、shuffled `4%`，同样没有正的 paired causal CI。
+
+这条回归反驳“换回社区 V1 就能直接修复当前失败”。当前优先级转向 receiver-facing 分布对齐、视觉 token 监督/位置和输入尺度；V1 仍保留为 DeepSeek runtime validation 的可迁移架构候选，不进入 previous best。
