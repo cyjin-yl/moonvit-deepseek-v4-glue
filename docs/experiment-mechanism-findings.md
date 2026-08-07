@@ -18,6 +18,8 @@ V2 训练随后加载完 339 个 Qwen2.5-7B 分片，在 step17（1,088 examples
 
 到 step50（3,200 examples seen），V2 仍保持 projector/receiver RMS ratio `1.0059/1.0727`、spread ratio `0.9502/0.9466`、CE `3.5188`，并保存了完整 projector/optimizer/RNG checkpoint。这个匹配早期节点明确反驳“V1/V2 都会以同样方式在几十步内尺度崩溃”；但健康差异不等于 V2 已经获得视觉归因，能力结论仍必须等待 vision/blind/shuffled/random_projector 表。
 
+V2 继续通过 step100（6,400 examples seen），step112 的 RMS ratio 为 `1.0080/1.0758`、spread ratio `1.1141/1.1103`、CE `2.4801`，没有 NaN/Inf 或 critical guard。它已经跨过 V1 的 step33 失败区间和预注册的 step100 健康节点；接下来仍要用同一预算下的 ScreenSpot 四条件检验视觉因果，而不是从 health 轨迹推断能力。
+
 ## 新增数值机制记录：Qwen2.5-7B V1 step-2 NaN
 
 社区规模 V1 重跑在第一步完成了真实 7B forward/backward：loss 12.7393，projector

@@ -10,6 +10,8 @@
 
 > **step50 health milestone (2026-08-08 07:03 CST):** V2 已到 3,200 examples seen，projector/receiver RMS ratio `1.0059/1.0727`、spread ratio `0.9502/0.9466`、CE `3.5188`，仍未触发 guard；完整 step50 projector/optimizer/RNG checkpoint 及 SHA 已封存。V1 在 step33 已因 `50.7792×` receiver RMS 停止，因此 V2 的早期训练健康显著更好；真实能力仍待 ScreenSpot 四条件。
 
+> **step100 health milestone (2026-08-08 07:25 CST):** V2 已到 6,400 examples seen 并保存 step100 healthy checkpoint；step112 观测到 projector/receiver RMS ratio `1.0080/1.0758`、spread ratio `1.1141/1.1103`、CE `2.4801`，无 NaN/Inf、无 guard。step100 原始 health、checkpoint SHA 与日志已保存于 `experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v2_step100/`。这仍是稳定性证据，不是 grounding 通过。
+
 ## 一句话结论
 
 软件 glue 与代理训练链路已经跑通，真实视觉能力尚未建立，当前没有 checkpoint

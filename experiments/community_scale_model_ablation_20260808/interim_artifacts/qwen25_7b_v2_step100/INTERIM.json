@@ -1,0 +1,70 @@
+{
+  "schema_version": "community-matrix-interim-v1",
+  "captured_at": "2026-08-08T07:26:20.774011+08:00",
+  "git_sha": "fb70a0d18155bea14421c9e03b5613850d44f82a",
+  "arm": "qwen25_7b_v2",
+  "attempt": 1,
+  "status": "training_healthy_step100",
+  "optimizer_step": 100,
+  "examples_seen": 6400,
+  "capability_claim_allowed": false,
+  "interpretation": "health checkpoint only; no ScreenSpot capability result",
+  "health": {
+    "optimizer_step": 100,
+    "examples_seen": 6400,
+    "learning_rate": 0.0005,
+    "projector_output_rms": 1.0051549673080444,
+    "receiver_output_rms": 1.0731664896011353,
+    "between_image_rms": 0.33521294593811035,
+    "receiver_between_image_rms": 0.3577382564544678,
+    "within_image_token_rms": 0.38141244649887085,
+    "relative_spread": 0.3334937963206418,
+    "receiver_relative_spread": 0.33334832937937586,
+    "mean_direction_fraction": 0.9338916540145874,
+    "projector_gradient_norm_before_clip": 0.3130198911305839,
+    "projector_gradient_norm_after_clip": 0.3130198911305839,
+    "ce_loss": 2.5121756731532514,
+    "geometry_loss": 0.0,
+    "total_loss": 2.5121756731532514,
+    "has_nan_or_inf": false,
+    "projector_output_rms_ratio": 1.0077618274419997,
+    "receiver_output_rms_ratio": 1.075643059020271,
+    "projector_relative_spread_ratio": 1.0793877612597276,
+    "receiver_relative_spread_ratio": 1.0757265842591037,
+    "critical_guard": false
+  },
+  "checkpoint": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_train_57600_retry1/healthy-checkpoints/step-000100",
+  "checkpoint_files": [
+    {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_train_57600_retry1/healthy-checkpoints/step-000100/history.json",
+      "bytes": 44639,
+      "sha256": "28b69699a2479b0c88315d5a36b6a268f572f6e970f36dc89497990f281ccf2c"
+    },
+    {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_train_57600_retry1/healthy-checkpoints/step-000100/projector.safetensors",
+      "bytes": 134234440,
+      "sha256": "fa9e3a9b39735cfa2136e200ff06d6f43c984a37dcf4890ec571856eb7700282"
+    },
+    {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_train_57600_retry1/healthy-checkpoints/step-000100/projector_bf16.safetensors",
+      "bytes": 67117328,
+      "sha256": "a688c7184d4b53ad1c34ee03c404b4b3cb0a27fbaeb37b61f0d7ac3603d23d9a"
+    },
+    {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_train_57600_retry1/healthy-checkpoints/step-000100/projector_config.json",
+      "bytes": 217,
+      "sha256": "0f39cc8dd48e33921a546ffc236a5ff8a66388bbf41ddec08cb8abc1b95d7405"
+    },
+    {
+      "path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_train_57600_retry1/healthy-checkpoints/step-000100/training_state.pt",
+      "bytes": 268490681,
+      "sha256": "238a2b2c2dd987f789f4dd0f6448b5579e7d59da243085e4a17066e6a201adfd"
+    }
+  ],
+  "run_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_train_57600_retry1",
+  "raw_artifacts": [
+    "train_health.jsonl",
+    "train.log",
+    "validation_manifest.json"
+  ]
+}

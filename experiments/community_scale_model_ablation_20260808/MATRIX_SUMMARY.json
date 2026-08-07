@@ -91,12 +91,13 @@
         "cache_tower_forwards": 29999,
         "cache_reused_by_image_sha256": 27601,
         "cache_manifest_records_sha256": "055d7f9dde1f65af576ace9fe3ee874a427bd9fac7770bc39137ae2b0dcc1ba7",
-        "training_status": "healthy_through_step50",
-        "optimizer_step_observed": 50,
-        "examples_seen_observed": 3200,
+        "training_status": "healthy_through_step100",
+        "optimizer_step_observed": 100,
+        "examples_seen_observed": 6400,
         "early_health_artifact": "experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v2_early_health/INTERIM.json",
         "capability_claim_allowed": false,
-        "step50_artifact": "experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v2_step50/INTERIM.json"
+        "step50_artifact": "experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v2_step50/INTERIM.json",
+        "step100_artifact": "experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v2_step100/INTERIM.json"
       }
     },
     "qwen35_4b_v1_stripped": {
@@ -151,5 +152,5 @@
     }
   },
   "schema_version": "community-matrix-summary-v1",
-  "updated_at": "2026-08-08T07:04:26.950855+08:00"
+  "updated_at": "2026-08-08T07:26:30.513076+08:00"
 }
