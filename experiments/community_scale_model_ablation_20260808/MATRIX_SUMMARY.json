@@ -81,14 +81,30 @@
     "qwen35_9b_v1_stripped": {
       "failure_history": [],
       "result": null,
-      "status": "pending"
+      "status": "queued_after_qwen35_4b",
+      "attempts": 1,
+      "current_attempt": {
+        "attempt": 1,
+        "contract_examples_seen": 57600,
+        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen35_9b_v1_train_57600",
+        "native_vision_stripped": true,
+        "hardware_note": "full contract attempt; may end as immutable resource failure if V100 cannot hold the receiver"
+      }
     },
     "qwen35_9b_v2_stripped": {
       "failure_history": [],
       "result": null,
-      "status": "pending"
+      "status": "queued_after_qwen35_4b",
+      "attempts": 1,
+      "current_attempt": {
+        "attempt": 1,
+        "contract_examples_seen": 57600,
+        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen35_9b_v2_train_57600",
+        "native_vision_stripped": true,
+        "hardware_note": "full contract attempt; may end as immutable resource failure if V100 cannot hold the receiver"
+      }
     }
   },
   "schema_version": "community-matrix-summary-v1",
-  "updated_at": "2026-08-07T20:08:44.652567+00:00"
+  "updated_at": "2026-08-07T20:12:53.718417+00:00"
 }
