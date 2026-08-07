@@ -1,0 +1,67 @@
+{
+  "schema_version": "qwen35-4b-moonvit-v1-vs-v2-ablation-v1",
+  "frozen_before_result": true,
+  "frozen_on": "2026-08-08",
+  "purpose": "Matched tower-version ablation on one visual-pretrained receiver. This isolates whether the community V1 family proxy is easier to translate than exact K3 MoonViT-V2.",
+  "receiver": {
+    "repo": "Qwen/Qwen3.5-4B",
+    "resolved_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "config_sha256": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670",
+    "tokenizer_sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+    "weight_manifest_sha256": "e79926d0793a18501315d4d197359518192536ba0b2d3e0cc0f77375838bd220",
+    "hidden_size": 2560,
+    "canonical_adapter": "fixed_grouped_signed_projection(4096->2560, seed=20260806)",
+    "native_visual_path": "bypassed; native visual forward count must stay zero",
+    "frozen": true
+  },
+  "matched_arms": {
+    "v1_family_proxy": {
+      "tower": "moonshotai/MoonViT-SO-400M",
+      "tower_revision": "a889d399ff2306053e4e28d499d3b8f97d3e5007",
+      "tower_weights_sha256": "51a39391d4a36cb536fe68176bb68f4218d0526c93749e04e63d4e779675f0ef",
+      "vision_width": 1152,
+      "projector_variant": "legacy_pre_norm",
+      "projector_parameter_count": 40119040,
+      "step0_projector_sha256": "f24f677f61905e259a6648802b6f4f4a681aa3d3a8965dbccdc8b1cd46d786cf",
+      "step0_projector_config_sha256": "10d1517cd5e54c9cd5f6a53d006178291efee91982b03b04e7c83be62349c86c",
+      "training_feature_cache_manifest_sha256": "b2755fb7ef3120639b9386f58bb99dbb522ee13a9770dce2faf1e8931aee7976",
+      "screenspot_feature_cache_manifest_sha256": "pending_pre_result_cache_materialization"
+    },
+    "v2_exact_k3_reference": {
+      "result_pointer": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen35-4b-external-moonvit-ablation-pointer-20260808.json",
+      "tower_weights_sha256": "01436a95939965185bb853ddf984e09c00f597b9c2f6708ba302ffbaf75ced24",
+      "step0_projector_sha256": "bec6e8bffbc6b08fe8f2c33691d4653a417becb87692db2496b8fc3449f54815"
+    }
+  },
+  "training": {
+    "sample_manifest": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen25_7b_real_probe32_manifest.json",
+    "sample_manifest_sha256": "c726ebfd3eefa9521e9342fd88c2423ef3c98bb4d8c72d189622ef687a5a629f",
+    "sample_count": 32,
+    "optimizer": "AdamW",
+    "optimizer_steps": 3,
+    "learning_rate": 0.00005,
+    "dtype": "bfloat16",
+    "max_visual_tokens": 16,
+    "token_selection": "mean_pool",
+    "projector_scale": 0.1,
+    "arms": {
+      "ce_only": {"shuffle_margin_lambda": 0.0, "shuffle_margin": 0.1},
+      "paired_margin05": {"shuffle_margin_lambda": 0.5, "shuffle_margin": 0.1}
+    }
+  },
+  "evaluation": {
+    "dataset": "screenspot_glm50_v1",
+    "dataset_manifest_sha256": "b578229e72a59a983623514f259d2f49fc46cb66c0802a622682727d88151543",
+    "checkpoint_roles": ["step0", "ce_only", "paired_margin05"],
+    "conditions": ["vision", "blind", "shuffled", "random_projector"],
+    "do_sample": false,
+    "temperature": 0.0,
+    "max_new_tokens": 32,
+    "enable_thinking": false,
+    "bootstrap_samples": 2000,
+    "bootstrap_seed": 20260805
+  },
+  "decision_rule": "V1 is a useful version explanation only if its vision-minus-blind and vision-minus-shuffled click-in-box CIs are positive and it improves at least one fixed GLM threshold metric over V2 without parse-rate regression. Otherwise tower version is rejected as the primary failure explanation.",
+  "promotion": "diagnostic only; no previous-best replacement",
+  "deepseek_transfer_label": "transferable_with_runtime_validation"
+}
