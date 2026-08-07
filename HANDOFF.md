@@ -13,6 +13,12 @@ receiver RMS ratios are `1.0033/1.0627`, spread ratios `1.0276/1.0246`, and CE i
 The frozen raw snapshot is under
 `experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v2_early_health/`.
 
+The same V2 run has passed the frozen step50 health node (3,200 examples seen):
+projector/receiver RMS ratios are `1.0059/1.0727`, spread ratios
+`0.9502/0.9466`, CE is `3.5188`, and the full projector/optimizer/RNG checkpoint
+is hashed in `interim_artifacts/qwen25_7b_v2_step50/`. V1 had already stopped at
+step33, so V2 is the healthier early trajectory; no causal benchmark has run yet.
+
 
 Read [`docs/current-status.md`](docs/current-status.md) first for the live state and
 [`docs/architecture-matrix.md`](docs/architecture-matrix.md) for architecture IDs.

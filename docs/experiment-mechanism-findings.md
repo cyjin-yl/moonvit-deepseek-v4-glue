@@ -16,6 +16,8 @@ Qwen2.5-7B V2 臂的 57,600 条训练特征已经完整写入并通过 manifest 
 
 V2 训练随后加载完 339 个 Qwen2.5-7B 分片，在 step17（1,088 examples seen）保持 finite：projector/receiver RMS ratio `1.0033/1.0627`、spread ratio `1.0276/1.0246`、CE `5.7442`，未触发任何 critical guard。与 V1 step33 的 `receiver RMS ratio=50.7792` 健康失败相比，这是“V2 早期尺度稳定”的证据；它尚未回答正确图像是否优于 blind 或 shuffled。
 
+到 step50（3,200 examples seen），V2 仍保持 projector/receiver RMS ratio `1.0059/1.0727`、spread ratio `0.9502/0.9466`、CE `3.5188`，并保存了完整 projector/optimizer/RNG checkpoint。这个匹配早期节点明确反驳“V1/V2 都会以同样方式在几十步内尺度崩溃”；但健康差异不等于 V2 已经获得视觉归因，能力结论仍必须等待 vision/blind/shuffled/random_projector 表。
+
 ## 新增数值机制记录：Qwen2.5-7B V1 step-2 NaN
 
 社区规模 V1 重跑在第一步完成了真实 7B forward/backward：loss 12.7393，projector
