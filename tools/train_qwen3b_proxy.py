@@ -590,6 +590,61 @@ def compute_geometry_auxiliary_gradients(
     return result, gradients, gradient_norm
 
 
+def supervision_provenance(
+    *, entry: dict[str, Any], record: dict[str, Any], routed: Any
+) -> dict[str, Any]:
+    """把 frozen order 与原始训练行的可复查 provenance 写入每条 audit row。
+
+    target 仍由 order manifest 冻结；这里额外保留 source/image/question/answers
+    的哈希，避免后续只看到 tokenizer 后的 tensor hash，无法判断监督来自哪条原始记录。
+    """
+
+    if str(entry.get("id")) != str(record.get("id")):
+        raise ValueError("supervision provenance ID differs from frozen order")
+    answers = record.get("answers")
+    question = record.get("question")
+    if not isinstance(answers, list) or not answers:
+        raise ValueError(f"supervision answers are absent: {routed.record_id}")
+    if not isinstance(question, str) or not question:
+        raise ValueError(f"supervision question is absent: {routed.record_id}")
+    raw_answers_sha256 = canonical_sha256(answers)
+    question_sha256 = hashlib.sha256(question.encode("utf-8")).hexdigest()
+    if raw_answers_sha256 != str(entry.get("answers_sha256")):
+        raise ValueError(f"supervision answers SHA differs: {routed.record_id}")
+    if question_sha256 != str(entry.get("question_sha256")):
+        raise ValueError(f"supervision question SHA differs: {routed.record_id}")
+    required = (
+        "source",
+        "image",
+        "image_sha256",
+        "image_width",
+        "image_height",
+        "source_row_index",
+        "target_transform",
+    )
+    missing = [key for key in required if key not in entry]
+    if missing:
+        raise ValueError(
+            f"supervision order provenance is incomplete for {routed.record_id}: {missing}"
+        )
+    return {
+        "source": str(entry["source"]),
+        "source_row_index": int(entry["source_row_index"]),
+        "image": str(entry["image"]),
+        "image_sha256": str(entry["image_sha256"]),
+        "image_width": int(entry["image_width"]),
+        "image_height": int(entry["image_height"]),
+        "question_sha256": question_sha256,
+        "answers_sha256": raw_answers_sha256,
+        "target_transform": str(entry["target_transform"]),
+        "target_provenance": (
+            "showui_point_encoded_in_answer"
+            if str(routed.prompt_route) == "grounding"
+            else "source_answer"
+        ),
+    }
+
+
 def prepare_supervision(
     *,
     tokenizer: Any,
@@ -611,6 +666,7 @@ def prepare_supervision(
         zip(order_manifest["records"], records, cache_manifest["records"], strict=True)
     ):
         routed = route_training_example(contract, entry, record)
+        provenance = supervision_provenance(entry=entry, record=record, routed=routed)
         supervision = build_chat_supervision(
             tokenizer,
             system_prompt=routed.system_prompt,
@@ -657,6 +713,7 @@ def prepare_supervision(
                 "answer_tokens": supervision.answer_tokens,
                 "visual_tokens": visual_tokens,
                 "expanded_sequence_length": expanded_length,
+                **provenance,
             }
         )
         prompt_lengths.append(supervision.prompt_length)

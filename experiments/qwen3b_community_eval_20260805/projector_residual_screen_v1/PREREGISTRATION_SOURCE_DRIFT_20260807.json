@@ -10,7 +10,7 @@
     },
     "tools/train_qwen3b_proxy.py": {
       "frozen_sha256": "58de666101bdb32550113d9f3497ba4eed9a50a7049f08405e813d199e919e0f",
-      "current_sha256": "6d55f7b4cb9b4cb74e9aedc61991b9999098ae0fbf0a0d53466f6d7268c43a4b"
+      "current_sha256": "5c12e09770543f994543d6f17f8c1e5b6bf18514a31bf92cb368d49576ed61e7"
     }
   },
   "paid_resources_used": false

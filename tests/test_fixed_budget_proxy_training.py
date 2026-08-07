@@ -1,7 +1,9 @@
 import json
+import hashlib
 from pathlib import Path
 import random
 import sys
+from types import SimpleNamespace
 
 import pytest
 import torch
@@ -19,8 +21,10 @@ from moonvit_glue.projector import PatchMergerProjector, ProjectorConfig
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
 
 from train_qwen3b_proxy import (
+    canonical_sha256,
     load_architecture_overlay,
     save_bound_checkpoint,
+    supervision_provenance,
     _zero_gradient_allowed_for_projector,
     verify_bound_checkpoint,
 )
@@ -63,6 +67,49 @@ def test_gated_residual_zero_branch_gradient_is_explicitly_allowed_at_zero_gate(
     assert int(torch.count_nonzero(projector.residual.weight.grad).item()) == 0
     assert projector.residual_gate.grad is not None
     assert int(torch.count_nonzero(projector.residual_gate.grad).item()) > 0
+
+
+def test_supervision_provenance_binds_order_and_raw_answer_hashes():
+    answers = ["click(start_box=[10,20])"]
+    question = "Open the menu."
+    entry = {
+        "id": "showui-1",
+        "source": "showui_desktop",
+        "source_row_index": 7,
+        "image": "images/showui-1.jpg",
+        "image_sha256": "a" * 64,
+        "image_width": 1920,
+        "image_height": 1080,
+        "question_sha256": hashlib.sha256(question.encode()).hexdigest(),
+        "answers_sha256": canonical_sha256(answers),
+        "target_transform": "legacy_click_spacing_to_canonical",
+    }
+    record = {"id": "showui-1", "question": question, "answers": answers}
+    provenance = supervision_provenance(
+        entry=entry,
+        record=record,
+        routed=SimpleNamespace(record_id="showui-1", prompt_route="grounding"),
+    )
+    assert provenance == {
+        "source": "showui_desktop",
+        "source_row_index": 7,
+        "image": "images/showui-1.jpg",
+        "image_sha256": "a" * 64,
+        "image_width": 1920,
+        "image_height": 1080,
+        "question_sha256": entry["question_sha256"],
+        "answers_sha256": entry["answers_sha256"],
+        "target_transform": "legacy_click_spacing_to_canonical",
+        "target_provenance": "showui_point_encoded_in_answer",
+    }
+    broken = dict(record)
+    broken["answers"] = ["click(start_box=[11,20])"]
+    with pytest.raises(ValueError, match="answers SHA differs"):
+        supervision_provenance(
+            entry=entry,
+            record=broken,
+            routed=SimpleNamespace(record_id="showui-1", prompt_route="grounding"),
+        )
 
 
 def _contract() -> dict:
