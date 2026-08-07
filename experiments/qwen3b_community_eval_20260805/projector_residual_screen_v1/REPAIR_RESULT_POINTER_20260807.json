@@ -1,0 +1,88 @@
+{
+  "format_version": "projector-residual-repair-result-pointer-v1",
+  "package": "projector_residual_screen_v1",
+  "date": "2026-08-07",
+  "paid_resources_used": false,
+  "capability_claim_allowed": false,
+  "preregistration_unchanged": true,
+  "parent_contract": {
+    "path": "configs/qwen3b-projector-residual-screen-v1.json",
+    "sha256": "7852806c9a3c22879ac3be439646f07c5e084fadb77d49e0e4a8e2972ff37245"
+  },
+  "repair_contract": {
+    "path": "configs/qwen3b-projector-residual-screen-repair-v1.json",
+    "sha256": "recorded_in_git_at_commit_276a194",
+    "reason": "At an exact zero gate, residual.weight has a mathematically expected zero gradient. Only this parameter at gate=0 is exempted; residual_gate and every other projector parameter remain hard finite/nonzero checks."
+  },
+  "incident_chronology": [
+    {
+      "name": "gated_residual",
+      "raw_path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/gated_residual",
+      "status": "failed_before_training",
+      "failure": "projector source differs from the variant contract",
+      "sha256": {
+        "ATTEMPT.json": "4bd4c1e878ccb26e45f7b243ec332f9fd022a23c1e79cd13077ce6267aabfe82",
+        "FAILURE.json": "ff46eb0f4cd7169f8b1bc0ea67a135812d701716031302993b8fe914f1792f9d"
+      }
+    },
+    {
+      "name": "gated_residual_frozen263a845",
+      "raw_path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/gated_residual_frozen263a845",
+      "status": "failed_at_step_1_before_optimizer_update",
+      "failure": "projector gradient is exactly zero: residual.weight",
+      "interpretation": "Expected zero-gate chain-rule behavior exposed a trainer guard defect; this is an implementation failure, not a capability result.",
+      "sha256": {
+        "ATTEMPT.json": "52837595bacbd0c7e5573b9e589f91875945bf8b44005fe2ae1e8123512cb",
+        "FAILURE.json": "73049a000025d6ae437721b80a50512fa3982f9790976e7e0f7c5e2295b642b1"
+      }
+    },
+    {
+      "name": "baseline_none_repair_v3",
+      "raw_path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/baseline_none_repair_v3",
+      "status": "verified_auto_stopped",
+      "optimizer_steps_completed": 2,
+      "examples_seen": 16,
+      "collapse_onset_interval": [1, 2],
+      "loss_first": 4.144003733992577,
+      "loss_last": 2.438019228167832,
+      "peak_gpu_memory_bytes": 13131489928,
+      "critical_reasons": ["projector_rms_rising_spread_falling", "receiver_rms_rising_spread_falling"],
+      "sha256": {
+        "SUMMARY.json": "f0ecf2490d0d7dd19733fe025315f4072006695d3b20ebf2b7b67ea9bd3ab4f3",
+        "FAILURE.json": "64004f135488412a6fd7493bc065d0b3f8fc28143b31b3d5b3e93d4fff6f7792",
+        "RUN_CONFIG.json": "e61a0e3e104bc8313512041000ac379ec755394c40b39d56ad080c2921aaac38",
+        "HEALTH_ARTIFACT_MANIFEST.json": "15cf2365c589a45e622692630b321624f7aa0ddfff9aec85612143a673b15558",
+        "INDEPENDENT_HEALTH_VERIFIER.json": "383f050dc09c0139906a22339c125783bc34d9dc6ac53be6dc0b6edba15b66f8"
+      }
+    },
+    {
+      "name": "gated_residual_repair_v2",
+      "raw_path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/projector_residual_screen_hf_v1/gated_residual_repair_v2",
+      "status": "verified_auto_stopped",
+      "optimizer_steps_completed": 2,
+      "examples_seen": 16,
+      "collapse_onset_interval": [1, 2],
+      "loss_first": 4.144003733992577,
+      "loss_last": 2.434200660325587,
+      "peak_gpu_memory_bytes": 13467034268,
+      "critical_reasons": ["projector_rms_rising_spread_falling", "receiver_rms_rising_spread_falling"],
+      "step2_geometry": {
+        "projector_relative_spread_ratio": 0.2690,
+        "receiver_relative_spread_ratio": 0.2254,
+        "projector_effective_rank_ratio": 0.5008,
+        "receiver_effective_rank_ratio": 0.3611,
+        "vision_minus_shuffle_correct_logp": 0.1071,
+        "zero_gradient_parameters": []
+      },
+      "interpretation": "The repaired guard admitted the expected zero residual.weight gradient at step 1 and retained nonzero gate/other gradients. Gated residual still collapsed on the same early interval as the matched CE-only control; no 500-step expansion or capability evaluation is justified.",
+      "sha256": {
+        "SUMMARY.json": "e2f2f26fdf235b5b17a9adab46dfb4c155b2417e3a634a8f8238f69a14e2bff8",
+        "FAILURE.json": "9166c1ab098ff9fc8f220ef90c36b3614f031a43154c56186e7c976d55d4a88b",
+        "RUN_CONFIG.json": "539a85f5a982ce79fde158c33df903e98abae57192c1869fce7b921eab418a98",
+        "HEALTH_ARTIFACT_MANIFEST.json": "d647f3b3ea9ec804d0627b84703659847e0731341415eab63810bf5de99645a9",
+        "INDEPENDENT_HEALTH_VERIFIER.json": "a0fcff5e7479b05b9f2c06d24b12ea7062d5c276b10e8ca7edfd0b4eb13e7db4"
+      }
+    }
+  ],
+  "matched_conclusion": "Gated residual does not preserve projector/receiver geometry under the fixed 100-step screen. Its one-step chain-rule repair is valid, but the structure is rejected before any capability claim."
+}

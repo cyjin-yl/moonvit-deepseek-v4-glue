@@ -96,3 +96,11 @@ vision-shuffled click-in-box 的 paired improvement 为 `+0.629` 个百分点，
 独立 verifier 重算的中心距离均值为 `399.51/415.11/396.78/397.02`。vision-blind 的距离改善均值 `+15.59`，CI `[-13.51,+47.15]`；vision-shuffled 为 `-2.74`，CI `[-13.58,+9.96]`。click-in-box 的 vision-blind 和 vision-shuffled 都是 `0`，CI `[-6,+6]` 个百分点。
 
 这条结果没有支持“16-token mean-pool 的压缩是单一主要 grounding 瓶颈”这一假设。它支持停止扩大 token 数量筛选，优先测试 projector/辅助目标与 receiver 分布对齐。原始 evaluator 的 `center_distance` 统计实际存在；先前消费者读取了不兼容的摘要 key，独立 category verifier 用于分类与交叉核对，raw pointer 记录了这一 schema 边界。
+
+## Package 15R gated residual：修复实现缺陷后仍被几何守卫否决
+
+15R 的原始预注册 contract 保持不变。失败记录明确分开：源码漂移在训练前被拒绝；严格冻结源码的 gated arm 在 gate=0 时把 `residual.weight` 的链式法则零梯度误报成错误；将修复 runner 混入冻结 worktree 后又被 runner SHA 绑定拒绝。修复实现只放宽 `residual.weight` 在 `residual_gate==0` 的首步零梯度，gate 本身和其他 projector 参数仍必须 finite、non-zero，并新增了真实 backward 回归测试。
+
+在当前 main 源码和独立 repair contract 下，matched canonical CE-only control (`baseline_none_repair_v3`) 与 gated residual (`gated_residual_repair_v2`) 都通过独立 health verifier，然后在 optimizer step 2 自动止损。两者都出现 projector/receiver RMS 上升、relative spread 下降的 adverse trend；gated 的 step-2 projector/receiver spread ratios 为 `0.2690/0.2254`，effective-rank ratios 为 `0.5008/0.3611`，虽然 `vision_minus_shuffle_correct_logp=+0.1071`，仍未通过几何硬门槛。首步允许的零梯度只在 `residual.weight`，step 2 已无允许零梯度参数。
+
+这条证据支持“修复训练守卫后，gated residual 仍然没有改变共同的 receiver-facing collapse”，反驳“zero-init residual 旁路本身足以保留图像差异”。健康指标仍然只是训练安全证据，不能当作 grounding 能力；该 arm 不进入 500-step、ScreenSpot 或 DeepSeek 候选。后续应把研究预算转向一个可迁移的输出尺度/辅助目标单变量，并保留 matched CE-only control。

@@ -56,7 +56,7 @@ Qwen2.5-3B 代理的真实图像 glue、projector 梯度、checkpoint 保存恢�
 | 失败发生在哪里 | legacy V2 训练在很早期 common-direction collapse：projector effective rank 13.28→1.14，top-1 variance 17.48%→93.46%，RMS 约 0.124→35.74/97.31（不同 trajectory） | 已定位到 projector 输出动力学 | CE/loss 下降不能作为视觉成功证据 |
 | geometry repair | Package 15P 的 control、ratio005、ratio020、ratio080 都在 step 1–2 止损；500-step expansion 取消 | 失败并已止损 | 同一 geometry λ 剂量不值得继续堆训练量 |
 | output normalization | Package 15Q 的 CE-only、post-LayerNorm、post-RMSNorm 都在 step 2 止损 | 失败 | 输出归一化单变量不足以保留跨图像几何 |
-| residual repair | Package 15R baseline 与 zero-init residual 都在 step 2 止损；gated arm 尚待结果 | 进行中 | 已证明 zero-init branch 可收梯度，尚未证明能保留图像差异 |
+| residual repair | Package 15R baseline、zero-init 与修复后的 gated residual 都在 step 2 止损 | 已否决 | 修复了 zero-gate 梯度守卫误报，但 gated 仍未保住 projector/receiver geometry |
 | exact K3 V2 projector | `kimi_k3_v2` 已实现，bias-free MLP、post-RMSNorm 与 vendored K3 forward parity 单测通过；step0/random 权重已冻结 | 高频 screen 在 step 2 止损 | 几何相对健康，但 vision−shuffled log-prob 连续为负；仍未建立视觉能力 |
 | V1 family proxy | SO-400M revision、1152 维特征、权重集合 SHA、canonical-4096 step0/random 权重和 4,000-row cache 已冻结 | 高频 screen 在 step 2 止损 | V1 也发生相同早期 RMS/spread/rank 恶化；V1 版本单独不能解释失败 |
 | Qwen3.5-4B | 原生 VLM positive control 已在 TextVQA、DocVQA、OCRBench、ScreenSpot 等 selection 上得到阳性 | 诊断完成 | 证明 scorer/processor 健康；不进入 projector 排名 |
@@ -439,3 +439,14 @@ vision 相对 shuffled 的 click-in-box 改善为 `+0.629` 个百分点，独立
 vision-blind click 差 `0` 个百分点，CI `[-6,+6]`；vision-shuffled click 差也为 `0`，CI `[-6,+6]`。距离改善分别为 `+15.59`（CI `[-13.51,+47.15]`）和 `-2.74`（CI `[-13.58,+9.96]`）。240 tokens 没有带来可重复 grounding 增益，token-count 扩展停止。这个结果支持把主要嫌疑转向 projector/辅助目标、尺度和 receiver 分布对齐，而非继续增加视觉 token。
 
 原始 240-token evaluator summary、generation rows、category verifier 和 pointer 已保存；原始 `center_distance` 统计存在，独立 verifier 用于分类与交叉核对，旧摘要消费者的 key/schema 不兼容已写入 pointer。`previous_best` 不变，候选不晋升。
+
+## 2026-08-07 Package 15R gated residual repair 完成
+
+15R 的失败时间线被拆成三个独立事件并保存在
+`experiments/qwen3b_community_eval_20260805/projector_residual_screen_v1/REPAIR_RESULT_POINTER_20260807.json`：第一次是源码 SHA 漂移，第二次是在严格冻结源码上暴露了 zero gate 时 `residual.weight` 的数学零梯度，第三次是把修复 runner 带入冻结 worktree 后的 runner SHA 不匹配。历史预注册文件没有被改写，新增的 `configs/qwen3b-projector-residual-screen-repair-v1.json` 只记录修复边界。
+
+修复后的 main worktree 以同一缓存、训练顺序、Qwen2.5-3B、100-step screen、健康合同和 canonical step0 重跑 matched CE-only control；`baseline_none_repair_v3` 与 `gated_residual_repair_v2` 都由独立 verifier 标记 `verified`，都在 step 2 自动止损，collapse onset 为 `[1,2]`。control 的 peak GPU 为 13,131,489,928 bytes，gated 为 13,467,034,268 bytes；两者 critical reason 都是 `projector_rms_rising_spread_falling` 与 `receiver_rms_rising_spread_falling`。
+
+gated 首步的零梯度仅出现在允许的 `residual.weight`，gate 和其余 projector 参数仍为 finite/non-zero；step 2 `vision_minus_shuffle_correct_logp=+0.1071`，但 projector/receiver relative-spread ratio 已到 `0.2690/0.2254`，effective-rank ratio `0.5008/0.3611`，仍触发硬几何趋势守卫。结论是：修复确实消除了实现缺陷，gated residual 结构本身仍未解决早期 receiver-facing collapse；15R 不进入 500-step 扩展，也没有能力评测资格。
+
+这轮反驳“残差旁路能在不改变 step0 行为的情况下自动保住视觉几何”，并支持“当前冻结 3B receiver 的读出动力学才是共同瓶颈之一”。下一项停止继续堆 residual 变体，选择一个可迁移的 projector 输出尺度/辅助目标单变量，并保留完全匹配的 CE-only control；若几何再次在 step 1--2 失败，转 projector 结构重设计，不增加训练量。

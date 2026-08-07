@@ -7,8 +7,8 @@
     "tools/train_qwen3b_proxy.py": {
       "frozen_bytes": 86258,
       "frozen_sha256": "f246ec8c2db0b9e05dc606576636bb381cb8ffd1e9075382bdb13b264d0f9941",
-      "current_bytes": 101217,
-      "current_sha256": "7777c295b17dbe3c0517c3128e6b7e0e4e6637a01cc0bbb69a4adec5bdf02544"
+      "current_bytes": 103233,
+      "current_sha256": "6d55f7b4cb9b4cb74e9aedc61991b9999098ae0fbf0a0d53466f6d7268c43a4b"
     }
   },
   "paid_resources_used": false

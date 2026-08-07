@@ -2070,3 +2070,13 @@ Gate D 继续为 *NO-GO*，任何租卡或完整 0731 下载等待用户明确�
 独立 category verifier 重算中心距离均值为 `399.51/415.11/396.78/397.02`。vision-blind 距离改善 `+15.59`，CI `[-13.51,+47.15]`；vision-shuffled 为 `-2.74`，CI `[-13.58,+9.96]`。两个 click paired 差都为 `0`，CI `[-6,+6]` 个百分点。240-token full sequence 没有改善正确图像归因，因此停止扩大 token 数量筛选，下一项转向一个 projector/辅助目标变量并保留 matched CE-only control。
 
 原始 evaluator 的 `center_distance` 统计完整存在；旧摘要消费者读取了不兼容的 key/schema，本节同时用独立 verifier 做分类与交叉核对，边界已在 raw pointer 中记录。运行 wall time 为 `1,310.98` 秒，其中含首次 Transformers import 和 339 个权重分片的 CPU 加载；后续真实批处理优化必须把这段冷启动与 GPU throughput 分开。
+
+== Package 15R gated residual repair
+
+15R 的父合同保持冻结。三类失败被分开保存：第一次是源码 SHA 漂移；第二次是在严格冻结源码上，gate=0 时 `residual.weight` 的链式法则零梯度被旧 guard 误报；第三次是修复 runner 首次混入冻结 worktree 后的 runner SHA 不匹配。修复 contract 只放宽 `residual.weight` 在精确 zero gate 的首步零梯度，gate 本身及其他 projector 参数仍需 finite/non-zero，并由真实 backward 单测覆盖。
+
+在 clean main 上用同一 4,000-row order、MoonViT cache、Qwen2.5-3B receiver、canonical step0、100-step budget 和 health contract 重跑 matched control 与 gated arm。两者均由独立 verifier 标记 `verified`，均在 step 2 自动止损，collapse onset 为 `[1,2]`。control 的 peak GPU 为 `13,131,489,928` bytes，gated 为 `13,467,034,268` bytes；critical reason 都是 `projector_rms_rising_spread_falling` 与 `receiver_rms_rising_spread_falling`。
+
+gated 的 step 1 只允许 `residual.weight` 零梯度，gate 和其他参数通过 finite/non-zero 检查；step 2 `vision_minus_shuffle_correct_logp=+0.1071`，但 projector/receiver relative-spread ratio 已降至 `0.2690/0.2254`，effective-rank ratio 为 `0.5008/0.3611`，仍触发几何守卫。结果支持“修复训练守卫后仍存在共同的 receiver-facing collapse”，反驳“zero-gated residual 能自动保住视觉几何”。因此 15R 不进入 500-step、ScreenSpot 或 DeepSeek 候选，raw manifest 与四个目录的 SHA 指针见 `REPAIR_RESULT_POINTER_20260807.json`；`previous_best` 不变，Gate D 仍为 *NO-GO*。
+
+下一项只注册一个可迁移的 projector 输出尺度或辅助目标变量，并保留完全匹配的 CE-only control。若该变量仍在 step 1--2 触发相同 guard，停止继续堆训练量，转 projector 结构重设计。

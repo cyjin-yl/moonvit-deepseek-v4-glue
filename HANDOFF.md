@@ -849,3 +849,30 @@ the distances and categories, with the schema boundary recorded in
 including cold Transformers import and 339-shard CPU weight loading. That
 startup cost must be separated from generation throughput in future batching
 optimization.
+
+## Package 15R gated residual repair (2026-08-07)
+
+15R is now closed as a geometry rejection. The parent preregistration remains
+unchanged. Three provenance failures are preserved separately: source drift
+before training, the exact-frozen gated run rejecting the mathematically
+expected zero `residual.weight` gradient at gate=0, and a runner-hash mismatch
+when the repair was first copied into the frozen worktree. The repair contract
+and runner now allow only that zero branch gradient; the scalar gate and every
+other projector parameter remain hard finite/non-zero checks, with a real
+backward unit test.
+
+The clean-main matched runs are
+`baseline_none_repair_v3` and `gated_residual_repair_v2`. Both passed the
+independent health verifier and stopped at optimizer step 2, onset `[1,2]`,
+with `projector_rms_rising_spread_falling` and
+`receiver_rms_rising_spread_falling`. Gated step 2 had projector/receiver
+spread ratios `0.2690/0.2254`, rank ratios `0.5008/0.3611`, and
+`vision_minus_shuffle_correct_logp=+0.1071`; the positive local log-prob did
+not rescue the representation guard. No 500-step expansion or capability
+evaluation is allowed. Raw artifacts remain on the V100 HDD and are bound by
+`experiments/qwen3b_community_eval_20260805/projector_residual_screen_v1/REPAIR_RESULT_POINTER_20260807.json`.
+
+Decision: gated residual does not address the shared early receiver-facing
+collapse. Keep `previous_best` unchanged and move to one DeepSeek-transferable
+projector scale/auxiliary-objective variable with a matched CE-only control.
+Gate D remains **NO-GO**.
