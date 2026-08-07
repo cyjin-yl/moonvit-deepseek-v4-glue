@@ -2149,3 +2149,6 @@ and its HF file tree contains no visual tower/projector. This is consistent with
 internal multimodal seam, but it cannot prove that the released weights learned visual features.
 Gate D therefore adds a real-weight step0 receiver-prior table before any projector training;
 the same ScreenSpot parser and paired CIs will be used for that table and for trained checkpoints.
+#heading[DeepSeek-V4-Flash 0731 权重侧多模态接口审计]
+
+公开 0731 revision `7872f01b1d1fe23eabc4c98b48bffcef5a386062` 保留了 415 个 multimodal span placeholder 以及 image/region 标记。对 BF16 `embed.weight` 的 range 抽样显示，预留行平均范数为 `0.3841`，普通 token 抽样为 `5.6357`，比值 `0.0682`；预留行对普通 token 均值的平均 cosine 为 `-0.00026`。这符合运行时将视觉向量写入预留槽位的设计，支持优先进行真实 DeepSeek receiver-prior gate，但不能证明公开权重已经具备视觉回路。完整 forward/backward、vision/blind/shuffle 归因和 checkpoint 恢复仍未通过，Gate D 保持 NO-GO。

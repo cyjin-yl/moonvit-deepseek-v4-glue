@@ -1024,3 +1024,6 @@ hidden or removed multimodal-training seam plausible, but does not prove visual
 knowledge in the released weights. Gate D now requires a real-weight step0
 receiver-prior table before projector training, followed by the matched four-condition
 ScreenSpot table. Tiny synthetic routing remains software-seam evidence only.
+### DeepSeek-V4-Flash 0731 residual multimodal seam audit
+
+The public 0731 revision `7872f01b1d1fe23eabc4c98b48bffcef5a386062` retains 415 multimodal span placeholders plus image/region markers. A range-only audit of BF16 `embed.weight` found reserved rows with mean norm `0.3841` versus `5.6357` for two 100-row ordinary-token samples (ratio `0.0682`) and near-zero cosine to the ordinary-token mean. This is consistent with runtime replacement slots and makes the projector route plausible. It does not establish learned visual circuits in the released model. DeepSeek Gate D remains NO-GO pending real-weight forward/backward, image-vs-blind/shuffle attribution, and checkpoint recovery. Raw range files remain on the V100 data disk; the compact result and independent verifier are committed under `experiments/qwen3b_community_eval_20260805/`.

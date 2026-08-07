@@ -516,3 +516,10 @@ projector input-DGRAD 能进入接收器；真实 0731 权重仍要在 Gate D �
 再做同预算 projector-only 小训练；若 step0 已有稳定 vision−shuffle，说明公开版
 保留的接口/先验确实降低了迁移难度。无论结果如何，都要和 Qwen3.5-4B 这张表使用
 相同的 ScreenSpot、parser 和 paired CI。
+## DeepSeek-V4-Flash 预留多模态接口的权重侧审计（2026-08-08）
+
+针对“0731 发布时可能去掉了视觉模块，但训练栈曾接入过图像”的假设，完成了公开权重的低成本抽样审计。固定 revision 为 `7872f01b1d1fe23eabc4c98b48bffcef5a386062`，`embed.weight` 为 BF16 `[129280,4096]`。tokenizer 中存在 415 个 `<|place_holder_mm_span_...|>`、`<｜rl_image_pad｜>`、`<｜rl_image_start｜>`、`<｜image2｜>` 与 `<｜image｜>` 预留 token。
+
+从 `model-00001-of-00048.safetensors` 通过 HTTP range 读取这些 token 的 embedding 行，并与两个各 100 行的普通 token 样本比较：预留多模态行平均范数 `0.3841`，普通 token 样本为 `5.6357`，比值 `0.0682`；预留行对普通样本均值的平均 cosine 为 `-0.00026`。这与“运行时由视觉 embedding 替换预留槽位”的接口设计一致，证明了插口存在，尚不能证明公开权重已经学会视觉回路。
+
+结论：DeepSeek 路径值得优先做真实权重 step0 receiver-prior gate，但不能因为 token 表和低范数预留槽就跳过真实 forward/backward、视觉归因和 checkpoint gate。审计原始 range 文件保存在 V100 数据盘，摘要与独立 verifier 为 `experiments/qwen3b_community_eval_20260805/deepseek_interface_mm_token_embedding_audit_v1.json` 和对应 verifier；这项结果把假设从“可能有隐藏视觉能力”收窄为“很可能有预留注入接口，视觉能力是否保留仍未知”。

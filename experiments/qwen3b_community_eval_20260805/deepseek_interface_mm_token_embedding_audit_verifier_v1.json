@@ -1,0 +1,24 @@
+{
+  "schema_version": "deepseek-v4-mm-token-embedding-audit-verifier-v1",
+  "result": "experiments/qwen3b_community_eval_20260805/deepseek_interface_mm_token_embedding_audit_v1.json",
+  "raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/deepseek_interface/mm_token_embedding_audit_v1/raw_ranges",
+  "verified": true,
+  "checks": {
+    "schema": true,
+    "revision_pinned": true,
+    "embed_tensor_pinned": true,
+    "placeholder_count": true,
+    "reserved_norm_lower": true,
+    "reserved_mean_cosine_near_zero": true,
+    "mm_rows_128847_129279.bin_exists": true,
+    "mm_rows_128847_129279.bin_sha256": true,
+    "mm_rows_128847_129279.bin_size": true,
+    "base_rows_1000_1099.bin_exists": true,
+    "base_rows_1000_1099.bin_sha256": true,
+    "base_rows_1000_1099.bin_size": true,
+    "base_rows_50000_50099.bin_exists": true,
+    "base_rows_50000_50099.bin_sha256": true,
+    "base_rows_50000_50099.bin_size": true
+  },
+  "interpretation": "Verified the pinned revision, tensor metadata, reserved-token count, compact raw-range hashes and the preregistered low-norm finding. This remains an embedding/interface audit, not a vision-capability claim."
+}

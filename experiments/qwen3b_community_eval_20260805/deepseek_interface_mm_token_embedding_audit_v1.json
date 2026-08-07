@@ -1,0 +1,119 @@
+{
+  "schema_version": "deepseek-v4-mm-token-embedding-audit-v1",
+  "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+  "resolved_revision": "7872f01b1d1fe23eabc4c98b48bffcef5a386062",
+  "source_urls": {
+    "tokenizer": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731/resolve/7872f01b1d1fe23eabc4c98b48bffcef5a386062/tokenizer.json",
+    "index": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731/resolve/7872f01b1d1fe23eabc4c98b48bffcef5a386062/model.safetensors.index.json",
+    "embed_shard": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731/resolve/7872f01b1d1fe23eabc4c98b48bffcef5a386062/model-00001-of-00048.safetensors"
+  },
+  "tensor": {
+    "name": "embed.weight",
+    "dtype": "BF16",
+    "shape": [
+      129280,
+      4096
+    ],
+    "safetensors_data_offsets": [
+      0,
+      1059061760
+    ],
+    "header_bytes": 96,
+    "row_bytes": 8192
+  },
+  "special_token_ranges": {
+    "place_holder_mm_span": {
+      "ids": [
+        128847,
+        129261
+      ],
+      "count": 415
+    },
+    "rl_image_pad": {
+      "id": 129262
+    },
+    "rl_image_start": {
+      "id": 129263
+    },
+    "image2": {
+      "id": 129264
+    },
+    "image": {
+      "id": 129279
+    }
+  },
+  "raw_ranges": {
+    "mm_rows_128847_129279.bin": {
+      "row_start": 128847,
+      "row_end": 129279,
+      "bytes": 3547136,
+      "sha256": "1b36856a5a5af1f0188040897dfe57531713071998c53fb4593555ed65bd868d"
+    },
+    "base_rows_1000_1099.bin": {
+      "row_start": 1000,
+      "row_end": 1099,
+      "bytes": 819200,
+      "sha256": "fb5b327199d7eb3564867ae127b11419af9b63e41aa9bfae58f9f7ec7a3baf3a"
+    },
+    "base_rows_50000_50099.bin": {
+      "row_start": 50000,
+      "row_end": 50099,
+      "bytes": 819200,
+      "sha256": "978e46a7907849ed5cb40debc03dcefb558034b1a8d5b7421461993e1ab28b69"
+    }
+  },
+  "statistics": {
+    "multimodal_reserved_433": {
+      "count": 433,
+      "mean_norm": 0.38412830233573914,
+      "std_norm": 0.0042611099779605865,
+      "mean_abs": 0.004789181053638458,
+      "mean_vector_norm": 0.01866847649216652
+    },
+    "placeholder_415": {
+      "count": 415,
+      "mean_norm": 0.38413140177726746,
+      "std_norm": 0.004298473242670298,
+      "mean_abs": 0.004789174534380436,
+      "mean_vector_norm": 0.019159115850925446
+    },
+    "image_special_4": {
+      "count": 4,
+      "mean_norm": 0.3830442428588867,
+      "std_norm": 0.004993777256458998,
+      "mean_abs": 0.004771227948367596,
+      "mean_vector_norm": 0.19042320549488068
+    },
+    "ordinary_200": {
+      "count": 200,
+      "mean_norm": 5.635727405548096,
+      "std_norm": 2.3213000297546387,
+      "mean_abs": 0.07031998783349991,
+      "mean_vector_norm": 1.5779988765716553
+    }
+  },
+  "geometry": {
+    "reserved_vs_ordinary_mean_norm_ratio": 0.06815948939574043,
+    "reserved_cosine_to_ordinary_mean": -0.0002612280659377575,
+    "ordinary_cosine_to_ordinary_mean": 0.3248303234577179,
+    "placeholder_effective_rank": {
+      "effective_rank": 97.77951049804688,
+      "top1_variance_fraction": 0.013480105437338352
+    },
+    "ordinary_effective_rank": {
+      "effective_rank": 48.26475524902344,
+      "top1_variance_fraction": 0.13008351624011993
+    }
+  },
+  "source_hashes": {
+    "model_index_sha256": "98efab455cf08dfbbbaaba6f570e1bf10bf927d2b4c3c453a59c2f6f0e3be92b",
+    "tokenizer_json_sha256": "8f9f37ca37fdc4f5fd36d5cf4d3b0e8392edb4e894fd10cc0d70b4957c8633cf",
+    "config_json_sha256": "6c8f3d2d3b48707541b88f32f22ef3f0f8a6b57d8523281e2b8d3cdb0ae9a023"
+  },
+  "interpretation": "Public DeepSeek weights expose a reserved multimodal token seam, but the 415 placeholder/MM rows plus image marker rows have embedding norms about 0.068x an ordinary-token sample and near-zero cosine to the ordinary mean. This is consistent with zero/reserved slots intended to be replaced by runtime multimodal embeddings; it is evidence for an interface, not evidence that released weights already learned visual features. It makes a projector injection path plausible while leaving real-weight receiver-prior and Gate D unproven.",
+  "limitations": [
+    "ordinary-token comparison uses two contiguous 100-row samples, not a full-vocabulary distribution",
+    "embedding rows alone cannot test hidden-layer visual circuits or generation",
+    "no full DeepSeek forward/backward was run on V100"
+  ]
+}
