@@ -14,6 +14,14 @@ vision-vs-blind. Gate D is **NO-GO**. The authoritative entrypoint and blocker
 map is [`docs/runtime-entrypoint-audit.md`](docs/runtime-entrypoint-audit.md).
 The dedicated workstation pane is `moonvit:0.0`; capture every V100 run.
 
+## 项目级完成标准：完整对比矩阵（2026-08-08 修订）
+
+“至少一组”不再是本项目的成功条件。当前目标是完成并发布整个已注册对比矩阵：配置中的每个 active arm 都必须在同一社区规模合同下实际尝试，并留下正式结果或不可变的失败记录；不能因为某一臂表现较好就提前结束，也不能静默跳过显存不足、实现失败或因果门失败的臂。
+
+每个外部 MoonViT arm 都按 receiver 单独重新训练 projector，并统一运行相同的数据顺序、examples-seen 节点、图像预处理、prompt、parser、greedy decoding 和 vision/blind/shuffled/random_projector 条件；同时保存 step0、previous_best、current_candidate、健康日志、checkpoint、逐样本 prediction、正式 ScreenSpot50 paired bootstrap 和 artifact manifest。原生 Qwen VLM 只作独立阳性对照，历史 0.5B/3-step/replay/geometry 结果只作 archived 机制证据。
+
+矩阵完成的含义是：所有 active rows 都出现在 MATRIX_SUMMARY.json，每行都标注 result、causal_pass、failure_reason 或 resource_limit。只有矩阵整体完成后，才能选择 transferable candidate；DeepSeek-V4-Flash-0731 Gate D 仍是独立的最终门，不会被 Qwen 代理结果替代。
+
 ## New execution priority: community-scale model ablation (2026-08-08)
 
 The next turn must spend experiment time on the model, not on endlessly extending script-verification work. Keep

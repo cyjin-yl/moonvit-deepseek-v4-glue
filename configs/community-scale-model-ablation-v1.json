@@ -2,7 +2,7 @@
   "schema_version": "community-scale-model-ablation-v1",
   "status": "preregistered_hardware_pending",
   "frozen_on": "2026-08-08",
-  "goal": "Complete the full community-comparable ablation matrix across MoonViT V1/V2, receiver scale, native/stripped multimodal conditions, projector structure, objective, token budget, resolution/domain and language-training controls, then select only a benchmark-proven transferable candidate for DeepSeek-V4-Flash-0731.",
+  "goal": "Complete and publish the entire frozen community-comparable ablation matrix, not merely one successful arm: every registered active receiver×visual-path condition must be attempted under the same contract, receive a valid result or an immutable failure artifact, and be included in the final comparison table; only then select a benchmark-proven transferable candidate for DeepSeek-V4-Flash-0731.",
   "first_executable_milestone": "Qwen2.5-7B V1/V2 matched projector-only runs to 57.6k examples seen; this is a milestone, not the project conclusion.",
   "matrix_document": "docs/community-scale-ablation-matrix.md",
   "final_path": "MoonViT-V1/V2 -> projector -> receiver -> DeepSeek-V4-Flash-0731",
@@ -25,34 +25,171 @@
     "max_visual_tokens": 256,
     "shortfall_rule": "report actual maximum unique records; repeat frozen order only for exposure beyond one pass"
   },
-  "examples_seen_checkpoints": [4096, 8192, 16384, 32768, 57600, 59136, 132480],
-  "arms": [
-    {"id": "qwen25_7b_v1", "receiver": "Qwen2.5-7B-Instruct", "receiver_kind": "pure_text", "tower": "MoonViT-SO-400M V1", "trainable": "projector_only"},
-    {"id": "qwen25_7b_v2", "receiver": "Qwen2.5-7B-Instruct", "receiver_kind": "pure_text", "tower": "MoonViT-V2", "trainable": "projector_only"},
-    {"id": "qwen35_4b_v1_stripped", "receiver": "Qwen3.5-4B", "receiver_kind": "native_vision_stripped", "tower": "MoonViT-SO-400M V1", "trainable": "projector_only"},
-    {"id": "qwen35_4b_v2_stripped", "receiver": "Qwen3.5-4B", "receiver_kind": "native_vision_stripped", "tower": "MoonViT-V2", "trainable": "projector_only"},
-    {"id": "qwen35_9b_v1_stripped", "receiver": "Qwen3.5-9B", "receiver_kind": "native_vision_stripped", "tower": "MoonViT-SO-400M V1", "trainable": "projector_only", "hardware_note": "run only if V100 memory and throughput permit"},
-    {"id": "qwen35_9b_v2_stripped", "receiver": "Qwen3.5-9B", "receiver_kind": "native_vision_stripped", "tower": "MoonViT-V2", "trainable": "projector_only", "hardware_note": "run only if V100 memory and throughput permit"},
-    {"id": "no_vision_control", "receiver": "matched pure_text receiver", "receiver_kind": "text_only_control", "tower": "none", "trainable": "none"},
-    {"id": "native_qwen_vlm_positive", "receiver": "Qwen3.5 native VLM", "receiver_kind": "native_vlm_positive_control", "tower": "native_tower", "trainable": "none", "leaderboard": "separate"}
+  "examples_seen_checkpoints": [
+    4096,
+    8192,
+    16384,
+    32768,
+    57600,
+    59136,
+    132480
   ],
-  "conditions": ["vision", "blind", "shuffled", "random_projector", "step0", "previous_best", "current_candidate"],
+  "arms": [
+    {
+      "id": "qwen25_7b_v1",
+      "receiver": "Qwen2.5-7B-Instruct",
+      "receiver_kind": "pure_text",
+      "tower": "MoonViT-SO-400M V1",
+      "trainable": "projector_only"
+    },
+    {
+      "id": "qwen25_7b_v2",
+      "receiver": "Qwen2.5-7B-Instruct",
+      "receiver_kind": "pure_text",
+      "tower": "MoonViT-V2",
+      "trainable": "projector_only"
+    },
+    {
+      "id": "qwen35_4b_v1_stripped",
+      "receiver": "Qwen3.5-4B",
+      "receiver_kind": "native_vision_stripped",
+      "tower": "MoonViT-SO-400M V1",
+      "trainable": "projector_only"
+    },
+    {
+      "id": "qwen35_4b_v2_stripped",
+      "receiver": "Qwen3.5-4B",
+      "receiver_kind": "native_vision_stripped",
+      "tower": "MoonViT-V2",
+      "trainable": "projector_only"
+    },
+    {
+      "id": "qwen35_9b_v1_stripped",
+      "receiver": "Qwen3.5-9B",
+      "receiver_kind": "native_vision_stripped",
+      "tower": "MoonViT-SO-400M V1",
+      "trainable": "projector_only",
+      "hardware_note": "run only if V100 memory and throughput permit"
+    },
+    {
+      "id": "qwen35_9b_v2_stripped",
+      "receiver": "Qwen3.5-9B",
+      "receiver_kind": "native_vision_stripped",
+      "tower": "MoonViT-V2",
+      "trainable": "projector_only",
+      "hardware_note": "run only if V100 memory and throughput permit"
+    },
+    {
+      "id": "no_vision_control",
+      "receiver": "matched pure_text receiver",
+      "receiver_kind": "text_only_control",
+      "tower": "none",
+      "trainable": "none"
+    },
+    {
+      "id": "native_qwen_vlm_positive",
+      "receiver": "Qwen3.5 native VLM",
+      "receiver_kind": "native_vlm_positive_control",
+      "tower": "native_tower",
+      "trainable": "none",
+      "leaderboard": "separate"
+    }
+  ],
+  "conditions": [
+    "vision",
+    "blind",
+    "shuffled",
+    "random_projector",
+    "step0",
+    "previous_best",
+    "current_candidate"
+  ],
   "matrix_scope": {
-    "receiver_sizes_billion": [0.5, 3, 4, 7, 9, 14],
-    "receiver_modes": ["pure_text", "native_vision_stripped", "native_vlm_positive_control"],
-    "tower_versions": ["moonvit_v1_1152", "moonvit_v2_1024", "none", "random_projector"],
-    "projector_variants": ["community_v1_legacy_pre_norm", "kimi_k3_v2", "normalization", "residual", "gated_residual"],
-    "objectives": ["ce_only", "paired_margin", "fixed_budget_replay", "geometry_auxiliary"],
-    "token_selection": ["prefix", "uniform", "mean_pool", "16", "64", "128", "240_256", "full"],
-    "resolution_domain": ["fixed_448", "registered_resolution_shift", "registered_background_shift"],
-    "language_training": ["projector_only", "top_lora_diagnostic", "top_layer_unfreeze_diagnostic"]
+    "receiver_sizes_billion": [
+      0.5,
+      3,
+      4,
+      7,
+      9,
+      14
+    ],
+    "receiver_modes": [
+      "pure_text",
+      "native_vision_stripped",
+      "native_vlm_positive_control"
+    ],
+    "tower_versions": [
+      "moonvit_v1_1152",
+      "moonvit_v2_1024",
+      "none",
+      "random_projector"
+    ],
+    "projector_variants": [
+      "community_v1_legacy_pre_norm",
+      "kimi_k3_v2",
+      "normalization",
+      "residual",
+      "gated_residual"
+    ],
+    "objectives": [
+      "ce_only",
+      "paired_margin",
+      "fixed_budget_replay",
+      "geometry_auxiliary"
+    ],
+    "token_selection": [
+      "prefix",
+      "uniform",
+      "mean_pool",
+      "16",
+      "64",
+      "128",
+      "240_256",
+      "full"
+    ],
+    "resolution_domain": [
+      "fixed_448",
+      "registered_resolution_shift",
+      "registered_background_shift"
+    ],
+    "language_training": [
+      "projector_only",
+      "top_lora_diagnostic",
+      "top_layer_unfreeze_diagnostic"
+    ]
   },
   "benchmark_contract": {
-    "datasets": ["screenspot_glm50_v1", "screenspot_public_test_v1", "TextVQA_selection", "DocVQA_selection", "OCRBench_selection", "synthetic_six_tasks", "language_retention"],
-    "conditions": ["vision", "blind", "shuffled", "random_projector", "step0", "previous_best", "current_candidate"],
-    "generation": {"do_sample": false, "temperature": 0.0, "max_new_tokens": 32, "parser": "anchored click(start_box=[x, y]) integer 0..999"},
+    "datasets": [
+      "screenspot_glm50_v1",
+      "screenspot_public_test_v1",
+      "TextVQA_selection",
+      "DocVQA_selection",
+      "OCRBench_selection",
+      "synthetic_six_tasks",
+      "language_retention"
+    ],
+    "conditions": [
+      "vision",
+      "blind",
+      "shuffled",
+      "random_projector",
+      "step0",
+      "previous_best",
+      "current_candidate"
+    ],
+    "generation": {
+      "do_sample": false,
+      "temperature": 0.0,
+      "max_new_tokens": 32,
+      "parser": "anchored click(start_box=[x, y]) integer 0..999"
+    },
     "bootstrap_replicates": 2000,
-    "required_paired_comparisons": ["vision_minus_blind", "vision_minus_shuffled", "trained_minus_random_projector", "current_minus_previous_best"],
+    "required_paired_comparisons": [
+      "vision_minus_blind",
+      "vision_minus_shuffled",
+      "trained_minus_random_projector",
+      "current_minus_previous_best"
+    ],
     "promotion_rule": "No visual-improvement claim without matched budget, ScreenSpot click gain, positive paired CI against blind and shuffled, and no unexplained VQA/OCR or language regression."
   },
   "promotion_gate": [
@@ -62,5 +199,22 @@
     "parse rate does not regress",
     "TextVQA/DocVQA/OCRBench have no unexplained severe regression"
   ],
-  "deepseek_transfer": "Only transferable_with_runtime_validation or directly_transferable methods enter DeepSeek candidates; Gate D remains NO-GO until real-weight forward/backward and checkpoint restore pass."
+  "deepseek_transfer": "Only transferable_with_runtime_validation or directly_transferable methods enter DeepSeek candidates; Gate D remains NO-GO until real-weight forward/backward and checkpoint restore pass.",
+  "matrix_completion_contract": {
+    "required": true,
+    "scope": "all active arms listed in arms; archived historical arms remain evidence only",
+    "minimum_successful_arms": "not applicable; matrix completion requires every active arm to have a result or registered failure",
+    "active_arm_count": 8,
+    "per_arm_requirements": [
+      "same frozen data order, image preprocessing, prompt, parser and greedy decoding",
+      "same community-scale budget nodes and explicit actual examples_seen",
+      "projector-only mainline for external MoonViT arms; matched controls for any language training",
+      "vision, blind, shuffled and random_projector conditions, plus step0/previous_best/current_candidate roles where applicable",
+      "raw per-sample predictions, health logs, checkpoint identity and artifact manifest",
+      "formal ScreenSpot50 score with paired bootstrap CI; full ScreenSpot and VQA/OCR follow the registered promotion rule"
+    ],
+    "failure_policy": "a hardware, memory, implementation or causal failure is recorded immutably and counts as a completed matrix row; silent omission is not allowed",
+    "matrix_summary_artifact": "experiments/community_scale_model_ablation_20260808/MATRIX_SUMMARY.json",
+    "deepseek_gate": "separate final target; it cannot be declared passed by Qwen proxy rows and remains NO-GO until real-weight Gate D"
+  }
 }
