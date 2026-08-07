@@ -59,9 +59,9 @@ Gate；完整 DeepSeek-V4-Flash-0731 仍未加载，Gate D 保持 *NO-GO*。
 最近 7B/Qwen3.5 训练使用的 `tools/train_stripped_receiver_prior.py` 是 3-step
 `diagnostic_only` runner；`tools/train_overfit.py` 是共享全循环骨架；完整
 health/stop/rollback 和绑定 checkpoint 只在 3B 专用 `tools/train_qwen3b_proxy.py`。
-下一项本地工作是抽取 receiver-agnostic 安全训练组件，先跑 7B 100-step formal
-causal screen。只有健康且 vision−blind、vision−shuffle 两个 CI 下界均为正，才进入
-500/2000 steps。
+下一项本地工作是抽取 receiver-agnostic 安全训练组件并冻结社区规模的数据/预算，
+然后跑 3B/7B 的 V1/V2 matched 消融。100-step 只作健康节点；正式能力判断要延伸到
+57.6k/66k/132k examples seen，不能因短节点 CI 跨零就停止社区规模复现。
 
 社区审计确认：公开 GLM-5.2V 页面使用 Kimi-K2.6/MoonViT-3d 家族的
 1152 维视觉塔；GLM projector 在自己的 6144 维语言空间重新训练。仓库当前

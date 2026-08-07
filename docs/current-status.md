@@ -90,8 +90,8 @@ evidence**；它们不再阻塞 scaled model ablation。
 DeepSeek Hash-MoE routing。`tools/train_overfit.py` 是最接近共享全循环的骨架；
 `tools/train_qwen3b_proxy.py` 拥有最完整的 health、stop/rollback 和绑定 checkpoint，
 但目前硬绑定 3B 合同。下一项本地工程任务是抽取 receiver-agnostic 安全训练组件，
-先运行 7B 100-step formal causal screen；只有健康且 vision−blind、vision−shuffle
-两个 CI 下界均为正，才有条件推进 500/2000。
+并冻结社区规模的数据/预算，直接安排 3B/7B 的 V1/V2 matched 消融。100-step 只作健康节点；
+能力判断必须延伸到 57.6k/66k/132k examples seen，不能把短节点的 CI 当作社区规模结论。
 
 以下章节按时间保留实验记录；其中旧的“下一步”文字不再具有执行权威。
 
