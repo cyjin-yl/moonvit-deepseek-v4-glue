@@ -86,7 +86,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--text-model",
         required=True,
-        help="Text-only causal LM; native VLM configs with vision_config are rejected",
+        help="Text-only causal LM; native VLM configs with vision_config are rejected unless stripped mode is explicit",
+    )
+    parser.add_argument(
+        "--allow-native-vision-stripped",
+        action="store_true",
+        help="Load a native Qwen3.5 VLM receiver but bypass its visual tower; external MoonViT remains the only image path.",
     )
     parser.add_argument("--moonvit-model", default="moonshotai/MoonViT-SO-400M")
     parser.add_argument("--vision-tower", choices=["v1", "v2"], default="v1",
@@ -261,7 +266,12 @@ def main() -> None:
     log_file = open(args.out / "train.log", "a", encoding="utf-8")
     sys.stdout = _Tee(sys.__stdout__, log_file)
     sys.stderr = _Tee(sys.__stderr__, log_file)
-    from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
+    from transformers import (
+        AutoConfig,
+        AutoModelForCausalLM,
+        AutoModelForImageTextToText,
+        AutoTokenizer,
+    )
 
     torch.manual_seed(args.seed)
     rng = random.Random(args.seed)
@@ -282,7 +292,12 @@ def main() -> None:
     effective_batch_size = int(batch_semantics["effective_batch_size"])
 
     text_config = AutoConfig.from_pretrained(args.text_model)
-    validate_text_only_backbone_config(text_config)
+    native_stripped = bool(args.allow_native_vision_stripped)
+    if native_stripped:
+        if getattr(text_config, "model_type", None) != "qwen3_5":
+            raise ValueError("--allow-native-vision-stripped currently targets Qwen3.5 only")
+    else:
+        validate_text_only_backbone_config(text_config)
 
     records = load_records(args.data)
     records = [record for record in records if record.get("answers")]
@@ -340,15 +355,25 @@ def main() -> None:
         vision_width = moonvit.vision_width
         merge_factor = moonvit.merge_factor
     tokenizer = AutoTokenizer.from_pretrained(args.text_model)
-    language_model = AutoModelForCausalLM.from_pretrained(args.text_model, dtype=dtype)
+    model_class = AutoModelForImageTextToText if native_stripped else AutoModelForCausalLM
+    language_model = model_class.from_pretrained(
+        args.text_model,
+        dtype=dtype,
+        local_files_only=True,
+        low_cpu_mem_usage=True,
+    )
     language_model.to(device)
+    receiver_width = int(
+        getattr(language_model.config, "hidden_size", 0)
+        or getattr(getattr(language_model.config, "text_config", None), "hidden_size")
+    )
 
     if args.placeholder_token_id is not None:
         placeholder_token_id = args.placeholder_token_id
     else:
         placeholder_token_id = resolve_placeholder_token_id(tokenizer, args.image_token)
 
-    canonical_width = 4096 if args.canonical_projector else int(language_model.config.hidden_size)
+    canonical_width = 4096 if args.canonical_projector else receiver_width
     projector = PatchMergerProjector(
         ProjectorConfig(
             vision_width=vision_width,
@@ -396,10 +421,10 @@ def main() -> None:
 
     pad_token_id = tokenizer.pad_token_id if tokenizer.pad_token_id is not None else 0
     receiver_adapter = None
-    if args.canonical_projector and int(language_model.config.hidden_size) != canonical_width:
+    if args.canonical_projector and receiver_width != canonical_width:
         receiver_adapter = FixedGroupedReceiverAdapter(
             canonical_width,
-            int(language_model.config.hidden_size),
+            receiver_width,
             seed=args.receiver_adapter_seed,
         ).to(device=device)
     model = VisionCausalLM(
@@ -679,7 +704,9 @@ def main() -> None:
     report = {
         "text_model": args.text_model,
         "text_model_architectures": getattr(text_config, "architectures", None),
-        "text_backbone_native_multimodal": False,
+        "text_backbone_native_multimodal": bool(native_stripped),
+        "native_vision_stripped": bool(native_stripped),
+        "model_loader": model_class.__name__,
         "records_considered": len(records),
         "records_train": len(train_records),
         "records_eval": len(eval_records),
@@ -707,7 +734,7 @@ def main() -> None:
         "receiver_adapter": {
             "kind": "fixed_grouped_signed_projection" if receiver_adapter is not None else "identity",
             "seed": args.receiver_adapter_seed if receiver_adapter is not None else None,
-            "receiver_width": int(language_model.config.hidden_size),
+            "receiver_width": receiver_width,
             "trainable_parameter_count": 0,
         },
         "vision_tower_instantiated": moonvit is not None,
