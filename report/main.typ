@@ -7,20 +7,39 @@
 #align(center)[
   #text(size: 21pt, weight: "bold")[MoonViT-V2 接入 DeepSeek-V4-Flash-0731]
   #v(5pt)
-  #text(size: 14pt)[训练前架构审计、胶水原型与硬件计划]
+  #text(size: 14pt)[真实 VLM 回归、运行入口审计与 Gate D]
   #v(8pt)
-  版本 0.7 · 2026-08-06
+  版本 0.8 · 2026-08-08
 ]
 
 #outline()
 #pagebreak()
 
-= 当前状态（2026-08-06，唯一 live 入口）
+= 当前状态（2026-08-08，唯一 live 入口）
 
-当前唯一权威状态页是 `docs/current-status.md`，架构身份矩阵是
+当前唯一权威状态页是 `docs/current-status.md`，运行入口审计是
+`docs/runtime-entrypoint-audit.md`，架构身份矩阵是
 `docs/architecture-matrix.md`。最终目标固定为
 `MoonViT-V2 → 4096 维 projector → DeepSeek-V4-Flash-0731`。
 Qwen2.5-3B 只承担冻结纯文本 receiver 的低成本代理角色。
+
+当前没有可用 VLM，也没有 checkpoint 获得晋升。Qwen2.5-7B 已完成完整 1,272 条
+ScreenSpot：vision/blind/shuffled click-in-box 为 `3.30%/3.46%/2.67%`，
+vision−shuffle 有弱阳性，vision−blind 失败。Qwen3.5-4B external MoonViT 的
+full32 V1/V2 也都没有通过 ScreenSpot50 因果门，版本单独解释被否决。
+
+软件接缝已覆盖 placeholder expansion、routing/position、loss mask、projector
+input-gradient，以及 tiny DeepSeek BF16/FP32 的 20-step save/resume/generate。
+完整 0731 权重没有实际加载；真实 FP4/FP8 input-DGRAD、43 层 Hash-MoE
+forward/backward/generate、真实 checkpoint round-trip 和因果 benchmark 均未完成。
+Gate D 因此保持 *NO-GO*。
+
+最近 7B/Qwen3.5 训练使用的 `tools/train_stripped_receiver_prior.py` 是 3-step
+`diagnostic_only` runner；`tools/train_overfit.py` 是共享全循环骨架；完整
+health/stop/rollback 和绑定 checkpoint 只在 3B 专用 `tools/train_qwen3b_proxy.py`。
+下一项本地工作是抽取 receiver-agnostic 安全训练组件，先跑 7B 100-step formal
+causal screen。只有健康且 vision−blind、vision−shuffle 两个 CI 下界均为正，才进入
+500/2000 steps。
 
 社区审计确认：公开 GLM-5.2V 页面使用 Kimi-K2.6/MoonViT-3d 家族的
 1152 维视觉塔；GLM projector 在自己的 6144 维语言空间重新训练。仓库当前
@@ -28,7 +47,7 @@ Qwen2.5-3B 只承担冻结纯文本 receiver 的低成本代理角色。
 Package 15P–15R 测试的是 `local_v2_legacy`，其 early-collapse 结果不能外推
 到 exact K3 V2。现在两条 matched control 都已完成真实 cache 和高频 health
 screen；两条都在 step 2 自动止损，正式能力 benchmark 尚未启动。Gate D 仍为
-**NO-GO**。
+*NO-GO*。
 
 两条 matched control 的初始化已经冻结并完成 strict save/load 与确定性重建：
 V1 step0/random 权重文件分别为 `f24f677f…786cf` / `a740f349…5ec0`，exact K3
@@ -1773,9 +1792,9 @@ Baseten 社区实验（baseten.co/blog/glm-52-with-vision，checkpoint baseten/G
   [2026-08-05], [固定 revision 的 DeepSeek 量化 runtime 源码审计与 GPU 矩阵成稿：forward 集成缺少已确认 autograd 证据，SM120/121 受 DeepGEMM #372 weight-load blocker 影响；首个付费建议降为单卡 SM100/B200 最小 kernel gate，仍等待授权。],
 )
 
-= 下一位执行者的最短路径
+= 历史执行摘要（不再定义 live next）
 
-包 15A–15D 的 pre-result contract、3B 工程 smoke、首轮 exact 4k order/target 与完整 MoonViT cache 已完成；包 15E–15H 又完成 fixed-budget 训练、ScreenSpot50/full 与 teacher-forced preference。首个 checkpoint 被 generation 与内部正确坐标偏好共同拒绝，previous-best 保持 step0。包 15I/15J 冻结 grounding-enriched 4k exact order/cache，包 15K 完成 exact 500-step 训练与五个 checkpoint 审计；包 15L/15M 又以 paired preference 和 GLM50 generation 一致拒绝 treatment。包 15N 触发预注册 gross-collapse 双门槛并把主要塌缩定位在 projector 输出；包 15O 发现首个保存点 step100/800 examples 已塌缩；包 15P 完成固定 λ 校准后在 control 绑定检查暴露缺字段，修复已登记且没有产生训练结果。下一步重新校准并运行四臂 100-step/800-example geometry repair screen，只有表示门槛和 CE 代价同时通过才扩大到完整 500 steps，并在候选阶段补齐 TextVQA、DocVQA、OCRBench 与 language retention。正式 0731 必须通过完整权重 load、真实 FP4/FP8 input DGRAD、图像 forward/backward、20-step 稳定性和 save/resume/generate Gate D；任何付费动作等待用户明确授权。
+Package 15A–15P、V1/V2 matched regression、Qwen2.5-7B full-public ScreenSpot 和 Qwen3.5-4B full32 external comparison 已完成并保留在历史时间线。下一步以首页 live 状态和 `docs/runtime-entrypoint-audit.md` 为准；任何付费动作等待用户明确授权。
 
 = Projector 表征健康合同与本科生版进度解释
 
@@ -2009,13 +2028,14 @@ For a reader following the engineering goal, the result is currently a
 reliable adapter prototype rather than a usable VLM. The Qwen2.5-3B V1/V2
 screens, Qwen2.5-7B capacity control and Qwen3.5 receiver-prior diagnostic all
 run through the same placeholder/projector interface. They show that images can
-reach the receiver and change logits, while none gives a reproducible
-correct-image advantage over a deterministic shuffled image on the fixed
-grounding contract. CE decreases and geometry can remain healthy while visual
+reach the receiver and change logits. The 7B full-public run has a weak
+vision-minus-shuffled click interval, but vision remains below blind and the
+complete causal contract fails; the other external-projector screens also fail
+promotion. CE decreases and geometry can remain healthy while visual
 attribution stays absent; these are recorded as mechanism evidence, not hidden
 behind the final benchmark table.
 
-Gate D therefore remains **NO-GO**. The tiny DeepSeek FP32/BF16 loop only closes
+Gate D therefore remains *NO-GO*. The tiny DeepSeek FP32/BF16 loop only closes
 the software seam. Before a 0731 pilot, the full resolved weights and image-token
 routing, real FP4/FP8 finite input gradients, full Hash-MoE image
 forward/backward/generation, 20-step memory/stability, exact full-checkpoint
@@ -2032,7 +2052,7 @@ projector-only steps had finite non-zero projector gradients and no language
 gradients; step-10 save/resume matched exactly and generation retained the two
 expanded placeholder routing IDs. This closes the low-ID software seam concern.
 The full 0731 vocabulary, 43-layer Hash-MoE, FP4/FP8 kernels and input-DGRAD
-remain unverified, so this result does not change Gate D's **NO-GO** status.
+remain unverified, so this result does not change Gate D's *NO-GO* status.
 
 == Qwen2.5-7B 完整公共 ScreenSpot
 
@@ -2053,11 +2073,11 @@ vision 相对 shuffled 的 click-in-box 改善为 *+0.629 个百分点*；独立
 
 这轮支持“7B 加 paired supervision 已产生少量 correct-image click attribution”，反驳“teacher-forced 正 margin 已经等价于可用 grounding”。完整原始 summary 和 rows 保存在 V100 数据盘，Git 提交分类 summary、SHA pointer 与 verifier。receiver、V1/V2、token 数、CE/attribution 分离和失败分层集中维护于 `docs/experiment-mechanism-findings.md`。
 
-下一项在同一 ScreenSpot50、同一 checkpoint 和生成合同下比较 16-token mean-pool 与 240-token full sequence。若 240-token 没有改善 vision-shuffled 或继续落后 blind，则停止扩大 token 实验，转向一个 DeepSeek 可迁移的 projector/辅助目标变量和 matched CE-only control。
+随后完成的 240-token matched screen 没有改善 vision-shuffled click，也没有解决 blind 竞争，因此 token-count 扩展已经停止。当前下一项是共享正式训练入口与 7B 100-step causal screen。
 
 == DeepSeek 真实训练时间与剩余 Gate
 
-当前本地软件链路已经覆盖真实 MoonViT-V2、canonical 4096 projector、目标 placeholder ID `129279`、tiny DeepSeek FP32/BF16 20-step forward/backward、冻结主干、精确 save/resume 和 generation。候选冻结、240-token 对照、独立 verifier 与文档预计还需 *1--2 个工作日*。
+当前本地软件链路已经覆盖真实 MoonViT-V2、canonical 4096 projector、目标 placeholder ID `129279`、tiny DeepSeek FP32/BF16 20-step forward/backward、冻结主干、精确 save/resume 和 generation。候选比较、240-token 对照、独立 verifier 和运行入口审计均已完成；剩余本地工作是把正式训练安全合同推广到共享 7B/DeepSeek 入口并运行 100-step causal screen。
 
 完整 0731 pilot 仍需：resolved 权重加载与 SHA 固定；真实 FP4/FP8 kernel finite input DGRAD；43 层 Hash-MoE 图像 forward/backward 和 routing 一致性；目标 batch、activation checkpointing、显存和吞吐；20-step 稳定 checkpoint 与精确恢复；同一 ScreenSpot/TextVQA/DocVQA/OCRBench 合同。获得付费硬件明确授权后，最小 Gate D 预计 1--2 个工作日，首个真实小规模训练和固定 benchmark 再需约 2--3 个工作日。权重与 kernel 路径顺利时，授权后 *3--5 个工作日*可以得到首轮真实训练判断。
 

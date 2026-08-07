@@ -1,12 +1,12 @@
 # Projector / receiver 机制实验记录
 
-更新：2026-08-07
+更新：2026-08-08
 
 本文是持续更新的机制账本，和最终 benchmark 表并行保存。它记录哪些变量改变了训练健康、哪些变量改变了正确图像归因，以及哪些看似积极的数值没有转化为自由生成能力。所有能力判断仍以冻结的 ScreenSpot、TextVQA、DocVQA、OCRBench 和 synthetic 合同为准。
 
 ## 当前总体判断
 
-MoonViT 特征可以经过 canonical 4096 projector 注入纯文本 Qwen2.5 和 stripped-native Qwen3.5 receiver，projector-only backward、自动止损、checkpoint、恢复和生成链路均已跑通。当前最强的 Qwen2.5-7B 轨迹在 32 条真实答案 teacher-forced probe 上得到正的 correct-image 对 shuffled margin；同一 checkpoint 的自由生成只呈现很弱的 ScreenSpot 因果增益，仍受文本与坐标先验主导。
+MoonViT 特征可以经过 canonical 4096 projector 注入纯文本 Qwen2.5 和 stripped-native Qwen3.5 receiver。需要分开理解各路径：3B formal runner 跑通自动止损和绑定 checkpoint/resume；7B/Qwen3.5 多数是 3-step diagnostic；DeepSeek 只在 tiny 软件模型上跑通 20-step save/resume/generate。完整 0731 尚未运行。当前最强的 Qwen2.5-7B 轨迹在 32 条真实答案 teacher-forced probe 上得到正的 correct-image 对 shuffled margin；同一 checkpoint 的自由生成只有弱 ScreenSpot vision−shuffle 信号且不胜 blind，仍受文本与坐标先验主导。
 
 项目已经从“接口能否运行”推进到“正确图片是否稳定改变答案”的阶段。还没有任何 checkpoint 满足正式晋升合同，`previous_best` 不变。
 
@@ -38,7 +38,7 @@ MoonViT V1 使用 1152 维输入和 community-shaped 4608 hidden MLP；V2 使用
 - mean-pool 的短训练曾出现约 4,292 的梯度峰值，覆盖更多图像区域同时带来数值风险。
 - Qwen3.5 3D mRoPE 与普通连续位置的 8-sample attribution 接近，没有单独修复 paired gap。
 
-这组结果支持 token 覆盖、顺序和尺度共同影响 receiver alignment。下一项固定同一 checkpoint，在冻结 ScreenSpot 子集上直接比较 16-token mean-pool 与 240-token full sequence，避免用不同训练记录或不同模型混淆结论。
+这组结果支持 token 覆盖、顺序和尺度共同影响 receiver alignment。固定同一 checkpoint 的 16-token mean-pool 与 240-token full-sequence 对照已经完成：240 token 没有改善 vision−shuffle click，也没有解决 blind 竞争，因此 token 压缩不是单一主要根因。
 
 ## CE、表征健康与真实能力的分离
 
@@ -76,15 +76,15 @@ vision-shuffled click-in-box 的 paired improvement 为 `+0.629` 个百分点，
 
 1. 视觉 token 与 receiver 训练分布的对齐，包括尺度、顺序、placeholder 和位置语义。
 2. projector 目标只优化答案 CE，容易形成 coordinate soft prompt；paired image attribution objective 已显示局部价值。
-3. 16-token mean-pool 可能丢失 grounding 所需的局部布局；需要与 240-token full sequence 做严格匹配的生成对照。
+3. 16-token mean-pool 可能丢失局部布局，但 matched 240-token 生成对照没有改善因果 grounding；继续扩大 token 数已降为低优先级。
 4. 纯文本 receiver 的容量影响存在，7B 仍受文本先验支配；视觉预训练 receiver prior 也没有自动解决问题。
 5. V1/V2 版本差异目前弱于监督接口和 receiver alignment 差异。
 
-最近的最小实验顺序：
+冻结后的最小实验顺序：
 
-1. 在冻结 ScreenSpot50 上运行同 checkpoint 的 16-token mean-pool 对 240-token full sequence。
-2. 若 240 token 的 vision-shuffled 改善且没有 vision-blind 退化，再扩到完整 1,272 条。
-3. 若 token 数无效，测试一个与 DeepSeek 兼容的 projector/辅助目标变量，并保留 matched CE-only control。
+1. 把 3B formal runner 的 health/stop/rollback/bound-checkpoint 能力抽到共享 7B 训练入口。
+2. 运行 7B 100-step formal causal screen；任一 health critical 或两个因果 CI 下界不为正就停止。
+3. 只有 100-step 通过，才按同预算进入 500/2000；否则不再用加训练量包装失败。
 4. 候选只有同时通过 vision-blind、vision-shuffled、完整 ScreenSpot 和通用 VQA/OCR 合同，才进入 DeepSeek 正式配方。
 
 任何付费 DeepSeek 操作继续等待明确授权。

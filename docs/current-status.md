@@ -4,11 +4,14 @@
 
 ## 一句话结论
 
-Qwen2.5-3B 代理的真实图像 glue、projector 梯度、checkpoint 保存恢复和生成
-链路已经跑通；真实视觉能力尚未建立。此前 Package 15P–15R 主要测试的是
-`local_v2_legacy`，因此它们的失败不能外推到精确的 Kimi-K3 V2 projector。
-当前最有判别力的本地任务，是在同一 Qwen3B 社区评测合同下完成
-`local_v2_exact_k3` 与 `local_v1_family_proxy` 的 matched architecture screen。
+软件 glue 与代理训练链路已经跑通，真实视觉能力尚未建立，当前没有 checkpoint
+获得晋升。Qwen2.5-7B 已完成完整 ScreenSpot：vision/blind/shuffled click 为
+`3.30%/3.46%/2.67%`，只有弱 vision−shuffle 信号，vision−blind 失败。
+Qwen3.5-4B external MoonViT 的 full32 V1/V2 也都没有通过 ScreenSpot50 因果门，
+因此“换 V1 即可修复”与“接收器有视觉预训练即可修复”均不成立。完整 0731 权重、
+FP4/FP8 input-DGRAD、43 层 Hash-MoE 图像 forward/backward/generate 与真实 checkpoint
+恢复仍未运行，Gate D 为 **NO-GO**。运行入口审计见
+[`runtime-entrypoint-audit.md`](runtime-entrypoint-audit.md)。
 
 ## 给本科生的整体进度判断（2026-08-07）
 
@@ -20,7 +23,7 @@ Qwen2.5-3B 代理的真实图像 glue、projector 梯度、checkpoint 保存恢�
 |---|---|---|---|
 | Qwen2.5-3B + V2 | 可以 | vision 没有稳定优于 blind/shuffled；早期 projector/receiver 几何塌缩 | 工程链路通过，能力未通过 |
 | Qwen2.5-3B + V1 | 可以 | V1 同样在前两步触发健康止损 | V2 压缩并非唯一解释 |
-| Qwen2.5-7B 纯文本 | 可以，短序列 projector-only | 50 条 GLM-format 诊断中 vision 与 shuffled 的 paired CI 跨 0；真实答案训练也未形成稳定正向归因 | 7B 能跑，容量增加暂未解决问题 |
+| Qwen2.5-7B 纯文本 | 可以，3-step 诊断训练；完整 1,272 条 ScreenSpot 可评测 | vision/blind/shuffled click `3.30/3.46/2.67%`；V−shuffle 弱阳性，V−blind 失败 | 7B 能跑但未获得可用视觉能力；现有入口不是正式长训器 |
 | Qwen3.5-9B stripped-native | 只能做短诊断，训练会撞显存 | 少量样本对 blind 有信号，对 shuffled 不稳定，240 token 方向反复 | 视觉预训练接收器值得研究，不能当成功模型 |
 | tiny DeepSeek 软件模型 | FP32/BF16 均可 | 20 步梯度、冻结主干、精确恢复和生成均通过 | 只证明软件接口，尚未证明 0731 |
 
@@ -41,7 +44,20 @@ Qwen2.5-3B 代理的真实图像 glue、projector 梯度、checkpoint 保存恢�
 
 ## 机制经验必须保留
 
-后续报告同时保存训练健康和真实能力两条轨迹。当前已经观察到：CE 可以下降而视觉归因不升；V1/V2 都会遇到早期 receiver-facing 几何退化；降低学习率能保住 rank/spread，却不能自行产生正确图像优势；token 数量和压缩方式会改变 grounding margin；Qwen3.5 的视觉预训练 receiver 对外部 MoonViT token 有局部响应，但多样样本上仍无法稳定区分正确图与打乱图。这些结果决定下一轮优先检查监督接口、视觉 token 覆盖/尺度和 receiver 解码能力，避免把 projector norm 或 synthetic preference 当作能力提升。
+后续报告同时保存训练健康和真实能力两条轨迹。当前已经观察到：CE 可以下降而视觉归因不升；Qwen2.5-3B 高频 health screen 中 V1/V2 都出现过 receiver-facing 几何或因果 guard 失败；降低学习率能保住 rank/spread，却不能自行产生正确图像优势；240-token 对照已经否决“16-token 压缩是单一根因”；Qwen3.5 receiver 会响应外部 MoonViT token，但多样样本上仍无法稳定区分正确图与打乱图。Qwen3.5 结果与 receiver prior 有帮助的假设一致，但没有 matched 去视觉预训练 control，不能写成已隔离的因果效应。
+
+## 当前执行入口（覆盖下方历史 next 指令）
+
+最近的 7B/Qwen3.5 训练使用 `tools/train_stripped_receiver_prior.py`，该脚本明确标记
+`diagnostic_only`，不能直接把 3 steps 放大到 500/2000。它还绕过 `VisionCausalLM`，
+经 `smoke_stripped_qwen35.expanded_forward` 只传 `inputs_embeds`，所以不能直接迁移到
+DeepSeek Hash-MoE routing。`tools/train_overfit.py` 是最接近共享全循环的骨架；
+`tools/train_qwen3b_proxy.py` 拥有最完整的 health、stop/rollback 和绑定 checkpoint，
+但目前硬绑定 3B 合同。下一项本地工程任务是抽取 receiver-agnostic 安全训练组件，
+先运行 7B 100-step formal causal screen；只有健康且 vision−blind、vision−shuffle
+两个 CI 下界均为正，才有条件推进 500/2000。
+
+以下章节按时间保留实验记录；其中旧的“下一步”文字不再具有执行权威。
 
 ## 回归修复后的验证状态（2026-08-07）
 

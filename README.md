@@ -1,6 +1,6 @@
 # MoonViT projector → DeepSeek-V4 glue prototype
 
-这是一个训练前的接口与权重合同原型。最终路径固定为
+这是一个面向真实 VLM 的接口、训练与评测工程。最终路径固定为
 `MoonViT-V2 → 4096 维 projector → DeepSeek-V4-Flash-0731`。
 仓库当前同时注册两条 Qwen2.5-3B 架构控制：精确 K3/MoonViT-V2
 (`kimi_k3_v2`) 和 K2.6-lineage 的 MoonViT-SO-400M V1 family proxy。
@@ -8,6 +8,14 @@
 的结论。当前状态和下一步以 [`docs/current-status.md`](docs/current-status.md)
 与 [`docs/architecture-matrix.md`](docs/architecture-matrix.md) 为准；固定评测规则见
 [`docs/qwen2.5-3b-community-eval-contract.md`](docs/qwen2.5-3b-community-eval-contract.md)。
+当前没有可用 VLM，也没有 checkpoint 获得晋升。Qwen2.5-7B 已完成完整
+1,272 条 ScreenSpot，但 vision/blind/shuffled click 仅为
+`3.30%/3.46%/2.67%`：vision 对 shuffled 有弱阳性，对 blind 失败。
+Qwen3.5-4B external MoonViT 的 matched V1/V2 ScreenSpot50 也都未通过因果门。
+完整 DeepSeek-V4-Flash-0731 权重尚未加载运行，Gate D 为 **NO-GO**。
+运行入口与硬阻塞的权威地图见
+[`docs/runtime-entrypoint-audit.md`](docs/runtime-entrypoint-audit.md)。
+
 项目把视觉塔、projector、文本主干保持为三个独立 checkpoint，并实现：
 
 - Kimi 风格的 2×2 PatchMerger projector；
@@ -70,9 +78,12 @@ python examples/smoke_real_moonvit.py path/to/image.jpg
 
 这会下载约 834 MB 的 V1 权重和 `sshleifer/tiny-gpt2`。随机 projector 不会产生有意义的图像描述；该命令验证的是旧合同兼容性，不代表当前 V2 主线。V2 的训练/评测入口使用 `--vision-tower v2 --moonvit-v2-weights <path>/moonvit_v2.safetensors`，加载前应按随产物发布的 `MANIFEST.json` 校验 SHA-256。
 
-## 加载正式 DeepSeek 权重
+## DeepSeek 加载接口（完整 0731 尚未验证）
 
-训练出 projector 后：
+以下是已经实现的软件 API，不是完整 0731 权重已成功加载的证据。仓库中尚无训练或
+评测 tool 调用这个 helper；它只在 tiny DeepSeek 软件回归中覆盖了相同 glue seam。
+正式使用前仍需目标量化/多卡 runtime、真实 input-DGRAD、43 层 Hash-MoE
+forward/backward/generate 和 checkpoint round-trip Gate。
 
 ```python
 from moonvit_glue import load_deepseek_flash_0731
@@ -121,7 +132,7 @@ glue 通过 placeholder 注入 embedding，不扩充词表。Qwen3.5-4B 的 spec
 
 横向实验还必须加载同一份 exact FP32 step0（SHA-256 `efd942e0…b06b0`）；固定 random-projector control 为 `7bd4aacf…fc44`。两份 134,259,248-byte 权重已在首个 3B 输出前发布到 HF immutable commit `65639da5…a010` 并按 LFS SHA 回查，seed 只承担 provenance，不能替代权重身份。
 
-现有 Gate B 的 `Qwen2.5-0.5B-Instruct` 虽然是纯文本模型，但 0.5B 容量会压低 OCR、推理和格式遵从上限，也不能代表 DeepSeek Hash-MoE 的优化难度。因此其 shuffle/随机/blind 差异只作工程与信号证据，绝对分数和收敛速度都不得外推 0731。3B 代理已经接替容量对照；首轮 legacy V2 结果被拒绝，当前要在 exact K3 V2 与 V1 family control 上重跑 matched screen。原生 Qwen2.5-VL/Qwen3.5 VLM 不属于 Qwen3B 主实验。
+现有 Gate B 的 `Qwen2.5-0.5B-Instruct` 虽然是纯文本模型，但 0.5B 容量会压低 OCR、推理和格式遵从上限，也不能代表 DeepSeek Hash-MoE 的优化难度。因此其 shuffle/随机/blind 差异只作工程与信号证据，绝对分数和收敛速度都不得外推 0731。3B 代理已经接替容量对照；legacy V2、exact K3 V2 与 V1 family control 的 matched screens 均已完成且未建立能力。原生 Qwen2.5-VL/Qwen3.5 VLM 不属于 Qwen3B 主实验。
 
 此外，full-mix Gate B 的 `2000 steps × batch 8` 实际是 `micro_batch_size=1` 下串行累积 8 个样本：共见过 16,000 个样本，只约为 59,198 条 mix 的 **0.27 epoch**。因此它应称为 early-alignment / 接口可学习性运行，而不是充分训练后的能力评测；TextVQA 8.1%、DocVQA 3.9%、OCRBench 0% 不能当作架构上限。训练器现已分别记录 optimizer steps、examples、答案 token、effective epochs、micro batch 与梯度累积，并把固定分层验证、10 组 derangement 及多答案 canonical/random 监督落盘。完整的租前归因顺序见 [`docs/ablation-protocol.md`](docs/ablation-protocol.md)。在真正的多样本 forward 与真实 step-time 基准完成前，不再把“global batch 64”直接换算成租期时长。
 

@@ -1,0 +1,65 @@
+{
+  "schema_version": "runtime-entrypoint-audit-v1",
+  "audit_date": "2026-08-08",
+  "git_commit": "cbb6ceb",
+  "scope": "qwen25_7b_to_deepseek_v4_flash_0731_real_vlm_entrypoints",
+  "source_files": [
+    {"path": "src/moonvit_glue/loaders.py", "sha256": "28408126a7d62f39727e0150bf87fcc3220fe490e9b1e85cc5e04e772a7c1846"},
+    {"path": "src/moonvit_glue/model.py", "sha256": "4aaee2316d918d1add8d576071a5062fbe3868d0db4c66644e127b866a70a6c5"},
+    {"path": "src/moonvit_glue/merge.py", "sha256": "70330c09ee6fb3ace2150bcad1f50239cd7b160db290e933424586421413c756"},
+    {"path": "src/moonvit_glue/checkpointing.py", "sha256": "d9d63e4a9dc7a3c2a72be925eb071be5667ea28786bcee2bdd337875d2f0d49e"},
+    {"path": "tools/train_overfit.py", "sha256": "04d4dbc7d548b29ba5d086bcb8aa3a1830d2e03335462c3449f26effc586e385"},
+    {"path": "tools/eval_vlm.py", "sha256": "a5162b5a7c38eee10c424e7a23cce0da72c7dba252ef4df02451ba01cf7a9e30"},
+    {"path": "tools/train_qwen3b_proxy.py", "sha256": "5c12e09770543f994543d6f17f8c1e5b6bf18514a31bf92cb368d49576ed61e7"},
+    {"path": "tools/train_stripped_receiver_prior.py", "sha256": "6eba63ce327dd4cdb25d35b15c917aae2ca31690f755bbff27fdb0e9d05ddef1"},
+    {"path": "tools/gate_d_dgrad.py", "sha256": "00d6ad99b0e4876ea8679ca052b3b5863f572ad5fca3a8f7172423c3037829e7"},
+    {"path": "tools/gate_d_tiny_deepseek_e2e.py", "sha256": "f1e98bbb7c9617983c95d2fe20956c4069f769be8b0ad42174dbc939cd359d4d"}
+  ],
+  "answers": {
+    "qwen25_7b_actual_recent_trainer": "tools/train_stripped_receiver_prior.py",
+    "qwen25_7b_actual_recent_trainer_status": "diagnostic_only",
+    "nearest_shared_full_loop": "tools/train_overfit.py",
+    "formal_health_contract_reference": "tools/train_qwen3b_proxy.py",
+    "deepseek_loader_switch": "src/moonvit_glue/loaders.py::load_deepseek_flash_0731",
+    "deepseek_runtime_switch": "src/moonvit_glue/model.py::VisionCausalLM",
+    "multimodal_expansion": "src/moonvit_glue/merge.py::expand_image_placeholders",
+    "stripped_trainer_uses_vision_causal_lm": false,
+    "deepseek_loader_called_by_executable_tool": false,
+    "production_unified_trainer_exists": false,
+    "real_0731_end_to_end_verified": false,
+    "gate_d_status": "NO-GO"
+  },
+  "verified_software_seams": [
+    "placeholder_expansion",
+    "routing_input_ids",
+    "contiguous_position_ids",
+    "visual_label_mask",
+    "projector_input_gradient_on_tiny_deepseek",
+    "tiny_projector_optimizer_save_resume",
+    "tiny_deepseek_generate"
+  ],
+  "hard_blockers": [
+    "real_0731_resolved_weight_and_tokenizer_sha_manifest_load",
+    "target_nvfp4_or_fp8_multigpu_loader",
+    "finite_real_quantized_input_dgrad",
+    "full_hash_moe_image_forward_backward_and_routing",
+    "receiver_agnostic_health_stop_rollback_in_production_trainer",
+    "bound_checkpoint_resume_for_7b_and_deepseek",
+    "real_0731_prefill_decode_kv_cache_generate",
+    "fixed_four_condition_real_0731_benchmark",
+    "user_facing_real_deepseek_demo"
+  ],
+  "next_local_gate": {
+    "name": "qwen25_7b_formal_100_step_causal_screen",
+    "requires_before_run": [
+      "receiver_agnostic_health_probe",
+      "critical_stop_and_rollback",
+      "bound_checkpoint_resume",
+      "fixed_vision_blind_shuffled_random_evaluator"
+    ],
+    "checkpoint_steps": [0, 1, 2, 5, 10, 20, 30, 50, 75, 100],
+    "advance_to_500_only_if": "health_pass_and_both_causal_ci_lower_bounds_positive",
+    "advance_to_2000_only_if": "matched_500_step_candidate_passes_same_gate"
+  },
+  "paid_resource_boundary": "no_complete_0731_download_or_cloud_gpu_without_explicit_user_authorization"
+}

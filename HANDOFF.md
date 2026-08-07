@@ -1,21 +1,27 @@
 # Handoff
 
-## Current authority (2026-08-07)
+## Current authority (2026-08-08)
 
 Read [`docs/current-status.md`](docs/current-status.md) first for the live state and
 [`docs/architecture-matrix.md`](docs/architecture-matrix.md) for architecture IDs.
 The immutable evaluation rules remain in
 [`docs/qwen2.5-3b-community-eval-contract.md`](docs/qwen2.5-3b-community-eval-contract.md).
 The final target is `MoonViT-V2 → 4096 projector → DeepSeek-V4-Flash-0731`.
-Qwen2.5-3B is a low-cost pure-text proxy; exact K3 V2 and V1 family controls are
-the current local comparison. Gate D is **NO-GO**. The dedicated workstation
-pane is `moonvit:0.0`; use it for the next V100 screen and capture its logs.
+No checkpoint has been promoted. The full32 Qwen3.5 external-MoonViT V1/V2
+regression is complete and both versions fail the causal ScreenSpot50 gate. The
+Qwen2.5-7B full-public result is only a weak vision-vs-shuffled signal and fails
+vision-vs-blind. Gate D is **NO-GO**. The authoritative entrypoint and blocker
+map is [`docs/runtime-entrypoint-audit.md`](docs/runtime-entrypoint-audit.md).
+The dedicated workstation pane is `moonvit:0.0`; capture every V100 run.
 
 Token boundary already audited: Qwen2.5 `<|image_pad|>` is ID 151655 and its
 reserved rows are dummy pure-text initialization; DeepSeek `<｜image｜>` is ID
 129279 and is retained for Hash-MoE routing. Neither path extends the vocabulary.
 Qwen3.5 native token rows belong to a diagnostic receiver-prior control and never
 replace the pure-text Qwen contract.
+
+The text below is a chronological log. Any historical sentence phrased as “next” is
+superseded by this section and the runtime entrypoint audit.
 
 ## 2026-08-07 plain-language status and DeepSeek ETA
 
