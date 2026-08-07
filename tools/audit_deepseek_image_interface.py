@@ -212,7 +212,7 @@ def run_screen(*, out: Path, device: torch.device, seed: int, placeholder_token_
         and checks["position_ids_are_consumed"]
     )
     summary: dict[str, object] = {
-        "schema_version": "deepseek-v4-image-interface-screen-v1",
+        "schema_version": "deepseek-v4-image-interface-screen-v2",
         "status": "software_interface_pass_hardware_pending" if checks["pass"] else "software_interface_fail",
         "gate_d_status": "NO-GO",
         "interpretation": "Canonical placeholder expansion, routing IDs, contiguous positions, label masking, projector input-DGRAD, and tiny real DeepSeek-V4 consumption were checked. Full 0731 weights, runtime quantization, memory, and FP4/FP8 backward remain unverified.",
