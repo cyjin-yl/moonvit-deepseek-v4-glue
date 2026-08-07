@@ -14,17 +14,22 @@
       "status": "pending"
     },
     "qwen25_7b_v1": {
-      "attempts": 2,
+      "attempts": 3,
       "current_attempt": {
-        "attempt": 2,
+        "attempt": 3,
         "contract_examples_seen": 57600,
-        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v1_train_57600_retry2"
+        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v1_train_57600_retry3"
       },
       "failure_history": [
         {
           "artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v1_attempt1/FAILURE.json",
           "attempt": 1,
           "class": "implementation_config_mismatch"
+        },
+        {
+          "artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v1_attempt2/FAILURE.json",
+          "attempt": 2,
+          "class": "implementation_path_mismatch"
         }
       ],
       "result": null,
@@ -57,5 +62,5 @@
     }
   },
   "schema_version": "community-matrix-summary-v1",
-  "updated_at": "2026-08-07T19:12:22.479430+00:00"
+  "updated_at": "2026-08-08T00:00:00+00:00"
 }

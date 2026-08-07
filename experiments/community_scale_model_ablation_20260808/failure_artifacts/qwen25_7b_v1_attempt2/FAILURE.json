@@ -1,0 +1,26 @@
+{
+  "arm_id": "qwen25_7b_v1",
+  "attempt": 2,
+  "contract": {
+    "examples_seen_target": 57600,
+    "receiver": "Qwen2.5-7B-Instruct",
+    "steps": 900,
+    "tower": "MoonViT-SO-400M V1",
+    "trainable": "projector_only"
+  },
+  "failure": {
+    "capability_claim_allowed": false,
+    "exception": "FileNotFoundError: [Errno 2] No such file or directory: '/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/architecture_controls/local_v1_family_proxy/projector_initializations/step0/projector_config.json'",
+    "retry_action": "use canonical architecture_controls path under data/qwen3b_contract and rerun matched arm",
+    "stage": "trainer init projector loading"
+  },
+  "failure_class": "implementation_path_mismatch",
+  "raw_artifacts": {
+    "runtime_output_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v1_train_57600_retry2",
+    "train_log": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v1_attempt2/train.log",
+    "train_log_sha256": "ea31488d8928b36a256b3f1a8de5cf45272ade67e5072bc8de25b12aa3bf3005"
+  },
+  "recorded_at": "2026-08-07T19:22:42.706160+00:00",
+  "schema_version": "community-matrix-failure-v1",
+  "status": "failed_retryable"
+}
