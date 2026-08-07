@@ -1038,3 +1038,15 @@ Under the same frozen Qwen3.5 receiver, 32-sample projector-only budget, 16-toke
 `regression_baseline_matrix_v1.json` is the compact index for the fixed Qwen contract. It keeps the historical Qwen2.5-3B legacy-V2 row, Qwen2.5-7B exact-V2 full ScreenSpot, Qwen3.5-4B external V1/V2 GLM50 screens, the native-VLM positive control, and the 9B receiver-prior diagnostic separate. No row is promoted. V1 and V2 both fail the Qwen3.5 causal ScreenSpot gate; the version-only hypothesis is rejected. The 7B shuffle signal is not sufficient because blind remains competitive.
 
 Next local run: one DeepSeek-transferable placeholder/position, projector-scale, or image-vs-shuffle target variable with a matched CE-only control. Keep receiver, cache, order, budget and parser fixed; stop at ScreenSpot50 if either causal lower CI is not positive. Gate D remains NO-GO pending real 0731 weights, FP4/FP8 input gradients, full routing forward/backward, checkpoint round-trip and causal benchmark gains.
+## Scale screen result (2026-08-08)
+
+The preregistered Qwen3.5-4B external MoonViT V1 scale `0.03` CE-only arm finished
+finite, but vision and shuffled ScreenSpot50 generation became entirely unparseable
+(0% parse) while blind remained 100% parse. Click was `0%/2%/0%` for
+vision/blind/shuffled; paired CIs were `[-6,0]` and `[0,0]` percentage points. The raw
+training/evaluation/category artifacts are on the V100 data disk and the compact pointer
+is `qwen35-4b-v1-scale003-screen-pointer-20260808.json`.
+
+Decision: reject smaller scale as a usable improvement; do not expand full ScreenSpot or
+long training. Preserve scale `0.1` as matched reference and test placeholder/position or
+loss-mask semantics next. Gate D remains NO-GO.

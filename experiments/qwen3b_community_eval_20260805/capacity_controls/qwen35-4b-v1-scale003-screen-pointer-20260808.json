@@ -1,0 +1,63 @@
+{
+  "schema_version": "qwen35-4b-external-v1-scale-screen-pointer-v1",
+  "status": "reject_format_collapse",
+  "contract": "configs/qwen35-4b-external-v1-scale-screen-v1.json",
+  "receiver": "Qwen/Qwen3.5-4B",
+  "receiver_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "tower": "MoonViT-SO-400M V1 family proxy",
+  "tower_revision": "a889d399ff2306053e4e28d499d3b8f97d3e5007",
+  "native_vision_bypassed": true,
+  "projector_output_width": 4096,
+  "projector_scale": 0.03,
+  "training": {
+    "sample_manifest_count": 32,
+    "selected_indices": [0, 1, 2, 3, 4, 5, 6, 7],
+    "steps": 3,
+    "max_visual_tokens": 16,
+    "token_selection": "mean_pool",
+    "dtype": "bfloat16",
+    "learning_rate": 0.00005,
+    "ce_only": true,
+    "raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_4b_v1_scale003_ceonly_meanpool16_20260808",
+    "run_config_sha256": "d0bce6858223fccf3f30e783f1d68b5e0debf6a4a0e3b84813f9ae7d4bec7b7b",
+    "summary_sha256": "8cc72fb929e5aed102567c01c477f10c9bd81c97a4c9bec8c6a08d7031030cc9",
+    "health_sha256": "18360372e34bf03689b1cb295af25e1785e01269b37b3ec773b0aaeb184c66f5",
+    "final": {
+      "ce_loss": 7.443985462189,
+      "vision_minus_shuffle": 0.030637115241,
+      "projector_output_rms": 0.243644163013,
+      "between_image_rms": 0.00826510135,
+      "native_vision_forward_calls": 0,
+      "nan_or_inf": false
+    }
+  },
+  "evaluation": {
+    "dataset": "screenspot_glm50_v1",
+    "sample_count": 50,
+    "raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_4b_v1_scale003_screenspot_glm50_20260808",
+    "summary_sha256": "9d9188d46abbfb2c2c7c047f853ca8f38245ca905778f718b02a1cbd5de4c3d1",
+    "rows_sha256": "2ff960944ccd48d4f9f3bf64b2f8f3c0bc965e7d8526fa41c39edf8c9d33f4bb",
+    "category_raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_4b_v1_scale003_screenspot_glm50_categories_20260808",
+    "category_summary_sha256": "7cc93ed034d0bcb247e55dfeeb5fa39cdb93c6003c1d5f693eae919b01e997fe",
+    "artifact_manifest_sha256": "70966e0e7bf5429c95f43c37029b35421211fd840c1ca6d7eb020a8069966374",
+    "bootstrap_samples": 2000,
+    "bootstrap_seed": 20260805,
+    "conditions": {
+      "vision": {"parse_rate": 0.0, "click_in_box": 0.0, "accuracy_at_50": 0.0, "accuracy_at_100": 0.0, "accuracy_at_200": 0.0},
+      "blind": {"parse_rate": 1.0, "click_in_box": 0.02, "accuracy_at_50": 0.06, "accuracy_at_100": 0.10, "accuracy_at_200": 0.26},
+      "shuffled": {"parse_rate": 0.0, "click_in_box": 0.0, "accuracy_at_50": 0.0, "accuracy_at_100": 0.0, "accuracy_at_200": 0.0},
+      "random_projector": {"parse_rate": 1.0, "click_in_box": 0.04, "accuracy_at_50": 0.04, "accuracy_at_100": 0.06, "accuracy_at_200": 0.18}
+    },
+    "paired_click_ci": {
+      "vision_minus_blind": [-0.06, 0.0],
+      "vision_minus_shuffled": [0.0, 0.0]
+    }
+  },
+  "interpretation": "Scale 0.03 is numerically finite during three-step projector-only training, but generation collapses into an unparseable format for every vision and shuffled sample. The scale change therefore fails the fixed parse-rate gate before visual attribution can be considered; the lower CE at step 1 is not a capability signal.",
+  "decision": {
+    "previous_best_changed": false,
+    "capability_claim_allowed": false,
+    "deepseek_transfer_label": "transferable_with_runtime_validation",
+    "next_action": "reject scale003; keep scale01 matched reference and test placeholder/position or loss-mask semantics"
+  }
+}

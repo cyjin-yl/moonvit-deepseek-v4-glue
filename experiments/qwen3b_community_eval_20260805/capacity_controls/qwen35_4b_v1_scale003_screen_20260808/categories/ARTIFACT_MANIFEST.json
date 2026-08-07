@@ -1,0 +1,10 @@
+{
+  "files": [
+    {
+      "bytes": 159346,
+      "path": "CATEGORY_SUMMARY.json",
+      "sha256": "7cc93ed034d0bcb247e55dfeeb5fa39cdb93c6003c1d5f693eae919b01e997fe"
+    }
+  ],
+  "schema_version": "compact-artifact-manifest-v1"
+}

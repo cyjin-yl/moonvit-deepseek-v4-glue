@@ -19,6 +19,7 @@ def main() -> int:
         "qwen25_7b_exact_v2_full_public_margin05",
         "qwen25_7b_v1_teacher_forced_only",
         "qwen35_4b_external_v1_margin05_glm50",
+        "qwen35_4b_external_v1_scale003_ceonly_glm50",
         "qwen35_4b_external_v2_margin05_glm50",
         "qwen35_4b_native_vlm_positive_control",
         "qwen35_9b_stripped_native_short_probe",

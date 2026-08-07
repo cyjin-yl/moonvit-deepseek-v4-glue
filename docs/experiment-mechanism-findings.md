@@ -190,3 +190,13 @@ ScreenSpot50 没有形成能力增益：V1 CE-only vision click `0%`，V1 paired
 `regression_baseline_matrix_v1.json` is the machine-readable index for the current Qwen contract. It binds every row to its receiver, tower, evaluation scope and evidence pointer. The old Qwen2.5-3B full-public result is explicitly a legacy V2 proxy, not exact K3 V2; the native Qwen3.5 VLM remains a separate positive control. Qwen2.5-7B gives a weak positive vision-minus-shuffled click interval but fails vision-minus-blind, while Qwen3.5-4B external V1 and V2 both fail the 50-row causal gate.
 
 This is why a receiver response, lower CE, or positive teacher-forced margin cannot be promoted to visual ability. The next experiment changes one DeepSeek-transferable interface/scale/target-alignment variable and keeps a matched CE-only control; no replay or token-count sweep is opened before that causal screen improves.
+## Projector scale 0.03: numerical health is not generation validity
+
+The preregistered V1 scale screen changed only the projector runtime scale from `0.1` to
+`0.03`. Three projector-only steps remained finite and the final teacher-forced
+vision-minus-shuffle was `+0.0306`, but the fixed ScreenSpot50 parser returned zero parsed
+vision and shuffled samples. Blind stayed parseable at 100% and clicked 2%; vision,
+blind and shuffled click-in-box were `0%/2%/0%`, with paired CIs `[-6,0]` and `[0,0]`
+percentage points. The scale arm is therefore a format-collapse rejection, not a visual
+capability result. It reinforces the separation between training health, teacher-forced
+attribution and free-generation grounding.

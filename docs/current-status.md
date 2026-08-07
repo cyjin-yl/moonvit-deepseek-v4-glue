@@ -543,3 +543,20 @@ projector input-DGRAD 能进入接收器；真实 0731 权重仍要在 Gate D �
 统一索引见 `regression_baseline_matrix_v1.json`。它把 receiver、视觉塔、评测范围和证据指针绑定在一起：3B full-public 行明确是历史 legacy V2 proxy（不是 exact K3 V2）；7B exact V2 只有弱的 vision−shuffled 信号但 blind 仍不劣；Qwen3.5-4B external V1/V2 都没有通过 ScreenSpot50 因果门；原生 Qwen3.5 VLM 只作独立阳性对照。
 
 下一轮只预注册一个 DeepSeek 可迁移的 receiver-interface、placeholder/位置、输出尺度或 image-vs-shuffle 目标变量，并保留匹配 CE-only control。50 条 causal gate 不改善前，不扩展完整公共集或长训练。
+## Qwen3.5-4B V1 projector scale 0.03 screen（2026-08-08）
+
+在 V1、receiver、数据顺序、16-token mean-pool、BF16、3 steps 和学习率 `5e-5`
+完全不变的条件下，只把 projector runtime scale 从 `0.1` 改为 `0.03`，并保留
+匹配 CE-only 控制。训练本身 finite，末步 CE `7.4440`、teacher-forced
+vision−shuffle `+0.0306`、projector RMS `0.2436`；这些健康数字没有转化为能力。
+
+ScreenSpot50 的结果反而暴露了格式故障：vision 和 shuffled 的 parse rate 都为
+`0%`，blind 为 `100%`；vision/blind/shuffled click-in-box 为 `0%/2%/0%`，
+vision−blind click CI `[-6,0] pp`，vision−shuffled `[0,0] pp`。因此 scale `0.03`
+在生成层面把视觉条件推入了不可解析轨迹，直接违反 parse-rate gate；没有运行完整
+1,272 条公共集。原始训练 health、逐行生成、类别摘要和 SHA pointer 已保存，
+`capability_claim_allowed=false`。
+
+这条结果支持“projector 输出尺度是 receiver 接口的硬约束”，反驳“只要把尺度调小
+就能恢复视觉能力”。下一项不再继续扫 scale，而是转向 placeholder/位置或 loss-mask
+语义的单变量屏幕，并保留 scale `0.1` 的 CE-only matched control。
