@@ -2,7 +2,7 @@
 
 更新日期：2026-08-08
 
-> **live matrix execution (03:26 CST):** qwen25_7b_v1 的第三次、修正路径后的 57,600-examples projector-only 重跑已在 moonvit:qwen7_matrix_retry3 启动；V2 在其结束后自动接续。前两次仅为已提交的工程失败记录（配置语义比较、脚本路径错误），不计入能力结果。
+> **live matrix execution (03:26–03:41 CST):** qwen25_7b_v1 的修正路径重跑已成功加载 339 个 Qwen2.5-7B 分片和 V1 step0，但在 optimizer step 2（128 examples seen）触发 NaN/Inf health guard，已保存 failure checkpoint 与原始 health/log 记录并标为该合同的数值失败；前两次仅为工程失败。V2 仍在同一 pane 中等待后自动接续。
 
 ## 一句话结论
 

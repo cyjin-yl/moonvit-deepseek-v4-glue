@@ -1,0 +1,49 @@
+{
+  "arm_id": "qwen25_7b_v1",
+  "attempt": 3,
+  "contract": {
+    "conditions": [
+      "vision",
+      "blind",
+      "shuffled",
+      "random_projector"
+    ],
+    "examples_seen_target": 57600,
+    "global_batch": 64,
+    "receiver": "Qwen2.5-7B-Instruct",
+    "steps": 900,
+    "tower": "MoonViT-SO-400M V1",
+    "trainable": "projector_only",
+    "seed": 20260805
+  },
+  "failure": {
+    "capability_claim_allowed": false,
+    "exception": "RuntimeError: collapse/NaN health guard triggered at step 2",
+    "stage": "projector-only training",
+    "collapse_onset": {
+      "first_bad_optimizer_step": 2,
+      "last_healthy_optimizer_step": 1,
+      "examples_seen_first_bad": 128,
+      "health_fields": [
+        "has_nan_or_inf",
+        "projector_output_rms",
+        "receiver_output_rms",
+        "relative_spread"
+      ]
+    },
+    "diagnosis": "NaN/Inf occurred before any capability evaluation; no ScreenSpot result is valid for this attempt.",
+    "retry_action": "preserve immutable failure and test the next preregistered arm/receiver; do not resume from critical checkpoint"
+  },
+  "failure_class": "numerical_nan_early_collapse",
+  "raw_artifacts": {
+    "runtime_output_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v1_train_57600_retry3",
+    "failure_checkpoint": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v1_train_57600_retry3/failure-checkpoints/step-000002",
+    "train_log": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v1_attempt3/train.log",
+    "train_health": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v1_attempt3/train_health.jsonl",
+    "train_log_sha256": "85bfdba184701f84dc3d755a206b8b7ff72ebb4666be6e336a5587dbd79951c0",
+    "train_health_sha256": "fd0e88e4e20ab44f4dbd96dc7820314bd4b25a4c6da4a14c9cfa97d598523bd3"
+  },
+  "recorded_at": "2026-08-07T19:42:03.240837+00:00",
+  "schema_version": "community-matrix-failure-v1",
+  "status": "failed_nonretryable_contract"
+}
