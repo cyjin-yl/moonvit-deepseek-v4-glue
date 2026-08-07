@@ -1,6 +1,6 @@
 # Handoff
 
-> **Live run (2026-08-08 03:26–04:48 CST):** Qwen2.5-7B V1 retry4 loaded all 339 shards and V1 step0, then passed the former step-2 NaN point. Step1/2 losses are `12.7361/12.4078`; both health rows are finite, with step2 projector/receiver RMS ratios `3.0678/3.2231` and spread ratios `0.4167/0.4029`, so the hard guard remains false. This validates the FP32 projector/AdamW-state repair, not visual ability. The immutable step-2 snapshot is under `experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v1_retry4_step2/`; the 900-step run continues. V2 is still caching; Qwen3.5-4B was deferred before its first optimizer step to keep the single V100 scheduler deterministic.
+> **Live run (2026-08-08 03:26–04:55 CST):** Qwen2.5-7B V1 retry4 loaded all 339 shards and V1 step0, then passed the former step-2 NaN point. Step1/2 losses are `12.7361/12.4078`; both health rows are finite. By step17 (1,088 examples seen), loss is `3.3788` while projector/receiver RMS ratios reach `30.58/32.41`; the 50× critical guard has not fired, but this is a scale-growth warning, not visual ability. Immutable snapshots are under the `_step2/` and `_step17/` interim artifact directories. V2 is still caching; Qwen3.5-4B was deferred before its first optimizer step to keep the single V100 scheduler deterministic.
 
 ## Current authority (2026-08-08)
 

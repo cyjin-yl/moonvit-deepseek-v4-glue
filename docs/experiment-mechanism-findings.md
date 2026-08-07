@@ -35,6 +35,8 @@ state 从 FP16 改为 FP32。它在 step1/2（64/128 examples seen）均保持 f
 学会使用正确图片。原始两行 health、训练日志、validation manifest 与 SHA 清单保存在
 `experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v1_retry4_step2/`。
 
+截至 step17（1,088 examples seen），CE loss 继续下降到 `3.3788`，但 projector/receiver RMS ratio 已到 `30.58/32.41`；relative-spread ratio 仍为 `0.4605/0.4633`，且所有值 finite。这个轨迹把“loss 降低”和“表示尺度膨胀”同时展示出来：即使尚未触发 50× critical guard，也不能把它解释成视觉对齐。step17 的原始快照保存在 `experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v1_retry4_step17/`，后续要看它是否在前 100 steps 内触发自动止损或保持健康。
+
 ## 主线重置：用社区训练量做条件消融，而不是继续堆 verifier（2026-08-08）
 
 历史脚本、权重和数据 verifier 已经足够支撑可信实验；继续重复它们不会回答当前最重要的问题：视觉塔版本、
