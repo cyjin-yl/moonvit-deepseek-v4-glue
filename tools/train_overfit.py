@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import random
 import sys
 import time
@@ -414,6 +415,10 @@ def main() -> None:
     )
     cursor = progress.examples_seen
     training_started = time.time()
+    health_path = args.out / "train_health.jsonl"
+    if not args.resume:
+        health_path.write_text("", encoding="utf-8")
+    health_baseline = None
     for step in range(start_step + 1, args.steps + 1):
         if device.type == "cuda":
             torch.cuda.synchronize(device)
@@ -421,6 +426,8 @@ def main() -> None:
         batch, cursor = next_batch(train_records, cursor, effective_batch_size)
         optimizer.zero_grad(set_to_none=True)
         step_loss = 0.0
+        projector_rows = []
+        receiver_rows = []
         for record in batch:
             input_ids, labels, feature_groups, supervision = build_sample(
                 args,
@@ -434,17 +441,109 @@ def main() -> None:
                 answer_rng=rng if args.answer_selection == "random" else None,
                 feature_cache=feature_cache,
             )
+            projected = model.projector(feature_groups)
+            projected_tensor = projected[0]
+            receiver_tensor = (
+                model.receiver_adapter(projected_tensor)
+                if model.receiver_adapter is not None
+                else projected_tensor
+            )
+            projector_rows.append(projected_tensor.detach())
+            receiver_rows.append(receiver_tensor.detach())
             outputs = model(
                 input_ids=input_ids,
-                image_feature_groups=feature_groups,
+                image_embeddings=projected,
                 labels=labels,
             )
             (outputs.loss / accumulation_steps).backward()
             step_loss += float(outputs.loss) / accumulation_steps
             progress.record_microbatch(examples=1, answer_tokens=supervision["answer_tokens"])
+        grad_before_clip = float(
+            math.sqrt(
+                sum(
+                    float(parameter.grad.detach().float().pow(2).sum())
+                    for parameter in projector.parameters()
+                    if parameter.grad is not None
+                )
+            )
+        )
         torch.nn.utils.clip_grad_norm_(projector.parameters(), args.grad_clip)
+        grad_after_clip = float(
+            math.sqrt(
+                sum(
+                    float(parameter.grad.detach().float().pow(2).sum())
+                    for parameter in projector.parameters()
+                    if parameter.grad is not None
+                )
+            )
+        )
         optimizer.step()
         progress.record_optimizer_step()
+        with torch.no_grad():
+            projector_cat = torch.cat([row.reshape(-1, row.shape[-1]).float() for row in projector_rows])
+            receiver_cat = torch.cat([row.reshape(-1, row.shape[-1]).float() for row in receiver_rows])
+            projector_means = torch.stack([row.float().mean(dim=0) for row in projector_rows])
+            receiver_means = torch.stack([row.float().mean(dim=0) for row in receiver_rows])
+            projector_output_rms = float(projector_cat.pow(2).mean().sqrt())
+            receiver_output_rms = float(receiver_cat.pow(2).mean().sqrt())
+            between_image_rms = float(projector_means.std(dim=0).pow(2).mean().sqrt())
+            receiver_between_image_rms = float(receiver_means.std(dim=0).pow(2).mean().sqrt())
+            within_image_token_rms = float(torch.stack([
+                (row.float() - row.float().mean(dim=0, keepdim=True)).pow(2).mean().sqrt()
+                for row in projector_rows
+            ]).mean())
+            relative_spread = between_image_rms / max(projector_output_rms, 1e-12)
+            receiver_relative_spread = receiver_between_image_rms / max(receiver_output_rms, 1e-12)
+            if health_baseline is None:
+                health_baseline = {
+                    "projector_output_rms": projector_output_rms,
+                    "receiver_output_rms": receiver_output_rms,
+                    "relative_spread": relative_spread,
+                    "receiver_relative_spread": receiver_relative_spread,
+                }
+            health_row = {
+                "optimizer_step": step,
+                "examples_seen": progress.examples_seen,
+                "learning_rate": float(optimizer.param_groups[0]["lr"]),
+                "projector_output_rms": projector_output_rms,
+                "receiver_output_rms": receiver_output_rms,
+                "between_image_rms": between_image_rms,
+                "receiver_between_image_rms": receiver_between_image_rms,
+                "within_image_token_rms": within_image_token_rms,
+                "relative_spread": relative_spread,
+                "receiver_relative_spread": receiver_relative_spread,
+                "mean_direction_fraction": float(projector_means.mean(dim=0).norm() / projector_means.norm(dim=1).mean().clamp_min(1e-12)),
+                "projector_gradient_norm_before_clip": grad_before_clip,
+                "projector_gradient_norm_after_clip": grad_after_clip,
+                "ce_loss": step_loss,
+                "geometry_loss": 0.0,
+                "total_loss": step_loss,
+                "has_nan_or_inf": not all(torch.isfinite(row).all().item() for row in projector_rows + receiver_rows),
+            }
+            health_row["projector_output_rms_ratio"] = projector_output_rms / max(health_baseline["projector_output_rms"], 1e-12)
+            health_row["receiver_output_rms_ratio"] = receiver_output_rms / max(health_baseline["receiver_output_rms"], 1e-12)
+            health_row["projector_relative_spread_ratio"] = relative_spread / max(health_baseline["relative_spread"], 1e-12)
+            health_row["receiver_relative_spread_ratio"] = receiver_relative_spread / max(health_baseline["receiver_relative_spread"], 1e-12)
+            health_row["critical_guard"] = bool(
+                health_row["has_nan_or_inf"]
+                or health_row["projector_output_rms_ratio"] > 50.0
+                or health_row["receiver_output_rms_ratio"] > 50.0
+                or (step > 1 and health_row["projector_relative_spread_ratio"] < 0.25)
+                or (step > 1 and health_row["receiver_relative_spread_ratio"] < 0.25)
+                or not math.isfinite(grad_before_clip)
+            )
+        with health_path.open("a", encoding="utf-8") as stream:
+            stream.write(json.dumps(health_row, ensure_ascii=False) + "\n")
+        if health_row["critical_guard"]:
+            failure_dir = save_training_checkpoint(
+                directory=args.out / "failure-checkpoints" / f"step-{step:06d}",
+                projector=projector,
+                optimizer=optimizer,
+                step=step,
+                history=history,
+                rng=rng,
+            )
+            raise RuntimeError(f"collapse/NaN health guard triggered at step {step}: {failure_dir}")
         if device.type == "cuda":
             torch.cuda.synchronize(device)
         step_wall_seconds = time.time() - step_started
