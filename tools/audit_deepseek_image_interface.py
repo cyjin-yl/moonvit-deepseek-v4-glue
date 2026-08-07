@@ -59,6 +59,18 @@ def build_model(*, seed: int, device: torch.device, placeholder_token_id: int) -
     language_model = DeepseekV4ForCausalLM(
         tiny_config(vocab_size=max(64, placeholder_token_id + 1))
     ).to(device=device, dtype=torch.float32)
+    # Random tiny configs initialise every tid2eid entry to zero.  That default
+    # makes routing-ID plumbing observationally inert, so install a frozen,
+    # non-degenerate table solely for this software interface screen.
+    with torch.no_grad():
+        token_ids = torch.arange(language_model.config.vocab_size, device=device)
+        for layer in language_model.model.layers:
+            if not layer.mlp.is_hash:
+                continue
+            expert_count = int(layer.mlp.gate.num_experts)
+            top_k = int(layer.mlp.gate.top_k)
+            columns = [((token_ids + offset) % expert_count) for offset in range(top_k)]
+            layer.mlp.gate.tid2eid.copy_(torch.stack(columns, dim=-1))
     projector = PatchMergerProjector(
         ProjectorConfig(vision_width=3, language_width=32, merge_factor=1, projector_width=8)
     ).to(device=device, dtype=torch.float32)
@@ -186,9 +198,19 @@ def run_screen(*, out: Path, device: torch.device, seed: int, placeholder_token_
         placeholder_token_id=placeholder_token_id,
         image_token_count=3,
     )
+    routing_delta = _max_abs(canonical.logits, route_ablated.logits)
+    position_delta = _max_abs(canonical.logits, position_ablated.logits)
     checks["projector_gradient_finite_nonzero"] = bool(projector_grad_finite and projector_grad_norm > 0)
     checks["language_gradient_all_none"] = all(parameter.grad is None for parameter in model.language_model.parameters())
-    checks["pass"] = bool(checks["pass"] and checks["projector_gradient_finite_nonzero"] and checks["language_gradient_all_none"])
+    checks["routing_ids_are_consumed"] = bool(routing_delta > 0)
+    checks["position_ids_are_consumed"] = bool(position_delta > 0)
+    checks["pass"] = bool(
+        checks["pass"]
+        and checks["projector_gradient_finite_nonzero"]
+        and checks["language_gradient_all_none"]
+        and checks["routing_ids_are_consumed"]
+        and checks["position_ids_are_consumed"]
+    )
     summary: dict[str, object] = {
         "schema_version": "deepseek-v4-image-interface-screen-v1",
         "status": "software_interface_pass_hardware_pending" if checks["pass"] else "software_interface_fail",
@@ -201,13 +223,14 @@ def run_screen(*, out: Path, device: torch.device, seed: int, placeholder_token_
             "image_label_policy": "ignore_index_-100",
             "canonical_projector_width": 4096,
             "tiny_receiver_hidden_size": 32,
+            "tiny_hash_route_table": "tid2eid[token, k] = (token + k) mod num_experts",
         },
         "checks": checks,
         "causal_interface_screen": {
-            "routing_id_ablation_max_abs_logit_delta": _max_abs(canonical.logits, route_ablated.logits),
-            "position_id_ablation_max_abs_logit_delta": _max_abs(canonical.logits, position_ablated.logits),
-            "routing_ids_are_consumed": bool(_max_abs(canonical.logits, route_ablated.logits) > 0),
-            "position_ids_are_consumed": bool(_max_abs(canonical.logits, position_ablated.logits) > 0),
+            "routing_id_ablation_max_abs_logit_delta": routing_delta,
+            "position_id_ablation_max_abs_logit_delta": position_delta,
+            "routing_ids_are_consumed": bool(routing_delta > 0),
+            "position_ids_are_consumed": bool(position_delta > 0),
         },
         "forward_backward": {
             "loss": float(outputs.loss.detach().cpu()),

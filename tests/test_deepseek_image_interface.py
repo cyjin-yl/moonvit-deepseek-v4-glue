@@ -27,3 +27,10 @@ def test_interface_screen_merge_invariants_are_explicit_and_frozen():
     assert checks["pass"] is True
     assert merged.routing_input_ids.tolist() == [[1, placeholder, placeholder, placeholder, 5, 7, 2]]
     assert merged.position_ids.tolist() == [[0, 1, 2, 3, 4, 5, 6]]
+
+
+def test_tiny_hash_router_table_is_non_degenerate_for_route_ablation():
+    placeholder = 63
+    model = build_model(seed=20260805, device=torch.device("cpu"), placeholder_token_id=placeholder)
+    router = model.language_model.model.layers[0].mlp.gate
+    assert router.tid2eid[placeholder].tolist() != router.tid2eid[1].tolist()

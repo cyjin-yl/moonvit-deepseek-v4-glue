@@ -1,0 +1,25 @@
+{
+  "schema_version": "deepseek-v4-image-interface-screen-prereg-v2",
+  "experiment": "local_software_interface_screen_v2",
+  "created": "2026-08-07",
+  "repairs": {
+    "excluded_run": "local_software_interface_screen_v1_20260807",
+    "failure": "The random tiny DeepSeek config initialized every tid2eid entry to zero, so the v1 routing-ID ablation was mathematically inert. The v1 summary also omitted this causal check from its aggregate pass condition.",
+    "change": "Install a deterministic non-degenerate synthetic hash table before forward and require both routing-ID and position-ID ablation deltas to be strictly positive."
+  },
+  "seed": 20260805,
+  "placeholder_token_id": 129279,
+  "position_policy": "expanded_contiguous",
+  "routing_policy": "repeat_placeholder_id_over_image_span",
+  "tiny_hash_route_table": "tid2eid[token, k] = (token + k) mod num_experts",
+  "image_label_policy": "ignore_index_-100",
+  "image_token_count": 3,
+  "hard_pass_conditions": [
+    "all merge invariants pass",
+    "projector gradient is finite and nonzero",
+    "all frozen language gradients are absent",
+    "routing-ID ablation changes logits with inputs_embeds held fixed",
+    "position-ID ablation changes logits with inputs_embeds and routing IDs held fixed"
+  ],
+  "interpretation_rule": "A pass is software seam evidence using a synthetic tiny route table. It does not pass Gate D and cannot substitute for the full checkpoint tid2eid table, full DeepSeek-V4-Flash-0731 loading, real FP4/FP8 input-gradient, memory/throughput, checkpoint recovery, or real-image capability evaluation."
+}
