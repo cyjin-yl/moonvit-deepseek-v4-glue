@@ -1,0 +1,112 @@
+{
+  "schema_version": "qwen35-4b-moonvit-v1-full32-repair-pointer-v1",
+  "status": "verified_diagnostic_reject",
+  "parent_contract": "configs/qwen35-4b-moonvit-v1-vs-v2-ablation-v1.json",
+  "repair_contract": "configs/qwen35-4b-moonvit-v1-full32-repair-v1.json",
+  "execution_correction": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen35-v1-execution-contract-correction-20260808.json",
+  "supersedes_for_matched_v1_v2_comparison": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen35-4b-moonvit-v1-ablation-pointer-20260808.json",
+  "old_pointer_preserved_as": "eight_row_pilot",
+  "receiver": {
+    "repo_id": "Qwen/Qwen3.5-4B",
+    "resolved_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "frozen": true,
+    "native_vision_bypassed": true,
+    "native_vision_forward_calls": 0,
+    "receiver_width": 2560,
+    "canonical_adapter": "fixed_grouped_signed_projection(4096->2560, seed=20260806)"
+  },
+  "tower": {
+    "repo_id": "moonshotai/MoonViT-SO-400M",
+    "resolved_revision": "a889d399ff2306053e4e28d499d3b8f97d3e5007",
+    "vision_width": 1152,
+    "projector_variant": "legacy_pre_norm",
+    "projector_output_width": 4096
+  },
+  "training": {
+    "sample_manifest_count": 32,
+    "sample_indices": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
+    "rows_per_optimizer_step": 32,
+    "optimizer_steps": 3,
+    "max_visual_tokens": 16,
+    "token_selection": "mean_pool",
+    "projector_scale": 0.1,
+    "learning_rate": 0.00005,
+    "dtype": "bfloat16",
+    "ce_only": {
+      "raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_4b_v1_full32_ceonly_meanpool16_20260808",
+      "run_config_sha256": "a5e4f750e34e110939ccf649574de36efe1e6b5d2338f9442feaba3fb99e3550",
+      "summary_sha256": "b427cb9ded9c512e8421127ede43bd885d1e8b66c745088ebec93ce9562ae077",
+      "health_sha256": "f6f10a5707322f9f6e79b8e599a3492a530f16321c5ccfd632b11b0564097e55",
+      "final": {
+        "ce_loss": 7.2772,
+        "vision_minus_shuffle": 0.0008,
+        "native_vision_forward_calls": 0,
+        "nan_or_inf": false
+      }
+    },
+    "paired_margin05": {
+      "raw_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/capacity_controls/qwen35_4b_v1_full32_margin05_meanpool16_20260808",
+      "run_config_sha256": "195068914b055f19c147b3dea8d0fc3cfd5d2067db83c76804f3ad2a21cacfff",
+      "summary_sha256": "164705d67a57c0063c94d3bc42805dc87d1d1e800f9b07f8aab6d1f9310edba5",
+      "health_sha256": "c0f1fbcb6a4b04db78ca84906edd3dde606e8fbe42dd7fce9eacdc516eef5c1b",
+      "final": {
+        "ce_loss": 8.0425,
+        "vision_minus_shuffle": -0.0153,
+        "native_vision_forward_calls": 0,
+        "nan_or_inf": false
+      }
+    }
+  },
+  "evaluation": {
+    "dataset": "screenspot_glm50_v1",
+    "sample_count": 50,
+    "bootstrap_samples": 2000,
+    "bootstrap_seed": 20260805,
+    "roles": {
+      "step0": {
+        "summary_sha256": "9c22bbcec263d326c02fa1b6bf9b74c4a698546196e85230dd3435eaed867e3c",
+        "rows_sha256": "4bcbae9f5c61c8fcb424f93f9323220bac1b223fa5c590d0ceb5f237d84b4365",
+        "vision": {"parse_rate": 1.0, "click": 0.02, "accuracy_at_50": 0.02, "accuracy_at_100": 0.08, "accuracy_at_200": 0.20},
+        "blind": {"parse_rate": 1.0, "click": 0.02, "accuracy_at_50": 0.06, "accuracy_at_100": 0.10, "accuracy_at_200": 0.26},
+        "shuffled": {"parse_rate": 1.0, "click": 0.00, "accuracy_at_50": 0.02, "accuracy_at_100": 0.06, "accuracy_at_200": 0.14},
+        "paired_click_ci": {"vision_minus_blind": [-0.06, 0.06], "vision_minus_shuffled": [0.0, 0.06]}
+      },
+      "ce_only_full32": {
+        "summary_sha256": "ec73f14305bfc31a0482f8983dfbbda48b71d3b42046b450aa0c7ee368bfd73f",
+        "rows_sha256": "0bc86952b26d10f784fc7361c53f29f6d50b1aa02a3c0fc031edc4843b3adf13",
+        "category_summary_sha256": "32796b168e29f1657e2941f7fc81b7382e8afb78347c4862490e10723150ee36",
+        "vision": {"parse_rate": 1.0, "click": 0.02, "accuracy_at_50": 0.02, "accuracy_at_100": 0.06, "accuracy_at_200": 0.10},
+        "blind": {"parse_rate": 1.0, "click": 0.02, "accuracy_at_50": 0.06, "accuracy_at_100": 0.10, "accuracy_at_200": 0.26},
+        "shuffled": {"parse_rate": 1.0, "click": 0.02, "accuracy_at_50": 0.02, "accuracy_at_100": 0.06, "accuracy_at_200": 0.08},
+        "paired_click_ci": {"vision_minus_blind": [-0.06, 0.06], "vision_minus_shuffled": [0.0, 0.0]}
+      },
+      "paired_margin05_full32": {
+        "summary_sha256": "f8b66863a0820f95eca2fd413d88289a8b32d9408cd8d4752957e9c57e2ddb95",
+        "rows_sha256": "f95e4d7bfe261b08d0b20b88b1c51b600b0825f19226c08ed937371abf208894",
+        "category_summary_sha256": "f2c199bab18816167ad688d444b4a1d2dc14cda5fda8c99ef7cbaf51ecf94c84",
+        "vision": {"parse_rate": 1.0, "click": 0.02, "accuracy_at_50": 0.00, "accuracy_at_100": 0.10, "accuracy_at_200": 0.22},
+        "blind": {"parse_rate": 1.0, "click": 0.02, "accuracy_at_50": 0.06, "accuracy_at_100": 0.10, "accuracy_at_200": 0.26},
+        "shuffled": {"parse_rate": 1.0, "click": 0.00, "accuracy_at_50": 0.02, "accuracy_at_100": 0.10, "accuracy_at_200": 0.20},
+        "paired_click_ci": {"vision_minus_blind": [-0.06, 0.06], "vision_minus_shuffled": [0.0, 0.06]}
+      }
+    }
+  },
+  "matched_v2_reference": {
+    "pointer": "experiments/qwen3b_community_eval_20260805/capacity_controls/qwen35-4b-external-moonvit-ablation-pointer-20260808.json",
+    "training_rows_per_step": 32,
+    "paired_margin05": {
+      "vision_click": 0.04,
+      "blind_click": 0.02,
+      "shuffled_click": 0.04,
+      "vision_minus_blind_ci": [-0.04, 0.10],
+      "vision_minus_shuffled_ci": [0.0, 0.0]
+    }
+  },
+  "interpretation": "After repairing the V1 execution to use all 32 preregistered records, both CE-only and paired-margin remain finite and parseable but fail the paired causal ScreenSpot gate. The margin arm reaches 2% vision click versus 2% blind and 0% shuffled; its vision-minus-shuffled CI starts at zero and vision-minus-blind crosses zero. V1 still does not rescue grounding, now under a genuinely matched training budget.",
+  "promotion": {
+    "previous_best_changed": false,
+    "capability_claim_allowed": false,
+    "expand_full_public": false,
+    "deepseek_transfer_label": "transferable_with_runtime_validation"
+  }
+}

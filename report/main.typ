@@ -2157,7 +2157,7 @@ the same ScreenSpot parser and paired CIs will be used for that table and for tr
 
 #heading[Qwen3.5-4B MoonViT V1/V2 回归]
 
-在相同冻结 receiver、32 条真实答案训练 probe、16-token mean-pool、projector-only 预算和 50 条 ScreenSpot 合同下，V1 CE-only 的 vision click-in-box 为 `0%`，V1 paired-margin 为 `2%`；两者 blind 均为 `2%`。V1 paired-margin 的 vision-minus-blind click CI 为 `[-6,+6]` 个百分点，vision-minus-shuffled 为 `[0,0]` 个百分点，严格门槛仍未通过。匹配的 V2 paired-margin reference 为 vision `4%`、blind `2%`、shuffled `4%`，同样没有正的因果下界。V1 没有救活 external MoonViT，版本差异不再是首要故障解释。
+执行审计发现首次 V1 runner 只使用索引 `0–7`，而冻结合同和 V2 reference 使用 `0–31`；旧结果降级为 8-row pilot。修复合同预先提交后，V1 CE-only 与 paired-margin 用全部 32 条固定记录重跑。full32 CE-only 的 vision/blind/shuffled click-in-box 为 `2%/2%/2%`；paired-margin 为 `2%/2%/0%`。paired-margin 的 vision-minus-blind click CI 为 `[-6,+6]` 个百分点，vision-minus-shuffled 为 `[0,+6]` 个百分点，严格门槛仍未通过。匹配的 full32 V2 paired-margin reference 为 `4%/2%/4%`，也没有正的 shuffle 因果下界。V1 没有救活 external MoonViT，版本差异不再是首要故障解释。
 #heading[固定 baseline matrix 与下一步]
 
 `regression_baseline_matrix_v1.json` binds the comparable rows to one receiver/tower/evaluation contract. Qwen3.5-4B external V1 and V2 both fail the causal ScreenSpot50 gate: neither has a positive lower confidence bound for both vision-minus-blind and vision-minus-shuffled click-in-box. Qwen2.5-7B exact V2 has only a weak shuffle attribution and fails the blind comparison. The old Qwen2.5-3B full-public row is marked as a legacy V2 proxy, not exact K3 V2; the native Qwen3.5 VLM is a separate positive control.

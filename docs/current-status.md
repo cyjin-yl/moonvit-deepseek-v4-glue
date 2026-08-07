@@ -528,16 +528,16 @@ projector input-DGRAD 能进入接收器；真实 0731 权重仍要在 Gate D �
 
 ## Qwen3.5-4B MoonViT V1/V2 回归（2026-08-08）
 
-在同一冻结 Qwen3.5-4B receiver、同一固定 32 条训练 probe、同一 50 条 GLM-format ScreenSpot、同一 16-token mean-pool、同一 projector-only 预算下，重新训练了 V1 family proxy 的 CE-only 与 paired-margin 两条臂，并与已完成的 exact K3/MoonViT-V2 表严格匹配。
+首次 V1 执行遗漏了显式 `--sample-indices`，实际只训练索引 `0–7`，而冻结合同和 V2 reference 使用 `0–31`。旧结果完整保留为 8-row pilot，不再承担 matched V1/V2 结论。修复合同在结果产生前提交，随后按同一冻结 Qwen3.5-4B receiver、32 条训练 probe、50 条 GLM-format ScreenSpot、16-token mean-pool、scale `0.1` 和 3-step projector-only 预算重跑 V1 CE-only 与 paired-margin。
 
 | arm | vision click | blind click | shuffled click | vision−blind click CI | vision−shuffled click CI | 判定 |
 |---|---:|---:|---:|---|---|---|
 | V1 step0 | 2% | 2% | 0% | `[-6,+6] pp` | `[0,+6] pp` | 未通过 |
-| V1 CE-only | 0% | 2% | 0% | `[-6,0] pp` | `[0,0] pp` | 未通过 |
-| V1 paired-margin | 2% | 2% | 2% | `[-6,+6] pp` | `[0,0] pp` | 未通过 |
+| V1 full32 CE-only | 2% | 2% | 2% | `[-6,+6] pp` | `[0,0] pp` | 未通过 |
+| V1 full32 paired-margin | 2% | 2% | 0% | `[-6,+6] pp` | `[0,+6] pp` | 未通过 |
 | V2 paired-margin reference | 4% | 2% | 4% | `[-4,+10] pp` | `[0,0] pp` | 未通过 |
 
-三条 V1 运行均 parse 率 100%，训练 finite；paired-margin 末步 teacher-forced vision−shuffle 为 `+0.0547`，但没有转化成可靠 grounding。V1 没有改善 V2，版本差异暂时排除为首要故障解释。完整 ScreenSpot、VQA/OCR 不扩展到这组诊断性拒绝结果；原始训练、逐行生成、类别摘要、cache manifest 和 verifier 已保存。
+修复后的 V1 两臂均 parse 率 100%、训练 finite；CE-only 末步 teacher-forced vision−shuffle 为 `+0.0008`，paired-margin 为 `-0.0153`。paired-margin 虽有 2% 对 0% 的 vision−shuffle click 点差，但 CI 下界仍为 0，且 vision 不优于 blind。真正 matched 的 full32 结果仍然否决“V1 版本即可救活 grounding”；完整 1,272 条 ScreenSpot、VQA/OCR 不扩展。原始训练、逐行生成、类别摘要、cache manifest 和独立 verifier 已保存。
 ## 固定 baseline matrix（2026-08-08）
 
 统一索引见 `regression_baseline_matrix_v1.json`。它把 receiver、视觉塔、评测范围和证据指针绑定在一起：3B full-public 行明确是历史 legacy V2 proxy（不是 exact K3 V2）；7B exact V2 只有弱的 vision−shuffled 信号但 blind 仍不劣；Qwen3.5-4B external V1/V2 都没有通过 ScreenSpot50 因果门；原生 Qwen3.5 VLM 只作独立阳性对照。

@@ -42,6 +42,11 @@ def main() -> int:
             assert row["scope"] == "positive_control_separate"
         if row["id"] == "qwen25_3b_legacy_v2_full_public_previous_best":
             assert "legacy" in row["tower"] and "not exact K3" in row["tower"]
+        if row["id"] == "qwen35_4b_external_v1_margin05_glm50":
+            assert row["training_rows_per_optimizer_step"] == 32
+            assert "full32-repair" in row["evidence"]
+        if row["id"] == "qwen35_4b_external_v1_scale003_ceonly_glm50":
+            assert row["training_rows_per_optimizer_step"] == 8
     assert data["gate_d"]["status"] == "NO-GO"
     print(json.dumps({"verified": True, "rows": len(data["rows"]), "gate_d": "NO-GO"}))
     return 0

@@ -180,9 +180,9 @@ tiny synthetic route 结果只证明 wrapper 传递了 placeholder/routing/posit
 
 ## Qwen3.5-4B：MoonViT V1/V2 回归对照（2026-08-08）
 
-固定 receiver、数据顺序、32 条真实答案训练 probe、16-token mean-pool、projector scale `0.1`、BF16、3 steps 和 50 条 ScreenSpot 合同，只替换 V1/V2 视觉塔与对应 projector。V1 的 projector 健康，CE-only 和 paired-margin 都 finite；paired-margin 末步 teacher-forced vision−shuffle 为 `+0.0547`。
+执行审计发现首次 V1 runner 只使用索引 `0–7`，而 V2 使用完整 `0–31`；旧 V1 结果因此降级为 8-row pilot。按预注册修复合同重跑后，V1 与 V2 现在真正共享 32 条真实答案训练 probe、16-token mean-pool、projector scale `0.1`、BF16、3 steps 和 50 条 ScreenSpot 合同。full32 V1 CE-only 和 paired-margin 都 finite，末步 teacher-forced vision−shuffle 分别为 `+0.0008` 与 `-0.0153`。
 
-ScreenSpot50 没有形成能力增益：V1 CE-only vision click `0%`，V1 paired-margin `2%`，blind 都是 `2%`；V1 paired-margin 的 vision−blind click CI 为 `[-6,+6] pp`，vision−shuffled 为 `[0,0] pp`。exact V2 paired-margin reference 为 vision `4%`、blind `2%`、shuffled `4%`，同样没有正的 paired causal CI。
+ScreenSpot50 仍没有形成能力增益：V1 full32 CE-only 的 vision/blind/shuffled click 为 `2%/2%/2%`；paired-margin 为 `2%/2%/0%`。paired-margin 的 vision−blind click CI 为 `[-6,+6] pp`，vision−shuffled 为 `[0,+6] pp`。exact V2 paired-margin reference 为 `4%/2%/4%`，同样没有正的 paired causal CI 下界。
 
 这条回归反驳“换回社区 V1 就能直接修复当前失败”。当前优先级转向 receiver-facing 分布对齐、视觉 token 监督/位置和输入尺度；V1 仍保留为 DeepSeek runtime validation 的可迁移架构候选，不进入 previous best。
 ## Fixed regression baseline matrix

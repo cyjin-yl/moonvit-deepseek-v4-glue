@@ -1,0 +1,50 @@
+{
+  "schema_version": "stripped-receiver-prior-train-v1",
+  "status": "diagnostic_only",
+  "trajectory": [
+    {
+      "optimizer_step": 0,
+      "ce_loss": 8.20712661743164,
+      "vision_minus_shuffle": 0.01650853455066681,
+      "projector_output_rms": 0.19883482158184052,
+      "between_image_rms": 0.011234779842197895,
+      "projector_gradient_norm_before_clip": 1138.6119384765625,
+      "native_vision_forward_calls": 0,
+      "nan_or_inf": false
+    },
+    {
+      "optimizer_step": 1,
+      "ce_loss": 8.041646957397461,
+      "vision_minus_shuffle": -0.018042445182800293,
+      "projector_output_rms": 0.2080451101064682,
+      "between_image_rms": 0.011274559423327446,
+      "projector_gradient_norm_before_clip": 1026.3734130859375,
+      "native_vision_forward_calls": 0,
+      "nan_or_inf": false
+    },
+    {
+      "optimizer_step": 2,
+      "ce_loss": 7.730383396148682,
+      "vision_minus_shuffle": 0.013639241456985474,
+      "projector_output_rms": 0.2219606637954712,
+      "between_image_rms": 0.011328737251460552,
+      "projector_gradient_norm_before_clip": 802.1710205078125,
+      "native_vision_forward_calls": 0,
+      "nan_or_inf": false
+    },
+    {
+      "optimizer_step": 3,
+      "ce_loss": 7.277194976806641,
+      "vision_minus_shuffle": 0.0007931441068649292,
+      "projector_output_rms": 0.23744773864746094,
+      "between_image_rms": 0.01140395924448967,
+      "projector_gradient_norm_before_clip": null,
+      "native_vision_forward_calls": 0,
+      "nan_or_inf": false
+    }
+  ],
+  "native_vision_forward_calls": 0,
+  "capability_claim_allowed": false,
+  "deepseek_transfer_label": "transferable_with_runtime_validation",
+  "wall_seconds": 189.85501163220033
+}
