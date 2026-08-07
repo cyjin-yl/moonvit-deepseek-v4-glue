@@ -10,6 +10,21 @@ MoonViT 特征可以经过 canonical 4096 projector 注入纯文本 Qwen2.5 和 
 
 项目已经从“接口能否运行”推进到“正确图片是否稳定改变答案”的阶段。还没有任何 checkpoint 满足正式晋升合同，`previous_best` 不变。
 
+## 新增数值机制记录：Qwen2.5-7B V1 step-2 NaN
+
+社区规模 V1 重跑在第一步完成了真实 7B forward/backward：loss 12.7393，projector
+gradient norm 259.8，裁剪后为 1.0，输出 RMS 0.199，relative spread
+0.0671，没有 NaN。第二个 optimizer step 的 projector/receiver 输出、loss 和梯度
+全部变成 NaN，hard health guard 在 128 examples seen 处停止并保存了
+failure-checkpoints/step-000002、optimizer/RNG state 和两行 health log。检查保存的
+optimizer state 后，exp_avg/exp_avg_sq 已经是 FP16 NaN；因此这不是“图片没有
+信息”的能力结论，而是 V100 上直接用 FP16 projector + AdamW state 跑 5e-4 的
+数值路径失败。冻结的 Qwen receiver 仍保持 FP16，projector 和 optimizer state 已改为
+FP32（视觉输出在 merge 边界再转成 receiver dtype），V1 retry4 将在 V2 后重跑。
+这个修复不改变视觉塔、数据、token、prompt、global batch 或学习率；它只消除
+低精度 optimizer state 的实现性混淆。该失败记录与 raw artifact 已提交到
+failure_artifacts/qwen25_7b_v1_attempt3/，不能写进能力排行榜。
+
 ## 主线重置：用社区训练量做条件消融，而不是继续堆 verifier（2026-08-08）
 
 历史脚本、权重和数据 verifier 已经足够支撑可信实验；继续重复它们不会回答当前最重要的问题：视觉塔版本、

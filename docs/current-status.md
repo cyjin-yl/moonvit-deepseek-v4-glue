@@ -2,7 +2,7 @@
 
 更新日期：2026-08-08
 
-> **live matrix execution (03:26–03:41 CST):** qwen25_7b_v1 的修正路径重跑已成功加载 339 个 Qwen2.5-7B 分片和 V1 step0，但在 optimizer step 2（128 examples seen）触发 NaN/Inf health guard，已保存 failure checkpoint 与原始 health/log 记录并标为该合同的数值失败；前两次仅为工程失败。V2 仍在同一 pane 中等待后自动接续。
+> **live matrix execution (03:26–03:41 CST):** qwen25_7b_v1 的修正路径重跑已成功加载 339 个 Qwen2.5-7B 分片和 V1 step0，但在 optimizer step 2（128 examples seen）触发 NaN/Inf health guard，已保存 failure checkpoint 与原始 health/log 记录并标为该合同的数值失败；前两次仅为工程失败。诊断显示 frozen LM 为 FP16 时 projector 与 AdamW state 也为 FP16，step1 梯度范数 259.8（裁剪到 1.0），随后 optimizer state 变成 NaN；已修复 trainer，使 FP16 receiver 默认使用 FP32 projector/optimizer state，V1 retry4 排在 V2 之后。V2 正在构建缓存。
 
 ## 一句话结论
 

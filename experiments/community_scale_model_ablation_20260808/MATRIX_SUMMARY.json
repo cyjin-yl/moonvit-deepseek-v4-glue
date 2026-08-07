@@ -14,13 +14,13 @@
       "status": "pending"
     },
     "qwen25_7b_v1": {
-      "attempts": 3,
+      "attempts": 4,
       "current_attempt": {
-        "attempt": 3,
-        "status": "failed",
-        "contract_examples_seen": 128,
-        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v1_train_57600_retry3",
-        "failure_artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v1_attempt3/FAILURE.json"
+        "attempt": 4,
+        "status": "queued_after_v2",
+        "contract_examples_seen": 57600,
+        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v1_train_57600_retry4",
+        "stability_fix": "projector float32 with frozen Qwen LM float16; optimizer state no longer FP16"
       },
       "failure_history": [
         {
@@ -40,7 +40,7 @@
         }
       ],
       "result": null,
-      "status": "failed"
+      "status": "retry_queued"
     },
     "qwen25_7b_v2": {
       "failure_history": [],
@@ -69,5 +69,5 @@
     }
   },
   "schema_version": "community-matrix-summary-v1",
-  "updated_at": "2026-08-07T19:42:03.364827+00:00"
+  "updated_at": "2026-08-07T19:51:27.658578+00:00"
 }
