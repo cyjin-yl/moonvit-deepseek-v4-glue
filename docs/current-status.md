@@ -6,6 +6,8 @@
 
 > **health-checkpoint repair (2026-08-08 05:08 CST):** V1 step33 暴露的 `checkpoint-every=64` 回滚缺口已修复进 `tools/train_overfit.py`：新鲜训练在 step0、1、2、5、10、20、30、50、75、100 及之后每50步保存完整 healthy checkpoint，failure checkpoint 写入 `STOP_REASON.json` 并记录最近回滚点。三组相关 pytest 在设置 `PYTHONPATH=src:tools` 后为 `12 passed`。
 
+> **Qwen2.5-7B V2 early training (2026-08-08 06:50 CST):** 339 个 Qwen2.5-7B 权重分片已加载，V2 projector-only 训练在 optimizer step 17（1,088 examples seen）仍 finite、无 NaN/Inf、未触发 guard。projector/receiver RMS ratio 为 `1.0033/1.0627`，relative-spread ratio 为 `1.0276/1.0246`，CE 为 `5.7442`；这证明 V2 暂时没有复现 V1 的早期尺度塌缩，但仍只是训练健康证据，不是视觉能力结果。原始 health/log/manifest/SHA 已保存于 `experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v2_early_health/`，训练继续运行。
+
 ## 一句话结论
 
 软件 glue 与代理训练链路已经跑通，真实视觉能力尚未建立，当前没有 checkpoint

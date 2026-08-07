@@ -14,6 +14,8 @@ MoonViT 特征可以经过 canonical 4096 projector 注入纯文本 Qwen2.5 和 
 
 Qwen2.5-7B V2 臂的 57,600 条训练特征已经完整写入并通过 manifest 校验：`requested=57600`、`cached=57600`、`failed=0`，75 个 safetensors 分片，29,999 次唯一 MoonViT forward，27,601 条同图记录通过 SHA-256 复用；manifest records SHA 为 `055d7f9dde1f65af576ace9fe3ee874a427bd9fac7770bc39137ae2b0dcc1ba7`。这证明 V2 数据缓存和身份合同可复现，但还没有产生任何视觉能力结论。当前只剩 ScreenSpot50 V2 cache 与 7B V2 projector-only 训练/评测。
 
+V2 训练随后加载完 339 个 Qwen2.5-7B 分片，在 step17（1,088 examples seen）保持 finite：projector/receiver RMS ratio `1.0033/1.0627`、spread ratio `1.0276/1.0246`、CE `5.7442`，未触发任何 critical guard。与 V1 step33 的 `receiver RMS ratio=50.7792` 健康失败相比，这是“V2 早期尺度稳定”的证据；它尚未回答正确图像是否优于 blind 或 shuffled。
+
 ## 新增数值机制记录：Qwen2.5-7B V1 step-2 NaN
 
 社区规模 V1 重跑在第一步完成了真实 7B forward/backward：loss 12.7393，projector

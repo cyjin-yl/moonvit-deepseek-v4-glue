@@ -6,6 +6,13 @@
 
 The trainer has since been repaired to save full healthy projector/optimizer/RNG checkpoints at the frozen early-node schedule and to write `STOP_REASON.json` on guard failure. The targeted checkpoint/health/projector tests pass (`12 passed` with `PYTHONPATH=src:tools`).
 
+The Qwen2.5-7B V2 arm has now loaded all 339 receiver shards and reached optimizer
+step 17 (1,088 examples seen) without NaN/Inf or a collapse guard. Projector and
+receiver RMS ratios are `1.0033/1.0627`, spread ratios `1.0276/1.0246`, and CE is
+`5.7442`. This is an early health result only; it is not a visual-capability claim.
+The frozen raw snapshot is under
+`experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v2_early_health/`.
+
 
 Read [`docs/current-status.md`](docs/current-status.md) first for the live state and
 [`docs/architecture-matrix.md`](docs/architecture-matrix.md) for architecture IDs.
