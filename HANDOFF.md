@@ -1,5 +1,7 @@
 # Handoff
 
+> **Live run (2026-08-08 03:26 CST):** the full-matrix Qwen2.5-7B V1 arm is running its corrected retry3 at 57,600 examples seen in moonvit:qwen7_matrix_retry3; the V2 arm is queued in moonvit:qwen7_v2_followon3. Attempts 1–2 are immutable engineering failures, not capability measurements.
+
 ## Current authority (2026-08-08)
 
 Read [`docs/current-status.md`](docs/current-status.md) first for the live state and

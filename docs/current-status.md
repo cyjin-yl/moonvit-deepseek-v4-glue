@@ -2,6 +2,8 @@
 
 更新日期：2026-08-08
 
+> **live matrix execution (03:26 CST):** qwen25_7b_v1 的第三次、修正路径后的 57,600-examples projector-only 重跑已在 moonvit:qwen7_matrix_retry3 启动；V2 在其结束后自动接续。前两次仅为已提交的工程失败记录（配置语义比较、脚本路径错误），不计入能力结果。
+
 ## 一句话结论
 
 软件 glue 与代理训练链路已经跑通，真实视觉能力尚未建立，当前没有 checkpoint
