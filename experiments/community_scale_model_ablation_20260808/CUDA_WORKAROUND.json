@@ -1,0 +1,35 @@
+{
+  "schema_version": "cuda-user-space-workaround-v1",
+  "recorded_at": "2026-08-07T16:10:02.364173+00:00",
+  "purpose": "Run V100 experiments without rebooting after kernel/user-space NVIDIA mismatch",
+  "observed_mismatch": {
+    "kernel_module": "580.159.04",
+    "system_user_space_nvml": "580.173.02"
+  },
+  "matching_runtime": {
+    "path": "/var/lib/flatpak/runtime/org.freedesktop.Platform.GL.nvidia-580-159-04/x86_64/1.4/9c86f95e8322dc6e6400bc6cc01ea7e5d492153d3eedbb15163b77185dc38c7d/files/lib",
+    "libcuda": "libcuda.so.580.159.04",
+    "libnvidia_ml": "libnvidia-ml.so.580.159.04",
+    "source": "installed Flatpak NVIDIA runtime"
+  },
+  "required_environment": {
+    "LD_LIBRARY_PATH": "/var/lib/flatpak/runtime/org.freedesktop.Platform.GL.nvidia-580-159-04/x86_64/1.4/9c86f95e8322dc6e6400bc6cc01ea7e5d492153d3eedbb15163b77185dc38c7d/files/lib:/usr/local/cuda/lib64",
+    "PYTORCH_NVML_BASED_CUDA_CHECK": "1"
+  },
+  "validation": {
+    "nvidia_smi": "GPU 0: Tesla V100-PCIE-32GB",
+    "torch_cuda_available": true,
+    "torch_device_count": 1,
+    "matmul_dtype": "float16",
+    "matmul_finite": true
+  },
+  "scope": "process-local only; no system symlink, module reload, display-manager stop, or reboot performed",
+  "active_run": {
+    "experiment": "qwen25_7b_v1 community-scale MoonViT V1 cache",
+    "tmux": "moonvit:0.0",
+    "log": "/tmp/community_v1_cache_57600.log",
+    "out": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/v1_cache_57600"
+  },
+  "rerun_prefix": "export LD_LIBRARY_PATH=/var/lib/flatpak/runtime/org.freedesktop.Platform.GL.nvidia-580-159-04/x86_64/1.4/9c86f95e8322dc6e6400bc6cc01ea7e5d492153d3eedbb15163b77185dc38c7d/files/lib:/usr/local/cuda/lib64; export PYTORCH_NVML_BASED_CUDA_CHECK=1",
+  "caveat": "Every CUDA process on this workstation must use this prefix until the system driver is synchronized."
+}\n
