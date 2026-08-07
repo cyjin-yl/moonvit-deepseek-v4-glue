@@ -352,7 +352,29 @@ def main() -> None:
         donor = PatchMergerProjector.from_pretrained(
             args.init_projector, device=device, dtype=dtype
         )
-        if donor.config != projector.config:
+        # None and an explicit flattened width are semantically identical.
+        # Compare effective structure so canonical step0 checkpoints remain reusable.
+        donor_signature = (
+            donor.config.vision_width,
+            donor.config.language_width,
+            donor.config.merge_factor,
+            donor.config.effective_projector_width,
+            donor.config.layer_norm_eps,
+            donor.config.output_norm,
+            donor.config.residual_mode,
+            donor.config.projector_variant,
+        )
+        projector_signature = (
+            projector.config.vision_width,
+            projector.config.language_width,
+            projector.config.merge_factor,
+            projector.config.effective_projector_width,
+            projector.config.layer_norm_eps,
+            projector.config.output_norm,
+            projector.config.residual_mode,
+            projector.config.projector_variant,
+        )
+        if donor_signature != projector_signature:
             raise ValueError(
                 f"init projector config differs: {donor.config} != {projector.config}"
             )

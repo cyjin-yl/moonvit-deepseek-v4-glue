@@ -1,0 +1,41 @@
+{
+  "arm_id": "qwen25_7b_v1",
+  "attempt": 1,
+  "cache": {
+    "aliased_records": 27601,
+    "count": 57600,
+    "manifest_path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/v1_cache_57600/MANIFEST.json",
+    "manifest_sha256": "2eb77c6da9a72d1225f00269e37e9feb46db69b727d3939e8a8a76248dfd7778",
+    "shards": 75,
+    "unique_feature_spans": 29999
+  },
+  "contract": {
+    "conditions": [
+      "vision",
+      "blind",
+      "shuffled",
+      "random_projector"
+    ],
+    "examples_seen_target": 57600,
+    "global_batch": 64,
+    "receiver": "Qwen2.5-7B-Instruct",
+    "steps": 900,
+    "tower": "MoonViT-SO-400M V1",
+    "trainable": "projector_only"
+  },
+  "failure": {
+    "capability_claim_allowed": false,
+    "exception": "ValueError: init projector config differs: ProjectorConfig(vision_width=1152, language_width=4096, merge_factor=4, projector_width=4608, layer_norm_eps=1e-05, output_norm='none', residual_mode='none', projector_variant='legacy_pre_norm') != ProjectorConfig(vision_width=1152, language_width=4096, merge_factor=4, projector_width=None, layer_norm_eps=1e-05, output_norm='none', residual_mode='none', projector_variant='legacy_pre_norm')",
+    "retry_action": "compare semantic projector configuration using effective_projector_width and rerun matched arm",
+    "stage": "trainer projector initialization validation"
+  },
+  "failure_class": "implementation_config_mismatch",
+  "raw_artifacts": {
+    "runtime_output_dir": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v1_train_57600",
+    "train_log": "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v1_attempt1/train.log",
+    "train_log_sha256": "55d126edf59d84884da6e3d66ee4f571ed2a0aa39878673986619976b7fc74bf"
+  },
+  "recorded_at": "2026-08-07T19:06:47.957080+00:00",
+  "schema_version": "community-matrix-failure-v1",
+  "status": "failed_retryable"
+}\n
