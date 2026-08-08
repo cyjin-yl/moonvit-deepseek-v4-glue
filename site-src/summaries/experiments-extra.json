@@ -28,7 +28,7 @@
       "path": "experiments/archive_cleanup_20260808/CHECKPOINT_UPLOAD_MANIFEST.json",
       "title": "checkpoint 云端归档与清理记录",
       "summary": "这份 manifest 记录了工作站 checkpoint payload 上传到 Hugging Face 的路径、提交 SHA、文件数和逐项大小核对结果。确认云端副本完整后，才删除本地二进制，保留轻量配置和日志。",
-      "conclusions": ["70 个文件、497,310,727 bytes，HF 路径/大小核对无缺失", "HF archive/checkpoints 是删除 payload 后的 canonical copy"],
+      "conclusions": ["84 个文件、1,302,790,146 bytes，HF 路径/大小核对无缺失；其中后续 7B capacity-control 归档新增 14 个文件、805,479,419 bytes", "HF archive/checkpoints 是删除 payload 后的 canonical copy"],
       "lessons": ["清理前先做不可变云端副本和机器核对", "不要把未上传的实验日志、数据和失败记录一起删除"],
       "tags": ["归档", "清理", "可复现"]
     },

@@ -184,7 +184,7 @@ Gate D = NO-GO。未完成的硬证据：
 - V100 synthetic/机制产物：experiments/v100_perception_20260804/；
 - Qwen proxy/health/benchmark：experiments/qwen3b_community_eval_20260805/；
 - checkpoint offload manifest：experiments/archive_cleanup_20260808/CHECKPOINT_UPLOAD_MANIFEST.json；
-- 已上传的 70 个 checkpoint payload：HF `archive/checkpoints/`（497,310,727 bytes，路径/大小逐项核对通过）。
+- 已上传的 84 个 checkpoint/late-capacity payload：HF `archive/checkpoints/`（1,302,790,146 bytes，路径/大小逐项核对通过）；其中 14 个后期 7B capacity-control 文件位于 `archive/checkpoints/late_capacity_controls/`。
 
 ### 11.1 Compact-history coverage audit
 

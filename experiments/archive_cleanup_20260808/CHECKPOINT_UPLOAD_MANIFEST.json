@@ -4,14 +4,25 @@
   "source_repo": "cyjin-yl/moonvit-deepseek-v4-glue",
   "hf_repo": "cyjin-yl/DeepSeek-V4-Flash-0731-Vision",
   "hf_path_prefix": "archive/checkpoints/",
-  "hf_commit": "7377b865c2c0e2638e52cd130f9e4098f055e00a",
-  "file_count": 70,
-  "bytes": 497310727,
+  "hf_commit": "76bc4afc4e8df9c072c42e4cb715cb9af011a594",
+  "file_count": 84,
+  "bytes": 1302790146,
   "verification": {
-    "remote_file_count": 70,
+    "remote_file_count": 84,
     "missing_files": 0,
     "size_mismatch": 0,
-    "method": "HfApi.list_repo_tree recursive path and byte-size comparison"
+    "method": "HfApi.list_repo_tree recursive path and byte-size comparison",
+    "late_capacity_controls": {
+      "file_count": 14,
+      "bytes": 805479419,
+      "commits": [
+        "2b75e5fe0031b0d5424e39e86094b3b04c103797",
+        "b932091e3856275be3b6f77d4912a735c3ced1df",
+        "76bc4afc4e8df9c072c42e4cb715cb9af011a594"
+      ],
+      "path_prefix": "archive/checkpoints/late_capacity_controls/",
+      "sha256_scope": "local late-capacity-control files listed in this manifest update"
+    }
   },
   "deleted_from_workstation": [
     "checkpoints/ (all local 0.5B/Smol projector checkpoint files)",
