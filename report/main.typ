@@ -2242,3 +2242,6 @@ OCRBench/language-retention 的节点曲线。健康指标、loss 或 teacher-fo
 都不能单独升级为视觉能力声明。
 同一最终 checkpoint 的多任务 selection（TextVQA、DocVQA、OCRBench 各 8 条）也已完成。TextVQA soft VQA 为 vision/blind/shuffled/random `0.125/0/0.125/0`，DocVQA ANLS 为 `0.12/0/0.12/0`，OCRBench exact match 四条件全为 `0`。vision 与 shuffled 打平，故不能将非零分数解释为正确图片 grounding；原始报告、CSV、SVG 和 SHA pointer 为 `qwen25_7b_v2_multitask_final_limit8_POINTER.json`。
 无视觉 control 已登记为 parse `100%`、click-in-box `10%`、A@50/@100/@200 `2/6/18%`；原生 Qwen VLM 阳性对照为 parse `80%`、click `42%`，blind click `6%`。两条 control 只用于区分语言先验和原生视觉上界，不得写入 external MoonViT projector 排名。
+#heading[文献证据与下一条机制主线]
+
+`docs/vlm-alignment-literature.md` 汇总了 BLIP-2、LLaVA、VILA、DeepSeek-VL、CogVLM、Shikra 和 GLM-4.5V/4.1V 报告。它们共同支持：projector-only CE 是 bridge warmup，不是最终视觉训练；冻结 receiver 会形成浅层 prefix；空间 grounding 需要 box/point 监督和位置接口；社区规模是数十万到百万级样本、数万到十万级 steps。下一条应做 matched top-layer LoRA/visual expert 或 ITM hard-negative bridge，并保留 projector-only control。
