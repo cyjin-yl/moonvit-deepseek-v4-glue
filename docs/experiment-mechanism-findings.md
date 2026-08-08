@@ -288,3 +288,4 @@ projector dtype 不匹配、以及变量初始化顺序错误；每次都保留�
 四条件、step0/previous-best/current-candidate 和 paired bootstrap；工程失败不能混入
 能力排行榜，健康指标也不能替代真实 ScreenSpot、TextVQA、DocVQA、OCRBench。
 同一 V2 step900 的多任务 selection（TextVQA/DocVQA/OCRBench 各 8 条）进一步验证了这个分离：TextVQA vision/shuffled 都为 `0.125`、DocVQA 都为 `0.12`、OCRBench 四条件全为 `0`。这不是视觉能力，而是“图像条件能改变答案分布，但正确图像没有胜过确定性错误图像”的又一份 raw evidence；selection 结果和节点曲线由 `qwen25_7b_v2_multitask_final_limit8_POINTER.json` 绑定。
+无视觉控制与原生 Qwen VLM 阳性对照已经补入矩阵：无视觉 `parse=100%, click=10%, A@50/100/200=2/6/18%`；原生 VLM `parse=80%, click=42%`，blind click `6%`。这组对照把“语言先验能做到什么”和“原生视觉训练上界”分开，避免把 external MoonViT 的负结果误读成评测器失效。

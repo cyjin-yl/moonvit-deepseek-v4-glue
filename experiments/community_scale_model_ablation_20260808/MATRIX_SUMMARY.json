@@ -5,8 +5,15 @@
   "rows": {
     "native_qwen_vlm_positive": {
       "failure_history": [],
-      "result": null,
-      "status": "queued_after_qwen35_9b",
+      "result": {
+        "evaluation": "screenspot_glm50_v1_positive_control",
+        "artifact": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/native_qwen_vlm_positive_screenspot50.json",
+        "artifact_sha256": "a88ad6f350f799521c7451c3b4f26fbe92d63edfc8444c35d80d5665c39f42a6",
+        "vision": {"parse_rate": 0.8, "click_in_box_accuracy": 0.42, "mean_error": 188.6100722395738},
+        "blind": {"parse_rate": 0.98, "click_in_box_accuracy": 0.06, "mean_error": 460.2920343658068},
+        "interpretation": "Independent native Qwen VLM positive control; not an external MoonViT projector result."
+      },
+      "status": "valid_positive_control",
       "attempts": 1,
       "current_attempt": {
         "attempt": 1,
@@ -17,8 +24,18 @@
     },
     "no_vision_control": {
       "failure_history": [],
-      "result": null,
-      "status": "queued_after_qwen35_9b",
+      "result": {
+        "evaluation": "screenspot_glm50_v1_no_vision_control",
+        "artifact": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/no_vision_control_screenspot_glm50/SUMMARY.json",
+        "artifact_sha256": "14a93a13c00292c7d5dd749b4dcd72605863d360a6840a466e9f248f1091d6ca",
+        "parse_rate": 1.0,
+        "click_in_box_accuracy": 0.10,
+        "accuracy_at_50": 0.02,
+        "accuracy_at_100": 0.06,
+        "accuracy_at_200": 0.18,
+        "interpretation": "Text-only/no-vision control; it is a baseline and is not a capability claim."
+      },
+      "status": "valid_control",
       "attempts": 1,
       "current_attempt": {
         "attempt": 1,

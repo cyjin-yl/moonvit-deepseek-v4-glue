@@ -2241,3 +2241,4 @@ step0/previous-best/current-candidate、paired bootstrap 以及 ScreenSpot/TextV
 OCRBench/language-retention 的节点曲线。健康指标、loss 或 teacher-forced attribution
 都不能单独升级为视觉能力声明。
 同一最终 checkpoint 的多任务 selection（TextVQA、DocVQA、OCRBench 各 8 条）也已完成。TextVQA soft VQA 为 vision/blind/shuffled/random `0.125/0/0.125/0`，DocVQA ANLS 为 `0.12/0/0.12/0`，OCRBench exact match 四条件全为 `0`。vision 与 shuffled 打平，故不能将非零分数解释为正确图片 grounding；原始报告、CSV、SVG 和 SHA pointer 为 `qwen25_7b_v2_multitask_final_limit8_POINTER.json`。
+无视觉 control 已登记为 parse `100%`、click-in-box `10%`、A@50/@100/@200 `2/6/18%`；原生 Qwen VLM 阳性对照为 parse `80%`、click `42%`，blind click `6%`。两条 control 只用于区分语言先验和原生视觉上界，不得写入 external MoonViT projector 排名。

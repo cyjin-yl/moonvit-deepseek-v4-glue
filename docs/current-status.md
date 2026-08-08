@@ -650,3 +650,4 @@ Qwen2.5-7B-Instruct + MoonViT-V2 projector-only arm 已完成社区预算的 900
 
 这次复核保留了三个不可混淆的事实：训练没坏（health 通过）、teacher-forced loss 能区分 shuffle（模型在训练答案上看到了差异）、自由生成没有 grounding（正确图反而比 blind 差）。此前三次 dtype/变量顺序失败作为 immutable engineering artifacts 保存，不能混入能力排行榜。后续正式训练在每个健康节点之外，必须运行同合同的多任务 eval（ScreenSpot、TextVQA、DocVQA、OCRBench 和 language-retention），并画出固定 examples-seen 增长曲线。
 同一最终 checkpoint 的多任务 selection（每项 8 条，仅用于快速筛选）也已完成：TextVQA soft VQA 为 vision/blind/shuffled/random `0.125/0/0.125/0`；DocVQA ANLS 为 `0.12/0/0.12/0`；OCRBench exact match 四条件全为 `0`。vision 与 shuffled 在前两项完全打平，因此不能把这组非零分数解释成看懂正确图片；原始报告、命令、CSV 与 SVG 曲线由 `qwen25_7b_v2_multitask_final_limit8_POINTER.json` 绑定。
+已登记的 control 也已完成：无视觉控制 ScreenSpot50 为 parse `100%`、click-in-box `10%`、Accuracy@50/@100/@200 `2/6/18%`；原生 Qwen VLM 阳性对照为 parse `80%`、click-in-box `42%`，blind click `6%`。原生 VLM 只作独立阳性对照，不能写成 MoonViT projector 成果；两条 control 已从 queued 更新为 valid control。

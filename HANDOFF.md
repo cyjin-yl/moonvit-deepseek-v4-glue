@@ -1122,3 +1122,4 @@ Qwen2.5-7B V2 projector-only 训练完成了 900 optimizer steps / 57,600 exampl
 
 评测前的三次 dtype/变量顺序失败已分别保存为 immutable failure artifacts；修复后才得到正式结果。经验规则固定为：任何候选必须先通过 evaluator preflight、四条件逐样本输出和 paired CI，才能进入能力排行榜；工程失败不得覆盖为“无能力”，而是单独记为工程失败。由于 V2 已在能力门失败，不再无条件续训到 132k；矩阵转向下一条已注册 receiver×tower/接口变量，同时保留所有 raw predictions、formal score、manifest SHA 和失败日志。
 同一最终 checkpoint 的多任务 selection（每项 8 条）已补跑：TextVQA soft VQA `vision/blind/shuffled/random=0.125/0/0.125/0`；DocVQA ANLS `0.12/0/0.12/0`；OCRBench exact match 四条件全为 `0`。vision 与 shuffled 打平，不能宣称视觉增益；raw reports、commands、CURVE.csv、SVG 和 SHA pointer 为 `qwen25_7b_v2_multitask_final_limit8_POINTER.json`。
+无视觉 control 已登记为 parse `100%`、click `10%`、A@50/@100/@200 `2/6/18%`；原生 Qwen VLM 阳性 control 为 parse `80%`、click `42%`，blind click `6%`。这两条只用于锚定文本先验和“原生视觉链路确实能工作”的上界，绝不并入 external MoonViT projector 排名。
