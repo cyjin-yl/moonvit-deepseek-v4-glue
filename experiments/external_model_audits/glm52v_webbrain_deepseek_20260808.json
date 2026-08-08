@@ -1,0 +1,33 @@
+{
+  "schema_version": "external-vlm-audit-v1",
+  "audited_on": "2026-08-08",
+  "sources": {
+    "glm52v_model_card": "https://huggingface.co/baseten/GLM-5.2-Vision-NVFP4",
+    "glm52v_training_blog": "https://www.baseten.co/blog/glm-52-with-vision/",
+    "webbrain_model_card": "https://huggingface.co/webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4"
+  },
+  "glm52v": {
+    "base_text": "zai-org/GLM-5.2",
+    "vision_tower": "moonshotai/Kimi-K2.6 MoonViT-3d, 27 layers, 1152-d, frozen",
+    "projector": "PatchMerger pre_norm -> Linear(4608,4608) -> GELU -> Linear(4608,6144), 49.5M trained parameters",
+    "reported_recipe": "66k image-question-answer pairs, global batch 64, constant LR 5e-4, 2 epochs; later projector-only visual reasoning RL",
+    "reported_metric": "MMMU-Pro 55% in Baseten blog",
+    "local_reproducibility": "not runnable on V100; model card requires Blackwell-scale deployment"
+  },
+  "webbrain_deepseek": {
+    "base_text": "MJPansa/DeepSeek-V4-Flash-0731-NVFP4, source-preserving 0731 conversion",
+    "vision_tower_revision": "moonshotai/Kimi-K2.6@7eb5002f6aadc958aed6a9177b7ed26bb94011bb",
+    "vision_sha256": "1382c41f1a4afc91791ade630e2b1e1cef68cc5a1e09668a45970a5d5e1b8f15",
+    "projector_sha256": "7024d9d5c9714c7abbc09abda015f083b7d7b107745eb78879f019bf4721577a",
+    "projector_parameters": 40119040,
+    "projector_shapes": {"pre_norm": [1152], "linear_1": [4608, 4608], "linear_2": [4096, 4608]},
+    "deepseek_bridge": "OOV image sentinel 129280 plus deterministic 64-ID routing palette during prefill; custom SGLang model/processor",
+    "public_validation_boundary": "No public ScreenSpot/TextVQA/DocVQA/OCRBench or blind/shuffled causal results; VISION_ADAPTER_MANIFEST says gpu_validated_for_this_0731_package=false and README says fresh full GPU/image smoke has not been rerun",
+    "hardware": "Blackwell profile, TP=4 recommended; not runnable on local V100"
+  },
+  "comparison_to_our_repo": {
+    "projector_shape": "Our K26 Qwen projector has the same 40,119,040-parameter legacy_pre_norm shape, but it collapsed at step13 before capability evaluation.",
+    "critical_missing_difference": "Our DeepSeek merge currently repeats the placeholder ID in routing_input_ids; it does not implement WebBrain's OOV sentinel plus 64-ID palette-cycle route bridge.",
+    "interpretation": "WebBrain is ahead in target-specific packaging and a trained DeepSeek projector artifact, but not publicly proven ahead on the fixed causal benchmark contract. It is a high-priority implementation reference, not a validated capability baseline."
+  }
+}

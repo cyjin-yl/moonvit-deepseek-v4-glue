@@ -201,3 +201,11 @@ python tools/eval_stock_vlm.py --model /models/Qwen3.5-4B \
 还要限制视觉 token 数。392×392 图像约产生 196 个合并后 token；896×896 约 1024 个。视觉塔约 401M 参数，但高分辨率产生的数千视觉 token 会显著放大冻结 LLM 的激活显存。第一阶段建议上限 1024 个视觉 token/图。
 
 2026-08-02 的 Vast 只读快照中，4×A100 PCIe 80 GB 约 $4.00/小时但无 NVLink；4×A100 SXM4 80 GB 约 $6.94/小时且报告 300 GB/s NVLink；4×H100 SXM 80 GB 约 $10.75/小时。价格与可用性会变化，详见 Typst 报告；项目没有创建或租用任何实例。
+
+## 2026-08-08：公开 GLM-5.2V / DeepSeek-V4 Vision 核对
+
+[Baseten GLM-5.2V](https://huggingface.co/baseten/GLM-5.2-Vision-NVFP4) 已公开一条真正可部署的 VLM 路线：Kimi K2.6 MoonViT-3d（27 层、1152-d）接入冻结 GLM-5.2，只训练约 49.5M PatchMerger projector；[训练文章](https://www.baseten.co/blog/glm-52-with-vision/) 给出 66k 图文 QA、global batch 64、constant `5e-4`、两 epoch，并报告 MMMU-Pro 55%。这些是社区 VLM 证据，但不是本仓库 ScreenSpot 的 vision/blind/shuffled paired 因果结果。
+
+[WebBrain DeepSeek-V4-Flash-0731-Vision](https://huggingface.co/webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4) 在 DeepSeek 专用打包上领先于本仓库：公开了 Kimi tower、40,119,040 参数的 4096-wide projector 和 SGLang bridge。不过其 manifest 明确 `gpu_validated_for_this_0731_package=false`，没有公开 ScreenSpot、TextVQA、DocVQA、OCRBench 或 blind/shuffled 结果。它的 projector 形状与我们的 K26 projector 相同，真正不同的是 DeepSeek 路由：词表外 image sentinel `129280`，prefill 时循环替换成固定 64-ID palette；本仓库当前 merge 尚未实现该 palette bridge。完整审计事实和 SHA 保存在 `experiments/external_model_audits/glm52v_webbrain_deepseek_20260808.json`。
+
+因此，K26 视觉塔已能产生有限特征，不等于我们的 Qwen projector 已识图；下一步优先实现可选 DeepSeek-only palette-cycle/OOV-sentinel bridge，并在本地 tiny Gate D 验证后再决定真实 0731 运行。不要把外部 WebBrain 权重当作 Qwen 能力结果，也不自动下载其完整模型或租用付费 GPU。

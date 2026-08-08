@@ -314,3 +314,11 @@ K26 视觉塔 forward 已真实输出 `(3354,4,1152)`，并完成 50 条固定 S
 ## K26 Qwen7 projector-only 的早期塌缩
 
 社区同源的 1152-d tower 并没有自动解决问题。对应 Qwen2.5-7B projector-only arm 在 step1 就出现 relative spread=`0.092`，随后约 `0.03--0.04`；projector output RMS 从 `0.20` 增至 `4.34`（step13），因此按预注册 guard 自动停止。训练虽未 NaN，不能继续用 CE loss 下降来掩盖 image-agnostic 轨迹。这个结果把“版本不对”从唯一解释降级为必要但不充分条件：V2/K26 都需要正确的视觉—语言目标、尺度控制和/或深层融合。该臂没有 ScreenSpot 能力分数，immutable failure artifact 是唯一有效结果。
+
+## 公开 GLM-5.2V 与 WebBrain DeepSeek 实现的机制含义（2026-08-08）
+
+Baseten 的 [GLM-5.2V model card](https://huggingface.co/baseten/GLM-5.2-Vision-NVFP4) 与 [训练文章](https://www.baseten.co/blog/glm-52-with-vision/) 证明社区路线确实使用 Kimi K2.6 MoonViT-3d（27 层、1152-d）和约 49.5M 的 PatchMerger MLP，冻结 vision/LLM，以 66k 图文 QA、batch 64、`5e-4`、两 epoch 做桥接，之后还有 projector-only reasoning RL。它是“已发布的完整 VLM”证据，但不是我们固定 ScreenSpot paired causal 合同的结果；MMMU-Pro 55% 不能替代 vision-minus-blind/shuffled。
+
+WebBrain 的 [DeepSeek-V4-Flash-0731-Vision card](https://huggingface.co/webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4) 更直接暴露了我们遗漏的 target-specific 接口：其 projector 为 `pre_norm → Linear(4608,4608) → GELU → Linear(4608,4096)`，正好是 40,119,040 参数；但 image slot 使用词表外 sentinel `129280`，prefill 时再以固定 64-ID palette 按位置循环替换，decode 恢复普通 token route。我们当前 `merge.py` 只重复 placeholder routing ID。于是 K26 Qwen step13 的塌缩不能作为 DeepSeek path 的否证，Qwen 与 DeepSeek 的失败机制必须分开。
+
+这会把下一项研究从“继续调 Qwen projector”改成一个可证伪的接口变量：实现可选 `palette_cycle`/OOV-sentinel bridge，先跑 tiny/local DeepSeek Gate D（forward、input dgrad、save/resume、greedy image smoke），再决定是否值得申请付费硬件。WebBrain 没有公开 ScreenSpot、TextVQA、DocVQA、OCRBench 或 paired blind/shuffle CI，且 manifest 写明当前 0731 包 `gpu_validated_for_this_0731_package=false`，所以它是工程参考，不是已经通过我们能力门槛的外部 baseline。

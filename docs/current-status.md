@@ -692,3 +692,16 @@ paired click-in-box CI 为 vision−blind `[-16,-2] pp`、vision−shuffled `[0,
 ### Kimi K2.6/MoonViT-3d 版本回归状态
 
 社区同源塔已完成真实 forward：单张 ScreenSpot 图片输出 `(3354, 4, 1152)` 的有限特征（FP16 RMS 约 3.04），并在固定 50 条 `screenspot_glm50_v1` 上完成 50/50 cache、0 failures。这里修复了 loader 的 qkv 合同：配置字段是单头 qkv 宽度 1152，实际投影矩阵才是 3×1152；代码已由 commit `a6b4ee1` 推送。K26 的 Qwen2.5-7B projector-only cache 随后完成了 6,400/6,400、0 failures，但 100-step 训练在 step13 自动止损：relative spread 从 step1 的 0.092 降至约 0.03--0.04，projector RMS 从 0.20 升至 4.34，触发表征塌缩门槛。因此 K26 版本目前也没有视觉能力 benchmark 结果，正式状态是 `failed_evaluation`，不能把接口成功写成识图成功；失败日志和 health 原始数据由 immutable failure artifact 绑定。
+
+### 公开外部实现核对：GLM-5.2V 与 WebBrain DeepSeek-V4 Vision（2026-08-08）
+
+这轮核对给出一个需要分开说的结论：GLM-5.2V 已经是公开的可部署 VLM；WebBrain 已经把 DeepSeek-V4-Flash-0731 的专用视觉 glue 包装得比我们完整，但两者都没有公开我们要求的四条件因果 benchmark，因此不能直接把它们的公开分数当成“已经通过本项目合同”。
+
+| 项目 | 已公开的强证据 | 按本项目合同仍缺的证据 |
+|---|---|---|
+| [Baseten GLM-5.2V](https://huggingface.co/baseten/GLM-5.2-Vision-NVFP4) | Kimi K2.6 MoonViT-3d（27 层、1152-d）→ PatchMerger MLP；冻结视觉塔和 GLM-5.2，只训约 49.5M projector；66k 图文 QA、global batch 64、两 epoch；文章报告 MMMU-Pro 55% | 没有公开 ScreenSpot 的 vision/blind/shuffled paired CI、完整 raw rows、TextVQA/DocVQA/OCRBench 对照；公开包面向 Blackwell，V100 无法复现 |
+| [WebBrain DeepSeek-V4 Vision](https://huggingface.co/webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4) | 发布了 0731 NVFP4 文本权重、Kimi tower、40,119,040 参数的 4096-d projector、SGLang processor/model 和 DeepSeek 专用 routing bridge | `VISION_ADAPTER_MANIFEST.json` 明确 `gpu_validated_for_this_0731_package=false`；没有公开 ScreenSpot/TextVQA/DocVQA/OCRBench 或 blind/shuffled 结果，fresh full-GPU/image smoke 尚未按当前包重跑 |
+
+WebBrain 的 projector 张量形状 `pre_norm → 4608×4608 → GELU → 4608×4096` 与我们 K26 Qwen projector 的 40,119,040 参数形状相同。关键差异不是“又一个更宽的 MLP”，而是 DeepSeek 专用的输入路由：WebBrain 使用词表外 image sentinel `129280`，在 prefill 期间按照图像位置循环替换为固定 64-ID palette；我们当前 `merge.py` 仍把视觉位置的 `routing_input_ids` 重复成 placeholder ID，没有这个 palette bridge。因此 K26 在 Qwen 上 step13 塌缩，并不能反驳 WebBrain 的 DeepSeek-specific 路径。
+
+完整组件 SHA、来源和判断写入 `experiments/external_model_audits/glm52v_webbrain_deepseek_20260808.json`。下一条最短路径是实现可选的 DeepSeek-only `palette_cycle`/OOV-sentinel bridge，先用 tiny/local Gate D 做 forward、input-gradient、checkpoint round-trip 和生成 smoke；不把 WebBrain projector 当作 Qwen 结果，也不自动下载/运行其约 0731 全量权重或租用付费 GPU。

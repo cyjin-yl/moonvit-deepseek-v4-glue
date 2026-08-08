@@ -2271,3 +2271,11 @@ OCRBench/language-retention 的节点曲线。健康指标、loss 或 teacher-fo
 #heading[K26 Qwen7 projector-only 的早期塌缩]
 
 社区同源的 1152-d tower 并没有自动解决问题。对应 Qwen2.5-7B projector-only arm 在 step1 就出现 relative spread=`0.092`，随后约 `0.03--0.04`；projector output RMS 从 `0.20` 增至 `4.34`（step13），因此按预注册 guard 自动停止。训练虽未 NaN，不能继续用 CE loss 下降来掩盖 image-agnostic 轨迹。这个结果把“版本不对”从唯一解释降级为必要但不充分条件：V2/K26 都需要正确的视觉—语言目标、尺度控制和/或深层融合。该臂没有 ScreenSpot 能力分数，immutable failure artifact 是唯一有效结果。
+#heading[公开 GLM-5.2V 与 WebBrain DeepSeek 实现核对]
+
+#link("https://huggingface.co/baseten/GLM-5.2-Vision-NVFP4")[Baseten GLM-5.2V model card] 与
+#link("https://www.baseten.co/blog/glm-52-with-vision/")[训练文章]确认社区公开 VLM 使用 Kimi K2.6 MoonViT-3d（27 层、1152-d、2×2 merge），冻结 vision/LLM，只训练约 49.5M PatchMerger projector；公开配方为 66k 图文 QA、global batch 64、constant `5e-4`、两 epoch，并报告 MMMU-Pro 55%。这证明它在“可部署 VLM”上领先，但没有公开本项目要求的 ScreenSpot vision/blind/shuffled paired CI 或完整多任务原始表，因此不能直接写成通过本项目合同。
+
+#link("https://huggingface.co/webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4")[WebBrain DeepSeek-V4-Flash-0731-Vision] 发布了训练好的 40,119,040 参数、4096-wide projector 与 SGLang glue。其 projector 形状与本项目 K26 Qwen projector 相同；关键差异是词表外 image sentinel `129280` 加 prefill 期间固定 64-ID palette-cycle routing。我们当前 DeepSeek merge 仍重复 placeholder routing ID，尚无该 bridge。WebBrain 自己的 manifest 标注 `gpu_validated_for_this_0731_package=false`，也未给出 ScreenSpot/TextVQA/DocVQA/OCRBench 或 blind/shuffled 结果；因此它是高优先级接口参考，不是已验证能力上界。
+
+下一步实现可选的 DeepSeek-only `palette_cycle`/OOV-sentinel bridge，先通过本地 tiny Gate D 的 forward、input-gradient、checkpoint round-trip 和 greedy image smoke，再考虑任何付费硬件。不得把 WebBrain projector 当作 Qwen 结果，也不得把其 stale deployment checkbox 当成当前 0731 包已完成 GPU 验证。
