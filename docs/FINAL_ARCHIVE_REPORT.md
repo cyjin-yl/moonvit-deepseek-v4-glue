@@ -184,6 +184,20 @@ Gate D = NO-GO。未完成的硬证据：
 - V100 synthetic/机制产物：experiments/v100_perception_20260804/；
 - Qwen proxy/health/benchmark：experiments/qwen3b_community_eval_20260805/。
 
+### 11.1 Compact-history coverage audit
+
+为避免会话 compact 后只留下最终分数，本次归档还逐项核对了仓库中的实验树、矩阵摘要和文档交叉引用：
+
+| 产物组 | 已纳入的经验/结论 |
+|---|---|
+| `experiments/v100_perception_20260804/` | checkpoint trajectory、layerwise probe、representation retention、balanced/adaptation、projector interpolation/anchoring、replay、sentinel power、batch stratification、shape adaptation 以及 synthetic six-task 的正负结果。 |
+| `experiments/qwen3b_community_eval_20260805/` | tokenizer/receiver audit、MoonViT V1/V2/K3 cache、ScreenSpot50/full、TextVQA/DocVQA/OCRBench、teacher-forced/free-generation 差异、health/probe/rollback、geometry/normalization/residual/scale/token/LoRA/paired-margin 失败记录。 |
+| `experiments/community_scale_model_ablation_20260808/` | 11 个 receiver×tower/控制 arm 的不可变结果或失败产物；唯一完成 57,600 examples 的 7B V2 仍为 `valid_result_negative`。 |
+| `experiments/external_model_audits/` | Baseten GLM-5.2V、Kimi K2.6/MoonViT-3d、WebBrain DeepSeek overlay 的来源、形状、SHA、验证边界和 discussion #3 状态。 |
+| `docs/`、`report/main.typ`、`HANDOFF.md` | 训练合同、Gate D、机制账本、文献依据和历史时间线；所有旧“下一步/queued/running”均标为历史，不再构成执行指令。 |
+
+这份归档总结的是仓库中有原始产物或明确失败记录的工作；没有把未运行的 14B、真实 0731 FP4/FP8 或外部包的未公开训练过程猜成结果。若未来发现仓库外仍有未登记日志，应作为新审计条目追加，而不能改写本报告中的现有结论。
+
 归档不删除数据、不重写失败记录、不把 proxy 成绩冒充 DeepSeek。未来若有人继续，应从 external WebBrain 的 routing bridge 和本报告的 Gate D 清单开始，而不是从旧的 replay/trigger 消融重新开始。
 
 ## 12. Final verdict
