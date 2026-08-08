@@ -1,0 +1,483 @@
+{
+  "items": [
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/contract",
+      "title": "评测契约冻结(开工前的“封箱”)",
+      "summary": "在任何训练或生成结果产生之前,把整套 Qwen3B 社区评测的“契约”一次性冻结:代理模型 Qwen2.5-3B-Instruct 的 9 个文件逐字节 SHA-256、ScreenSpot 数据集版本、固定无参数的接收器(receiver,即把 projector 输出送进语言模型前的最后一层映射)、projector 初始化权重和 V100 精度决策。结果全部通过:262 个 pytest 0 失败,18/18 个声明文件独立重哈希全匹配,状态 verified。",
+      "conclusions": [
+        "ScreenSpot 公开测试集 1272 条;glm50 分层子集 50 条(5 平台 × icon/text 各半,10 层 × 每层 5 条)",
+        "语言保持集 language_retention_v1 共 240 条(MMLU-Pro 140 + GSM8K 100)",
+        "proxy receiver 为 4096→2048 固定无参数映射(可训练参数 0),seed 20260805",
+        "V100 上 4096×4096 GEMM 中位耗时 fp16 0.0318s / fp32 0.2165s / bf16 0.2908s,bf16/fp16 比 9.16 → 冻结决策:语言计算用 float16、projector 主权重 float32"
+      ],
+      "lessons": [
+        "aria2 多线程 range 下载穿 HF Xet 重定向会污染分片并拿到 403,对 Xet 后端要禁用多段并发下载(留档失败记录)",
+        "保留的 4 条失败记录(下载命令不完整、JSON true/false 拼写进 Python、非法 del 语法)全是工程错误,且都在产生任何结果前被拦下"
+      ],
+      "tags": ["3B评测", "契约", "基础设施"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/community_architecture_audit_v1",
+      "title": "社区 projector 架构审计",
+      "summary": "在下一轮实验前,把公开的 GLM-5.2V / Kimi projector 证据逐文件 SHA-256 固定下来,和本地实现对比。结论:本地 V2 projector 属于 GLM-5.2/K2.6 的 patchmerger(把相邻图像 patch 合并降采样再接 MLP)家族,但不匹配 K3/MoonViT-V2 官方 projector——本地用了带 affine 的前置 LayerNorm 和带 bias 的线性层,官方参考是无 bias 线性层加可训练后置 RMSNorm。Gate D 维持 NO-GO。",
+      "conclusions": [
+        "主参考 baseten/GLM-5.2-Vision-NVFP4(社区重打包,非官方):视觉源为 Kimi-K2.6 的 MoonViT-3d,27 层、宽 1152,text hidden 6144,projector 训练参数 4950 万,mm_projector.safetensors 99117136 字节",
+        "moonshotai/Kimi-K2.6 同为 MoonViT-3d 27 层 1152,text hidden 7168",
+        "官方 K3/V2 契约是 flatten(4096)→Linear(4096,4096,无 bias)→GELU→Linear(4096,text_hidden,无 bias)→RMSNorm,与本地实现不符",
+        "明确记录:Package 15P 的负面结果只对 legacy pre-norm 实现有效,不构成对精确 K3/V2 projector 的证据"
+      ],
+      "lessons": [
+        "比较架构之前先固定社区证据并写清“本地实现 ≠ 官方参考”,否则会把旧实现的失败误当成架构本身的失败",
+        "GLM-5.2V 的 6144 输出权重只能作形状参考,插不进 Qwen3B/DeepSeek 的 4096 维接口"
+      ],
+      "tags": ["3B评测", "架构审计"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/tokenizer_receiver_audit_v1",
+      "title": "分词器与接收器审计",
+      "summary": "把“token 接口可用”和“已学习的视觉接收能力”分开审计:对三个模型固定 tokenizer/config 哈希,逐行提取图像特殊 token 的 embedding 做比对。结论:Qwen2.5-3B 的图像 token 只是纯文本模型的占位槽,不是视觉预训练证据;Qwen3.5-4B 是原生多模态模型,只能做诊断、不能当公平纯文本基线;DeepSeek-V4 侧剩下的障碍是全模型 runtime 验证,而不是词表扩展。",
+      "conclusions": [
+        "Qwen2.5-3B 词表 151936,图像特殊 token 151652–151656 的保留行几乎完全相同(norm ≈ 0.4048562,四行 SHA-256 一致)→ 纯 dummy 初始化占位槽",
+        "Qwen3.5-4B 是原生多模态架构 Qwen3_5ForConditionalGeneration(text hidden 2560、vision hidden 1024),特殊 token 行各不相同(norm 0.442–0.487),标签 qwen_specific_not_transferable",
+        "DeepSeek-V4-Flash-0731 hidden 4096、词表 129280,已预留图像 ID(129262/129263/129264/129279),集成时只替换 embedding 查找输出、不改词表"
+      ],
+      "lessons": [
+        "Qwen2.5 有接口槽但无视觉接收先验,所以它可以当公平的纯文本代理;运行时由 projector 输出替换 image placeholder embedding"
+      ],
+      "tags": ["3B评测", "审计", "基础设施"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/health_probe_v1",
+      "title": "训练健康探针集",
+      "summary": "从已冻结的 glm50 里按原顺序抽出 50 条样本,作为训练过程中的表示健康检查集——明确不进训练数据,也不因某臂结果差而替换。每条样本绑定图片、缓存记录、MoonViT 特征三层 SHA-256。前 100 个 optimizer step 用全部 50 条做前向,再对固定前 8 条做 vision/blind/shuffled 三种条件的 teacher-forced(把标准答案喂给模型算概率,而非自由生成)小探针。",
+      "conclusions": [
+        "探针集 50 条,seed 20260805,特征形状 [N, 4, 1024](N 随样本从 255 到 1332)",
+        "teacher-forced 探针固定用前 8 个样本(teacher_forced_probe_count: 8)",
+        "探针集 manifest 自哈希 0c8db4eb…,源数据集 manifest 与 contract 的 glm50 一致"
+      ],
+      "lessons": [
+        "README 明确警示:teacher-forced 结果是因果诊断,不能单独当作 ScreenSpot 生成成绩——后来的实验正是靠这两者拆开才定位到坍缩"
+      ],
+      "tags": ["3B评测", "基础设施", "健康探针"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/smoke_v1",
+      "title": "真图胶水冒烟测试",
+      "summary": "契约冻结后的第一次真实运行:纯文本 Qwen2.5-3B 代理 + 真 MoonViT-V2 视觉塔 + 4096 宽 projector + 固定 receiver,跑一张真实 ScreenSpot 截图,验证真图前向、梯度到达 projector 每个张量、语言模型零梯度、一次 optimizer step、checkpoint 完整往返。全链路打通;但未训练的 step0 projector 对图/盲图输出完全一样,明确不作任何视觉能力声明。",
+      "conclusions": [
+        "loss 2.1920835971832275,裁剪前梯度范数 141.98;projector 6 个张量梯度全部非零,语言参数梯度张量数 0,receiver 可训练参数 0",
+        "vision 和 blind 生成完全相同(click(start_box=[500, 250])),capability_claim_allowed: false",
+        "checkpoint 共 469922601 字节 5 文件,projector/优化器/RNG/历史恢复全部逐位一致",
+        "V100-PCIE-32GB 上峰值显存约 8.37 GB,整轮 wall 174.5s;invalid 12/12、两个 valid retry 各 13/13 文件独立重哈希全匹配"
+      ],
+      "lessons": [
+        "attempt01 模型加载、训练、checkpoint 全部成功,却因验证器把 CPU 上的 AdamW 标量和 CUDA 上的恢复值直接 torch.equal 而整轮判 invalid——验证器比较前要统一 device",
+        "retry1 的输入哈希靠外部保证、runner 内部没复查,submission review 发现后才有了把身份核验内置进 runner 的 retry2"
+      ],
+      "tags": ["3B评测", "冒烟测试"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/feature_cache_4k_v1",
+      "title": "基线 4k 视觉特征缓存",
+      "summary": "为冻结的 4000 条训练顺序预计算 MoonViT-V2 视觉特征,把重复的视觉塔前向挪到训练之前(Package 15D)。4000/4000 全部缓存成功、零失败;内容寻址(按图片 SHA-256 去重)把实际塔前向降到 3534 次,466 条记录复用了首次出现的特征。",
+      "conclusions": [
+        "4000 条全部成功,耗时 503.59 秒,峰值显存约 1.95 GB",
+        "共 111 个 safetensors 分片、10372103792 字节(约 10.4 GB)",
+        "独立校验 valid:重哈希全部 111 分片,校验 2921816064 个逻辑 float 值(2593021952 个唯一值),最长视觉序列恰为 256 token"
+      ],
+      "lessons": [
+        "第一次尝试跑了 1128 行后被出处审计发现 runner 跑的是未提交代码,整轮 SIGTERM 作废、已写分片禁止用于训练——长任务必须先钉死代码版本再跑"
+      ],
+      "tags": ["3B评测", "数据", "特征缓存"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/feature_cache_grounding_enriched_4k_v1",
+      "title": "定位增强 4k 特征缓存",
+      "summary": "与基线缓存同结构,但对应“定位增强”训练顺序(每 8 条全局 batch 含 4 条 ShowUI 定位 + 4 条短答,Package 15J)。4000/4000 成功、零失败;因为大量定位样本共用截图,只需 2013 次真实塔前向,1987 条复用,缓存体积约为基线的 57%。",
+      "conclusions": [
+        "4000 条全部成功,仅 299.14 秒,峰值显存约 1.95 GB",
+        "63 个分片、5943468912 字节(约 5.9 GB,基线是 10.4 GB)",
+        "独立校验 valid:2742976512 个逻辑值、1485864960 个唯一值,2013 个唯一特征区间 + 1987 个别名"
+      ],
+      "lessons": [
+        "内容寻址缓存的收益与图像重复度直接挂钩——定位数据截图复用率高,塔前向次数和缓存体积几乎减半"
+      ],
+      "tags": ["3B评测", "数据", "特征缓存"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/training_4k_v1",
+      "title": "基线 projector 正式训练",
+      "summary": "预注册合同下首次正式“只训 projector”运行(Package 15E):冻结 fp16 的 Qwen2.5-3B 和固定 receiver,只训 33564672 个 fp32 projector 参数,500 步 AdamW、全局 batch 8、恒定 lr 5e-4。训练完整性全部通过独立验证;但 README 明写 loss 下降只是优化结果、不是视觉能力证据,该 checkpoint 随后在评测中被拒。",
+      "conclusions": [
+        "500 步见 4000 样本、21532 个答案 token(grounding 339 / short_answer 3661),相当于 0.0676 个 epoch",
+        "loss 4.60169 → 2.47889(均值 3.01009,最低 1.16679);梯度范数从 step1 的 219.997 降到 step500 的 0.3917",
+        "独立 verifier 重建 500 个 batch、21532 个监督 token、优化器与 RNG 状态,status: verified",
+        "训练 532.81 秒,峰值显存约 8.98 GB;5 个检查点共 2351006545 字节"
+      ],
+      "lessons": [
+        "第一个独立 verifier 有字段路由 bug(KeyError: training_order_manifest_sha256),修复后重验通过——训练产物未被污染",
+        "训练/保存/恢复完整性 ≠ 视觉能力,该 checkpoint 未晋升为 DeepSeek 候选(visual_ability_established: false)"
+      ],
+      "tags": ["3B评测", "训练"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/training_grounding_enriched_4k_v1",
+      "title": "定位增强版正式训练",
+      "summary": "单变量数据筛选(Package 15K):模型、step0 projector、4000 样本预算、500 步、预处理、receiver 全部不变,唯一变化是训练顺序换成定位增强版(每个全局 batch 固定 4 条 ShowUI 定位 + 4 条短答)。loss 降得比基线更低,但同样明确不作能力声明,后续因果评测也拒绝了这个 checkpoint。",
+      "conclusions": [
+        "500 步见 36589 个答案 token(grounding 2000 / short_answer 2000)",
+        "loss 4.14400 → 1.91563(均值 2.44623,最低 0.95110),明显低于基线的 2.47889;末步梯度范数 0.0717",
+        "训练 489.61 秒,峰值显存约 8.97 GB;独立验证 verified,visual_ability_established: false"
+      ],
+      "lessons": [
+        "loss 更低同样不构成能力证据——后续 preference 和生成评测双杀了这个 checkpoint,说明“定位数据加量”治不了根"
+      ],
+      "tags": ["3B评测", "训练"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/training_order_v1",
+      "title": "基线训练顺序冻结",
+      "summary": "在任何训练结果存在之前,冻结“匹配预算”的训练前缀(Package 15C):从 59198 行源数据包取前 4000 行,保持源顺序、不打乱,恰好 500 优化步 × 全局 batch 8 = 0.0676 epoch。纯数据身份产物,独立校验重读全量 JSONL、重哈希 1523324154 字节引用图像,零不匹配。",
+      "conclusions": [
+        "4000 条构成:TextVQA 1985、DocVQA 1160、OCRBench 系 516、ShowUI desktop 339(监督路由 grounding 339 / short_answer 3661)",
+        "4000 条 ID 全唯一,但只有 3534 个唯一图像字节哈希(不同行有意共用同一图)",
+        "339 条 ShowUI 旧式 click 答案被确定性改写为唯一合法目标格式 click(start_box=[x, y])"
+      ],
+      "lessons": [
+        "两条失败记录都在写出 manifest 前拦下:旧版 click 写法无空格不符契约;多数答案“(”被 VQA 归一化抹成空串,加了“原始字符串多数投票”兜底",
+        "数据合同的边角(标点答案、旧格式)比模型本身更早暴露,先冻结顺序再训练是对的"
+      ],
+      "tags": ["3B评测", "数据"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/training_order_grounding_enriched_4k_v1",
+      "title": "定位增强训练顺序冻结",
+      "summary": "基线 checkpoint 被评测拒绝后选定的数据侧单变量改动(Package 15I):把显式 ShowUI click 监督从基线的 339/4000 提到 2000/4000,其余全部不变。从源包取前 2000 条定位 + 前 2000 条短答,各路内保持源顺序后交替,使每个全局 batch 恰含 4+4。在任何候选训练输出之前创建(预注册),独立校验 valid。",
+      "conclusions": [
+        "来源构成:ShowUI 2000、TextVQA 1080、DocVQA 649、OCRBench 系 271",
+        "4000 条路径只对应 2013 个唯一图像字节哈希(多条定位指令共用同一截图)",
+        "独立 verifier 重哈希 1255969179 字节图像、重建了“每路取前 N 条”的选择过程,零不匹配"
+      ],
+      "lessons": [
+        "单变量筛选的价值在于:模型/步数/预算全冻结,后续评测失败可以把矛头明确指向数据配比之外的病因"
+      ],
+      "tags": ["3B评测", "数据"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/screenspot_glm50_4k_v1",
+      "title": "基线 checkpoint 的 50 条生成评测",
+      "summary": "第一次真正测“训练后的 projector 能不能在 ScreenSpot 上点对位置”:在 50 条公开 ScreenSpot 分层子集(glm50)上跑七角色对照生成评测(vision/blind/shuffled/step0/random_projector 等),2000 次配对 bootstrap。结果:训练让模型学会了输出格式(解析率 96%),但点得比不看图还偏——训练破坏了原本的文本/中心点先验。DECISION:reject_current_candidate,三条因果改进门全挂。",
+      "conclusions": [
+        "vision click-in-box 4% vs blind 12%、step0 10%;Accuracy@50 仅 2%",
+        "vision 平均中心距 554.53 vs blind 392.59;vision−blind click 差 −8 点(95% CI [−20, 2]),距离恶化 161.94(CI [−246.70, −89.24],不含 0)",
+        "vision 与 shuffled(打乱图)的 click 差 −2 点(CI [−6, 0]),统计不可分",
+        "生成 240.30 秒,峰值显存约 7.25 GB;previous_best 保持 step0"
+      ],
+      "lessons": [
+        "证伪三个假设:0.5B 主干是唯一瓶颈、冻结 3B 接收器 + 4000 条样本足够、teacher-forced loss 下降 = 会用图",
+        "blind 和 step0 反而点得更准——当前目标能学会输出格式,但会破坏原本很强的中心点先验"
+      ],
+      "tags": ["3B评测", "评测", "负面结果"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/screenspot_glm50_grounding_enriched_4k_v1",
+      "title": "定位增强 checkpoint 的生成评测",
+      "summary": "同一评测流程对准定位增强版 checkpoint(2000 条 ShowUI + 2000 条短答训出)。解析率到 100%,但自由生成对“图对不对”完全不敏感;输出坍缩分析实锤:模型坍缩到一个小坐标词表,换图不换输出。DECISION:reject_current_candidate。",
+      "conclusions": [
+        "vision click-in-box 6% vs blind 12%;vision 与 shuffled 的 click 差恰好 0(CI [0, 0])",
+        "输出坍缩:vision 只输出 6 种不同坐标,31/50 条输出同一个 click(start_box=[125, 345])",
+        "[125,345] 不是抄训练标签:2000 条 grounding 训练目标有 1066 个唯一坐标对,没有一条恰好是它",
+        "对照 blind/step0 的众数是 [500, 300]——训练把“居中先验”挪到了一个错误的坍缩点"
+      ],
+      "lessons": [
+        "换图不换输出是“坐标答案软提示”行为的铁证:模型学到了与图像内容无关的固定回答",
+        "把定位数据提到预算一半只是让软提示更强,治不了根"
+      ],
+      "tags": ["3B评测", "评测", "负面结果", "输出坍缩"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/screenspot_glm50_preference_4k_v1",
+      "title": "基线的成对偏好诊断",
+      "summary": "生成失败后追问更深一层:模型内部能不能分清正确坐标和错误坐标(即使说不出来)?方法:teacher-forced 下同 batch 给“正确答案”和“另一样本的反事实答案”打分,比 token 归一化 log 概率。结果:内部也分不清——训练只学会了与图像无关的坐标答案软提示。DECISION:no_content_specific_visual_readout,“心里知道但说不出来”这条退路被排除。",
+      "conclusions": [
+        "vision 偏好正确坐标仅 23/50(46%),blind 反而 56%、step0 54%",
+        "正确答案平均 NLL 从 step0 的 2.50769 暴降到 1.22362(改进 1.28407,CI 不含 0),但正确图 vs 错图 logp 几乎一样(−1.22362 vs −1.22329)",
+        "vision−shuffled 平均 margin 变化 −0.00725(CI [−0.01287, −0.00186],严格为负)"
+      ],
+      "lessons": [
+        "NLL 大降 ≠ 内容相关的视觉定位——这是全仓库最重要的判据之一",
+        "失败记录:第一次汇总把 alias 文件(同一预测的副本)一起喂进汇总器导致样本 ID 重复,修正后重跑成功",
+        "step0 曾有 +10 点的正确 vs shuffled 偏好差,训练反而把它抹掉了"
+      ],
+      "tags": ["3B评测", "评测", "诊断", "负面结果"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/screenspot_glm50_preference_grounding_enriched_4k_v1",
+      "title": "定位增强的成对偏好门",
+      "summary": "对定位增强 checkpoint 跑与基线完全相同的正确 vs 反事实偏好评测,检验“定位数据占比不够”是不是第一次失败的主因。结果:偏好门再次拒绝——把 grounding 提到预算一半只是让软提示更强,坐标选择依然不看图。DECISION:reject_at_paired_preference_gate。",
+      "conclusions": [
+        "vision 偏好正确坐标 26/50(52%),blind 56%、shuffled 54%;vision−shuffled −2 点(CI [−6, 0])",
+        "正确答案 NLL 进一步降到 1.05915(step0 为 2.50769),但 shuffled 的 NLL 1.05752 与正确图几乎无差",
+        "正确图 vs shuffled 平均 margin 变化 −0.002378(CI 跨零)"
+      ],
+      "lessons": [
+        "一次预注册的单变量实验同时证伪三个假设:第一次失败只是 grounding 太少、2000 条 ShowUI 足以产生正确图偏好、NLL 更低 = 内容相关视觉定位"
+      ],
+      "tags": ["3B评测", "评测", "诊断", "负面结果"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/screenspot_public_4k_v1",
+      "title": "完整公开 ScreenSpot(1272 条)评测",
+      "summary": "50 条子集的失败会不会只是小样本噪声?在完整 1272 条公开 ScreenSpot 测试集上用同一套七角色生成评测复核。结果:失败完整复现且泛化——50 条的结论不是噪声,checkpoint 继续被拒(reject_current_candidate)。",
+      "conclusions": [
+        "vision 解析 1227/1272(96.46%);click-in-box 2.67% vs blind 3.07%、step0 3.30%",
+        "vision−blind 距离恶化 169.66(CI [−185.68, −154.17]);vision 与 shuffled 在所有指标上统计不可分(click 差 −0.08 点)",
+        "分项:text 目标 click 4.16% vs icon/widget 0.87%;macOS 是最大失败区(click 1.16%、平均距离 726.97)",
+        "生成 2807.66 秒,峰值显存约 7.25 GB;社区指标对齐参考线只有解析率(92%)达标,Accuracy 三项和两条因果门全不过"
+      ],
+      "lessons": [
+        "证伪“GLM50 失败只是小样本噪声”和“3B 容量自动修好 0.5B 的定位失败”",
+        "失败记录:首次运行误加 --resume,在模型加载前的缓存校验阶段即失败,修正后重跑"
+      ],
+      "tags": ["3B评测", "评测", "负面结果"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/geometry_repair_screen_v1",
+      "title": "几何修复筛选·预注册与校准",
+      "summary": "轨迹诊断发现 projector 在第 100 步已严重坍缩,于是预注册一个“从第 1 个 optimizer step 就起作用”的几何修复目标:每个 batch 与冻结的 step0 projector 对比,组合 log-scale、relative-spread、centered-Gram 三项损失。本目录是准备阶段:先在冻结状态测得 CE 梯度范数 0.7902,确定性推出三个 λ 使辅助梯度分别为 CE 的 5%/20%/80%。四条失败记录全是预结果阶段的工程问题,没消耗一步训练。",
+      "conclusions": [
+        "校准 λ:ratio005 = 0.010187、ratio020 = 0.040749、ratio080 = 0.162997(对应辅助梯度为 CE 的 5%/20%/80%)",
+        "校准时已见病态:未加权辅助梯度范数 3.878,当前输出 RMS 36.62 vs 参考 0.129(rms_ratio 283.07)",
+        "筛选规则预注册:最小能通过双表示守卫且 final-20-step CE ≤ 1.25× control 的臂才晋级 500 步,无臂通过则不花 4k 预算"
+      ],
+      "lessons": [
+        "四条失败记录(校准绑定缺哈希、测试 sys.path、在线健康契约追加、shuffled 监督 KeyError)都在 optimizer step 1 之前拦下——预注册 + 绑定校验让返工成本接近零"
+      ],
+      "tags": ["3B评测", "几何坍缩", "预注册"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/geometry_repair_screen_hf_v1",
+      "title": "几何修复四臂正式筛选(全灭)",
+      "summary": "核心结论实验之一:真实 HF Qwen2.5-3B 下跑 control(不加几何损失)和 ratio005/020/080 四臂,目标 100 步。四个臂全部在 optimizer step 2 被预注册的“RMS 上升 + spread 下降”健康守卫自动停止并回滚到 step1——几何修复剂量从 5% 加到 80% 几乎零差别,坍缩在前两个 step 内就完成。passing_arms 为空,500 步扩展取消,Gate D 保持 NO-GO。",
+      "conclusions": [
+        "四臂坍缩起点(onset)区间均为 [1,2];step2 时 projector spread 比值 0.2690→0.2696(剂量 5%→80% 几乎无差别)",
+        "CE 还在降(control 4.1440→2.4380)的同时表示已坍缩:projector 有效秩 13.28→6.67,mean_direction_fraction 0.9566,receiver 0.9963(几乎完全同向)",
+        "step2 causal probe:vision−blind correct logp = −9.19(有图反而比无图差 9.2 个 logp)",
+        "control 臂 step2 梯度范数(裁剪前)冲到 416.01;每臂只看 16 个样本就被守卫拦下,单臂 wall 约 71 秒"
+      ],
+      "lessons": [
+        "CE 下降与几何崩坏同时发生——loss 不能作为视觉对齐证据,这是全仓库反复验证的头号教训",
+        "预注册的在线健康契约能可复现地在 16 个样本内检测坍缩并自动回滚,省下了全部 4k 训练预算",
+        "驳斥“继续训练当前 projector 是最高价值下一步”:step0 始终是 previous_best"
+      ],
+      "tags": ["3B评测", "几何坍缩", "负面结果", "核心结论"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/projector_structure_screen_v1",
+      "title": "输出归一化筛选·预注册",
+      "summary": "几何修复四臂全灭后,改为一次只换一个结构变量:在 projector 的 linear_2 之后加无参数归一化(不带可学 affine 的 LayerNorm 或 RMSNorm),三臂(baseline/post_layernorm/post_rmsnorm)复用同一 step0 权重、数据顺序和 100 步预算。本目录是预注册和准备阶段,四条失败记录均无 GPU 结果。",
+      "conclusions": [
+        "设计原则:单变量、同预算、无臂存活则转向残差结构筛选(即后来的 15R),不做 500 步扩展"
+      ],
+      "lessons": [
+        "四条失败记录都是工程细节:单测容差(2e-5)比冻结 eps(1e-5)的数值偏差还严、旧 step0 JSON 缺 output_norm 字段、shell 变量没 export 进子进程、验证器 flag 名用错",
+        "结构实验的纪律:候选必须在训练前与 step0 输出完全一致,才能归因于结构本身"
+      ],
+      "tags": ["3B评测", "几何坍缩", "预注册"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/projector_structure_screen_hf_v1",
+      "title": "输出归一化三臂筛选(全灭)",
+      "summary": "正式结果:baseline_none、post_layernorm、post_rmsnorm 三臂全部在 step 2 被同一健康守卫自动停止、回滚 step1。归一化臂确实保住了更多秩,但 spread(跨图离散度)反而掉得更狠、CE 也更高;post_rmsnorm 还首次触发“有图 vs 打乱图 logp 差”的因果守卫。passing_arms 为空,取消 500 步扩展。",
+      "conclusions": [
+        "projector rank 比值:baseline 0.502 vs layernorm 0.645、rmsnorm 0.754(秩保得更多)",
+        "但 spread 比值:baseline 0.269 vs layernorm 0.200、rmsnorm 0.211(离散度掉得更狠),起始 loss 4.92 vs 4.14(归一化打乱初始尺度对齐)",
+        "post_rmsnorm 触发 vision_minus_shuffle_logp_critical——causal 守卫首次在长训前抓到有害的 vision 轨迹"
+      ],
+      "lessons": [
+        "只修输出尺度/归一化不足以保住跨图几何——保秩和保 spread 是两回事",
+        "秩、spread、因果 logp 三个维度要一起看,任何一个维度的“改善”都不能单独当好消息"
+      ],
+      "tags": ["3B评测", "几何坍缩", "负面结果", "核心结论"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/projector_residual_screen_v1",
+      "title": "残差支路筛选·预注册",
+      "summary": "输出归一化失败后改结构:保留原 projector 路径,在 linear_2 后加一条全宽残差分支——zero_init_residual(无 bias 线性层全零初始化)和 gated_residual(正态初始化 × 零初始化标量门),外加 CE-only 控制臂。两个候选在训练前输出与冻结 step0 完全一致。本目录是预注册阶段,四条失败记录均无 optimizer step。",
+      "conclusions": [
+        "设计:三臂同数据同预算(100 步/800 样本),无臂通过则取消 500 步扩展,改注册“冻结 base + 仅训残差”或学习率上限策略",
+        "zero_init 种子 20260806,gated 种子 20260807,候选与 base 共享全部 MLP 张量"
+      ],
+      "lessons": [
+        "四条失败记录:0 维标量门触发哈希 helper 崩溃、零门按链式法则正确挡住首步反传(是测试期望错了)、launcher 预建目录撞“拒绝覆盖”契约、旧 runner 只认 canonical step0 SHA 拒绝新变体",
+        "“零门没有梯度”是特性不是 bug——单测要按数学期望写,不是按直觉写"
+      ],
+      "tags": ["3B评测", "几何坍缩", "预注册"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/projector_residual_screen_hf_v1",
+      "title": "残差支路筛选(两臂,全灭)",
+      "summary": "正式结果:baseline_none 和 zero_init_residual 两臂都在 step 2 被守卫自动停止(gated_residual 未跑)。残差臂的梯度范数远小于控制臂,几何却恶化得更快——白加一条“从零开始可学”的支路不是修复,它第一天就参与坍缩。",
+      "conclusions": [
+        "baseline 数字与 15P control 完全一致(同数据同顺序,loss 4.1440→2.4380),可复现",
+        "zero_init_residual step2:loss 只降到 2.8856(控制 2.4380),projector RMS 0.4471 vs 0.3491,spread 0.1808 vs 0.2084,mean_direction_fraction 0.9673 vs 0.9566——全面更差",
+        "残差臂裁剪前梯度范数 63.26,远小于控制臂的 416.01——崩得更快不是因为步子更大"
+      ],
+      "lessons": [
+        "在正在坍缩的路径上加可学支路,支路会一起坍缩;结构改动必须配合几何/尺度保护或冻结 base 的策略",
+        "目标项、输出归一化、残差加法三类轻量修补至此全部证伪"
+      ],
+      "tags": ["3B评测", "几何坍缩", "负面结果", "核心结论"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/representation_retention_v1",
+      "title": "表示保持诊断(坍缩实锤)",
+      "summary": "零训练诊断:不加载/不改语言模型权重,只对比 step0 和训练 500 步后的 checkpoint 在三个边界(MoonViT 原始特征、projector 输出、receiver 输出)上的表示几何。结果两个守卫都触发,gross_collapse = true:训练后 50 张图的表示几乎完全共线。而 MoonViT 原始特征完全健康——坍缩发生在 projector 训练,不在视觉塔,receiver 也不是主因。",
+      "conclusions": [
+        "receiver 边界 current/step0:spread 比值 0.13724、有效秩比值 0.08457;projector 边界几乎相同(0.13840 / 0.08586)→ receiver 不是主因",
+        "projector 有效秩 13.28 → 1.14,top-1 方差占比 17.48% → 93.46%,样本 RMS 放大 788 倍(0.1235 → 97.31)",
+        "两两余弦均值从 step0 的 0.927 升到 0.99989(最小 0.9986,近乎完全共线)",
+        "MoonViT 原始特征健康:spread 0.444、rank 12.71、余弦均值 0.805"
+      ],
+      "lessons": [
+        "绝对距离没有消失,而是变成“一个巨大的、几乎共线的同方向软提示,跨图差异近似秩一”——这是对坍缩机制最准确的描述",
+        "先修表示再谈 margin 训练:诊断先行省下了在坏表示上做的所有对照实验",
+        "工程插曲:验证器因 safetensors 张量名枚举顺序不同而误失败;Windows-CRLF vs Git-LF 字节数缺陷挂了 348 条测试里的唯一一条"
+      ],
+      "tags": ["3B评测", "诊断", "几何坍缩", "核心结论"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/representation_trajectory_v1",
+      "title": "坍缩轨迹定位(起点 ≤ 第 100 步)",
+      "summary": "把表示诊断扩展到 6 个 checkpoint(step0/100/200/300/400/500),回答“坍缩最早在什么时候发生”。答案:onset = step100——只用 800 个样本、7362 个答案 token、0.0135 个 epoch 就已全面坍缩,最后一个健康点是 step0。这直接 motivated 后续把 onset 收窄到 [1,2] 的几何修复筛选。",
+      "conclusions": [
+        "step100/step0:projector spread 比值 0.12985、秩比值 0.07721、RMS 放大 289.3 倍、top-1 方差 98.76%",
+        "step100 时两两余弦均值已达 0.99998(step0 为 0.927),有效秩 13.28 → 1.025",
+        "step100 之后所有 checkpoint 保持坍缩(spread 比值 0.12–0.15 区间,轻微回升但始终在守卫阈值内)",
+        "分辨率限制(原文注明):第一个已存 checkpoint 是 step100,step1–100 内的精确 onset 未解析"
+      ],
+      "lessons": [
+        "驳斥“坍缩只是晚期过训练”:几何保护必须从优化起点介入,而不是练坏了再补救",
+        "同一训练窗口 loss 从 4.1440 降到 2.2757——loss 与几何健康再次脱钩"
+      ],
+      "tags": ["3B评测", "诊断", "几何坍缩", "核心结论"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/architecture_controls",
+      "title": "架构对照:V1 vs V2 projector",
+      "summary": "问坍缩到底是视觉塔/projector 架构的问题还是接口/优化的问题:V1 塔(MoonViT-SO-400M,1152 维)和 V2 exact K3 projector 接同一个固定的 Qwen2.5-3B proxy receiver,各跑 100 步健康筛选。结果所有 run 都在 2 步内被守卫停掉:V1 也坍缩(塔版本不是主因);V2 默认 run 几何达标但有图 logp 持续低于乱图(几何健康只是必要条件);加 margin 或降学习率都保不住因果信号。",
+      "conclusions": [
+        "V1 架构在共享 3B 接口同样坍缩:loss 4.79 → 9.84(发散),rank 比值 0.264——“tower version alone does not explain the failure”",
+        "V2 默认(LR 5e-4)几何在底线之上(rank 比值 0.910),但 vision−shuffle logp 全程为负(−0.240 → −0.098)——“geometry health alone is insufficient”",
+        "V2 + 配对 hinge margin(λ=0.1,LR 5e-5)几何完全健康(rank ≈ 1.0),vision−shuffle 仍 −0.061 未转正",
+        "V2 仅降 LR 到 5e-5:几何保住(rank ≈ 0.999),vision−shuffle 反而 −0.240 → −0.285"
+      ],
+      "lessons": [
+        "几何健康(rank/spread/RMS)是必要条件不是充分条件,必须看配对的 vision−shuffle logp",
+        "优化规模(LR)贡献了几何坍缩,但不是唯一瓶颈——小 LR 保住表示却保不住图像归因",
+        "V1_CACHE_FAILURE 事故(单列一条):HF symlink snapshot 直接喂 from_pretrained 导致动态模块加载失败"
+      ],
+      "tags": ["3B评测", "架构对照", "几何坍缩"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/architecture_controls/local_v1_family_proxy/V1_CACHE_FAILURE_20260806.json",
+      "title": "失败记录:V1 权重缓存加载事故",
+      "summary": "V1 架构对照的首次尝试:把 HF symlink snapshot 目录直接喂给 AutoModel.from_pretrained,Transformers 5.12.1 的动态模块加载找不到 configuration_moonvit.py(FileNotFoundError);且首次尝试已建输出目录,重试又撞上“目录已存在”的 FileExistsError。修复为:用 pinned model ID + revision 加载,snapshot 目录仅做离线校验,未消耗付费资源。",
+      "conclusions": [
+        "事故未产生任何训练结果,修复后 V1 健康运行(retry2)正常完成"
+      ],
+      "lessons": [
+        "依赖 HF 缓存目录内部结构(symlink snapshot)是脆弱的,正式运行要 pin model ID + revision",
+        "输出目录契约要支持幂等重试,否则一个早期失败会连锁挡掉修复后的重跑"
+      ],
+      "tags": ["3B评测", "失败记录", "架构对照"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/capacity_controls",
+      "title": "容量对照:更大的接收模型",
+      "summary": "问换更大的冻结接收器(Qwen2.5-7B / Qwen3.5-4B / 9B,绕开它们的原生视觉塔)能不能接住同一份 projector 输出。约 50 次运行分两派:probe(projector 冻结,比四种条件下正确答案的 log 概率)和短 train(3~4 步,跟踪 CE 和图像归因)。主线结论:9B 出现过首个正接收器先验信号但对 token 数极敏感;7B 全目录唯一统计显著的结果是 λ=0.5 margin 训练后的 probe(vision−shuffle +0.4874,CI 不含零),但同一 projector 在 ScreenSpot 生成上与打乱图/随机 projector 完全打平——logp 信号没有转化成生成能力。全部 run 明确禁止写成能力结论。",
+      "conclusions": [
+        "9B 单样本 margin:16tok +0.6265(首个正信号),但 32/64/128/240tok 为 +0.1781 / −0.4574 / +0.2881 / −0.8842——单点不可外推",
+        "7B 32 样本唯一显著结果:margin λ=0.5 训练后 probe vision−shuffle +0.4874(95% CI [0.142, 0.879]);同文件 CE-only 对照只有 +0.1297(CI 跨零)",
+        "但同一 margin05 projector 在 ScreenSpot glm50 上四条件 click-in-box 全部 10%(5/50),paired 点击精度差恰好 0.0;freegen 的 generic prompt 32 条生成无一可解析坐标",
+        "7B CE-only 短训:CE 6.94 → 4.44 的同时 vision−shuffle 从 −0.274 恶化到 −0.875(“健康但错误方向的轨迹”)",
+        "9B projector 训练在 V100 32GB 上两次 OOM(25.88 GiB allocated / 41 MiB free),9B 只做推理/输入梯度诊断,训练主线留在 3B/7B"
+      ],
+      "lessons": [
+        "CE 降 ≠ 图像归因升:冻结接收器会用坐标/答案先验吸收交叉熵",
+        "单样本、单步、单 token 数的结果一概不可外推,必须多样本 + bootstrap 置信区间",
+        "logp 层面的显著信号不等于生成能力——两类证据都要才算数",
+        "mean-pool 压到 16 个视觉 token 是 7B probe 的最佳条件(vision−shuffle +0.1351),但 CI 仍跨零",
+        "8 条失败记录(宽度不匹配、超时、NaN、OOM、第三方 API 变动)单列见下"
+      ],
+      "tags": ["3B评测", "容量对照", "诊断"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/capacity_controls/failures/attempt01_hidden_width_mismatch_20260806",
+      "title": "失败记录:4B 隐宽不匹配",
+      "summary": "Qwen3.5-4B 的文本隐宽是 2560,与 projector 输出宽度 4096 对不上,首轮尝试即弃(只留下 RUN_CONFIG)。后续用固定的 grouped signed adapter(把 4096 维确定性压到 2560 维)解决了这个接口问题。",
+      "conclusions": [],
+      "lessons": ["换接收器前先核对 hidden width,接口适配层要在第一版就备好"],
+      "tags": ["3B评测", "失败记录", "容量对照"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/capacity_controls/failures/attempt02_bf16_full_tokens_timeout_20260806",
+      "title": "失败记录:4B 全视觉 token 超时",
+      "summary": "Qwen3.5-4B 在 BF16 下跑全量视觉 token 超出 V100 本地时间预算,在产出有效结果前被终止,0 步。后续改为限制 token 数(16/240)分档运行。",
+      "conclusions": [],
+      "lessons": ["大接收器 + 全量视觉 token 的组合要先算时间账,本地卡上分档跑"],
+      "tags": ["3B评测", "失败记录", "容量对照"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/capacity_controls/failures/qwen25_7b_real_probe_240_missing_import",
+      "title": "失败记录:7B probe 漏 import",
+      "summary": "给 sample manifest 加固的 patch 之后,runner 漏了 import load_receiver_probe_records,NameError,前向还没开始就死了。补上 import 后重跑成功(即 retry1:8 样本 240tok,vision−shuffle +0.3338 ± 1.8492)。",
+      "conclusions": [],
+      "lessons": ["加固 patch 也要跑一遍最小路径再发——这次失败发生在模型加载前,代价小但完全可避免"],
+      "tags": ["3B评测", "失败记录", "容量对照"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/capacity_controls/failures/qwen35_4b_stripped_receiver_fp16_20260806",
+      "title": "失败记录:4B FP16 数值溢出",
+      "summary": "Qwen3.5-4B 剥离原生视觉模块后在 FP16 下第一次 update 就出事:projector 输出、梯度、答案 logp 全部 NaN/Inf。判定该 dtype/长度组合不可用,后续 4B 改用 BF16 重跑(16tok 有限,margin −0.0597)。",
+      "conclusions": [],
+      "lessons": ["FP16 在长视觉 token 序列上数值不稳,新接收器的第一件事是做 dtype 烟测"],
+      "tags": ["3B评测", "失败记录", "容量对照"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/capacity_controls/failures/qwen35_9b_receiver_prior_train_ceonly_16tok_oom_20260806",
+      "title": "失败记录:9B 训练 OOM(health 指标留计算图)",
+      "summary": "9B 接收器训练的首次尝试:health 指标列表对全部 8 个样本意外保留了 autograd 计算图,显存 allocator 到 25.92 GiB 后 OOM,死在首个 optimizer step 之前。",
+      "conclusions": [],
+      "lessons": ["记录指标前一律 detach——健康监控不该比训练本身更吃显存"],
+      "tags": ["3B评测", "失败记录", "容量对照"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/capacity_controls/failures/qwen35_9b_receiver_prior_train_ceonly_16tok_retry2_oom_20260806",
+      "title": "失败记录:9B 训练 retry2 仍 OOM",
+      "summary": "修掉计算图保留后重试:BF16 9B 的 projector backward 仍在 25.88 GiB allocated / 41 MiB 空闲时 OOM。这是 V100 32GB 的硬边界,不是 bug——9B 训练就此放弃,9B 只做推理和输入梯度诊断,本地训练主线回到 3B/7B。",
+      "conclusions": [
+        "V100 32GB 训不动 9B 接收器 + projector 的组合,两次 OOM 后该方向关闭"
+      ],
+      "lessons": ["区分“代码 bug 的 OOM”和“硬件硬边界的 OOM”:前者修代码,后者改计划,别在一个方向烧第三次"],
+      "tags": ["3B评测", "失败记录", "容量对照"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/capacity_controls/failures/qwen35_9b_receiver_prior_train_ceonly_240tok_nvml_assert_20260806",
+      "title": "失败记录:9B 240-token 训练 NVML 断言",
+      "summary": "9B BF16 跑 240 个视觉 token 的训练,首次前向就触发 NVML allocator 断言(NVML_SUCCESS 相关),只产出 RUN_CONFIG 没有训练结果。与两次 16tok OOM 一起,构成 9B 训练方向在 V100 上的三连败。",
+      "conclusions": [],
+      "lessons": ["token 数越长显存越紧,240tok 在 9B 上连前向都过不了——容量对照的边界就是硬件边界"],
+      "tags": ["3B评测", "失败记录", "容量对照"]
+    },
+    {
+      "path": "experiments/qwen3b_community_eval_20260805/capacity_controls/failures/qwen35_9b_receiver_probe_qwen_mrope_unpack_20260806",
+      "title": "失败记录:Qwen 私有 mRoPE API 变动",
+      "summary": "探针调用 Qwen3.5 内部的 compute_3d_position_ids 时,返回值元数与代码假设的二元组不符,解包失败,探针未运行。修复后 mRoPE 位置变体完成(vision−shuffle −0.0375 ± 0.4537,与普通位置规则无差异 → 位置编码不是主解释,该分支标记 qwen_specific_not_transferable)。",
+      "conclusions": [],
+      "lessons": ["第三方模型的私有 API 没有稳定性承诺,调用处要留防御性适配"],
+      "tags": ["3B评测", "失败记录", "容量对照"]
+    }
+  ],
+  "tree_note": "这是 2026-08-05 起在本地 V100 上用纯文本 Qwen2.5-3B 做“社区代理桥”的完整实验树:先冻结契约、数据和评测集,再跑两条 4000 样本/500 步的 projector-only 训练(基线 + 定位增强),然后用生成评测、成对偏好诊断、表示几何三层证据逐步排除解释。结论一致且负面:纯交叉熵训练让 projector 输出在最初 1~2 个 optimizer step 内发生 common-direction 坍缩(所有样本的表示挤到几乎同一方向,loss 大降但模型从不看图);几何修复损失、输出归一化、残差支路、换 V1/V2 架构、换 4B/7B/9B 更大接收器全部救不回,唯一的统计显著 logp 信号(7B margin05,+0.487)也没转化成生成能力。最终 step0 保持 previous_best,所有 checkpoint 被拒,Gate D 维持 NO-GO;全程未用付费资源,每一步都有预注册、独立验证器和失败留档。"
+}

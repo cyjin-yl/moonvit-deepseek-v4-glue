@@ -9,6 +9,15 @@
 
 # MoonViT projector → DeepSeek-V4 glue prototype
 
+> **📖 在线研究档案(实验报告展示站)**: <https://cyjin-yl.github.io/moonvit-deepseek-v4-glue/>
+>
+> 新粗野主义风格的静态站点,内置十课导读(零背景可读、每个数字都有解释)、
+> 20 个报告包在线翻阅、全部文档/配置/实验 JSON 的可视化浏览器、经验教训总集,
+> 以及关于 WebBrain 复现([webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4](https://huggingface.co/webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4))
+> 为什么"能成"、我们为什么仍然停下的完整分析与反思。
+> 源码在 `site-src/`,本地运行 `python tools/build_site.py` 即可重新生成;
+> 通过 GitHub Actions 自动部署到 Pages。
+
 这是一个面向真实 VLM 的接口、训练与评测工程。最终路径固定为
 `MoonViT-V2 → 4096 维 projector → DeepSeek-V4-Flash-0731`。
 仓库当前同时注册两条 Qwen2.5-3B 架构控制：精确 K3/MoonViT-V2

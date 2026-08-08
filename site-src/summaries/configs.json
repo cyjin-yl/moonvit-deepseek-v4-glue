@@ -1,0 +1,372 @@
+{
+  "items": [
+    {
+      "path": "configs/deepseek-v4-flash-0731-projector.json",
+      "title": "V1 视觉塔 projector 结构参数",
+      "summary": "最早一版 projector 的尺寸定义：视觉塔输出 1152 维（MoonViT-SO-400M 家族），4 路合并后展平成 4608，projector 中间层宽 4608，最终对齐到语言模型 4096 维，LayerNorm eps 1e-05。是整个项目最早的胶水形状约定。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "projector", "结构参数"]
+    },
+    {
+      "path": "configs/deepseek-v4-flash-0731-projector-moonvit-v2.json",
+      "title": "MoonViT-V2 projector 结构参数",
+      "summary": "换成 Kimi-K3 里的 MoonViT-V2 视觉塔后的 projector 尺寸：视觉宽度 1024，merge_factor 4，展平后正好等于语言宽度 4096，所以 projector_width 干脆写成 null（不需要中间层改宽度）。这个配置后来成为全项目的 canonical projector 定义，被大量契约用 SHA-256 钉死引用。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "projector", "结构参数", "MoonViT-V2"]
+    },
+    {
+      "path": "configs/deepseek-v4-flash-0731-projector-moonvit-v2-k3-exact.json",
+      "title": "K3 精确复刻版 projector 配置",
+      "summary": "在 MoonViT-V2 配置基础上显式补了三个字段：output_norm 为 none、residual_mode 为 none、projector_variant 为 kimi_k3_v2，表示严格照抄 Kimi-K3 原生 projector 的做法，不加输出归一化、不加残差。是后续各种'要不要加 norm/残差'筛选实验的对照基准。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "projector", "结构参数", "K3复刻"]
+    },
+    {
+      "path": "configs/qwen2.5-3b-community-eval-v1.json",
+      "title": "Qwen2.5-3B 社区评估总契约",
+      "summary": "整个项目最核心的一份预注册契约：用纯文本的 Qwen2.5-3B-Instruct（冻结，hidden 2048）当'代理接收端'，验证'MoonViT-V2 → 4096 维 projector → 冻结文本模型'能不能只靠训练 projector 就获得真实视觉能力。里面钉死了模型每个文件的 SHA-256、4096→2048 固定正交 receiver、V100 上用 FP16 而非 BF16（实测 BF16 慢 9.16 倍）、训练预算（lr 5e-4、AdamW、500~8000 步检查点）、ScreenSpot/TextVQA/DocVQA/OCRBench 数据集清单、配对 bootstrap 统计方法和'什么算真提升'的判定规则。最终目标仍是接到 DeepSeek-V4-Flash-0731，Qwen 只是便宜替身。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "评测契约", "预注册", "Qwen代理"]
+    },
+    {
+      "path": "configs/qwen2.5-3b-community-architecture-screen-v1.json",
+      "title": "V1 对 V2 架构对照筛选契约",
+      "summary": "在社区评估契约旁边挂的对照实验：同一套训练顺序、同一个 4096→2048 receiver、同一份数据，分别接 K2.6 血统的 MoonViT-SO-400M（1152 维）和 K3 精确的 MoonViT-V2（1024 维）两条路线，看哪条架构能给冻结文本模型带来因果视觉能力。两臂的 projector 初始权重都按 seed 20260805/20260806 固定并记了哈希，健康检查点设在第 0/1/2/5/10/20/30/50/75/100 步，出问题就回滚止损，只有全程健康的臂才允许扩到 500 步。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "架构对照", "预注册", "筛选实验"]
+    },
+    {
+      "path": "configs/qwen2.5-3b-projector-moonvit-v1-community.json",
+      "title": "V1 社区血统 projector 对照配置",
+      "summary": "架构对照实验里 V1 那一臂的 projector 定义：照抄社区 GLM-5.2V（K2.6 MoonViT，1152 维、merge 4、4608 中间层）的结构，但把输出宽度钉在统一的 4096，好让两臂共用同一个 4096→2048 的冻结 receiver。配置里明确写了这只是结构对照，不代表 GLM-5.2V 的 projector 权重能直接加载进来。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "projector", "架构对照", "V1"]
+    },
+    {
+      "path": "configs/qwen2.5-3b-projector-moonvit-v2-k3-exact.json",
+      "title": "V2 K3 精确版 projector（Qwen 对照臂）",
+      "summary": "架构对照实验里 V2 那一臂用的 projector 配置，内容和 deepseek 版的 k3-exact 完全一致：1024 视觉宽、merge 4、4096 输出、不加输出 norm、不加残差、kimi_k3_v2 变体。单独存一份是为了让对照实验有自己独立的、可哈希钉死的配置文件。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "projector", "架构对照", "K3复刻"]
+    },
+    {
+      "path": "configs/qwen3b-projector-health-v1.json",
+      "title": "Projector 健康监控契约",
+      "summary": "一套'训练过程中自动体检'的规则：在训练的第 0/1/2/5/10/20/30/50/75/100 步（之后每 50 步）对 projector 输出跑 50 个固定探针样本，盯相对离散度、有效秩、top1 方差占比、梯度范数、因果偏好等一堆指标。只要触发硬阈值（比如相对离散度掉到 step0 的 0.25 以下、有效秩掉到一半、出现 NaN/零梯度），就自动停机、保存现场、回滚到最近的健康检查点，避免在已经塌缩的 projector 上浪费贵的训练。前 100 步不跑生成评测，只看缓存前向和 teacher-forced。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "健康监控", "自动止损", "训练"]
+    },
+    {
+      "path": "configs/qwen3b-projector-health-v1-local-v1-family.json",
+      "title": "V1 家族臂健康契约（精简版）",
+      "summary": "健康监控契约在 V1 家族对照臂上的特化版：继承了 qwen3b-projector-health-v1.json 的全部规则，只换了 50 个探针样本的 manifest（换成 V1 视觉塔特征缓存对应的那份），并标了 architecture_id 为 local_v1_family_proxy。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "健康监控", "V1", "继承"]
+    },
+    {
+      "path": "configs/qwen3b-projector-health-v1-local-v1-family-full.json",
+      "title": "V1 家族臂健康契约（完整版）",
+      "summary": "和上面那份精简版作用相同，但把继承来的字段全部展开写死：探针计划、三级守卫阈值（hard/warning/critical）、停机回滚策略、产物文件名一个不落。相当于一份自包含的契约副本，不依赖 extends 解析。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "健康监控", "V1", "完整契约"]
+    },
+    {
+      "path": "configs/qwen3b-geometry-repair-screen-v1.json",
+      "title": "几何保护目标筛选契约",
+      "summary": "发现 projector 训练会把跨图像几何结构压塌后，设计的修复方案筛选：在 CE 损失之外加一个'几何目标'——让当前 projector 输出的 batch 级 RMS、相对离散度、中心化 Gram 矩阵尽量贴近冻结 step0 projector 的几何（允许整体正交旋转）。先用 step100 的一个真实 batch 记录 CE 梯度范数（0.79）来标定辅助损失的 lambda，再按目标梯度比 0（对照）/0.05/0.2/0.8 四条臂各训 100 步，选出既保住几何又不拖垮 CE 的最小配比，过关才允许花 500 步的完整预算。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "几何保护", "筛选实验", "训练"]
+    },
+    {
+      "path": "configs/qwen3b-projector-residual-screen-v1.json",
+      "title": "Projector 残差分支筛选契约",
+      "summary": "给 projector 加残差分支能不能防塌缩的筛选实验：三条臂共用同一份 3356 万参数的基础 MLP 权重，分别是 baseline（无残差）、zero_init（零初始化残差分支，5034 万参数）、gated（零门控残差分支，多 1 个门控参数）。两种残差都设计得初始输出和 step0 完全一致，各训 100 步 800 样本后按健康契约判定，不过关就取消 500 步扩展、改试冻结底座只训残差的方案。配置里还记录了一次初始化生成失败（标量门控哈希问题）的归档位置。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "残差", "筛选实验", "projector"]
+    },
+    {
+      "path": "configs/qwen3b-projector-structure-screen-v1.json",
+      "title": "Projector 输出归一化筛选契约",
+      "summary": "比残差更早一步的结构筛选：在 projector 最后（linear_2 之后的 4096 维输出）分别不加归一化（baseline）、加 LayerNorm、加 RMSNorm，三条臂权重完全相同、归一化不带仿射参数所以参数量不变。同样 100 步 800 样本的小预算加健康守卫，全挂就转向残差方案，过了才准跑完整的 ScreenSpot/TextVQA/DocVQA/OCRBench 契约。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "归一化", "筛选实验", "projector"]
+    },
+    {
+      "path": "configs/qwen3b-representation-retention-v1.json",
+      "title": "表征保持判定契约",
+      "summary": "回答一个朴素问题：训练后的 projector 输出还保不保留图像之间的差异？用 50 个 ScreenSpot 样本，比较 step0 和当前候选在 MoonViT 输出、projector 4096、receiver 2048 三个阶段的 RMS、有效秩、top1 方差占比、两两距离、线性 CKA 等指标。判定规则很硬：相对离散度掉到 step0 的 0.25 以下且有效秩掉到一半以下就算'塌缩'，得先修表征；没塌才允许进入下一步的反事实 margin 训练。配置特意写明：projector 没有文本输入，所以不许用纯图像探针去宣称指令条件下的定位能力。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "表征分析", "判定规则", "评测"]
+    },
+    {
+      "path": "configs/qwen3b-representation-trajectory-v1.json",
+      "title": "表征塌缩轨迹定位契约",
+      "summary": "表征保持实验的时间维度版：把 step0 到 step500 的六个检查点（每个都钉了权重 SHA-256）逐个过一遍同样的几何指标，找'塌缩最早发生在哪个保存点'。第一个检查点就塌和训到一半才塌，对应不同的修复动作（从头就加几何保护 vs 用塌前最后一个检查点定位问题）。没塌则直接进入 margin 辅助训练路线。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "表征分析", "轨迹", "评测"]
+    },
+    {
+      "path": "configs/qwen-capacity-screen-v1.json",
+      "title": "接收端容量与先验筛选契约",
+      "summary": "横向比较五个候选语言模型当接收端：Qwen2.5-3B（纯文本基线，2048 维）、Qwen2.5-7B（纯文本容量对照，3584 维）、Qwen3.5-4B/9B（本身有视觉预训练，但实验里强行绕过原生视觉塔、只从 inputs_embeds 注入，测'视觉先验'有没有用）、Qwen2.5-14B（只许做 V100 上的 NF4/FP4 梯度门槛测试，GGUF 量化不能进排名）。每个臂配好固定的 4096→目标宽度 receiver 适配器（9B 刚好 4096 维所以是恒等直连）。规则强调：只有完整契约下 vision 减 blind/shuffled 的配对置信区间都为正，才允许上 Qwen 代理排行榜。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "容量筛选", "接收端", "预注册"]
+    },
+    {
+      "path": "configs/qwen2.5-7b-hf-sha256.json",
+      "title": "Qwen2.5-7B 权重哈希清单",
+      "summary": "Qwen2.5-7B-Instruct 四个 safetensors 分片及 config/tokenizer/index 的 SHA-256 冻结清单，注明字节来自 ModelScope、必须本地校验哈希后才接受。还记录了模型规格（hidden 3584、28 层、无原生视觉模块）和 4096→3584 的固定分组有符号投影接收器约定，并明确 capability_claim_allowed 为 false——不许拿它宣称能力结论。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "权重校验", "Qwen2.5-7B", "清单"]
+    },
+    {
+      "path": "configs/qwen3.5-4b-hf-sha256.json",
+      "title": "Qwen3.5-4B 权重哈希清单",
+      "summary": "Qwen3.5-4B 两个 safetensors 分片的 SHA-256 清单，纯校验用途，保证容量筛选实验里用的是固定版本的权重。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "权重校验", "Qwen3.5-4B", "清单"]
+    },
+    {
+      "path": "configs/qwen3.5-9b-hf-sha256.json",
+      "title": "Qwen3.5-9B 权重哈希清单",
+      "summary": "Qwen3.5-9B 四个 safetensors 分片的 SHA-256 清单，同样纯校验用途。这个模型 hidden 恰好 4096 维，是筛选中唯一能和 canonical projector 直连的接收端。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "权重校验", "Qwen3.5-9B", "清单"]
+    },
+    {
+      "path": "configs/qwen25-7b-real-answer-scale01-margin-screen-v1.json",
+      "title": "7B 真实答案 margin 筛选",
+      "summary": "在 Qwen2.5-7B 上做的一个小筛选：projector 输出固定在 0.1 缩放、只用 16 个视觉 token（mean_pool），比较纯 CE 对照和加了'图像-打乱图 margin 损失'（lambda 0.5、margin 0.1）的训练，各只跑 3 步。目的是在正式花钱之前先验证配对监督强度够不够，且配置 frozen_before_result——结果出来前规则就已冻结，还明确不许据此宣称能力。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "筛选实验", "margin损失", "Qwen2.5-7B"]
+    },
+    {
+      "path": "configs/qwen25-7b-stripped-screenspot-diagnostic-v1.json",
+      "title": "7B ScreenSpot 自由生成诊断",
+      "summary": "接着 7B margin 筛选的诊断：拿训练好的 margin_lambda050_scale01 projector 检查点，在 50 个 GLM 格式 ScreenSpot 样本上跑正式的自由生成（贪心、最多 32 token、click(start_box=[x, y]) 解析），配 vision/blind/shuffled/random_projector 四种条件。核心问题是 teacher-forced 下看到的配对归因优势能不能转化成真生成格式。标注为 diagnostic_only，不许宣称能力。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "诊断", "ScreenSpot", "Qwen2.5-7B"]
+    },
+    {
+      "path": "configs/qwen35-9b-stripped-screenspot-diagnostic-v1.json",
+      "title": "9B 绕过原生视觉诊断",
+      "summary": "Qwen3.5-9B 上的'拆塔'诊断：完全不喂 pixel_values、不走原生视觉前向，只把 MoonViT-V2 + projector 的 16 个视觉 token（prefix 选取、scale 1.0、step0 检查点）直接塞进 inputs_embeds，看这个有视觉预训练的接收端能不能读懂外来的 projector token。同样是 50 个 ScreenSpot 样本、四条件、diagnostic_only，只作为接收端先验的证据。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "诊断", "接收端先验", "Qwen3.5-9B"]
+    },
+    {
+      "path": "configs/perception-v100-infra.json",
+      "title": "V100 感知实验基础设施配置",
+      "summary": "感知实验线的地基配置：限定只能用现有的 V100 32GB（不租新机器、不跑完整 DeepSeek-V4、不动最终评测集），文本模型用 Qwen2.5-0.5B-Instruct 小模型，MoonViT-V2 权重来自本地解包，图像特征缓存上限 448 边长。还带一个步速探针：5 步优化、micro batch 1、梯度累积 1/4/8 三档，用来摸 V100 上训练一步要多久。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "基础设施", "V100", "感知"]
+    },
+    {
+      "path": "configs/perception-synthetic-v1.json",
+      "title": "合成感知数据集生成配置",
+      "summary": "定义感知实验用的合成数据集：六个任务（color、shape、count、spatial、ocr、coordinate），每个任务每个 split 生成 200 个最小对样本基底、每个基底渲染 2 个变体，图像 256×256，seed 20260804，训练集和选择集用不同背景色（#edf3f8 对 #fff5e6）防止混用。同时定义了五种对照条件：盲（无图）、空白图、固定中性图、任务内确定性打乱、patch 级随机置换。最后的评测半边数据明确不动用。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "合成数据", "数据集", "感知"]
+    },
+    {
+      "path": "configs/perception-multitask-projector-v1.json",
+      "title": "六任务平衡适配训练配置",
+      "summary": "感知适配训练的起点：从 gate_b 的 step-001500 projector 出发，用 2400 条六任务合成训练集继续只训 projector（语言模型冻结），100 步、batch 24、lr 5e-4，每步每个任务均匀采 4 条保证平衡。训练用 float32 存 projector、bfloat16 跑语言模型，seed 20260814，在第 0/25/50/100 步存检查点，评测看 vision/打乱图/配对反事实图三种条件的配对偏好。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "训练", "多任务适配", "感知"]
+    },
+    {
+      "path": "configs/perception-balanced-adaptation-compare-v1.json",
+      "title": "projector 续训 vs LoRA 对比配置",
+      "summary": "同样从平衡多任务 projector 的 step-000100 出发，对比两条适配路线：一条继续训 projector（带优化器状态恢复），一条给语言模型顶部 12 层（12-23）的 q/v/o 投影加 LoRA（rank 8、alpha 16，B 矩阵零初始化保证初始零扰动）。训练预算、数据、评测全部对齐（100 步、lr 5e-4、2400 teacher-forced + 600 生成记录），回答'改语言模型和只改 projector 哪个更好'。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "训练", "LoRA对比", "感知"]
+    },
+    {
+      "path": "configs/perception-batch-stratification-v1.json",
+      "title": "批次任务分层消融配置",
+      "summary": "一个控制变量做得极细的消融：比较'每个 batch 按任务均衡分层采样'和'全局随机打乱'两种训练顺序。配置里列了一串不变量——同样 2400 条记录各见一遍、同一个初始 projector 张量、同一份恢复出来的 AdamW 状态、同样的 lr/batch/seed，唯一区别就是 batch 内的任务构成，连两臂的 projector 和优化器 SHA-256 都预先钉死校验。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "消融", "训练顺序", "感知"]
+    },
+    {
+      "path": "configs/perception-matched-replay-v1.json",
+      "title": "固定预算匹配回放配置",
+      "summary": "测试'回放旧数据能不能救回遗忘'：两臂都从 step-000050（钉了哈希）出发、都只准再训 50 步 1200 样本，ordinary 臂照常续训，fixed_replay 臂在训练里按计划回放 count/shape 两个任务的历史样本（每 25 步窗口每任务 10 对）。预注册了触发规则（某任务配对偏好掉超 0.10 且置信区间上界小于 0 才触发，最多 2 个任务）和恢复规则，其中 ordinary 臂还要逐比特复现 step-000100 的目标权重来验证训练管线可复现。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "训练", "回放", "遗忘", "感知"]
+    },
+    {
+      "path": "configs/perception-projector-retention-v1.json",
+      "title": "表征锚定防遗忘配置",
+      "summary": "和回放实验同源的另一种防遗忘思路：不喂旧数据，而是在损失里加'表征锚'——把 count/shape 任务的 projector 输出往 step-000050 参考状态的输出上拉。四条臂分别用锚权重 0（resume 对照）、1e-4、1e-3、1e-2，其他条件（初始状态、优化器状态、训练顺序、预算）完全一致，resume 对照臂同样承担逐比特复现验证。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "训练", "表征锚定", "遗忘", "感知"]
+    },
+    {
+      "path": "configs/perception-top-lora-shape-v1.json",
+      "title": "顶层 LoRA 单任务训练配置",
+      "summary": "聚焦 shape 单任务的 LoRA 实验：在 gate_b step-001500 projector 之上，给语言模型顶部 12 层的注意力 q/v/o 投影加 rank 8、alpha 16 的 LoRA，与 projector 续训臂对比。200 步、batch 8、lr 5e-4，只认 circle/square/star/triangle 四类，评测用 400 teacher-forced + 100 生成记录。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "训练", "LoRA", "shape任务", "感知"]
+    },
+    {
+      "path": "configs/perception-sentinel-power-v1.json",
+      "title": "哨兵触发检验效能预注册",
+      "summary": "不跑训练，纯统计分析：复用 matched_replay 实验已有的偏好记录，模拟如果每任务只抽 8/16/25/50/100 对样本，哨兵规则（count 任务配对偏好下降触发回放）还有多大把握正确触发、多大概率误触发。200 次抽样试验加 bootstrap，预先定下选择标准（count 召回率≥0.95、族系误触发率≤0.05 等）和计时协议，用来决定哨兵检查点最少要评多少样本才够用。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "统计功效", "预注册", "哨兵", "感知"]
+    },
+    {
+      "path": "configs/perception-checkpoint-trajectory-v1.json",
+      "title": "训练轨迹多检查点评测配置",
+      "summary": "对 projector 训练全程的回顾评测：step-000000（随机对照，注明历史 step0 张量没存、用 seed 0 重建）、step-000500/1000/1500/2000 五个检查点，在合成集（600 生成记录、八种条件含盲/空白/打乱/patch置换/配对反事实/背景匹配）和真实 benchmark（700 条、1024 边长）上各评一遍，外加 32 条历史留出集的打乱损失。配置开头还老实记录了 v1~v4 四次前序运行为何作废（吞吐太低、缺对照等），这是第 5 版。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "评测", "训练轨迹", "感知"]
+    },
+    {
+      "path": "configs/perception-paired-preference-v1.json",
+      "title": "配对偏好评测配置",
+      "summary": "专门评'模型更偏好正确图像还是被打乱的图像'：五个检查点（随机 step0 对照 + 500~2000 步训练点），2400 条合成选择集、八种条件，batch 16。这是 v2 版，开头写明 v1 分数本身没错但 visual_source_id 报错了，所以带着独立验证过的因果来源重跑整个矩阵。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "评测", "配对偏好", "感知"]
+    },
+    {
+      "path": "configs/perception-multitask-projector-eval-v1.json",
+      "title": "平衡多任务 projector 评测配置",
+      "summary": "评平衡多任务适配训练的效果曲线：以 step-001500 为基线，叠加适配后 step25/50/100 三个检查点（各对应 0.25/0.5/1.0 个合成 epoch），在 2400 条合成选择集和 600 条生成集上按 vision/打乱/配对反事实/背景匹配条件评测，外加 32 条留出打乱损失。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "评测", "多任务适配", "感知"]
+    },
+    {
+      "path": "configs/perception-multitask-transfer-v1.json",
+      "title": "单任务适配迁移评测配置",
+      "summary": "回答'只在一个任务上适配会不会伤害其他任务'：检查点包括随机 step0 对照、通用 step-001500、以及在 shape 单任务上续训了 50 步（400 样本、正好 1 个 epoch）的 projector，然后在全部六个任务的合成集上统一评测，看 shape 上学到的东西迁移还是干扰。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "评测", "迁移", "感知"]
+    },
+    {
+      "path": "configs/perception-layerwise-mechanisms-v1.json",
+      "title": "逐层机制分析配置",
+      "summary": "感知线里最'机制可解释性'的一份配置：围绕 shape 任务，对随机 step0、step-001500、step-002000 三个检查点抽取 projector 多种池化和语言模型两类站点的表征，跑类平衡双 ridge 探针（alpha 1.0，带随机标签和配对标签置换对照、2000 次置换 + 2000 次 bootstrap）；再做 activation patching——50 对样本、扫全部 24 层、在图像 span 和 assistant 两个位置换正确/错误/清零的 donor 激活，并配 0/5/11/17/23 层阴性对照，定位视觉信息在哪一层被读取。",
+      "conclusions": [],
+      "lessons": [],
+      "tags": ["配置", "机制分析", "探针", "激活补丁", "感知"]
+    }
+  ],
+  "groups": [
+    {
+      "name": "主线 projector 结构参数",
+      "paths": [
+        "configs/deepseek-v4-flash-0731-projector.json",
+        "configs/deepseek-v4-flash-0731-projector-moonvit-v2.json",
+        "configs/deepseek-v4-flash-0731-projector-moonvit-v2-k3-exact.json"
+      ],
+      "note": "最终要接 DeepSeek-V4-Flash 的 projector 尺寸定义，从 V1 视觉塔（1152 维）演进到 MoonViT-V2（1024 维），最后定型为严格复刻 Kimi-K3 的版本。后面所有实验都引用这几个文件。"
+    },
+    {
+      "name": "Qwen3B 社区评估契约与架构对照",
+      "paths": [
+        "configs/qwen2.5-3b-community-eval-v1.json",
+        "configs/qwen2.5-3b-community-architecture-screen-v1.json",
+        "configs/qwen2.5-3b-projector-moonvit-v1-community.json",
+        "configs/qwen2.5-3b-projector-moonvit-v2-k3-exact.json"
+      ],
+      "note": "用冻结的纯文本 Qwen2.5-3B 当 DeepSeek 的便宜替身，预注册了完整的训练评测契约；旁边再挂一个 V1 血统 vs V2 K3 精确的架构对照，两臂除了视觉塔和 projector 外全部对齐。"
+    },
+    {
+      "name": "Qwen3B projector 健康与修复筛选",
+      "paths": [
+        "configs/qwen3b-projector-health-v1.json",
+        "configs/qwen3b-projector-health-v1-local-v1-family.json",
+        "configs/qwen3b-projector-health-v1-local-v1-family-full.json",
+        "configs/qwen3b-projector-structure-screen-v1.json",
+        "configs/qwen3b-projector-residual-screen-v1.json",
+        "configs/qwen3b-geometry-repair-screen-v1.json",
+        "configs/qwen3b-representation-retention-v1.json",
+        "configs/qwen3b-representation-trajectory-v1.json"
+      ],
+      "note": "发现 projector 训练会把跨图像几何压塌后建立的一整套应对体系：先定义'塌缩'的量化判据和在线健康监控，再依次筛输出归一化、残差分支、几何保护损失三种修复方案，全部小预算先行、过关才放行大预算。"
+    },
+    {
+      "name": "接收端容量与先验筛选",
+      "paths": [
+        "configs/qwen-capacity-screen-v1.json",
+        "configs/qwen2.5-7b-hf-sha256.json",
+        "configs/qwen3.5-4b-hf-sha256.json",
+        "configs/qwen3.5-9b-hf-sha256.json",
+        "configs/qwen25-7b-real-answer-scale01-margin-screen-v1.json",
+        "configs/qwen25-7b-stripped-screenspot-diagnostic-v1.json",
+        "configs/qwen35-9b-stripped-screenspot-diagnostic-v1.json"
+      ],
+      "note": "回答'换更大或带视觉预训练的语言模型当接收端会不会更好'：3B/7B/14B 容量梯度加 Qwen3.5 拆塔诊断，权重哈希全部冻结，且所有结果都只准当诊断证据、不许宣称能力。"
+    },
+    {
+      "name": "感知实验基础设施与合成数据",
+      "paths": [
+        "configs/perception-v100-infra.json",
+        "configs/perception-synthetic-v1.json"
+      ],
+      "note": "感知实验线（V100 + Qwen2.5-0.5B 小模型）的地基：硬件约束、步速探针，以及六任务最小对合成数据集的生成规则和对照条件定义。"
+    },
+    {
+      "name": "感知适配训练与消融",
+      "paths": [
+        "configs/perception-multitask-projector-v1.json",
+        "configs/perception-balanced-adaptation-compare-v1.json",
+        "configs/perception-top-lora-shape-v1.json",
+        "configs/perception-batch-stratification-v1.json",
+        "configs/perception-matched-replay-v1.json",
+        "configs/perception-projector-retention-v1.json",
+        "configs/perception-sentinel-power-v1.json"
+      ],
+      "note": "只训 projector（或对比 LoRA）的适配训练系列：多任务平衡训练、训练顺序消融、以及围绕'遗忘'的三种对策——回放、表征锚定、哨兵触发——全部固定预算、哈希钉死初始状态。"
+    },
+    {
+      "name": "感知评测与机制分析",
+      "paths": [
+        "configs/perception-checkpoint-trajectory-v1.json",
+        "configs/perception-paired-preference-v1.json",
+        "configs/perception-multitask-projector-eval-v1.json",
+        "configs/perception-multitask-transfer-v1.json",
+        "configs/perception-layerwise-mechanisms-v1.json"
+      ],
+      "note": "不改模型只跑评测的配置：训练轨迹回顾、配对偏好、适配效果与迁移，以及逐层探针加激活补丁的机理定位，回答'视觉能力在哪、怎么来的'。"
+    }
+  ]
+}

@@ -1,0 +1,300 @@
+{
+  "items": [
+    {
+      "path": "README.md",
+      "title": "项目 README:这是什么、怎么跑",
+      "summary": "项目的门面文档。一句话:这是一个'训练前的接口原型',想把 Kimi-K3 的 MoonViT-V2 视觉塔,通过一个约 3,356 万参数的小翻译层(projector),接到纯文本的 DeepSeek-V4-Flash-0731 大模型上,让它'看图说话'。README 讲清了锁定的权重规格、为什么 DeepSeek 需要一条特殊的 token 路由路径(它的前几层按 token ID 查表选专家,所以视觉 token 必须保留占位符 ID)、怎么安装和跑冒烟测试,以及硬件边界:完整 DeepSeek 权重约 160 GB,单张消费级显卡根本跑不动,得 4×48 GB 起步。",
+      "conclusions": [
+        "胶水代码(glue)本身已完成并有测试:图像能进模型、梯度只进 projector、权重能存能恢复",
+        "DeepSeek 的 Hash-MoE 路由要求保留占位符 token ID,不能直接替换 input_ids,这是本项目最核心的工程点",
+        "所有能力数字必须和'不给图'(blind)基线一起报,否则语言模型的常识会冒充视觉能力",
+        "完整 DeepSeek 训练/验证需要多张 48GB+ 的 GPU,本地 V100 只能做小模型代理实验"
+      ],
+      "lessons": [
+        "原生 VLM(自带视觉的模型)的高分只能证明评测工具正常,不能证明你这条胶水管道有效",
+        "0.5B 小模型的低分是容量下限,不能当成架构天花板"
+      ],
+      "tags": ["入门", "架构", "权重合同", "硬件"]
+    },
+    {
+      "path": "HANDOFF.md",
+      "title": "完整交接日志:6 天实验全记录",
+      "summary": "项目的'黑匣子',按时间倒序记录了 2026-08-02 到 08-07 的所有实验、事故和结论:从最初受社区 GLM-5.2V 启发立项,到 Gate B 小模型信号验证、15 个编号实验包(Package 1–15R)、两轮 3B 真实数据训练失败、projector 塌缩定位、V1/V2 架构对照、7B/9B 容量筛选、伪监督审计降级,直到最后的 λ=0.5 实验和 Gate D NO-GO 归档。还包括 V100 工作站的运维笔记(驱动版本错配不要重启、下载要走单连接防损坏)和租卡预算估算(场景 A 约 $55–$110)。",
+      "conclusions": [
+        "两轮 3B 正式训练(4,000 样本、500 步)都被拒绝:训练后看正确图的表现不如不看图(blind)",
+        "失败根因定位到 projector 在训练头两步就'塌缩':所有图片的输出挤向同一个方向,effective rank 从 13.28 掉到 1.14",
+        "几何损失、输出归一化、残差分支三种修复全部失败;降低学习率能保住表示形状,但保不来'看图'能力",
+        "8 月 7 日审计发现:此前 3B/7B/9B 的接收器探针根本没喂真实答案(统一用了假问题和坐标 [500,500]),所有相关结论被降级为'伪监督诊断'",
+        "修复后 7B + scale 0.1 + paired margin λ=0.5 首次在 32 条真实答案探针上通过统计门槛(vision−shuffle +0.4874,CI 不含 0),但自由生成和 50 条 ScreenSpot 上完全没有兑现,候选被拒绝、训练预算冻结"
+      ],
+      "lessons": [
+        "loss 一路下降不代表学会了看图——模型可能只是学会了'永远输出差不多的坐标'",
+        "任何结论都要有 blind(不给图)、shuffled(给错图)、random projector(随机翻译层)三个对照才可信",
+        "训练健康监控(RMS、rank、spread)必须从第 1 步就开始,塌缩发生在头两步,等 100 步再看就晚了",
+        "审计救过两次命:一次发现旧'V2'实现根本不是官方 K3 V2,一次发现探针没有真实答案",
+        "教师强制(喂答案算概率)信号和自由生成信号是两道门,过了前一道不代表过了后一道"
+      ],
+      "tags": ["交接", "时间线", "实验记录", "运维", "预算"]
+    },
+    {
+      "path": "docs/current-status.md",
+      "title": "当前状态仪表盘(活文档)",
+      "summary": "全项目唯一'现在进行时'的状态文档:一张表说清每个关键问题(图像进没进模型、有没有视觉能力、失败在哪、Gate D 过没过)的证据和判定,再加按时间排列的最新实验结果。读这一篇就能知道项目停在哪:工程链路全部打通并被独立复核;V1、V2 两座视觉塔在 3B 代理上都失败;7B 的 λ=0.5 实验第一次摸到统计门槛却在真实生成上露馅;Gate D(租卡关)始终是 NO-GO。",
+      "conclusions": [
+        "图像能进入小模型且梯度/保存/恢复/生成全部验证通过——但这只证明管道能跑,不证明模型看懂了图",
+        "V1 和 exact K3 V2 的高频健康筛选都在第 2 步自动止损;'换视觉塔版本'解释不了失败",
+        "把 projector 学习率从 5e-4 降到 5e-5 能保住表示几何,但 vision 与 shuffled 依然没有差距:'表示没塌'和'模型看懂图'是两道门",
+        "λ=0.5 paired margin 是第一条通过 32 样本配对置信区间的训练轨迹,但同一 checkpoint 在 ScreenSpot50 上 vision 和 shuffled 的点击命中率完全相同(都是 10%),晋升被拒绝",
+        "Gate D 仍缺:完整 0731 权重加载、FP4/FP8 量化层的 input gradient、完整 Hash-MoE 主干的图像前向/反向、20 步稳定性和真实 benchmark"
+      ],
+      "lessons": [
+        "CE loss、RMS、梯度只属于'训练健康',视觉能力必须单看 correct-image vs blind/shuffled 的配对指标",
+        "换更大的纯文本模型(3B→7B)不会自动读懂外部视觉 token",
+        "监督接口本身(有没有真实问题和答案)是 Gate D 的前置条件,伪监督跑出来的数字只能当扰动诊断"
+      ],
+      "tags": ["状态", "仪表盘", "实验结果", "Gate D"]
+    },
+    {
+      "path": "docs/project-status-and-gate-d-gap.md",
+      "title": "工程主线、证据边界与 Gate D 缺口",
+      "summary": "一张'做到哪、差哪'的对照表:左边是小模型路径已验证的环节(视觉塔前向、placeholder 展开、projector-only 训练、checkpoint 恢复、七条件评测),右边是完整 DeepSeek-0731 上一个都没验证的同一批环节。后半部分按 Package 顺序复述 3B 两轮失败的判定数字、塌缩定位和 replay/sentinel 支线的收束结论。结尾是 Gate D 判定:NO-GO,缺的 7 项硬证据大多需要能装下完整模型的付费硬件。",
+      "conclusions": [
+        "仓库具备一条经过小模型验证的通用多模态 glue 管道,但不能声称已有真实 DeepSeek 端到端多模态链路",
+        "3B 首轮 4k 训练:GLM50 上 vision 点击命中 4%、blind 12%、step0 10%——训练后反而更差,候选拒绝",
+        "完整 1,272 条 ScreenSpot 复现了 50 条的负结果(vision 2.67% vs blind 3.07%),不是抽样偶然",
+        "塌缩是早期优化现象:第一个保存点(第 100 步)就已经 gross collapse,继续同样训练不会自愈",
+        "若本地短筛选通过,冻结候选还需约 1–3 个短实验周期;之后仍必须等付费硬件授权"
+      ],
+      "lessons": [
+        "训练显著降低了坐标答案的 NLL,却没有建立'正确图优于错图'的偏好——优化信号和能力信号必须分开看",
+        "自由生成暴露了'窄坐标塌缩':31/50 条输出同一个坐标 [125,345],而训练标签里从没出现过这个点,说明这是学出来的坏模式,不是抄标签"
+      ],
+      "tags": ["证据边界", "Gate D", "实验结果", "3B"]
+    },
+    {
+      "path": "docs/architecture-matrix.md",
+      "title": "架构矩阵:谁是谁,结果不能混写",
+      "summary": "架构'户口本'。项目里同时存在好几个容易混淆的东西:社区 GLM-5.2V 的 projector(只作参考)、V1 家族的 MoonViT-SO-400M、旧版 legacy V2(带 bias 和 pre-LayerNorm 的老实现)、精确的官方 K3 V2(bias-free + post-RMSNorm)、以及几个 Qwen 诊断臂。这份文档给每个架构定身份、定角色、定迁移等级,核心纪律是:不同架构的权重、cache、checkpoint 绝不能混用,legacy V2 的塌缩结论不能扣到 exact K3 V2 头上。",
+      "conclusions": [
+        "旧训练用的是 legacy V2 实现,它的失败只是'那份被训练的代码失败了',不代表官方 K3 V2 projector 也会失败",
+        "V1(SO-400M)与 K2.6 内嵌视觉塔没有逐字节相同的证明,只能当'家族代理',不能当社区权重复刻",
+        "所有架构共享同一条 4096 维 projector 边界和同一份固定评测合同,横向比较才有效",
+        "Gate D 仍为 NO-GO;矩阵本身不授权任何租机或下载完整 0731"
+      ],
+      "lessons": [
+        "给架构贴错标签会让整批实验结论作废——结构审计要先于结果解读",
+        "Qwen3.5 剥离视觉塔后的'接收器先验'信号只作诊断,不能进排行榜"
+      ],
+      "tags": ["架构", "审计", "V1/V2", "身份管理"]
+    },
+    {
+      "path": "docs/qwen2.5-3b-community-eval-contract.md",
+      "title": "Qwen2.5-3B 评测合同:比赛规则",
+      "summary": "所有本地实验必须遵守的'比赛规则',在第一个 3B 成绩产生前就冻结了:固定到具体 revision 和 SHA 的纯文本 Qwen2.5-3B、预先抽好的 50 条和完整 1,272 条 ScreenSpot、极其严格的 click 格式解析器(多一个空格都算解析失败)、七个对照角色(vision/blind/shuffled/random projector/step0/previous best/current)、2,000 次配对 bootstrap 置信区间,以及什么叫'真实 grounding 改进'的硬性判定标准。目的只有一个:让任何取巧都无处遁形。",
+      "conclusions": [
+        "判定'真实 grounding 改进'要同时满足:点击命中超过 previous best、vision 减 blind 和 vision 减 shuffled 的置信区间下界都大于 0、阈值准确率至少一项提高、其它基准无严重退化",
+        "Qwen 是 2048 宽,projector 是 4096 宽,中间用一个无参数的固定 readout 连接;这个 readout 迁移到 DeepSeek 时会丢弃,所以 Qwen 上的 checkpoint 只算'带运行时验证可迁移'",
+        "训练预算用 examples seen 锁定(4k/8k/16k/32k/64k),横向比较必须严格匹配初始权重、数据顺序、分辨率和生成配置"
+      ],
+      "lessons": [
+        "合同要在出结果前冻结——先定规则再跑实验,失败结论才可信",
+        "blind 对照保留全部文字只是不给图,这能精确分离'语言常识'和'真看了图'"
+      ],
+      "tags": ["评测", "合同", "ScreenSpot", "预注册"]
+    },
+    {
+      "path": "docs/ablation-protocol.md",
+      "title": "租卡前消融协议与机制结论",
+      "summary": "把'分数为什么低'拆成一组可以单独回答的问题:模型容量、projector 结构、分辨率、监督格式、因果控制,每个都规定了固定对照和比较口径(按 examples seen 比,不按 step 数比)。后半部分归档了 Package 10–14 的机制结论:checkpoint 线性平均不能合并能力、逐 batch 任务分层不是硬规则、固定预算的预防性 replay 能有效防遗忘、Tiny 哨兵(每任务 25 对样本)的功效和成本已校准。",
+      "conclusions": [
+        "历史 Gate B 的'2000 步×batch 8'实际只看了 16,000 条样本(约 0.27 epoch),只能算'接口可学习性'证据,TextVQA 8.1% 不是架构上限",
+        "同一训练轨迹内两个 checkpoint 做线性权重平均,合并不了各自的能力(Package 10 否定)",
+        "固定预防性 replay 在完全相同的 1,200 样本预算内把 count/shape 偏好提升 +0.255(CI [0.210, 0.300]),且不伤其它任务;触发式 replay 效果不如预防式",
+        "逐 batch 强制任务均衡在 100 步后被全局随机反超,判定为 mixed/underpowered,不写成硬规则"
+      ],
+      "lessons": [
+        "比较训练量必须用 examples_seen 而不是 step 数——旧的'batch 8'其实是 8 次串行单样本,口径错了结论就错",
+        "宏观指标上升会掩盖单任务崩盘:overall +0.040 的同时 count 任务从 0.380 塌到 0.075,所以哨兵必须按任务分开看"
+      ],
+      "tags": ["消融", "replay", "哨兵", "机制"]
+    },
+    {
+      "path": "docs/community-glm52-projector-audit.md",
+      "title": "社区 GLM-5.2V 架构审计",
+      "summary": "去 Hugging Face 上核实了社区 GLM-5.2V 到底怎么做的:视觉塔来自 Kimi-K2.6(27 层、1152 维),视觉塔和文本模型全部冻结,唯一新训练的是一个约 4,950 万参数的 PatchMerger projector。审计的意外收获是发现我们自己代码里的'V2 projector'其实是旧式结构(带 LayerNorm 和 bias),跟 Kimi-K3 官方 V2(bias-free + post-RMSNorm)不一样——这意味着之前所有塌缩结论只能算在那份旧实现头上。",
+      "conclusions": [
+        "社区方案的 projector 是为 GLM 的 6144 宽度重新训练的,不是从 K2.6 直接复制的权重,也装不进我们的 4096 边界",
+        "我们此前训练的 projector 与官方 K3 V2 结构不同,Package 15P 的塌缩不能当作官方 V2 的失败证明",
+        "下一步必须用精确的 K3 V2 和 V1 家族代理在同一合同下重跑 matched screen"
+      ],
+      "lessons": [
+        "'来自 K2.6'要拆成两件事:视觉塔是复制的,projector 是重训的——读社区报告时别把两者混为一谈",
+        "公开社区 repack 不代表官方发布,权重哈希要逐一核对"
+      ],
+      "tags": ["审计", "社区方案", "GLM-5.2V", "架构"]
+    },
+    {
+      "path": "docs/community-v1-control.md",
+      "title": "V1 架构对照臂规则",
+      "summary": "一页纸的实验规则:用公开的 MoonViT-SO-400M(1152 维,K2.6 家族)作为 V1 对照臂,检验'社区 GLM-5.2V 用的那代视觉塔是不是比我们现在的 V2 更容易被纯文本模型读取'。为了严格可比,V1 的 projector 也统一输出 4096 维、复用同一份冻结 receiver;V1 和 V2 的特征缓存、初始权重、结果目录永远分开。",
+      "conclusions": [
+        "SO-400M 只是 K2.6 家族的'代理',没有证据证明它与 K2.6 内嵌塔逐字节相同",
+        "V1 即使赢了也只是结构对照,不能直接改写 DeepSeek 正式配置",
+        "cache 工具新增 --vision-tower v1 入口,V2 仍是默认主线"
+      ],
+      "lessons": [
+        "对照实验要在同一 4096 边界、同一 receiver、同一样本和预算下跑,否则赢了也说明不了问题"
+      ],
+      "tags": ["对照实验", "V1", "架构"]
+    },
+    {
+      "path": "docs/deepseek-rental-training-contract.md",
+      "title": "DeepSeek 租机训练合同(未授权)",
+      "summary": "如果将来真的花钱租卡,训练必须按这份合同机械执行:只训练 projector(fp32 主权重 + bf16 推理副本)、固定的 59,198 条数据 mix、checkpoint 必须包含的内容清单(连随机数状态和数据游标都要)、哨兵评测开销不得超过训练墙钟的 5%/10%、自适应停训规则、费用止损纪律(Gate D 失败立即销毁实例,'已经租了'不是继续烧钱的理由)。当前状态:所有付费项都是 authorization_pending。",
+      "conclusions": [
+        "主线唯一:冻结 MoonViT-V2 和 DeepSeek,只训 projector;不默认用 LoRA,不用 checkpoint averaging 防遗忘",
+        "训练时长不预先承诺:先 Gate D 测真实 step time,再按实测值算三档(乐观/基准/悲观)小时数和费用",
+        "checkpoint 保留策略按 Pareto 前沿和历史最佳分任务保留,'只留最后一步'被明令禁止",
+        "replay 只能在固定窗口内替换槽位,不许追加训练步数或样本"
+      ],
+      "lessons": [
+        "实例 stop 后存储还在计费(2TB 约 $53/周),结束必须 destroy",
+        "上传队列满了要暂停训练排空,不许和训练抢显存无限堆积"
+      ],
+      "tags": ["合同", "租机", "训练策略", "费用"]
+    },
+    {
+      "path": "docs/dsv4-runtime-source-audit.md",
+      "title": "DeepSeek 量化反向源码审计:最大风险在这",
+      "summary": "把整个项目最大的技术风险翻到了源码层:逐行审查了固定 revision 的 Transformers、finegrained-fp8 kernel 和 DeepGEMM,结论是在这些固定版本里没有找到任何 autograd 注册代码——也就是说,官方的 FP8/FP4 量化前向很可能只支持推理,算不出传回 projector 的梯度。这还只是'源码推断的高风险',最终判定必须在真机上跑 Gate D。另外发现一个公开 blocker:SM120/SM121 架构(RTX PRO 6000、GB10)的 NVFP4 权重布局转换缺分支,加载就会报错。",
+      "conclusions": [
+        "DeepSeek-V4-Flash-0731 配置事实:BF16 activation、动态 FP8 linear、FP4 expert、43 层、256 experts、前 3 层 Hash-MoE",
+        "量化器声明 is_trainable=False 只说明不支持训练量化权重本身;项目的生死条件是每层量化 linear 能否对输入返回有限非零梯度——这个在源码里没找到支持",
+        "DeepGEMM 底层存在 DGRAD 能力,但 Transformers 没把它接到 autograd 上;底层能力≠模块可用",
+        "三类量化模块(FP8Linear、FP8 expert gate/up、FP4 expert down)要分别测,一个失败不能用另外两个的成功来抵"
+      ],
+      "lessons": [
+        "审计钉死具体 commit 和文件 SHA-256,任何版本升级都要重新审计,旧结论不能沿用",
+        "config 里写的 transformers_version(4.57.1)只是导出时的环境,不能拿它选运行环境"
+      ],
+      "tags": ["审计", "量化", "DGRAD", "风险", "源码"]
+    },
+    {
+      "path": "docs/gate-d-runbook.md",
+      "title": "Gate D 实施手册:租卡后第一步做什么",
+      "summary": "付费验证的操作手册,分两次授权:第一次只租单卡(首选 B200),下载覆盖三类量化模块的最小权重分片,一小时内测完'权重能不能加载、前向能不能跑、梯度能不能传回输入';全过才申请第二次授权做完整模型 Gate D(完整加载、图像前向、batch 反向、20 步稳定、checkpoint 恢复)。每一关失败立即保存产物并销毁实例,手册明令'不许因为机器还在计费就现场搞无边界的 kernel 开发'。",
+      "conclusions": [
+        "三模式 DGRAD 测试:reference(验证工具本身)→ native(真实量化模块)→ candidate(预注册的备选方案,native 失败才用)",
+        "实例创建后前 10 分钟做环境审计,GPU 型号、驱动、依赖和授权单不符就立即销毁",
+        "'有梯度'不够:要验证梯度有限、非零、形状正确,且所有冻结权重梯度为 None",
+        "当前状态:单卡 gate 等待用户付费授权,完整 Gate D 连授权前提都不具备"
+      ],
+      "lessons": [
+        "付费动作拆成多次授权,上一阶段通过不自动触发下一阶段——把止损点焊死在流程里",
+        "失败产物(命令、日志、退出码、已下载字节、费用)全部保留,失败也要可审计"
+      ],
+      "tags": ["Gate D", "租机", "runbook", "DGRAD"]
+    },
+    {
+      "path": "docs/gpu-runtime-matrix.md",
+      "title": "GPU 兼容矩阵:租什么卡",
+      "summary": "一页纸回答'真到租卡那天租什么':B200(SM100)是首选的最小验证架构,和 DeepGEMM 的支持范围吻合;H100/H200(SM90)是候选但 FP4 expert 可能要 fallback,得单测;RTX PRO 6000(SM120)和 GB10(SM121)因为有公开的权重加载 blocker 暂时出局。文档强调:GPU 名字叫'Blackwell'不代表 kernel 兼容,任何型号在真实加载、前向、DGRAD 通过前都没有结论。",
+      "conclusions": [
+        "首选方案:单卡 B200 最小 kernel gate,尽量一小时内完成",
+        "H100 的 FP4 expert 无原生路径,换架构就要把 fallback 当成新的验证分支,不能复用 B200 的判定",
+        "单卡装不下完整模型只说明容量不够,不许自动升级到多卡或更贵型号,要回去重新申请授权"
+      ],
+      "lessons": [
+        "产品代际标签不构成兼容性证据——按 SM 版本和实测判定",
+        "用 gh CLI 钉死 GitHub issue 和 commit 状态,公开 blocker 关闭后还要重新验证才算数"
+      ],
+      "tags": ["GPU", "租机", "兼容性", "B200"]
+    },
+    {
+      "path": "docs/inference-integration.md",
+      "title": "推理侧集成合同:训练完之后怎么部署",
+      "summary": "写给推理引擎(vLLM/SGLang)的接入指南:训练出的 projector 发布后,任何引擎要复现的完整管道——图像预处理、MoonViT-V2 编码、projector 翻译、占位符展开成 G 个视觉 token、以及 DeepSeek 特有的合并规则(Hash-MoE 路由读 input_ids,所以 token 流里保留占位符 ID,只替换 embedding 向量)。好消息是 vLLM 和 SGLang 都已有 Kimi-K3 和 DeepSeek-V4 的原生支持, patch 工作量可控;llama.cpp 和 fastllm 路径太深,第一版不做。",
+      "conclusions": [
+        "交付物只有 projector(fp32 主权重约 134 MB + bf16 推理约 67 MB)和视觉塔,永远不发布 160 GB 的 DeepSeek 主干",
+        "占位符固定用词表已有的 <｜image｜>(ID 129279),绝不扩充词表——扩词表会让冻结的 embedding、LM head 和路由表全部失效",
+        "每张图的视觉 token 数由 K3 processor 决定(如 1024×1024 → 1,369 个),不是封闭公式",
+        "推理不需要梯度,FP4/FP8 推理 kernel 就够用;DGRAD 问题只属于训练"
+      ],
+      "lessons": [
+        "验收清单里最重要的一条回归测试:替换视觉 embedding 前后,占位符位置的路由专家必须完全相同",
+        "MoonViT-V2 原生是 bf16,本仓库跑 fp32 只是 V100 老卡的变通,不是架构要求"
+      ],
+      "tags": ["推理", "vLLM", "SGLang", "部署"]
+    },
+    {
+      "path": "kimi-export-session_-20260804-094357.md",
+      "title": "项目起源会话导出(2026-08-04)",
+      "summary": "这不是正式文档,而是立项当天(8 月 4 日)的 AI 会话导出,共 81 轮。前半段是最初的可行性讨论:用户问'社区的 GLM-5.2V 能不能复刻到 DeepSeek-V4-Flash 上、需要什么硬件、vast.ai 租机够不够',得到的判断是'架构上可行,但先把目标定为验证接口,别指望复刻成熟 VLM'。后半段是排查 Qwen3.5 阳性对照'声称看到空白图'的诡异 bug——后来查明是本地权重分片字节数对但 SHA 不对,模型整个视觉塔是坏的,只能靠文字瞎编。它是 HANDOFF.md 里多条结论的原始现场,内容已被正式文档覆盖。",
+      "conclusions": [
+        "立项判断:DeepSeek-V4-Flash 比 GLM-5.2 小不少(约 284B/304B 参数、4096 宽),接 MoonViT 在架构上没有不可跨越的问题",
+        "'空白图'事故的根源是损坏的权重分片:模型会对着文字问题编出貌似合理的答案——这直接促成了后来'加载前逐分片 SHA-256 校验'的铁律",
+        "文件性质是原始会话记录,权威结论以 HANDOFF.md 和 docs/ 为准"
+      ],
+      "lessons": [
+        "模型面不改色地描述一张它根本没看到的图——不核对权重哈希,评测分数可能全是编的",
+        "会话导出只作历史材料,不能当结论来源"
+      ],
+      "tags": ["会话导出", "起源", "历史材料"]
+    }
+  ],
+  "overview": {
+    "project_one_liner": "把 Kimi 的 MoonViT 视觉塔通过一个小型'翻译层'(projector)接到纯文本的 DeepSeek-V4 大模型上,只训练这个翻译层,让大模型学会看图——并先在便宜的小模型上验证可行性,再决定要不要花钱租大卡训练。",
+    "final_verdict": "工程上完全成功:图像进模型、梯度控制、checkpoint 保存恢复、严格评测、自动止损这一整条链路都打通并经过独立复核。但能力上失败:没有任何一个训练出来的 projector 能让模型稳定地'看图'——在所有对照实验里,给正确图和给错图、甚至不给图,模型的表现没有可信差别;训练 loss 一直降,模型学到的只是'永远输出差不多的坐标'。DeepSeek 真机的量化梯度验证从未运行(最大的技术风险悬而未决)。因此项目归档:Gate D NO-GO,不租卡、不花钱,留下一整套可复用的评测合同、工具和诚实的失败记录。",
+    "story_arc": [
+      "阶段1 立项(08-02~03):受社区 GLM-5.2V 启发确定 MoonViT→projector→DeepSeek 路线;写好胶水代码,从 Kimi-K3 抽取出 MoonViT-V2 视觉塔权重",
+      "阶段2 Gate B(08-02~04):V100 上小模型过拟合和 full-mix 训练证明'接口可学习'(真图 loss 显著低于错图,shuffle_delta +0.727);数据管线、阳性对照、评测工具全部建立",
+      "阶段3 合成机制实验(08-04~05,Package 2~14):六个合成任务上定位出'教师强制有信号、自由生成没信号'的鸿沟、任务间相互干扰,以及防遗忘的 replay/哨兵方案",
+      "阶段4 3B 真实数据合同(08-05~06,Package 15A~15R):冻结严格评测合同后,两轮 4,000 样本训练都被对照组拒绝;塌缩定位到 projector 头两步;几何损失、归一化、残差三种修复全部失败;审计发现旧 V2 实现标签错误",
+      "阶段5 架构与容量筛选(08-06~07):V1 和精确 V2 都失败;9B 视觉预训练接收器有微弱信号但不稳定;换 7B 纯文本也不行;审计发现旧探针用的是假答案,全部结论降级",
+      "阶段6 真实答案重测与最后的希望(08-07):7B + 输入缩放 0.1 + paired margin λ=0.5 首次通过 32 样本统计门槛,但自由生成和 50 条 ScreenSpot 完全不兑现——候选拒绝,训练预算冻结",
+      "阶段7 归档(08-07):Gate D NO-GO,项目停止,转向文档归纳;剩余价值在合同、工具和失败记录"
+    ],
+    "key_numbers": [
+      {"label": "阳性对照(Qwen3.5-4B 原生 VLM)TextVQA vision/blind", "value": "0.820 / 0.031"},
+      {"label": "阳性对照 ScreenSpot 准确率 vision/blind", "value": "0.760 / 0.010"},
+      {"label": "Gate B 早期对齐 shuffle_delta(0.5B,仅 0.27 epoch)", "value": "+0.727"},
+      {"label": "3B 首轮 GLM50 点击命中 vision/blind/step0", "value": "4% / 12% / 10%"},
+      {"label": "完整 ScreenSpot(1,272 条)点击命中 vision/blind", "value": "2.67% / 3.07%"},
+      {"label": "projector 塌缩:effective rank 训练前→后", "value": "13.28 → 1.14"},
+      {"label": "塌缩:top-1 方差占比 训练前→后", "value": "17.48% → 93.46%"},
+      {"label": "7B λ=0.5 探针 vision−shuffle(首个过统计门槛)", "value": "+0.4874,CI [+0.1423, +0.8786]"},
+      {"label": "同一 λ=0.5 checkpoint 的 ScreenSpot50 点击命中 vision/shuffled", "value": "10% / 10%"},
+      {"label": "32 样本四种 token 条件的 vision−shuffle 置信区间", "value": "全部跨 0"},
+      {"label": "exact K3 V2 projector 参数量", "value": "33,558,528"},
+      {"label": "租卡场景 A 费用估算(乐观/基准/悲观)", "value": "$55 / $75 / $110"}
+    ],
+    "top_lessons": [
+      "loss 下降不等于学会看图:CE 一路降,模型可能只是学会了'不管什么图都输出差不多的坐标'——训练指标会撒谎",
+      "任何能力数字必须带三个对照:不给图(blind)、给错图(shuffled)、随机 projector;否则语言常识会冒充视觉能力",
+      "塌缩发生在训练头两步:projector 输出迅速挤向同一个方向(rank 13.28→1.14),健康监控必须从第 1 步开始,自动止损比事后分析值钱",
+      "常规修复手段(几何损失、LayerNorm/RMSNorm、zero-init 残差)都没用;降学习率能保住表示形状,但保不来视觉因果——'没塌'和'看懂了'是两道门",
+      "教师强制信号和自由生成是两道门:λ=0.5 过了 32 样本概率探针,却在自由生成和真实 ScreenSpot 上原形毕露",
+      "换更大的纯文本模型(3B→7B)不会自动读懂外部视觉 token;视觉预训练过的接收器(9B)有反应但也分不清对错图",
+      "原生 VLM 的高分只证明评测链路正常,永远不能当作自己胶水管道的证据",
+      "审计能救命:一次发现旧'V2'实现根本不是官方结构,一次发现探针喂的是假答案——两批结论因此改写",
+      "合同预注册 + 权重冻结 + 独立 verifier 让'失败'也成为可信结论;先定规则再跑实验",
+      "最大的剩余风险(DeepSeek 量化 kernel 是否支持 input gradient)在租卡前无法用本地硬件排除——有些 GO/NO-GO 只能花钱才能知道,这正是要谨慎授权的原因"
+    ],
+    "glossary": [
+      {"term": "Gate D", "meaning": "租卡前的最后一道验证关:在真机上确认 DeepSeek 的量化权重能加载、梯度能穿过 FP4/FP8 量化层传回 projector。全过才允许付费训练;NO-GO 就是不批准花钱。"},
+      {"term": "projector", "meaning": "视觉塔和语言模型之间的'翻译器',一个约 3,356 万参数的两层 MLP,把图像特征翻译成语言模型能读的向量。全项目唯一被训练的部件,其余全部冻结。"},
+      {"term": "MoonViT", "meaning": "视觉编码器,把图片切成小块并编码成一串向量。V2 版来自 Kimi-K3(输出 1024 维),V1 版是公开的 SO-400M(1152 维)。"},
+      {"term": "blind / shuffled", "meaning": "两种对照条件:blind 是不给模型看图(只给文字),shuffled 是给一张错误的图。模型真看懂图的话,给正确图时应该明显比这两种都好。"},
+      {"term": "vision−shuffle", "meaning": "模型在正确图和错误图条件下、给出正确答案的概率差。大于 0 才算有点'在看图'的迹象;本项目大部分实验这个值在 0 附近或为负。"},
+      {"term": "paired bootstrap CI", "meaning": "逐样本配对重采样算出的置信区间。区间跨过 0,说明观察到的差异可能只是运气,不能当结论。"},
+      {"term": "common-direction collapse", "meaning": "塌缩:训练让 projector 对所有图片的输出都挤向同一个方向,图片之间的差异被抹掉。表现为 effective rank 掉到接近 1、输出幅度暴涨。"},
+      {"term": "effective rank", "meaning": "衡量一组向量'摊开程度'的指标。掉到 1 附近意味着所有输出几乎是同一个方向——等于模型对所有图说同一句话。"},
+      {"term": "teacher-forced", "meaning": "把标准答案直接喂给模型算概率的评测方式;对应的是'自由生成'(让模型自己写答案)。前者有信号不代表后者能用。"},
+      {"term": "Hash-MoE", "meaning": "DeepSeek-V4 前 3 层的专家路由方式:按 token ID 查表决定送去哪个专家。所以视觉 token 必须保留占位符 ID,不能只替换向量。"},
+      {"term": "DGRAD / input gradient", "meaning": "对输入的梯度。projector 要学,梯度就必须从 loss 一路穿过 DeepSeek 的所有量化层回到 projector 的输出;量化 kernel 不支持这个就是项目死刑。"},
+      {"term": "receiver-prior", "meaning": "接收器先验实验:绕过模型自带的视觉模块,只留'读过视觉预训练'的语言部分,测它对外部视觉 token 有没有天然反应。只作诊断,不算能力。"},
+      {"term": "预注册 / 合同", "meaning": "在跑出结果之前先把实验规则(数据、指标、判定标准、预算)冻结成文档,跑完不许改规则——防止'看结果定标准'的自我欺骗。"},
+      {"term": "NO-GO", "meaning": "不批准。在本项目里特指:不批准租 GPU、不批准下载完整 DeepSeek 权重、不批准把任何 checkpoint 写成'已有视觉能力'。"}
+    ]
+  }
+}

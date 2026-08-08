@@ -15,3 +15,6 @@ report/*.pdf
 !.env.example
 
 scratch/
+
+# 静态站点构建产物(tools/build_site.py 输出)
+site/

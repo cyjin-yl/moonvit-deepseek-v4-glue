@@ -1,0 +1,418 @@
+{
+  "items": [
+    {
+      "path": "report/package4-render",
+      "title": "包 4 交付渲染:Shape 的逐层机制定位(报告第 13–22 页)",
+      "summary": "包 4 章节的页面截图,讲 V100 方向筛选里最硬核的一次定位:用逐层 linear probe(线性探针,即在某层隐藏状态上训一个简单分类器看信息还在不在)和 activation patching(把正确图片产生的激活替换进错误图片的运行里,看答案是否恢复)追查 shape 信号在哪丢失。结论是 projector(把视觉特征翻译成语言模型能吃的向量的投影层)没丢信息,是冻结语言主干的上层把它压回了随机水平。",
+      "conclusions": [
+        "冻结视觉塔和 projector 在三个 checkpoint 上 shape 的 probe 准确率都是满分 1.000,projector 丢信息的说法被反驳",
+        "step 1500 时语言主干第 12 层 probe 达 0.816,但到最后一层精确掉回 0.250(四选一随机水平),训练后的上层变换把信号压没了",
+        "activation patching 在 step 1500 第 11 层能恢复 +0.3538 的答题优势,step 2000 峰值减弱并前移,与 probe 互相印证"
+      ],
+      "lessons": [
+        "随机初始化的 projector probe 也能到 1.000——高维随机映射天然保信息,probe 数字本身不能算训练收益,必须配因果干预",
+        "定位'信息在哪丢'要 probe(相关性)和 patching(因果)两条腿走路,单靠一个会误判"
+      ],
+      "tags": ["报告", "交付包", "机制分析"]
+    },
+    {
+      "path": "report/package9-render",
+      "title": "包 9 交付渲染:六任务适配轨迹与 step-50 全量确认(报告第 25–28 页)",
+      "summary": "包 9 章节的截图。前面包 8 发现额外训一轮 projector 总体变好但 shape 被遗忘,这包把 step 25/50/100 的完整轨迹拉出来看,再用全量数据确认 step 50。发现 step 50 和 step 100 的总分几乎一样,底下却是 count/shape 大跌、coordinate/spatial 大涨的任务互换。",
+      "conclusions": [
+        "projector step 50 总体 strict paired preference(让模型在正确图和配对错图之间二选一的严格命中率)为 0.5117,比 base 高 +0.2875",
+        "step 50→100 总分变化为零,但 count −0.280、shape −0.300,coordinate +0.160、spatial +0.250——总分掩盖了任务间的此消彼长",
+        "OCR 在小样本筛查里的正收益没被全量复现,证据降级;六项在 step 50 的图像因果下界全部为正"
+      ],
+      "lessons": [
+        "总分不变不等于没变化,逐任务看才能发现 Pareto 迁移(一个任务涨必须以另一个任务跌为代价)",
+        "小样本 screen 的正结果必须全量确认,OCR 就是筛查骗了一次"
+      ],
+      "tags": ["报告", "交付包", "多任务"]
+    },
+    {
+      "path": "report/package10-render",
+      "title": "包 10 交付渲染:Projector checkpoint 插值检验(报告第 27–30 页)",
+      "summary": "包 10 章节的截图。既然 step 50 擅长 count/shape、step 100 擅长 coordinate/spatial,能不能把两个 checkpoint 的权重直接按比例平均,白捡两边能力?这包按预注册规则测试了 alpha=0/0.25/0.5/0.75/1 五个插值点。答案是不能。",
+      "conclusions": [
+        "没有任何插值点通过预注册的合并规则(要同时保住 count/shape、拿到 coordinate/spatial、最差任务超过两端点)",
+        "alpha=0.25 把 spatial 从 0.74 提到 1.00,但 count 从 0.42 显著跌到 0.26——得到一些就要丢掉另一些",
+        "插值全程宏观分数平滑无塌坑,说明两个 checkpoint 在同一权重盆地,但能力竞争发生在路径内部,线性平均无解"
+      ],
+      "lessons": [
+        "model soup(权重平均)不是免费的午餐:macro 更高的插值点 worst-task 反而更低",
+        "两端评测逐字段精确复现是这类实验的地基,先证明端点没错再谈中间点"
+      ],
+      "tags": ["报告", "交付包", "多任务"]
+    },
+    {
+      "path": "report/package11-render",
+      "title": "包 11 交付渲染:任务条件表示锚定(报告第 29–41 页,附 PDF 快照)",
+      "summary": "包 11 章节的截图,外加一份当时的 main.pdf 编译快照。做法是训练时给 count/shape 样本加一条辅助损失,逼 projector 输出别偏离 step 50 的旧输出太远(叫 anchoring,锚定),看能不能防遗忘。三档强度都试了,表示距离确实被压住了,但旧任务的答题边界还是丢了。目录里 29–34 页是与前包重叠的重渲染页。",
+      "conclusions": [
+        "辅助损失确实管用:count/shape 的 projector 输出 MSE 从 26.26 一路压到 2.09,表示距离被精确控制",
+        "但表示接近不等于能力保留:三档 λ 都没通过预注册 retention 规则,count/shape 相对 step 50 仍跌 0.26 以上",
+        "中等强度锚定改变了权衡路径:相对无正则对照,总体 preference +0.0533、生成 +0.1267,说明训练目标确实能塑造 trade-off"
+      ],
+      "lessons": [
+        "防止'输出向量跑了'防不住'决策边界忘了',表示层面和能力层面是两回事",
+        "无正则对照逐张量复现了历史 step 100(连文件 SHA 都一样),先证明续训复现可信,再谈新方法的差异"
+      ],
+      "tags": ["报告", "交付包", "防遗忘"]
+    },
+    {
+      "path": "report/package12-render",
+      "title": "包 12 交付渲染:分层 batch 对全局随机顺序(报告第 31–33 页)",
+      "summary": "包 12 章节的截图。只改一个变量:每个训练批次是严格六任务各 4 条(分层),还是全局随机打乱。结果分层在 step 50 明显学得快,但到 step 100 被随机臂反超,终点差异的置信区间跨零,判定为 mixed(证据不足/混合)。",
+      "conclusions": [
+        "分层在 step 50 全面领先(总分 0.512 vs 0.389),但 step 25 不领先、step 100 被反超,不是稳定收益",
+        "终点上分层只是用 coordinate 换 color/shape:coordinate +0.165、shape −0.245,任务互换依旧",
+        "梯度诊断显示分层终点 15 对任务里 6 对梯度方向为负(互相打架),全局随机臂 0 对——强制均匀覆盖反而制造冲突"
+      ],
+      "lessons": [
+        "每个 batch 严格均匀不是防遗忘的银弹,正式合同改为'固定窗口内领域覆盖'这种更松的要求",
+        "预注册判定规则(终点 CI 跨零就判 mixed)避免了硬把噪声讲成结论"
+      ],
+      "tags": ["报告", "交付包", "多任务"]
+    },
+    {
+      "path": "report/package13-render",
+      "title": "包 13 交付渲染:固定预算内的 preventive replay(报告第 33–35 页)",
+      "summary": "包 13 章节的截图,也是机制支线的收口。在总训练量严格锁死 1,200 条的前提下,把 80 个槽位从别的任务换给 count/shape 重放(fixed replay),结果同时救回了内部选择偏好和自由生成,而且被换出的任务没有可察觉的损失。这套配方从此成为默认保护。",
+      "conclusions": [
+        "fixed replay 让 count+shape 的 preference 相对普通续训提升 +0.255、生成 +0.120,置信区间下界都为正",
+        "被抽走槽位的 donor 任务合计变化 +0.00375,基本为零——重放在固定预算内可以做到不伤人",
+        "普通续训里总分上升 +0.040 的同时 count 从 0.380 塌到 0.075(−0.305),再次证明总分能盖住局部灾难",
+        "检测到遗忘后再补救(triggered)方向有效,但一个 25-step/20 槽的修复窗口强度不够,没完全拉回"
+      ],
+      "lessons": [
+        "防遗忘要提前(preventive)而不是事后(triggered),等哨兵报警再补已经晚了",
+        "每个任务必须独立保存历史峰值和置信区间,macro 改善不能成为 checkpoint 晋升的唯一依据"
+      ],
+      "tags": ["报告", "交付包", "防遗忘"]
+    },
+    {
+      "path": "report/package14-render",
+      "title": "包 14 交付渲染:Sentinel 功效与 V100 开销标定(报告第 34–39 页)",
+      "summary": "包 14 章节的截图,目录里 final-/verified-/final-layout- 多个版本是同一批页面对排版问题(页码、换行)的反复重渲染。内容回答两个问题:在线遗忘哨兵(sentinel,训练中定期用少量题检测能力是否掉线的体检机制)至少要用多少题才可靠,以及它在 V100 上花多少时间。结论:每任务 25 对题是最小可靠分母,一次体检中位 22.5 秒。",
+      "conclusions": [
+        "25 pairs/task 的哨兵对 count 坍塌的召回率 0.975、精确决策率 0.935、误报率 0.040,三项护栏全过;8/16 对的召回率只有 0.375/0.760,不可用",
+        "V100 实测 Tiny 档 teacher-only 中位 22.501 秒,约等于 25 个训练 step——哨兵不能每个小窗口都跑,只能稀疏抽查",
+        "按 5%/10% 开销上限折算,模型常驻时哨兵至少间隔 476/226 steps,操作配置取 512/256"
+      ],
+      "lessons": [
+        "体检本身有成本,先实测开销再定体检频率,不能拍脑袋说'每步都查'",
+        "fixed replay 至此冻结为默认保护,机制支线收束,不再扩展 replay 消融"
+      ],
+      "tags": ["报告", "交付包", "防遗忘"]
+    },
+    {
+      "path": "report/package15a-render",
+      "title": "包 15A 交付渲染:Qwen2.5-3B 社区可比合同冻结(报告第 38–40 页)",
+      "summary": "包 15A 章节的截图,标志实验主线从 0.5B 合成任务切到 3B 真实数据。在任何模型输出产生之前,先把一切冻死:纯文本 Qwen2.5-3B 的权重哈希、ScreenSpot 点击定位评测(50 条 GLM 格式对齐子集 + 完整 1,272 条)、严格答案解析器、七种因果对照条件、以及无参数的 4096→2048 维度转换器。本包不含任何能力分数,只有合同。",
+      "conclusions": [
+        "Qwen2.5-3B 两份权重分片的 SHA-256 与 HF 官方 LFS oid 逐字节一致,代理主干身份固定",
+        "V100 上 BF16 GEMM 比 FP16 慢 9.16 倍,因此本地运行固定为 Qwen FP16 + projector FP32 主权重",
+        "训练比较锁定 4k–64k 五档 examples seen、真实 batch 8、相同初始 projector——换配方的结论必须三随机种子复现"
+      ],
+      "lessons": [
+        "结果未出、合同先冻结(pre-result contract),是防止事后挑数据讲故事的关键纪律",
+        "V100 的 BF16 慢得反常,精度选择要实测,不能照抄别处惯例"
+      ],
+      "tags": ["报告", "交付包", "3B代理", "合同冻结"]
+    },
+    {
+      "path": "report/package15b-render",
+      "title": "包 15B 交付渲染:Qwen2.5-3B 真图像链路 smoke(报告第 38–42 页)",
+      "summary": "包 15B 章节的截图。V100 第一次把纯文本 Qwen2.5-3B、真实 MoonViT-V2 视觉特征和 4096 projector 串起来跑完整闭环:加载、前向、生成、反向、optimizer 一步、保存再恢复。梯度确实只流到 projector,语言模型梯度精确为零。其中 38–39 页是与 15A 重叠的重渲染页。",
+      "conclusions": [
+        "真实 ScreenSpot 截图经 MoonViT-V2 得到 [128,4,1024] 特征,projector 六个参数张量梯度全部有限且非零,3B 语言梯度精确为 0",
+        "一步训练的 checkpoint(约 470 MB)保存恢复逐值一致,工程闭环成立",
+        "step0 的有图和无图生成完全一样(都是画面中心点)——链路能跑不等于模型在看图"
+      ],
+      "lessons": [
+        "smoke 测试只证明'管道不漏',vision=blind 的结果必须如实写进报告,防止被读成能力证据",
+        "第一版验收器直接拿 CPU 张量和 CUDA 张量 torch.equal 而失败,跨设备比较这种低级坑也要留失败记录"
+      ],
+      "tags": ["报告", "交付包", "3B代理"]
+    },
+    {
+      "path": "report/package15c-render",
+      "title": "包 15C 交付渲染:首个 4k 训练顺序冻结(报告第 40–41 页)",
+      "summary": "包 15C 章节的截图,只有两页,内容也纯粹是'冻结':在任何训练之前,锁定第一个 4,000 条训练样本的顺序、答案规范和图片身份。零打乱、零剔除,500 个 optimizer step 恰好过一遍。本包明确写着 training=false,没有任何 checkpoint 和分数。",
+      "conclusions": [
+        "4,000 条 = TextVQA 1,985 + DocVQA 1,160 + OCRBench 516 + ShowUI 339,顺序、目标、图片共 15 亿字节经第二遍独立验签全过",
+        "答案规范化抓到 2 条会被清洗成空串的 TextVQA 答案('(' 和 'a'),显式回退到原始多数答案并记录",
+        "339 条旧格式 click 监督只在完整合法时转为规范格式,其余保持失败关闭"
+      ],
+      "lessons": [
+        "数据顺序也是实验变量,先冻结再训练,事后才能做单变量归因",
+        "答案清洗规则会把合法答案洗没,规范化必须带 fallback 和逐条记录"
+      ],
+      "tags": ["报告", "交付包", "3B代理", "合同冻结"]
+    },
+    {
+      "path": "report/package15d-render",
+      "title": "包 15D 交付渲染:4k MoonViT 特征缓存(报告第 41–42 页)",
+      "summary": "包 15D 章节的截图。把冻结的 4,000 条顺序提前用 MoonViT-V2 算好视觉特征存盘(content-addressed cache,按图片内容哈希寻址,同一张图只算一次),训练时直接读特征不再跑视觉塔。4,000/4,000 零失败,省下 11.65% 的视觉塔前向。",
+      "conclusions": [
+        "3,534 次真实视觉塔前向 + 466 次同图复用,111 个分片共 10.37 GB,独立校验器重哈希并读回全部 29 亿个数值",
+        "首个 attempt 因为进程跑的是未提交的脏代码,在 1,128 条后被 provenance 审计主动终止并禁止用于训练——脏 run 完整保留",
+        "内容寻址能安全消除重复前向,'每条记录都要独立跑视觉塔'被反驳"
+      ],
+      "lessons": [
+        "runner 的 git 干净程度是输入合法性的一部分,数值正确的脏代码产物也不能用",
+        "缓存与训练顺序 manifest 逐行绑定,防止缓存和训练各说各话"
+      ],
+      "tags": ["报告", "交付包", "3B代理", "缓存"]
+    },
+    {
+      "path": "report/package15ef-render",
+      "title": "包 15E/15F 交付渲染:固定预算 4k 训练与 GLM50 评测(报告第 42–45 页)",
+      "summary": "包 15E 和 15F 两章的截图。15E 是正式训练:500 步、4,000 样本、只训 projector,loss 从 4.60 降到 2.48。15F 随即用 GLM 格式对齐的 50 条 ScreenSpot 点击题做七条件评测,结果当头一棒:训练后的模型点击准确率 4%,还不如不给图的 blind(12%)和没训练的 step0(10%),第一个候选 checkpoint 被正式拒绝。",
+      "conclusions": [
+        "训练本身完全合规:500/500 步、21,532 个答案 token、五个 checkpoint 全部通过独立恢复与哈希验证",
+        "但 ScreenSpot 上 vision−blind 的平均点击距离恶化 161.94 像素(显著),所有因果门槛全败,判定 reject_current_candidate",
+        "训练学会了输出格式(parse 96%),同时损伤了模型原有的文本/中心位置先验",
+        "这一轮反驳了'0.5B 容量是唯一瓶颈''3B + 4k 数据就够了''loss 下降说明模型在用图'三个说法"
+      ],
+      "lessons": [
+        "loss 降、格式会,不等于视觉能力——能力判定必须看 vision 相对 blind/shuffled/step0 的因果对比",
+        "previous-best 保持 step0,被拒绝的 checkpoint 不进入后续候选,这个纪律避免了把失败滚动放大"
+      ],
+      "tags": ["报告", "交付包", "3B代理", "负面结果"]
+    },
+    {
+      "path": "report/package15gh-render",
+      "title": "包 15G/15H 交付渲染:完整 ScreenSpot 与坐标偏好诊断(报告第 44–48 页)",
+      "summary": "包 15G 和 15H 两章的截图。15G 把失败在完整 1,272 条公开 ScreenSpot 上复现并强化;15H 用 teacher-forced 偏好测试(不给模型自由发挥,直接比较它对正确坐标和错误坐标两个答案打的分数)往模型内部再挖一层:训练把坐标答案的 NLL 从 2.51 降到 1.22,但正确图和错误图之间毫无偏好——模型学到的是与图像无关的'坐标答案长什么样'。",
+      "conclusions": [
+        "完整集 click-in-box:trained 2.67% / blind 3.07% / step0 3.30%,vision−blind 平均距离显著恶化 169.66,GLM50 的失败不是小样本偶然",
+        "teacher-forced preference:trained vision 46% / blind 56% / shuffled 52%——蒙眼都比看图强",
+        "训练后 correct-NLL 大幅改善(+1.2841)但 vision−shuffled 的 mean margin 显著为负,坐实了 image-agnostic coordinate prior(不看图也会背坐标答案格式)",
+        "'模型心里选对了只是说不出来'这一解释被反驳"
+      ],
+      "lessons": [
+        "生成指标和 teacher-forced 内部指标要互相印证,单看生成会漏掉'内部也没有'的情况",
+        "失败要往深定位一层:从'点不准'到'对正确图没有偏好',下一步实验设计才有靶子"
+      ],
+      "tags": ["报告", "交付包", "3B代理", "负面结果"]
+    },
+    {
+      "path": "report/package15i-render",
+      "title": "包 15I/15J 交付渲染:Grounding-enriched 训练前合同与缓存(报告第 46–47 页)",
+      "summary": "包 15I(含 15J 缓存小节)的截图。第一轮 4k 训练里点击定位监督只有 339 条,这轮把一半预算换成 ShowUI 点击数据:2,000 条 grounding + 2,000 条短答案严格交替,其余一切不变。这是典型的单变量实验设计——唯一变量是数据配比。本包仍是训练前冻结,不含能力结果。",
+      "conclusions": [
+        "新顺序:2,000 ShowUI grounding + 2,000 短答案(TextVQA 1,080/DocVQA 649/OCRBench 271),每个 batch 严格 4/4 交替",
+        "4,000 条记录、目标、12.5 亿图片字节经独立重建与复核全部匹配",
+        "配套缓存(15J)4,000/4,000 零失败:2,013 次真实前向 + 1,987 次复用,63 个分片 5.94 GB"
+      ],
+      "lessons": [
+        "改一个变量就重新冻结一版合同和缓存,实验之间的可比性是靠纪律堆出来的",
+        "previous-best 在任何新结果前继续保持 step0,合同包本身不产生也不暗示能力"
+      ],
+      "tags": ["报告", "交付包", "3B代理", "合同冻结"]
+    },
+    {
+      "path": "report/package15k-render",
+      "title": "包 15K 交付渲染:Grounding-enriched 500 步训练(报告第 47–48 页)",
+      "summary": "包 15K 章节的截图。用 grounding 加强版数据跑完第二轮 500 步 projector-only 训练:4,000 样本、36,589 个答案 token,loss 从 4.14 降到 1.92,五个 checkpoint 全部通过独立审计。能力判定按合同留给下一包。",
+      "conclusions": [
+        "500/500 步完成,每个 batch 恰好 4 条 grounding + 4 条短答案,Qwen 和 receiver 全程冻结、梯度为 0",
+        "loss 4.14400 → 1.91563,只记为优化证据,页面明确标注 visual_ability_established=false",
+        "最终 projector 权重哈希与 step0 不同,进入下一包的因果评测流程"
+      ],
+      "lessons": [
+        "训练包和评测包严格分离:训练完成只说明优化发生了,不预设任何能力结论",
+        "23.5 亿字节的 checkpoint/optimizer/RNG 全部可恢复可复算,是后续被拒也能回溯的保障"
+      ],
+      "tags": ["报告", "交付包", "3B代理"]
+    },
+    {
+      "path": "report/package15l-render",
+      "title": "包 15L 交付渲染:Grounding-enriched 坐标偏好评测(报告第 48–49 页)",
+      "summary": "包 15L 章节的截图,另含 page-2(封面/目录)的重渲染版本。用最有判别力的 teacher-forced 偏好测试先审第二轮 checkpoint:vision/blind/shuffled 为 52%/56%/54%,正确图依旧没有优势。坐标答案 NLL 相对 step0 改善了 1.44854,但依然与图像身份无关——把 grounding 数据从 339 条加到 2,000 条没有改变失败的性质。",
+      "conclusions": [
+        "vision−blind preference −0.04、vision−shuffled −0.02,所有因果对比区间跨零或为负",
+        "'首轮失败只是因为 grounding 监督太少'被反驳:2,000/4,000 的占比仍只学到 image-agnostic 坐标先验",
+        "判定 reject_at_paired_preference_gate,不进入完整 ScreenSpot 和三种子,previous-best 保持 step0"
+      ],
+      "lessons": [
+        "先用最便宜的判别性测试(teacher-forced 偏好)挡掉不合格候选,贵评测不浪费在必败的 checkpoint 上",
+        "加同类数据解决不了的问题,大概率是目标或结构问题——这为后续定位到表示塌缩埋了伏笔"
+      ],
+      "tags": ["报告", "交付包", "3B代理", "负面结果"]
+    },
+    {
+      "path": "report/package15m-render",
+      "title": "包 15M 交付渲染:Grounding-enriched GLM50 生成评测(报告第 49–50 页)",
+      "summary": "包 15M 章节的截图,含 page-2 目录重渲染。按合同给同一 checkpoint 补自由生成评测,结果与 15L 一致:click-in-box 为 vision 6% / blind 12% / shuffled 6%。更扎眼的是坐标塌缩:有图条件下 50 条里 31 条输出同一个坐标 [125,345],而这个坐标在 2,000 条训练标签里一次都没出现过。",
+      "conclusions": [
+        "vision−blind 平均距离恶化 109.47(显著),vision−shuffled 距离差只有 0.0175(基本为零)",
+        "生成塌缩到窄坐标先验:vision 只有 6 种不同输出,与 shuffled 条件 30/50 字符串完全相同",
+        "图像身份会造成输出扰动,但扰动与目标位置无关——checkpoint 正式拒绝"
+      ],
+      "lessons": [
+        "输出去重数一下就知道塌没塌:50 条生成只有 6 种答案,比任何复杂指标都直观",
+        "内部偏好测试和自由生成结论一致时才正式拒绝候选,两类证据互锁"
+      ],
+      "tags": ["报告", "交付包", "3B代理", "负面结果"]
+    },
+    {
+      "path": "report/package15n-render",
+      "title": "包 15N 交付渲染:表征保留诊断的结果前合同(报告第 50 页)",
+      "summary": "包 15N 结果前合同的截图,只有一页正文加目录重渲染。两轮训练都失败后,这包在看任何新数据之前先冻结一个'体检方案':量一量训练后的 projector 输出相对 step0 是否还保留着图与图之间的差异(spread、有效秩、top-1 方差占比、CKA 等几何指标),并预先写好什么数值触发什么行动。本页不含任何测量值。",
+      "conclusions": [
+        "双门槛规则预注册:fixed-receiver 边界的 spread ratio < 0.25 且 rank ratio < 0.5 同时成立才判 gross collapse(严重塌缩),先修表示再谈训练",
+        "明确禁止把无文字 query 的 image-only 坐标探针当能力证据——它混淆了'表示保留'和'按指令读图'",
+        "多样性保留不等于 grounding 能力,能力门仍由偏好和生成评测把守"
+      ],
+      "lessons": [
+        "先写判定规则再看数字,防止看到结果后临时编一个对自己有利的阈值",
+        "决策范围故意收窄,一次只回答一个问题:信息是在 projector/receiver 里没的,还是之后没的"
+      ],
+      "tags": ["报告", "交付包", "3B代理", "合同冻结"]
+    },
+    {
+      "path": "report/package15n-result-render",
+      "title": "包 15N 结果交付渲染:Scale/Rank 塌缩定位(报告第 50 页,含验证截图)",
+      "summary": "包 15N 正式结果的渲染,page-50 有初版、v2、final 三次重渲染(数值表与措辞修正),另附两张 pytest 运行目录截图证明验证过程。结果给出了整个项目最关键的失败定位:训练后的 projector 输出尺度暴涨、图像表示几乎共线——有效秩从 13.28 掉到 1.14,最大方向独占 93.46% 方差。receiver 原样保留这个塌缩比,说明它是受害者不是元凶。",
+      "conclusions": [
+        "预注册双 guard 同时触发:projector spread/rank ratio 为 0.1384/0.0859,receiver 为 0.1372/0.0846",
+        "机制是尺度爆炸 + 近共线:sample RMS 从 0.124 涨到 97.31,不是输出变成零向量",
+        "预注册行动因此选中'先修 projector/receiver 表示,再谈 margin 训练',counterfactual margin 和继续加同类数据都暂缓"
+      ],
+      "lessons": [
+        "pairwise 距离还在变大、CKA 还有 0.44——单看'像不像'会误判,要看秩和方差集中度这类几何指标",
+        "Windows 换行符(CRLF vs LF)能让嵌套 manifest 哈希校验挂掉一项,跨平台产物要强制统一换行"
+      ],
+      "tags": ["报告", "交付包", "3B代理", "失败定位"]
+    },
+    {
+      "path": "report/package15o-render",
+      "title": "包 15O 交付渲染:塌缩轨迹追踪(报告第 51–53 页,附轨迹图)",
+      "summary": "包 15O 章节的截图,含 trajectory.png 塌缩轨迹图、page-51/52 正文与 page-66 的证明报告已长到 66 页以上,以及 page-2/4 重渲染。这包把 15N 的一次性诊断扩展成逐 checkpoint 轨迹,发现第一个保存点(step 100,只见 800 条样本)就已经全面塌缩——问题不是'训练太久',而是'一上来就坏'。",
+      "conclusions": [
+        "step 100 的 projector spread/rank ratio 已为 0.1298/0.0772,sample RMS 放大 289 倍,top-1 方差 98.76%——塌缩早于 loss 平台期",
+        "塌缩起点只能限定在 step 1–100 之间,之后所有 checkpoint 都处于 gross collapse,继续同类训练不会自愈",
+        "'只在末期过训练才塌缩'和'继续训练会自行恢复'被反驳;fixed receiver 再次排除为主因"
+      ],
+      "lessons": [
+        "保存点太稀会掩盖故障起点:500 步只存 5 个点, onset 只能框到 1–100,这直接催生了后来的每步健康监控",
+        "失败的轨迹数据(逐 checkpoint 表示 + 逐窗口 loss)比单点快照值钱得多"
+      ],
+      "tags": ["报告", "交付包", "3B代理", "失败定位"]
+    },
+    {
+      "path": "report/main.pdf",
+      "title": "完整技术报告(PDF,75 页)",
+      "summary": "整份报告按时间线讲了一个'接视觉 → 信号成立 → 能力不成立 → 定位失败 → 修复失败'的完整故事。开头是架构审计与工程合同:从 Kimi K3 抽出 MoonViT-V2 视觉塔(401M 参数),设计 4096 维 projector 接到纯文本 DeepSeek-V4-Flash-0731,并用 embedding hook 解决 DeepSeek Hash-MoE 路由需要 token ID 的特殊问题。中段在 V100 上用小语言模型做 Gate B 验证:shuffle_delta(真图比乱配图 loss 低多少)+0.727 证明图像信息确实进了语言模型;随后 15 个编号的 V100 实验包先用合成六任务把机制摸清(shape 最先学会、瓶颈在冻结主干上层读出、多任务会互相遗忘,fix 是 preventive replay + sentinel),再切到 Qwen2.5-3B 真实数据做两轮 4,000 条训练——两轮候选都被因果评测拒绝,失败被定位到 projector 输出在训练头两步就尺度爆炸、表示共线。结尾是修复尝试(几何正则、输出归一化、残差结构全部在 step 2 被自动止损)和 7B 容量/paired margin 探索,以及始终 NO-GO 的 Gate D:完整 DeepSeek 权重从未真机跑通,付费租卡从未授权。",
+      "conclusions": [
+        "工程链路完全成立:真实 MoonViT-V2 权重、placeholder 注入、冻结主干反向、checkpoint 保存恢复、生成与评测管线,全部在 V100 上可重复验证",
+        "视觉接口可学但没能用:shuffle_delta +0.727 和合成六任务的因果读出证明图像信息能进模型,但真实 ScreenSpot 上 vision 从未稳定超过 blind/shuffled/step0",
+        "失败主因定位明确:projector 输出在训练第 1–2 步就发生尺度/秩塌缩(有效秩 13.28→1.14,top-1 方差 93.46%),几何正则、LayerNorm/RMSNorm、残差结构都没能阻止",
+        "loss 下降不等于视觉能力:两轮 3B 训练 loss 大降、坐标 NLL 减半,学到的只是与图像无关的坐标答案先验",
+        "多任务任务竞争真实存在:等量分层、权重插值、表示锚定都不能消除遗忘,固定预算内的 preventive replay 是唯一验证有效的保护",
+        "Gate D 始终 NO-GO:完整 DeepSeek-V4-Flash-0731 的真实量化权重加载、图像前向/反向、input DGRAD 全部未验证,项目在此归档"
+      ],
+      "lessons": [
+        "结果产生前冻结合同(数据顺序、权重哈希、判定规则、阈值),无效 run 完整保留并标 invalid——这套纪律多次抓住脏 run、坏分片和'字节数对但内容错'的静默损坏",
+        "先怀疑判别器再怀疑模型,但这次判别器基本清白:逐条审计只多找回 1–2 分,倒是抓到 MMMU 输入格式化的两个真 bug(2.0%→7.3%)",
+        "总分和单点会骗人:shape 在 step 1500 昙花一现、总分上升时 count 塌掉 0.305——必须看完整轨迹、逐任务最差值和配对置信区间",
+        "计量语义要先审计:'batch 8'其实是 micro-batch 1 串行累积 8 次,不查清这个,所有 epoch 和时长估算都是错的",
+        "容量阶梯(0.5B→3B→7B)证明语言模型容量不是主瓶颈,公平的单变量对照比堆数据堆参数更能定位问题",
+        "代理环境下分段下载会造成 TLS 合法、尺寸正确但内容静默损坏,一切大文件必须逐分片 SHA-256 校验"
+      ],
+      "tags": ["报告", "总报告"]
+    },
+    {
+      "path": "report/main.typ",
+      "title": "完整技术报告 Typst 源码(版本 0.7)",
+      "summary": "报告的全部文字与排版源码,1,966 行纯文本,所有数字、表格、章节和变更日志的权威出处。结构上是 17 个一级章节:从当前状态与执行摘要开头,经过架构审计、张量合同、DeepSeek 适配、硬件计划、Gate A/B 验证,进入两个实验主章(V100 方向筛选的包 1–15P,以及工程主线/Gate C 租机调研/Gate D 风险清单),再以评测计划、数据管线、变更日志和'下一位执行者最短路径'收尾;最后一章是新增的 projector 健康合同与包 15P–15S、2026-08-07 修订。所有 package*-render 目录都是这份源码在对应交付节点的页面截图。",
+      "conclusions": [
+        "源码即唯一事实来源:网站所有摘要数字都应以此文件为准,而非截图或二手转述",
+        "版本 0.7 标称 2026-08-06,但文末已包含 2026-08-07 的 receiver-prior 审计修订(旧的 3B/7B/9B capacity 运行 prompt 有误,结论被降级保留)",
+        "执行摘要(第 63 行)停留在 15P 校准完成时刻,正文比摘要更新——读报告要以章节正文为准"
+      ],
+      "lessons": [
+        "Typst 表格里的每个数字都带着置信区间和判定,引用时不能截掉区间只留点估计",
+        "变更日志章节是按日期排的项目全史,比 git log 更适合外人快速重建时间线"
+      ],
+      "tags": ["报告", "源码"]
+    }
+  ],
+  "chapters": [
+    {
+      "title": "当前状态(2026-08-06,唯一 live 入口)",
+      "summary": "全报告的状态快照:两条对照臂(V1 家族代理和 exact K3 V2)都已完成真实缓存和高频健康体检,都在第 2 步被自动止损,正式能力评测未启动,Gate D 仍为 NO-GO。"
+    },
+    {
+      "title": "历史执行摘要",
+      "summary": "一页讲完整个项目:目标是把 Kimi K3 的 MoonViT-V2 视觉塔经 4096 维 projector 接到 DeepSeek-V4-Flash-0731,以及从 Gate B 信号验证到包 15P 几何修复校准的全部关键结果。"
+    },
+    {
+      "title": "来源与可复现边界",
+      "summary": "列出全部外部来源(社区 GLM-5.2V checkpoint、DeepSeek 权重、两个 MoonViT 版本、Kimi 技术报告)并划清边界:输出合同同构不等于特征分布相同,换视觉塔必须重训 projector。"
+    },
+    {
+      "title": "社区 GLM-5.2V 架构核验",
+      "summary": "对社区公开的 GLM-5.2V projector 做了逐文件哈希审计:视觉塔来自 Kimi-K2.6 的 MoonViT-3d(1152 维),projector 是在 GLM 自己的 6144 维空间重新训练的,结构可参考但不能直接挪用;同时修正了本项目对本地 V2 实现的表述。"
+    },
+    {
+      "title": "权重与张量合同",
+      "summary": "一张表写死各组件的输入输出形状与冻结状态:MoonViT-V2 输出 [tokens,4,1024],exact K3 V2 projector 为 33,558,528 参数,DeepSeek embedding 与 Hash-MoE 路由冻结。"
+    },
+    {
+      "title": "DeepSeek-V4 特殊适配",
+      "summary": "DeepSeek 的 Hash-MoE 靠 token ID 选 expert,只给 embedding 会丢路由——解法是用一次性的 embedding hook 替换查表输出,路由 ID 保留、梯度照常回流,不改 Transformers 源码、不扩词表。"
+    },
+    {
+      "title": "已完成验证",
+      "summary": "工程验证清单:placeholder 扩展、权重 round-trip、真实 DeepSeek 缩小配置的 Hash-MoE 反向、真实 MoonViT-V2 前向(1024×1024 → [1369,4,1024]、逐位确定)、评测管线端到端,完整测试 184/184。"
+    },
+    {
+      "title": "MoonViT-V2 尺寸与适配性",
+      "summary": "401M 参数、27 层、1024 维的视觉塔本身不是资源瓶颈,真正的变量是图像分辨率带来的视觉 token 数——第一阶段每图锁 1024 token 上限。"
+    },
+    {
+      "title": "MoonViT-V2(Kimi K3 视觉塔)移植",
+      "summary": "1.56 TB 的 K3 仓库里 165 个视觉塔张量恰好集中在一个 802 MB 分片,抽取、vendor 最小代码集、strict-load 与真实前向全部在工作站完成,租机只需约 800 MB 的抽取产物。"
+    },
+    {
+      "title": "本地与云端硬件计划",
+      "summary": "各阶段硬件门槛表:胶水测试任意机器可做,V100 32GB 能跑视觉塔加小 LM,完整 0731 推理要 4×48GB 起步,正式 projector 训练建议 4×H100 或更高。"
+    },
+    {
+      "title": "分阶段门槛",
+      "summary": "Gate A/B/B+ 的执行记录:最重要的是 Gate B 三条轨道(两个文本主干、两个数据集)shuffle_delta 全部显著为正(+0.343/+0.282/+0.148),证明胶水通路可学;全量 mix 一轮 +0.727,但本章同时把 Gate B 降格为'工程与信号闸门',不是能力代理。"
+    },
+    {
+      "title": "冻结语言主干中的视觉感知涌现:V100 方向筛选实验",
+      "summary": "全报告最长的实验章,覆盖包 1–15P:先用合成六任务诊断把机制摸清(shape 最先涌现、瓶颈在冻结主干上层、多任务遗忘用 preventive replay + sentinel 防),再切 Qwen2.5-3B 真实数据两轮 4k 训练双双被拒,最终定位到 projector 输出的尺度/秩塌缩。"
+    },
+    {
+      "title": "工程主线与 Gate D 真实缺口",
+      "summary": "诚实盘点差距:小主干上一切闭环都通,但完整 DeepSeek-V4-Flash-0731 从未完成图像前向/反向/训练,真实 FP4/FP8 input DGRAD 仍 hardware_pending,Gate D 判定 NO-GO;并附 Gate C 租机调研、显存算术、12 项风险清单和租期排程。"
+    },
+    {
+      "title": "评测与验收计划",
+      "summary": "评测口径设计:五个基准(TextVQA/DocVQA/OCRBench/ScreenSpot/MMMU-Pro)全部必须和 blind 基线一起报告,把'模型本来就会答'和'图像带来信息'分开;成功定义对标社区 GLM 实验的参考锚点。"
+    },
+    {
+      "title": "数据集挑选过程与构建管线",
+      "summary": "数据资产全记录:1,400 行评测集与 59,198 行训练 mix 的挑选理由(对标社区配方、短答案优先防 grokking 失败)、三道去重机制、以及代理环境下'aria2 预取 + 离线 pyarrow 直读'的下载通道生存指南。"
+    },
+    {
+      "title": "变更日志",
+      "summary": "按日期排列的项目全史(2026-08-02 至 08-07),每条一句话:从胶水层建立、Gate B 三轨通过,到包 15 系列的每轮训练与拒绝,再到 DeepSeek 量化 runtime 审计。"
+    },
+    {
+      "title": "下一位执行者的最短路径",
+      "summary": "交接说明:哪些已完成、当前卡在哪(geometry repair 四臂短筛)、下一步固定动作是什么,以及付费 Gate D 必须等用户明确授权。"
+    },
+    {
+      "title": "Projector 表征健康合同与本科生版进度解释",
+      "summary": "用大白话把项目讲给非专家听,并定义了 projector-health-v1 合同(每步记录 RMS/spread/rank,健康恶化自动止损回滚);此章后附包 15P–15S 的后续结果:四臂几何正则、输出归一化、残差结构全部在 step 2 止损,7B 容量对照和 λ=0.5 paired margin 给出第一条通过置信区间的 teacher-forced 轨迹但自由生成仍无 grounding,另含 2026-08-07 对旧 capacity 运行 prompt 错误的诚实修订。"
+    }
+  ]
+}
