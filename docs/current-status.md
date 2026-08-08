@@ -2,7 +2,7 @@
 
 更新日期：2026-08-08
 
-> **live matrix execution (03:26–06:38 CST):** qwen25_7b_v1 retry4 已加载全部 339 个 Qwen2.5-7B 分片并越过此前 step-2 NaN 点，但在 optimizer step 33（2,112 examples seen）触发冻结的 RMS critical guard：receiver RMS ratio `50.7792× > 50×`，relative-spread ratio `0.4593`，CE 仍 finite（`3.4664`）。因此 FP32 projector/AdamW 修复得到“数值稳定到 step32”，但 V1 社区规模臂正式记为 `failed_health_guard`，不能写成视觉能力结果。完整 failure checkpoint、optimizer/RNG、health/log、SHA 与失败原因已封存于 `experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v1_retry4/`，MATRIX_SUMMARY 已登记。Qwen2.5-7B V2 的 57,600 条 MoonViT-V2 cache 已于 06:36:58 完成：`cached=57600, failed=0, shards=75, tower_forwards=29999, reused_by_image_sha256=27601`，manifest records SHA 为 `055d7f9d…dcc1ba7`。当前 follow-on 正在构建固定 ScreenSpot50 的 V2 cache；7B V2 训练尚未开始，Qwen3.5-4B/9B 和 controls 继续等待 GPU 排程。
+> **live matrix execution (2026-08-08):** qwen25_7b_v1 retry4 已加载全部 339 个 Qwen2.5-7B 分片并越过此前 step-2 NaN 点，但在 optimizer step 33（2,112 examples seen）触发冻结的 RMS critical guard：receiver RMS ratio `50.7792× > 50×`，relative-spread ratio `0.4593`，CE 仍 finite（`3.4664`）。因此 FP32 projector/AdamW 修复得到“数值稳定到 step32”，但 V1 社区规模臂正式记为 `failed_health_guard`，不能写成视觉能力结果。完整 failure checkpoint、optimizer/RNG、health/log、SHA 与失败原因已封存于 `experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v1_retry4/`，MATRIX_SUMMARY 已登记。Qwen2.5-7B V2 的 57,600 条 MoonViT-V2 cache 已于 06:36:58 完成：`cached=57600, failed=0, shards=75, tower_forwards=29999, reused_by_image_sha256=27601`，manifest records SHA 为 `055d7f9d…dcc1ba7`。V2 训练已启动并在 step560（35,840 examples seen）仍 finite、无 NaN/Inf、未触发 guard；projector/receiver RMS ratio 约 `1.012/1.081`，spread ratio 约 `0.949/0.946`。这只是健康证据，能力仍待多任务评测。后续每个固定节点将同时记录 ScreenSpot、TextVQA、DocVQA、OCRBench 和语言保持曲线；Qwen3.5/controls 继续等待 GPU 排程。
 
 > **health-checkpoint repair (2026-08-08 05:08 CST):** V1 step33 暴露的 `checkpoint-every=64` 回滚缺口已修复进 `tools/train_overfit.py`：新鲜训练在 step0、1、2、5、10、20、30、50、75、100 及之后每50步保存完整 healthy checkpoint，failure checkpoint 写入 `STOP_REASON.json` 并记录最近回滚点。三组相关 pytest 在设置 `PYTHONPATH=src:tools` 后为 `12 passed`。
 
@@ -11,6 +11,8 @@
 > **step50 health milestone (2026-08-08 07:03 CST):** V2 已到 3,200 examples seen，projector/receiver RMS ratio `1.0059/1.0727`、spread ratio `0.9502/0.9466`、CE `3.5188`，仍未触发 guard；完整 step50 projector/optimizer/RNG checkpoint 及 SHA 已封存。V1 在 step33 已因 `50.7792×` receiver RMS 停止，因此 V2 的早期训练健康显著更好；真实能力仍待 ScreenSpot 四条件。
 
 > **step100 health milestone (2026-08-08 07:25 CST):** V2 已到 6,400 examples seen 并保存 step100 healthy checkpoint；step112 观测到 projector/receiver RMS ratio `1.0080/1.0758`、spread ratio `1.1141/1.1103`、CE `2.4801`，无 NaN/Inf、无 guard。step100 原始 health、checkpoint SHA 与日志已保存于 `experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v2_step100/`。这仍是稳定性证据，不是 grounding 通过。
+
+> **evaluation cadence update (2026-08-08):** 原 runner 的 `--eval-samples` 只在训练结束后做 held-out true-vs-shuffled teacher-forced 汇总，不能冒充中途能力评测。已在 `tools/train_overfit.py` 增加固定节点在线 probe（step `1/2/5/10/20/30/50/75/100`，之后每 50 步），输出 `train_eval.jsonl`；新增 `tools/eval_community_multitask.py` 与 `tools/aggregate_community_multitask_curve.py`，用于在 examples-seen 节点对 ScreenSpot、TextVQA、DocVQA、OCRBench、blind/shuffled/random projector 生成原始报告、CSV 和 SVG 增长曲线。健康监控仍只负责止损，最终候选必须由多任务生成曲线决定。
 
 ## 一句话结论
 
