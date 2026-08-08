@@ -97,11 +97,12 @@ def main() -> None:
 
     rows_by_condition = {name: [] for name in ("vision", "blind", "shuffled", "random_projector")}
     all_rows = []
+    projector_dtype = next(projector.parameters()).dtype
     for index, sample in enumerate(samples):
         sample_id = str(sample["sample_id"])
         shuffled_id = mapping[sample_id]
-        feature = select_visual_tokens(cache.get(sample_id, device=device, dtype=torch.float32)[0], args.max_visual_tokens, args.token_selection)
-        shuffled = select_visual_tokens(cache.get(shuffled_id, device=device, dtype=torch.float32)[0], args.max_visual_tokens, args.token_selection)
+        feature = select_visual_tokens(cache.get(sample_id, device=device, dtype=projector_dtype)[0], args.max_visual_tokens, args.token_selection)
+        shuffled = select_visual_tokens(cache.get(shuffled_id, device=device, dtype=projector_dtype)[0], args.max_visual_tokens, args.token_selection)
         for condition, current_feature, current_projector in (
             ("vision", feature, projector),
             ("blind", None, projector),

@@ -72,32 +72,28 @@
       "status": "failed_health_guard"
     },
     "qwen25_7b_v2": {
-      "failure_history": [],
+      "failure_history": [
+        {
+          "attempt": 1,
+          "class": "evaluation_failed",
+          "artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v2_attempt1/FAILURE.json",
+          "reason": "ScreenSpot evaluator failed before producing valid rows: cached feature dtype float32 reached float16 projector (mat1 float != mat2 Half)"
+        }
+      ],
       "result": null,
-      "status": "training_in_progress",
+      "status": "failed_evaluation",
       "attempts": 1,
       "current_attempt": {
         "attempt": 1,
+        "status": "failed_evaluation",
         "contract_examples_seen": 57600,
-        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_train_57600_retry1",
-        "cache_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/v2_cache_57600",
-        "cache_status": "complete",
-        "cache_manifest": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/v2_cache_57600/MANIFEST.json",
-        "cache_summary": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/v2_cache_57600/SUMMARY.json",
-        "cache_requested": 57600,
-        "cache_cached": 57600,
-        "cache_failed": 0,
-        "cache_shards": 75,
-        "cache_tower_forwards": 29999,
-        "cache_reused_by_image_sha256": 27601,
-        "cache_manifest_records_sha256": "055d7f9dde1f65af576ace9fe3ee874a427bd9fac7770bc39137ae2b0dcc1ba7",
-        "training_status": "healthy_through_step100",
-        "optimizer_step_observed": 100,
-        "examples_seen_observed": 6400,
-        "early_health_artifact": "experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v2_early_health/INTERIM.json",
-        "capability_claim_allowed": false,
-        "step50_artifact": "experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v2_step50/INTERIM.json",
-        "step100_artifact": "experiments/community_scale_model_ablation_20260808/interim_artifacts/qwen25_7b_v2_step100/INTERIM.json"
+        "optimizer_steps_requested": 900,
+        "optimizer_step_stopped": null,
+        "examples_seen_stopped": null,
+        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_screenspot_glm50",
+        "failure_artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v2_attempt1/FAILURE.json",
+        "failure_class": "evaluation_failed",
+        "capability_claim_allowed": false
       }
     },
     "qwen35_4b_v1_stripped": {
@@ -152,5 +148,5 @@
     }
   },
   "schema_version": "community-matrix-summary-v1",
-  "updated_at": "2026-08-08T07:26:30.513076+08:00"
+  "updated_at": "2026-08-08T12:32:27.423531+08:00"
 }
