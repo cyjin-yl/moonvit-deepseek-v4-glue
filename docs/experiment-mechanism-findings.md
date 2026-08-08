@@ -290,3 +290,9 @@ projector dtype 不匹配、以及变量初始化顺序错误；每次都保留�
 同一 V2 step900 的多任务 selection（TextVQA/DocVQA/OCRBench 各 8 条）进一步验证了这个分离：TextVQA vision/shuffled 都为 `0.125`、DocVQA 都为 `0.12`、OCRBench 四条件全为 `0`。这不是视觉能力，而是“图像条件能改变答案分布，但正确图像没有胜过确定性错误图像”的又一份 raw evidence；selection 结果和节点曲线由 `qwen25_7b_v2_multitask_final_limit8_POINTER.json` 绑定。
 无视觉控制与原生 Qwen VLM 阳性对照已经补入矩阵：无视觉 `parse=100%, click=10%, A@50/100/200=2/6/18%`；原生 VLM `parse=80%, click=42%`，blind click `6%`。这组对照把“语言先验能做到什么”和“原生视觉训练上界”分开，避免把 external MoonViT 的负结果误读成评测器失效。
 文献证据链见 `docs/vlm-alignment-literature.md`。它把当前现象从“代码可能有 bug”推进到可检验机制：BLIP-2 的 representation bridge、VILA/CogVLM 的深层 receiver 对齐、Shikra 的空间监督、DeepSeek-VL 的大规模 OCR/GUI 混合数据，均预测单层 projector+短 CE 无法稳定生成坐标。后续变量优先级据此固定。
+
+## 低学习率只能修健康，不能修视觉（2026-08-08）
+
+Qwen2.5-7B V2 的 matched `5e-5` 短探针完成 100 steps / 6,400 examples seen，健康指标全部 finite；但 ScreenSpot50 vision/blind/shuffled/random 的 parse 为 `2%/100%/0%/96%`，click-in-box 为 `0%/10%/0%/10%`。vision−blind click CI 为 `[-20,-2] pp`，vision−shuffled 为 `[0,0]`。这说明降低 projector LR 抑制了早期 RMS/格式崩坏，却没有建立图片到坐标的因果通路。与 900-step、`5e-4` V2 的负结果结合后，当前解释不再是单一“LR 太大”，而是“数值稳定”和“视觉—语言对齐”两个独立问题。
+
+该失败样例强化一条研究规则：teacher-forced loss 或 shuffle delta 只能作为训练归因诊断；只有自由生成在固定 parser、blind/shuffle paired CI 和 click-in-box 上同时通过，才算视觉能力。下一项应改变监督或 receiver 融合深度，并保留严格匹配的 projector-only CE 控制。

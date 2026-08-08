@@ -652,3 +652,20 @@ Qwen2.5-7B-Instruct + MoonViT-V2 projector-only arm 已完成社区预算的 900
 同一最终 checkpoint 的多任务 selection（每项 8 条，仅用于快速筛选）也已完成：TextVQA soft VQA 为 vision/blind/shuffled/random `0.125/0/0.125/0`；DocVQA ANLS 为 `0.12/0/0.12/0`；OCRBench exact match 四条件全为 `0`。vision 与 shuffled 在前两项完全打平，因此不能把这组非零分数解释成看懂正确图片；原始报告、命令、CSV 与 SVG 曲线由 `qwen25_7b_v2_multitask_final_limit8_POINTER.json` 绑定。
 已登记的 control 也已完成：无视觉控制 ScreenSpot50 为 parse `100%`、click-in-box `10%`、Accuracy@50/@100/@200 `2/6/18%`；原生 Qwen VLM 阳性对照为 parse `80%`、click-in-box `42%`，blind click `6%`。原生 VLM 只作独立阳性对照，不能写成 MoonViT projector 成果；两条 control 已从 queued 更新为 valid control。
 文献交叉验证已单独沉淀在 [`docs/vlm-alignment-literature.md`](vlm-alignment-literature.md)：BLIP-2/VILA/DeepSeek-VL/CogVLM/Shikra 等共同说明，projector-only CE 更像 bridge warmup，冻结 receiver 的浅层 prefix、缺少 ITM/grounding supervision 和缺少 2D/多层接口都会造成“训练有响应、自由生成不 grounding”。因此下一条实验优先做 matched top-layer LoRA/visual-expert 或 ITM hard-negative bridge，而不是继续无条件增加同一 CE 训练量。
+
+### 2026-08-08：Qwen2.5-7B V2 低学习率短探针
+
+预注册的 `5e-5` projector learning-rate arm（其余 receiver、MoonViT-V2 exact K3、缓存、顺序、prompt、视觉 token 上限和 parser 全部不变）完成 100 optimizer steps / 6,400 examples seen。它全程 finite，健康止损没有触发，说明把 LR 降低确实能避开原始 `5e-4` V2 的数值/格式崩坏；但这只解决训练健康，不是能力提升。
+
+固定 ScreenSpot50 四条件结果：
+
+| 条件 | parse rate | click-in-box | Accuracy@50/@100/@200 |
+|---|---:|---:|---|
+| vision | 2% | 0% | 0% / 0% / 0% |
+| blind | 100% | 10% | 2% / 6% / 18% |
+| shuffled | 0% | 0% | 0% / 0% / 0% |
+| random projector | 96% | 10% | 2% / 10% / 14% |
+
+paired bootstrap 95% CI（2,000 次，seed `20260805`）为 vision−blind click `[-20,-2] pp`、vision−shuffled `[0,0] pp`、trained−random `[-20,-2] pp`。因此低 LR 让训练“不爆”，却没有让模型“看懂”：正确图像反而不如 blind，且视觉输出几乎全部不可解析。按预注册规则不延长到 57.6k；该臂记录为 `valid_result_negative`，完整 raw artifact 与 SHA 见 `qwen25_7b_v2_lr5e5_short_probe_retry2_POINTER.json`。
+
+这条结果把假设分开：`5e-4` 的主要问题包含数值/尺度不稳定，但“只改 LR 就会得到视觉能力”被反驳。下一条改进应进入视觉—语言目标或深层 receiver 融合（matched top-layer LoRA/visual expert、ITM/hard-negative bridge、GUI/box/OCR 监督），而不是继续无条件堆同一 CE projector-only 训练。

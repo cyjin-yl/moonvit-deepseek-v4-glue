@@ -1,0 +1,25 @@
+{
+  "schema_version": "community-scale-result-pointer-v1",
+  "arm": "qwen25_7b_v2_lr5e5_short_probe",
+  "attempt": 2,
+  "status": "valid_result_negative",
+  "contract": {"receiver": "Qwen/Qwen2.5-7B-Instruct", "tower": "MoonViT-V2 exact K3", "trainable": "projector_only", "learning_rate": 0.00005, "optimizer_steps": 100, "examples_seen": 6400, "screening_dataset": "screenspot_glm50_v1", "sample_count": 50, "bootstrap_samples": 2000, "bootstrap_seed": 20260805},
+  "raw_artifacts": {
+    "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_lr5e5_short_probe_retry2",
+    "candidate_summary": {"path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_lr5e5_short_probe_screenspot_retry2/SUMMARY.json", "sha256": "33cfab3b3cf30960fa1e231623e0636f7e1ce4553251b65244a5dba1b00de2be"},
+    "formal_score": {"path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_lr5e5_short_probe_formal_score/SUMMARY.json", "sha256": "3a5fd01da6cb1be9a111309f8a81e9a8a5a5ceff847468cc322d2d889a0d524d"},
+    "overfit_report": {"path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_lr5e5_short_probe_retry2/overfit_report.json", "sha256": "d617abe62837f86b50cc4a363850e56c02f7f89adc77fa654e6d012236e9f2d0"},
+    "train_health": {"path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_lr5e5_short_probe_retry2/train_health.jsonl", "sha256": "eacb2a3e5c5a4a1d46b2c80fdf161fe7f39ddc20c6635e051525830ca494a5b0"},
+    "candidate_generation_rows": {"path": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_lr5e5_short_probe_screenspot_retry2/generation_rows.jsonl", "sha256": "6fdfec16cf0a2dfbcf922b5224128e9085c12cf5d78a357d26614f0f1c0d7374"}
+  },
+  "metrics": {
+    "vision": {"parse_rate": 0.02, "click_in_box_all": 0.0, "accuracy_at_50_all": 0.0, "accuracy_at_100_all": 0.0, "accuracy_at_200_all": 0.0},
+    "blind": {"parse_rate": 1.0, "click_in_box_all": 0.1, "accuracy_at_50_all": 0.02, "accuracy_at_100_all": 0.06, "accuracy_at_200_all": 0.18},
+    "shuffled": {"parse_rate": 0.0, "click_in_box_all": 0.0, "accuracy_at_50_all": 0.0, "accuracy_at_100_all": 0.0, "accuracy_at_200_all": 0.0},
+    "random_projector": {"parse_rate": 0.96, "click_in_box_all": 0.1, "accuracy_at_50_all": 0.02, "accuracy_at_100_all": 0.1, "accuracy_at_200_all": 0.14}
+  },
+  "paired_ci95": {"vision_minus_blind_click_in_box_all": [-0.2, -0.02], "vision_minus_shuffled_click_in_box_all": [0.0, 0.0], "trained_minus_random_projector_click_in_box_all": [-0.2, -0.02]},
+  "capability_claim_allowed": false,
+  "deepseek_transfer_label": "transferable_with_runtime_validation",
+  "interpretation": "Reducing LR prevented the early numerical collapse, but did not create visual grounding. Correct-image generation became mostly unparsable and was worse than blind and random projector; the causal image-vs-shuffle CI remained exactly zero. Do not extend this arm to community-scale budget."
+}

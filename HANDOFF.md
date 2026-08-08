@@ -1101,6 +1101,12 @@ An execution audit found that the first V1 run used only indices `0–7`, while 
 `regression_baseline_matrix_v1.json` is the compact index for the fixed Qwen contract. It keeps the historical Qwen2.5-3B legacy-V2 row, Qwen2.5-7B exact-V2 full ScreenSpot, Qwen3.5-4B external V1/V2 GLM50 screens, the native-VLM positive control, and the 9B receiver-prior diagnostic separate. No row is promoted. V1 and V2 both fail the Qwen3.5 causal ScreenSpot gate; the version-only hypothesis is rejected. The 7B shuffle signal is not sufficient because blind remains competitive.
 
 Next local run: one DeepSeek-transferable placeholder/position, projector-scale, or image-vs-shuffle target variable with a matched CE-only control. Keep receiver, cache, order, budget and parser fixed; stop at ScreenSpot50 if either causal lower CI is not positive. Gate D remains NO-GO pending real 0731 weights, FP4/FP8 input gradients, full routing forward/backward, checkpoint round-trip and causal benchmark gains.
+
+## 2026-08-08 Qwen2.5-7B V2 低 LR 短探针
+
+`qwen25_7b_v2_lr5e5_short_probe` attempt 2 使用与主合同相同的 MoonViT-V2 exact K3、receiver、cache、样本顺序、prompt 和四条件 scorer，仅将 projector LR 从 `5e-4` 改为 `5e-5`。100 steps / 6,400 examples 全程健康通过，但 ScreenSpot50 vision parse/click 为 `2%/0%`，blind 为 `100%/10%`，shuffled 为 `0%/0%`，random projector 为 `96%/10%`。paired click CI 为 vision−blind `[-20,-2] pp`、vision−shuffled `[0,0]`、trained−random `[-20,-2]`，所以判定 `valid_result_negative`，不扩展到 57.6k。
+
+经验：LR 调整解决的是数值健康，不等于解决视觉对齐；该结果反驳“只要降低 LR，projector-only CE 就会获得 grounding”。原始训练 health、checkpoint、逐样本生成、formal score 和 SHA 由 `qwen25_7b_v2_lr5e5_short_probe_retry2_POINTER.json` 绑定。下一条优先做可迁移的 ITM/hard-negative bridge 或 matched top-layer LoRA/visual expert，并继续保留 projector-only control。
 ## Scale screen result (2026-08-08)
 
 The preregistered Qwen3.5-4B external MoonViT V1 scale `0.03` CE-only arm finished

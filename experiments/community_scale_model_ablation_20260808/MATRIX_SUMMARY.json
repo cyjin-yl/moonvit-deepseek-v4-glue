@@ -218,19 +218,66 @@
           "reason": "Training never reached step 0: the pre-registered probe command referenced community_scale_20260808/architecture_controls instead of the fixed qwen3b_contract/architecture_controls projector initialization path; no capability result was produced."
         }
       ],
-      "result": null,
-      "status": "failed_runtime",
-      "attempts": 1,
+      "result": {
+        "evaluation": "formal_community_grounding_v1",
+        "dataset": "screenspot_glm50_v1",
+        "sample_count": 50,
+        "candidate_summary": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_lr5e5_short_probe_screenspot_retry2/SUMMARY.json",
+        "formal_score": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_lr5e5_short_probe_formal_score/SUMMARY.json",
+        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_lr5e5_short_probe_retry2",
+        "optimizer_steps_completed": 100,
+        "examples_seen": 6400,
+        "vision": {
+          "parse_rate": 0.02,
+          "click_in_box_all": 0.0,
+          "accuracy_at_50_all": 0.0,
+          "accuracy_at_100_all": 0.0,
+          "accuracy_at_200_all": 0.0
+        },
+        "blind": {
+          "parse_rate": 1.0,
+          "click_in_box_all": 0.1,
+          "accuracy_at_50_all": 0.02,
+          "accuracy_at_100_all": 0.06,
+          "accuracy_at_200_all": 0.18
+        },
+        "shuffled": {
+          "parse_rate": 0.0,
+          "click_in_box_all": 0.0,
+          "accuracy_at_50_all": 0.0,
+          "accuracy_at_100_all": 0.0,
+          "accuracy_at_200_all": 0.0
+        },
+        "random_projector": {
+          "parse_rate": 0.96,
+          "click_in_box_all": 0.1,
+          "accuracy_at_50_all": 0.02,
+          "accuracy_at_100_all": 0.1,
+          "accuracy_at_200_all": 0.14
+        },
+        "paired_ci95": {
+          "vision_minus_blind_click_in_box_all": [-0.2, -0.02],
+          "vision_minus_shuffled_click_in_box_all": [0.0, 0.0],
+          "trained_minus_random_projector_click_in_box_all": [-0.2, -0.02]
+        },
+        "decision": "valid_result_negative",
+        "capability_claim_allowed": false,
+        "deepseek_transfer_label": "transferable_with_runtime_validation",
+        "interpretation": "Lower learning rate prevented the early health failure but did not produce grounding: correct-image free generation had 2% parse and 0% click-in-box, below blind and random_projector; vision-shuffled CI was exactly zero."
+      },
+      "status": "valid_result_negative",
+      "attempts": 2,
       "current_attempt": {
-        "attempt": 1,
-        "status": "failed_runtime",
+        "attempt": 2,
+        "status": "valid_result_negative",
         "contract_examples_seen": 6400,
         "optimizer_steps_requested": 100,
-        "optimizer_step_stopped": null,
-        "examples_seen_stopped": null,
-        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_lr5e5_short_probe",
-        "failure_artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v2_lr5e5_short_probe_attempt1/FAILURE.json",
-        "failure_class": "implementation_path_mismatch",
+        "optimizer_steps_completed": 100,
+        "examples_seen": 6400,
+        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_lr5e5_short_probe_retry2",
+        "evaluation_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_lr5e5_short_probe_screenspot_retry2",
+        "formal_score_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_lr5e5_short_probe_formal_score",
+        "failure_class": null,
         "capability_claim_allowed": false
       }
     },
