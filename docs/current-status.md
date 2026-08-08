@@ -1,3 +1,7 @@
+# 最终归档状态（2026-08-08）
+
+本项目已停止活跃开发并准备归档。V100 代理矩阵没有 external MoonViT projector 通过正确图片优于 blind/shuffled 的能力门槛；我们负担不起社区 GLM-5.2V 所需的 Blackwell 级硬件，完整 DeepSeek-V4-Flash-0731 Gate D 也未通过。外部 WebBrain 包只作为未核验工程参考，不能替代我们的真实能力证据。完整总账见 docs/FINAL_ARCHIVE_REPORT.md。
+
 # 当前工程状态与下一步
 
 更新日期：2026-08-08

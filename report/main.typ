@@ -5,6 +5,12 @@
 #set table(stroke: 0.5pt + rgb("c8c8c8"), inset: 6pt)
 
 #align(center)[
+  #text(size: 16pt, weight: "bold", fill: rgb("9b1c1c"))[ARCHIVED — research line discontinued]
+]
+
+本报告为最终归档版：V100 代理矩阵没有 external MoonViT projector 通过真实视觉能力门槛；Blackwell 训练不可负担；DeepSeek-V4-Flash-0731 Gate D 未通过。完整中文总账见 docs/FINAL_ARCHIVE_REPORT.md，外部未核验参考为 #link("https://huggingface.co/webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4")[WebBrain DeepSeek-V4-Flash-0731-Vision]。
+
+#align(center)[
   #text(size: 21pt, weight: "bold")[MoonViT-V2 接入 DeepSeek-V4-Flash-0731]
   #v(5pt)
   #text(size: 14pt)[真实 VLM 回归、运行入口审计与 Gate D]

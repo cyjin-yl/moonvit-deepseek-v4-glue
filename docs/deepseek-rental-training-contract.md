@@ -1,4 +1,6 @@
-# DeepSeek-V4-Flash 租机训练合同
+# ARCHIVED — DeepSeek-V4-Flash 租机训练合同
+
+该合同仅记录未授权的未来 Gate D 边界和止损条件；本仓库最终没有租机，也没有产生付费 GPU 费用。
 
 状态：`local_prerequisites_in_progress`。本文把 V100 证据转成机械执行规则；包 12 的窗口覆盖与包 13 的 fixed-budget replay 已完成，Tiny/Medium sentinel 功效/成本、正式域 replay 配额与真实量化 DGRAD 仍是显式未完成项。只有全部本地前置项冻结、用户明确授权 GPU 架构与费用上限后，才能执行任何付费步骤。
 

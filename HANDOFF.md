@@ -1,3 +1,7 @@
+# FINAL ARCHIVE HANDOFF (2026-08-08)
+
+The active research line is discontinued and this repository is being archived. The V100 matrix did not produce an external MoonViT projector that passed the correct-image-over-blind-and-shuffled capability gate; Blackwell-class compute was unaffordable, and the complete DeepSeek-V4-Flash-0731 Gate D was not passed. The WebBrain repository is only an unverified external reference. Read docs/FINAL_ARCHIVE_REPORT.md before interpreting any historical result.
+
 # Handoff
 
 > **Live run (2026-08-08 03:26–06:38 CST):** Qwen2.5-7B V1 retry4 passed the former FP16 optimizer NaN at step2, then stopped at step33 (2,112 examples seen) on the frozen receiver-RMS critical guard: `50.7792× > 50×`; CE was still finite at `3.4664` and spread ratio was `0.4593`. This is an immutable `failed_health_guard` matrix result, not a visual-capability result. The full failure checkpoint and raw health/log/SHA artifact is `experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v1_retry4/FAILURE.json`; the matrix summary now records it. Qwen2.5-7B V2's full 57,600-record MoonViT-V2 cache is now complete with `failed=0`, 75 shards, 29,999 unique tower forwards, and 27,601 same-image aliases. The follow-on is building the fixed ScreenSpot50 V2 cache; training has not started yet. The other receiver arms remain queued behind the GPU chain.

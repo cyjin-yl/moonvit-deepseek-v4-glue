@@ -1,4 +1,6 @@
-# MoonViT projector 架构矩阵与证据边界
+# ARCHIVED — MoonViT projector 架构矩阵与证据边界
+
+本文是架构身份的历史索引，不再定义 live candidate。V1/V2/K26 的接口差异、projector shape 和 receiver 绑定仍可复核，但没有 external MoonViT arm 通过最终能力门槛。
 
 更新日期：2026-08-06
 

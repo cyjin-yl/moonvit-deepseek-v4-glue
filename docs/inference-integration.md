@@ -1,4 +1,6 @@
-# Inference-side integration: MoonViT-V2 (K3) + projector on DeepSeek-V4-Flash-0731
+# ARCHIVED — Inference-side integration: MoonViT-V2 (K3) + projector on DeepSeek-V4-Flash-0731
+
+软件 glue 设计已记录，但完整 0731 image generation 未验证；本文不构成可用 VLM 声明。
 
 This document is the contract for using the trained projector at **inference**
 time, written for patching inference engines (vLLM / SGLang / llama.cpp /

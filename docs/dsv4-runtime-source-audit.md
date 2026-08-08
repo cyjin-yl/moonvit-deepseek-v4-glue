@@ -1,4 +1,6 @@
-# DeepSeek-V4-Flash 量化反向路径源码审计
+# ARCHIVED — DeepSeek-V4-Flash 量化反向路径源码审计
+
+源码审计结论冻结为历史证据：真实 0731 FP4/FP8 input-DGRAD 未在目标硬件上验证。
 
 审计日期：2026-08-05。本文固定源码与模型 revision，回答的是“现有公开集成是否已经给出 projector 反传的充分证据”。真实量化模块的 `grad_input` 仍需在目标 GPU 上通过 Gate D 判定。任何依赖升级都要新建审计版本，不能沿用本文结论。
 

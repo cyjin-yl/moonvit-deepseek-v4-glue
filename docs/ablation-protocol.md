@@ -1,4 +1,6 @@
-# 租卡前能力归因与消融协议
+# ARCHIVED — 租卡前能力归因与消融协议
+
+该协议已冻结为历史设计；归档后不再自动启动付费消融。
 
 > 2026-08-05 方向更新：第 3–7 节原先的 0.5B/1.5B/3B 宽筛选队列已被纯文本 `Qwen/Qwen2.5-3B-Instruct` 固定社区可比合同取代。0.5B 只保留历史容量下界，不再继续分配新训练预算；1.5B 不进入当前主线。任何 projector、数据、replay、sentinel、分辨率或训练改进都必须先在固定 ScreenSpot50/full、TextVQA、DocVQA、OCRBench、synthetic、语言保持与 vision/blind/shuffled/random-projector 条件下报告。新合同完成后将替代本文第 2–7 节；包 8–14 的机制证据仍有效。
 

@@ -1,4 +1,6 @@
-# 真实 VLM 训练与运行入口审计（2026-08-08）
+# ARCHIVED — 真实 VLM 训练与运行入口审计（2026-08-08）
+
+该入口图是归档前快照；软件接口已存在，小主干闭环已验证，但完整 0731 端到端入口未执行。
 
 本页回答三个执行问题：Qwen2.5-7B 现在由哪个脚本训练，DeepSeek-V4-Flash-0731 在哪里切换，以及真实 `image → answer` 闭环还缺哪些钩子。审计绑定 Git commit `cbb6ceb`；机器可读源文件哈希与判定见 `runtime_entrypoint_audit_v1.json`。
 

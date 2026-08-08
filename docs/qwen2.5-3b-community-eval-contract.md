@@ -1,4 +1,6 @@
-# Qwen2.5-3B 社区可比评测合同 v1
+# ARCHIVED — Qwen2.5-3B 社区可比评测合同 v1
+
+该合同仍是 raw artifact 的解释依据，但 Qwen2.5-3B 没有完成 full community-scale 57.6k 复现，不能把短训练结果升级为能力证明。
 
 冻结日期：2026-08-05。机器可读版本为
 `configs/qwen2.5-3b-community-eval-v1.json`。本合同在首个 Qwen2.5-3B

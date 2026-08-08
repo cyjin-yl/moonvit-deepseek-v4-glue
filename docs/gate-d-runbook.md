@@ -1,4 +1,6 @@
-# DeepSeek-V4-Flash Gate D 实施手册
+# ARCHIVED — DeepSeek-V4-Flash Gate D 实施手册
+
+本手册是未完成 Gate D 的历史 runbook；任何真实量化权重、付费硬件或正式训练均未因本归档自动执行。
 
 状态：`paid_execution_not_authorized`。
 

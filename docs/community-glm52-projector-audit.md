@@ -1,4 +1,6 @@
-# GLM‑5.2V / MoonViT projector architecture audit
+# ARCHIVED — GLM‑5.2V / MoonViT projector architecture audit
+
+GLM-5.2V 资料只作社区架构与训练配方参考；未按本项目 paired blind/shuffled 合同复现。
 
 审计冻结时间：2026-08-06。网页资料使用 Codex 内置浏览器打开的 Hugging Face 页面；文件 revision、SHA-256 和 tensor header 另存于 `experiments/qwen3b_community_eval_20260805/community_architecture_audit_v1/COMMUNITY_SOURCES.json`。
 

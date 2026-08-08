@@ -1,4 +1,6 @@
-# Community GLM-5.2V V1 architecture control
+# ARCHIVED — Community GLM-5.2V V1 architecture control
+
+该控制臂是社区形状参考，不是社区 GLM-5.2V 的 byte-identical 复现；归档后不再定义 live candidate。
 
 这条对照臂固定使用 `moonshotai/MoonViT-SO-400M` 的 resolved revision
 `a889d399ff2306053e4e28d499d3b8f97d3e5007`。它代表社区 GLM-5.2V 采用的

@@ -1,4 +1,6 @@
-# 工程主线、证据边界与 Gate D 缺口
+# ARCHIVED — 工程主线、证据边界与 Gate D 缺口
+
+归档后只作证据索引，不再定义 live next。V100 external MoonViT projector 能力门槛未通过，完整 DeepSeek Gate D 为 NO-GO。
 
 更新日期：2026-08-07。
 

@@ -1,3 +1,7 @@
+# 最终归档提示
+
+本机制账本随仓库归档。它保留所有正负结果和失败机制，但不再定义 live next；任何“下一步”文字均为历史计划。总账见 docs/FINAL_ARCHIVE_REPORT.md。V100 代理未形成 external MoonViT 视觉能力，DeepSeek Gate D 为 NO-GO。
+
 # Projector / receiver 机制实验记录
 
 更新：2026-08-08

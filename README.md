@@ -1,3 +1,12 @@
+> [!WARNING]
+> **ARCHIVED — research line discontinued (2026-08-08).**
+>
+> We are archiving this repository because the V100/32GB proxy experiments did not reproduce a usable external-MoonViT visual ability, Blackwell-class hardware was not affordable within the project budget, and the complete DeepSeek-V4-Flash-0731 Gate D was never passed. We are disappointed that the local evidence did not converge to the community result.
+>
+> For a separate, unverified external reference, see [webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4](https://huggingface.co/webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4). We remain appropriately skeptical: its public manifest says the exact 0731 package is not GPU-validated and it does not publish our paired visual benchmark. This is a pointer for comparison, not an endorsement or a claim of fraud.
+>
+> The complete research record is in [FINAL_ARCHIVE_REPORT.md](docs/FINAL_ARCHIVE_REPORT.md). Raw artifacts, failures, health logs, manifests and reports are retained for reproducibility.
+
 # MoonViT projector → DeepSeek-V4 glue prototype
 
 这是一个面向真实 VLM 的接口、训练与评测工程。最终路径固定为

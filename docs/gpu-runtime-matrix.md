@@ -1,4 +1,6 @@
-# DeepSeek-V4-Flash GPU runtime 兼容矩阵
+# ARCHIVED — DeepSeek-V4-Flash GPU runtime 兼容矩阵
+
+硬件兼容性为归档前风险评估；没有因本归档自动租用或测试 Blackwell。
 
 审计基线：Transformers `ddb849abe009d1089e6c691bfc897f27211c663c`、DeepGEMM `559d79fb6994a58b8a15b4b93bf13ccc16edf247`、finegrained-fp8 kernel `b77d2c71fef4ff97e22127058034c1167dca8891`、模型 `7872f01b1d1fe23eabc4c98b48bffcef5a386062`。完整指纹见 `docs/dsv4-runtime-source-audit.md`。
 

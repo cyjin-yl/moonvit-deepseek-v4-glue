@@ -1,4 +1,6 @@
-# Community-scale ablation matrix
+# ARCHIVED — Community-scale ablation matrix
+
+The registered matrix attempt set is archived. The completion rule was satisfied for the 11 MATRIX_SUMMARY rows by a valid result or immutable failure artifact, but this does not mean every receiver completed the full community two-epoch budget. Qwen2.5-7B V2 is the only stable external arm that reached 57,600 examples; all external arms failed the visual capability gate.
 
 This is the complete comparison table for the current V100 phase. A row is a planned model condition; it is not a
 result until its checkpoint has been trained and evaluated under the same contract.
