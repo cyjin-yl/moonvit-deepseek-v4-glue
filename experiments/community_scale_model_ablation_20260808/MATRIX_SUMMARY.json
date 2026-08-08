@@ -177,6 +177,21 @@
         "capability_claim_allowed": false
       }
     },
+    "qwen25_7b_v2_lr5e5_short_probe": {
+      "failure_history": [],
+      "result": null,
+      "status": "preregistered",
+      "attempts": 0,
+      "current_attempt": {
+        "attempt": 0,
+        "status": "preregistered",
+        "contract_examples_seen": 6400,
+        "optimizer_steps_requested": 100,
+        "variable": "learning_rate=5e-5",
+        "contract": "experiments/community_scale_model_ablation_20260808/qwen25_7b_v2_lr5e5_short_probe_contract.json",
+        "capability_claim_allowed": false
+      }
+    },
     "qwen35_4b_v1_stripped": {
       "failure_history": [
         {
