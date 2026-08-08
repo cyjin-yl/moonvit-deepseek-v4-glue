@@ -98,6 +98,14 @@
         "sample_count": 50,
         "candidate_summary": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_screenspot_glm50_retry4/SUMMARY.json",
         "formal_score": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_formal_score_retry4/SUMMARY.json",
+        "multitask_selection_pointer": "experiments/community_scale_model_ablation_20260808/qwen25_7b_v2_multitask_final_limit8_POINTER.json",
+        "multitask_selection": {
+          "limit_per_dataset": 8,
+          "textvqa_soft_vqa": {"vision": 0.125, "blind": 0.0, "shuffled": 0.125, "random_projector": 0.0},
+          "docvqa_anls": {"vision": 0.12, "blind": 0.0, "shuffled": 0.12, "random_projector": 0.0},
+          "ocrbench_exact_match": {"vision": 0.0, "blind": 0.0, "shuffled": 0.0, "random_projector": 0.0},
+          "interpretation": "Selection-only result: vision ties shuffled on TextVQA and DocVQA and all conditions tie on OCRBench; no image-specific causal gain."
+        },
         "vision": {
           "parse_rate": 0.06,
           "click_in_box_all": 0.04,

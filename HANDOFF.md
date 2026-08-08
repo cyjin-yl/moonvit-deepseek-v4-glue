@@ -1121,3 +1121,4 @@ Qwen2.5-7B V2 projector-only 训练完成了 900 optimizer steps / 57,600 exampl
 2,000-bootstrap paired CI 的核心结果是 `vision−blind click=[-16,+2] pp`、`vision−shuffled=[0,+10] pp`、`trained−random=[-16,+2] pp`。这组结果明确否决“7B V2 在社区预算点已经获得 grounding”。训练中的 shuffle loss delta `+2.2324` 只能说明 teacher-forced 答案概率受图像条件影响，不能替代自由生成；这里出现了典型的“训练信号为正、真实点击为负”的假阳性。
 
 评测前的三次 dtype/变量顺序失败已分别保存为 immutable failure artifacts；修复后才得到正式结果。经验规则固定为：任何候选必须先通过 evaluator preflight、四条件逐样本输出和 paired CI，才能进入能力排行榜；工程失败不得覆盖为“无能力”，而是单独记为工程失败。由于 V2 已在能力门失败，不再无条件续训到 132k；矩阵转向下一条已注册 receiver×tower/接口变量，同时保留所有 raw predictions、formal score、manifest SHA 和失败日志。
+同一最终 checkpoint 的多任务 selection（每项 8 条）已补跑：TextVQA soft VQA `vision/blind/shuffled/random=0.125/0/0.125/0`；DocVQA ANLS `0.12/0/0.12/0`；OCRBench exact match 四条件全为 `0`。vision 与 shuffled 打平，不能宣称视觉增益；raw reports、commands、CURVE.csv、SVG 和 SHA pointer 为 `qwen25_7b_v2_multitask_final_limit8_POINTER.json`。

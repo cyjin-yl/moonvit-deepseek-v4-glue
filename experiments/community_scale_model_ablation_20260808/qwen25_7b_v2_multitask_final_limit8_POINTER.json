@@ -1,0 +1,35 @@
+{
+  "schema_version": "community-multitask-pointer-v1",
+  "arm": "qwen25_7b_v2",
+  "checkpoint": {
+    "id": "qwen25_7b_v2_step900",
+    "optimizer_step": 900,
+    "examples_seen": 57600,
+    "projector": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_train_57600_retry1/checkpoints/step-000900"
+  },
+  "contract": {
+    "datasets": ["TextVQA", "DocVQA", "OCRBench"],
+    "conditions": ["vision", "blind", "shuffled", "random_projector"],
+    "limit_per_dataset": 8,
+    "dtype": "float16",
+    "max_image_side": 448,
+    "max_new_tokens": 32,
+    "seed": 20260805
+  },
+  "raw_artifact_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_multitask_final_limit8",
+  "raw_artifacts": {
+    "SUMMARY.json": "5e2936fb65a1eaa3647eb369dfdfd6fa47033169edf7f31acfc3c50271ee0e35",
+    "CURVE.csv": "54c18941f60c9f19b66da5c02b9a04e574d0612a0d6f637e21502b3e52dd88f5",
+    "commands.jsonl": "3b419458c1922398cf6e387e4d6d129ea9adbad42601bd59b657d89acece59e3",
+    "curve/CHARTS.json": "8edcb9fb0ccf9063562b6786eb277c8da38f2e917c4fcf679292cad08674c9aa",
+    "curve/curve.csv": "fac6db65a3c581a0928ce5150454f8c0d71e08f78fcb5f9cec3d26d3aaf38e5b"
+  },
+  "selection_result": {
+    "textvqa_soft_vqa": {"vision": 0.125, "blind": 0.0, "shuffled": 0.125, "random_projector": 0.0},
+    "docvqa_anls": {"vision": 0.12, "blind": 0.0, "shuffled": 0.12, "random_projector": 0.0},
+    "ocrbench_exact_match": {"vision": 0.0, "blind": 0.0, "shuffled": 0.0, "random_projector": 0.0}
+  },
+  "interpretation": "This is an eight-example selection diagnostic, not a public benchmark score. Vision and shuffled tie on the two nonzero task metrics; the result does not establish image-specific ability and is consistent with the negative ScreenSpot causal gate.",
+  "capability_claim_allowed": false,
+  "deepseek_transfer_label": "transferable_with_runtime_validation"
+}

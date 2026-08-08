@@ -2240,3 +2240,4 @@ previous-best 或 DeepSeek 候选。
 step0/previous-best/current-candidate、paired bootstrap 以及 ScreenSpot/TextVQA/DocVQA/
 OCRBench/language-retention 的节点曲线。健康指标、loss 或 teacher-forced attribution
 都不能单独升级为视觉能力声明。
+同一最终 checkpoint 的多任务 selection（TextVQA、DocVQA、OCRBench 各 8 条）也已完成。TextVQA soft VQA 为 vision/blind/shuffled/random `0.125/0/0.125/0`，DocVQA ANLS 为 `0.12/0/0.12/0`，OCRBench exact match 四条件全为 `0`。vision 与 shuffled 打平，故不能将非零分数解释为正确图片 grounding；原始报告、CSV、SVG 和 SHA pointer 为 `qwen25_7b_v2_multitask_final_limit8_POINTER.json`。

@@ -287,3 +287,4 @@ projector dtype 不匹配、以及变量初始化顺序错误；每次都保留�
 修复后的 retry 才能进入正式 scorer。后续任何结果必须同时有 preflight、逐样本 raw rows、
 四条件、step0/previous-best/current-candidate 和 paired bootstrap；工程失败不能混入
 能力排行榜，健康指标也不能替代真实 ScreenSpot、TextVQA、DocVQA、OCRBench。
+同一 V2 step900 的多任务 selection（TextVQA/DocVQA/OCRBench 各 8 条）进一步验证了这个分离：TextVQA vision/shuffled 都为 `0.125`、DocVQA 都为 `0.12`、OCRBench 四条件全为 `0`。这不是视觉能力，而是“图像条件能改变答案分布，但正确图像没有胜过确定性错误图像”的又一份 raw evidence；selection 结果和节点曲线由 `qwen25_7b_v2_multitask_final_limit8_POINTER.json` 绑定。
