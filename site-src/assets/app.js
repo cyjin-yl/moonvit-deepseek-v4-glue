@@ -456,7 +456,7 @@
     FX.marquee([titles[kind] + " × " + files.length]);
   }
 
-  /* ================= 视图:实验数据(两棵实验树,分区块 + 表格) ================= */
+  /* ================= 视图:实验数据(实验树,分区块 + 表格) ================= */
 
   // 两棵实验树的元信息;tree_note 的键是 summaries 来源文件名
   var EXP_TREES = [
@@ -477,6 +477,33 @@
       noteKey: "experiments-qwen3b.json",
       cls: "tree-pink",
       titleCls: "section-title pink"
+    },
+    {
+      prefix: "experiments/community_scale_model_ablation_20260808",
+      name: "第三轮:社区规模模型消融矩阵",
+      date: "2026-08-08 · Qwen2.5-7B / Qwen3.5 stripped-native · 归档阶段",
+      question: "这一轮回答的问题:在统一社区训练合同下,换接收器、视觉塔和训练臂后,有没有一条 external projector 真正超过 blind/shuffled?",
+      noteKey: "experiments-extra.json",
+      cls: "tree-purple",
+      titleCls: "section-title purple"
+    },
+    {
+      prefix: "experiments/external_model_audits",
+      name: "外部实现审计",
+      date: "2026-08-08 · GLM-5.2V / WebBrain · 公开证据边界",
+      question: "这一组回答的问题:社区‘能工作的 projector’公开证据到底到哪一步?",
+      noteKey: "experiments-extra.json",
+      cls: "tree-blue",
+      titleCls: "section-title blue"
+    },
+    {
+      prefix: "experiments/archive_cleanup_20260808",
+      name: "归档清理记录",
+      date: "2026-08-08 · HF checkpoint offload · 清理审计",
+      question: "这一组回答的问题:哪些 checkpoint 已经有云端副本,哪些本地文件可以安全删除?",
+      noteKey: "experiments-extra.json",
+      cls: "tree-green",
+      titleCls: "section-title green"
     }
   ];
 
@@ -552,6 +579,7 @@
     view.appendChild(lede);
 
     var expCount = 0;
+    var coveredPrefixes = EXP_TREES.map(function (tree) { return tree.prefix + "/"; });
     EXP_TREES.forEach(function (tree) {
       var entries = Object.keys(manifest.summaries || {}).filter(function (k) {
         return k.indexOf(tree.prefix + "/") === 0;
@@ -582,16 +610,30 @@
       }
     });
 
+    // 根目录散装实验 JSON 也必须可达,但不硬塞进某一棵叙事树。
+    var rootLoose = (manifest.files || []).filter(function (f) {
+      if (f.repo_path.indexOf("experiments/") !== 0) return false;
+      return !coveredPrefixes.some(function (p) { return f.repo_path.indexOf(p) === 0; });
+    }).map(function (f) { return f.repo_path; }).sort(naturalSort);
+    if (rootLoose.length) {
+      var looseHead = el("div", "tree-head tree-yellow");
+      looseHead.appendChild(el("h2", null, "散装接口验证产物"));
+      looseHead.appendChild(el("div", "meta", "experiments/ 根目录 · 原始 JSON × " + rootLoose.length));
+      looseHead.appendChild(el("p", "tree-question", "这些文件没有独立实验树，但仍是正式归档的一部分，点击可看原始 JSON 和 verifier 结果。"));
+      view.appendChild(looseHead);
+      view.appendChild(expTable(rootLoose, ["文件", "用途", "结论", "原始文件"], "conclusions"));
+    }
+
     var expFiles = (manifest.files || []).filter(function (f) {
       return f.repo_path.indexOf("experiments/") === 0;
     });
     var foot = el("div", "notice");
-    foot.innerHTML = "两棵树共发布原始结果文件 <strong>" + expFiles.length + "</strong> 个(JSON / 日志 / SVG 图 / CSV),"
+    foot.innerHTML = "实验树共发布原始结果文件 <strong>" + expFiles.length + "</strong> 个(JSON / 日志 / SVG 图 / CSV),"
       + "全部可以在 <a href='#/browser'>全仓浏览</a> 里按目录翻阅;权重等二进制大文件未发布,清单和原因也在浏览器里。";
     view.appendChild(foot);
 
     FX.reveals(view);
-    FX.marquee(["实验树 × 2", "实验 × " + expCount, "结果文件 × " + expFiles.length, "全程零付费资源", "Gate D NO-GO"]);
+    FX.marquee(["实验树 × " + EXP_TREES.length, "实验 × " + expCount, "结果文件 × " + expFiles.length, "全程零付费资源", "Gate D NO-GO"]);
   }
 
   /* ================= 视图:导读(本科生友好,逐章讲解) ================= */

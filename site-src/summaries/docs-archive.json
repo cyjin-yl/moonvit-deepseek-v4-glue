@@ -1,0 +1,68 @@
+{
+  "items": [
+    {
+      "path": "README.md",
+      "title": "归档首页：结论、展示站和证据边界",
+      "summary": "这是项目现在的最终入口。展示站把报告、配置和实验产物做成可浏览的档案；结论也写得很明确：工程链路跑通了，但没有 external MoonViT projector 通过视觉因果门，DeepSeek Gate D 仍是 NO-GO。",
+      "conclusions": ["Qwen2.5-7B exact V2 完成 57,600 examples，但 ScreenSpot vision click 3.30% 仍低于 blind 3.46%", "原生 Qwen3.5 VLM 只是独立阳性对照，不能算 projector 结果"],
+      "lessons": ["归档页面必须把 proxy 结果、原生 VLM 结果和 DeepSeek 结果分开", "没有 paired blind/shuffled 证据，就不能把 loss 下降写成视觉能力"],
+      "tags": ["最终结论", "展示站", "归档"]
+    },
+    {
+      "path": "HANDOFF.md",
+      "title": "最终交接：停止执行，保留证据",
+      "summary": "交接文档现在以归档结论为准，旧的 queued/running/下一步内容都只是历史时间线。它告诉接手者从哪里读完整报告、哪些结果可相信，以及哪些 Gate D 项目从未在真实 0731 上通过。",
+      "conclusions": ["外接 MoonViT 没有产生可用视觉能力", "完整 DeepSeek 权重、量化 backward 和真实图像 benchmark 均未完成"],
+      "lessons": ["历史执行日志不能继续当作任务队列", "失败 checkpoint、health 日志和 verifier 是研究结果的一部分"],
+      "tags": ["交接", "归档", "Gate D"]
+    },
+    {
+      "path": "docs/FINAL_ARCHIVE_REPORT.md",
+      "title": "最终归档报告：所有模型和失败机制的总账",
+      "summary": "这是全项目的盖棺文档，按模型、视觉塔、projector 结构、训练目标和 DeepSeek gate 分层整理正负结果。最重要的人话结论是：我们证明了图像能进入模型、projector 能训练，却没有证明模型会按正确图片回答。",
+      "conclusions": ["11 个社区矩阵 arm 都有正式结果或不可变失败记录", "唯一完成 57,600 examples 的稳定 external arm 是 Qwen2.5-7B exact V2，但视觉能力判定为 negative", "DeepSeek-V4-Flash-0731 Gate D = NO-GO"],
+      "lessons": ["CE、teacher-forced preference 和表示健康都不能替代自由生成 grounding", "V1/V2 版本差异不是唯一根因，receiver 融合、监督目标和接口共同决定成败"],
+      "tags": ["总账", "模型矩阵", "机制", "Gate D"]
+    },
+    {
+      "path": "docs/community-scale-ablation-matrix.md",
+      "title": "社区规模消融矩阵：每个 arm 的最终状态",
+      "summary": "这份表把 Qwen2.5、Qwen3.5、原生 VLM、不同 MoonViT 版本和 DeepSeek 目标放在同一合同下比较。归档后状态不再是队列：每一臂都标记为有效阴性、健康止损、运行失败、阳性对照或资源阻塞。",
+      "conclusions": ["Qwen2.5-7B V2 是唯一达到 57,600 examples 的稳定 external projector arm", "原生 Qwen3.5 VLM 的阳性结果与外部 projector 排行榜分开"],
+      "lessons": ["完整矩阵的含义是每个登记 arm 留下证据，不是每个 arm 都完成长训", "Gate D 是独立最终门，不能被代理模型成绩替代"],
+      "tags": ["消融矩阵", "公平比较", "归档"]
+    },
+    {
+      "path": "docs/experiment-mechanism-findings.md",
+      "title": "机制账本：为什么 loss 会降但模型仍不会看",
+      "summary": "机制账本把训练健康和真实视觉能力拆开记录。它解释了 common-direction collapse、token/scale/位置消融、paired margin、LoRA、replay 和 geometry repair 为什么有时改善数值，却没有带来自由生成 grounding。",
+      "conclusions": ["projector 可把图片差异压成 image-agnostic coordinate soft prompt", "teacher-forced correct-image log-prob 为正不等于 ScreenSpot click 提升"],
+      "lessons": ["先问模型是否正确使用图片，再问 loss 是否下降", "几何健康只是没有丢掉差异，不代表已经学会视觉语义"],
+      "tags": ["机制", "塌缩", "训练诊断"]
+    },
+    {
+      "path": "docs/runtime-entrypoint-audit.md",
+      "title": "运行入口审计：真正还缺哪几条硬链路",
+      "summary": "这份审计把‘代码里有接口’和‘真实 0731 跑过’严格分开。tiny DeepSeek 软件 fixture 通过了 forward/backward/save-resume，但真实大模型 placement、FP4/FP8 input gradient、Hash-MoE 图像生成和 checkpoint round-trip 都没有完成。",
+      "conclusions": ["7B 诊断 runner 不能直接迁移成 DeepSeek 生产 trainer", "DeepSeek loader/helper 存在不等于真实权重 image→answer 闭环已验证"],
+      "lessons": ["Gate D 应按 text forward → image forward → dgrad → 20-step → resume → benchmark 顺序验收", "没有真实量化硬件时必须保持 NO-GO，不把 tiny 结果冒充全模型结果"],
+      "tags": ["运行时", "审计", "DeepSeek"]
+    },
+    {
+      "path": "docs/vlm-alignment-literature.md",
+      "title": "文献依据：社区 VLM 为什么不只训练一层 MLP",
+      "summary": "这里把 BLIP-2、LLaVA、Flamingo、VILA、CogVLM、DeepSeek-VL、Shikra 等原始论文的经验映射到本项目。共同指向是：projector-only CE 多半只是浅层 warmup，真正能力还需要视觉语言预对齐、grounding/OCR 数据或更深的 receiver 融合。",
+      "conclusions": ["社区规模通常是数十万到百万级图文/grounding 数据和长训练，而不是几百步", "frozen receiver + soft prefix 容易出现浅层对齐和语言先验"],
+      "lessons": ["下一条修复方向应优先改变监督和融合深度，而不是无条件延长 CE", "synthetic preference 只能做机制诊断，不能代替真实 benchmark"],
+      "tags": ["文献", "VLM 训练", "设计依据"]
+    },
+    {
+      "path": "docs/current-status.md",
+      "title": "最终状态：项目停在哪里",
+      "summary": "状态页的最终快照是：软件 glue、缓存、健康止损和评测合同已复现；没有 external MoonViT projector 获得可用视觉能力；DeepSeek Gate D 仍为 NO-GO。页面下方的旧实验时间线保留作历史，不再是执行队列。",
+      "conclusions": ["Qwen2.5-7B full ScreenSpot vision/blind/shuffled click = 3.30%/3.46%/2.67%", "Qwen3.5 native VLM 是独立阳性对照"],
+      "lessons": ["训练健康和能力必须分开读", "归档后不再继续消融或租卡"],
+      "tags": ["状态", "最终结论", "NO-GO"]
+    }
+  ]
+}

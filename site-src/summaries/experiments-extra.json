@@ -1,0 +1,73 @@
+{
+  "items": [
+    {
+      "path": "experiments/community_scale_model_ablation_20260808/MATRIX_SUMMARY.json",
+      "title": "社区规模矩阵总表：11 个 arm 的盖棺结果",
+      "summary": "这是最后一轮模型消融的机器可读总表。它把有效阴性、健康止损、运行失败、无视觉控制和原生 VLM 阳性对照放在一起，避免把失败臂从排行榜里静默删掉。",
+      "conclusions": ["Qwen2.5-7B exact V2 57,600 examples 后仍 valid_result_negative", "没有 external MoonViT projector 同时通过 vision>blind、vision>shuffled 和 ScreenSpot click 门槛"],
+      "lessons": ["矩阵完成意味着每个 arm 有证据，不意味着每个 arm 都成功", "原生 Qwen VLM 必须独立标为 positive control"],
+      "tags": ["社区矩阵", "最终结果", "阴性"]
+    },
+    {
+      "path": "experiments/community_scale_model_ablation_20260808/CUDA_WORKAROUND.json",
+      "title": "CUDA 工作区说明：本地硬件限制记录",
+      "summary": "这份小文件记录 V100 工作站上的 CUDA/驱动现实约束。它解释了为什么部分 4B/9B arm 只能留下 NaN/OOM 失败记录，而不是被误写成能力失败。",
+      "conclusions": ["资源限制和模型能力失败在矩阵里分开标记", "没有因为付费硬件不可用就伪造 DeepSeek 结果"],
+      "lessons": ["失败原因必须区分 runtime/resource 与 capability negative"],
+      "tags": ["硬件", "失败记录"]
+    },
+    {
+      "path": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v1_retry4/FAILURE.json",
+      "title": "7B V1：健康止损失败记录",
+      "summary": "V1 retry4 修过早期 FP16 optimizer NaN 后继续跑到 step33，但 receiver RMS 超过 50 倍 critical guard，训练被自动停止。CE 仍然有限，所以这正是‘loss 还能降也必须止损’的反例。",
+      "conclusions": ["该 arm 状态是 failed_health_guard，不是视觉能力分数", "failure checkpoint、optimizer/RNG、health 和 SHA 记录完整保留"],
+      "lessons": ["表示塌缩要在前几十步自动截停，不能从 critical checkpoint 继续"],
+      "tags": ["失败", "health guard", "Qwen2.5-7B"]
+    },
+    {
+      "path": "experiments/archive_cleanup_20260808/CHECKPOINT_UPLOAD_MANIFEST.json",
+      "title": "checkpoint 云端归档与清理记录",
+      "summary": "这份 manifest 记录了工作站 checkpoint payload 上传到 Hugging Face 的路径、提交 SHA、文件数和逐项大小核对结果。确认云端副本完整后，才删除本地二进制，保留轻量配置和日志。",
+      "conclusions": ["70 个文件、497,310,727 bytes，HF 路径/大小核对无缺失", "HF archive/checkpoints 是删除 payload 后的 canonical copy"],
+      "lessons": ["清理前先做不可变云端副本和机器核对", "不要把未上传的实验日志、数据和失败记录一起删除"],
+      "tags": ["归档", "清理", "可复现"]
+    },
+    {
+      "path": "experiments/external_model_audits/glm52v_webbrain_deepseek_20260808.json",
+      "title": "WebBrain/GLM-5.2V 外部实现审计",
+      "summary": "这份审计记录社区 GLM-5.2V 和 WebBrain DeepSeek overlay 的公开形状、路由和验证边界。它承认对方在工程组装上领先，但也保留 gpu_validated=false 和缺少 paired benchmark 的事实。",
+      "conclusions": ["外部 projector 形状有参考价值，但不是本项目 Qwen benchmark 的结果", "未核验不能写成无效或造假"],
+      "lessons": ["质疑应针对可复现实验和验证字段，不针对动机"],
+      "tags": ["外部审计", "GLM-5.2V", "WebBrain"]
+    },
+    {
+      "path": "experiments/external_model_audits/webbrain_discussion3_status_20260808.json",
+      "title": "WebBrain discussion #3：公开质疑记录",
+      "summary": "这里保存了项目在 WebBrain HF discussion #3 中提出的可复现性问题和对方公开状态。它是证据边界记录，不是对外部项目下结论的替代物。",
+      "conclusions": ["要求真实 image forward、训练轨迹和 paired benchmark 才能升级为已证明", "当前公开 manifest 仍标记 exact package 未 GPU 验证"],
+      "lessons": ["把‘工程上有人接起来了’和‘能力已经证明’分开"],
+      "tags": ["讨论", "复现", "证据边界"]
+    },
+    {
+      "path": "experiments/deepseek_interface_screen_v2_pointer.json",
+      "title": "DeepSeek 接口 screen v2：产物指针",
+      "summary": "这是 tiny DeepSeek 接缝实验的结果指针，指向 placeholder、routing ID、输入梯度和 checkpoint round-trip 的原始产物。它只证明软件接缝，不代表完整 0731 视觉能力。",
+      "conclusions": ["tiny fixture 的 forward/backward/save-resume/generate 通过", "Gate D 的真实量化和全模型证据仍缺"],
+      "lessons": ["软件 fixture 不能冒充目标权重验证"],
+      "tags": ["DeepSeek", "tiny fixture", "Gate D"]
+    },
+    {
+      "path": "experiments/deepseek_interface_screen_v2_verifier.json",
+      "title": "DeepSeek 接口 screen v2：独立 verifier",
+      "summary": "独立 verifier 重新检查了 tiny DeepSeek 接缝的形状、路由和梯度结果。它帮助确认‘代码链路没坏’，但不能把 NO-GO 的真实权重缺口变成 GO。",
+      "conclusions": ["接口产物可以由独立脚本复核", "真实 FP4/FP8 image→answer 仍没有运行"],
+      "lessons": ["验证器保证数据可信，不会凭空创造视觉能力"],
+      "tags": ["验证", "DeepSeek", "Gate D"]
+    }
+  ],
+  "tree_note": {
+    "community_scale_model_ablation_20260808": "最后一轮社区规模模型矩阵完成了登记 arm 的结果/失败留档，但只有 Qwen2.5-7B exact V2 达到 57,600 examples，且真实 ScreenSpot 判定仍为 negative。",
+    "archive_cleanup_20260808": "已确认 HF 副本完整后清理本地 checkpoint payload，保留 manifest/config、日志和非 checkpoint 实验数据。",
+    "external_model_audits": "外部 GLM/WebBrain 实现提供了强参考，但验证字段和 paired benchmark 不完整，所以只能作为待核验工程参考。"
+  }
+}

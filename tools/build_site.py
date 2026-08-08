@@ -33,6 +33,8 @@ SUMMARY_FILES = [
     "configs.json",
     "experiments-v100.json",
     "experiments-qwen3b.json",
+    "docs-archive.json",
+    "experiments-extra.json",
     "guide.json",
 ]
 
@@ -139,9 +141,8 @@ def copy_report(b: Builder):
 
 
 def copy_root_markdown(b: Builder):
-    """根目录三个 md:HANDOFF.md、README.md、kimi-export 会话导出。"""
+    """只发布正式入口文档，不发布包含私密会话内容的 session export。"""
     targets = [ROOT / "HANDOFF.md", ROOT / "README.md"]
-    targets += sorted(ROOT.glob("kimi-export*.md"))
     for p in targets:
         if p.exists():
             b.copy(p, p.name, f"content/{p.name}")
