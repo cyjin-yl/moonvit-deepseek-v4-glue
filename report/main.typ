@@ -2259,3 +2259,11 @@ OCRBench/language-retention 的节点曲线。健康指标、loss 或 teacher-fo
 明确写出社区结构：Kimi K2.6 的 MoonViT-3d（27 层、1152-d、2×2 merge）接到 GLM-5.2，视觉塔和语言主干冻结，只训练约 49.5M 的 PatchMerger projector。文章给出的 SFT 为 66k 图文问答、global batch 64、LR `5e-4`、两 epoch，约 900 steps（每 epoch 1035）出现 grokking；之后还有只训练 projector 的 reasoning RL。因此 900 steps 是早期对齐节点，不是完整能力闭环。
 
 这次核对修正了版本判断：项目当前 MoonViT-V2 是 1024-d K3，不是社区 GLM-5.2V 使用的 1152-d MoonViT-3d；已有 1152-d SO-400M V1 结果也只是同维代理。公开 Kimi K2.6 834MB vision-only shard 已严格加载，下一条加入 `k26_moonvit3d_1152` cache/projector arm。Kimi 原生 projector 输出 7168，属于 Kimi receiver，不能复用给 GLM-5.2 的 6144 hidden 或 Qwen；projector 仍须按 receiver 重训。
+
+#heading[顶部 LoRA 深融合短探针：负结果]
+
+在完全匹配的 Qwen2.5-7B/MoonViT-V2/6400-example 合同下，只给 receiver 第 24--27 层 q/v/o 加 rank-8 LoRA。训练 health 全程 finite，但 vision/blind/shuffled/random 的 click-in-box 为 `2/10/0/12%`，vision--blind paired 95% CI 为 `[-16,-2]` 个百分点。这个结果不能称为视觉能力，反而说明少量顶部 LoRA 没有修复自由生成 grounding；该 arm 已记录为 `valid_result_negative`。
+
+#heading[Kimi K2.6/MoonViT-3d 接口验证]
+
+社区同源视觉塔的真实单图 forward 输出 `(3354,4,1152)`，FP16 RMS 约 3.04；固定 50 条 ScreenSpot cache 为 `50/50` 成功、0 failures。这只证明视觉特征 extraction/cache 接口正确，不证明接收器已经识图。K26 projector 仍须按 Qwen receiver 重新训练并通过 vision 优于 blind/shuffled 的自由生成门槛。

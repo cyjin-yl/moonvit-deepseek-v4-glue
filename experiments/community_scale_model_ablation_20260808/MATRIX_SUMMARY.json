@@ -283,18 +283,31 @@
     },
     "qwen25_7b_v2_top4_lora_short_probe": {
       "failure_history": [],
-      "result": null,
-      "status": "preregistered",
-      "attempts": 0,
+      "result": {
+        "evaluation": "screenspot_glm50_v1_four_conditions",
+        "artifact": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_top4_lora_formal_score_retry1/SUMMARY.json",
+        "artifact_sha256": "d8464dbf8e5a8d3802979b02c21d74b36b8e265e6279785c20ed9b1ea7f7c6fc",
+        "vision": {"parse_rate": 0.28, "click_in_box_accuracy": 0.02, "accuracy_at_50": 0.0, "accuracy_at_100": 0.0, "accuracy_at_200": 0.0},
+        "blind": {"parse_rate": 1.0, "click_in_box_accuracy": 0.10, "accuracy_at_50": 0.02, "accuracy_at_100": 0.06, "accuracy_at_200": 0.18},
+        "shuffled": {"parse_rate": 0.36, "click_in_box_accuracy": 0.0, "accuracy_at_50": 0.0, "accuracy_at_100": 0.0, "accuracy_at_200": 0.06},
+        "random_projector": {"parse_rate": 1.0, "click_in_box_accuracy": 0.12, "accuracy_at_50": 0.04, "accuracy_at_100": 0.12, "accuracy_at_200": 0.16},
+        "paired_ci": {"vision_minus_blind_click": [-0.16, -0.02], "vision_minus_shuffled_click": [0.0, 0.06], "trained_minus_random_click": [-0.20, -0.02]},
+        "capability_claim_allowed": false,
+        "transfer_label": "transferable_with_runtime_validation",
+        "interpretation": "Top-4-layer LoRA was numerically stable but worsened free-generation grounding; correct image was significantly below blind and random projector."
+      },
+      "status": "valid_result_negative",
+      "attempts": 1,
       "current_attempt": {
-        "attempt": 0,
-        "status": "preregistered",
+        "attempt": 1,
+        "status": "valid_result_negative",
         "contract_examples_seen": 6400,
         "optimizer_steps_requested": 100,
-        "train_output": null,
-        "evaluation_output": null,
+        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_top4_lora_short_probe_retry1",
+        "evaluation_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_top4_lora_formal_score_retry1",
         "capability_claim_allowed": false,
-        "transfer_label": "transferable_with_runtime_validation"
+        "transfer_label": "transferable_with_runtime_validation",
+        "raw_artifact_sha256": {"candidate_summary": "235239d123d532731a762e83bfecc2aa9fdd41fec453e281cb46b13aa8bb4395", "candidate_rows": "d46d161c6110fed29e59a353002d2acd031d093cd657d695dca4ba81a0eb6a4e", "step0_summary": "da07745d2e4ec4394fcda4717b472c3b70688b2d23daf1b0b1a6941359c44ed6", "step0_rows": "c95a81195d0ffc28f972bcbbf0f220fd2a83b00ac3b0648440f78d8585f84f20", "train_health": "f7c36d4d1725f85de2b6156ca8f65780b8775c94a39b9a9c10732c292a838e17"}
       }
     },
     "qwen25_7b_k26_moonvit3d_1152_projector_short_probe": {
@@ -415,5 +428,5 @@
     }
   },
   "schema_version": "community-matrix-summary-v1",
-  "updated_at": "2026-08-08T14:27:56.888821+08:00"
+  "updated_at": "2026-08-08T17:50:00+08:00"
 }

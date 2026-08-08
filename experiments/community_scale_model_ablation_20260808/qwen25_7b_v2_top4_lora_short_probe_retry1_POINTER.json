@@ -1,0 +1,39 @@
+{
+  "schema_version": "community-matrix-result-pointer-v1",
+  "arm_id": "qwen25_7b_v2_top4_lora_short_probe",
+  "status": "valid_result_negative",
+  "receiver": "Qwen2.5-7B-Instruct",
+  "tower": "MoonViT-V2 K3 1024-d",
+  "training": {
+    "optimizer_steps": 100,
+    "examples_seen": 6400,
+    "global_batch": 64,
+    "learning_rate": 0.00005,
+    "trainable": "projector + top layers 24-27 q/v/o LoRA",
+    "lora_rank": 8,
+    "lora_alpha": 16,
+    "peak_gpu_memory_bytes": 19069927424
+  },
+  "evaluation": {
+    "dataset": "screenspot_glm50_v1",
+    "sample_count": 50,
+    "vision": {"parse_rate": 0.28, "click_in_box_all": 0.02, "accuracy_at_50": 0.0, "accuracy_at_100": 0.0, "accuracy_at_200": 0.0},
+    "blind": {"parse_rate": 1.0, "click_in_box_all": 0.10, "accuracy_at_50": 0.02, "accuracy_at_100": 0.06, "accuracy_at_200": 0.18},
+    "shuffled": {"parse_rate": 0.36, "click_in_box_all": 0.0, "accuracy_at_50": 0.0, "accuracy_at_100": 0.0, "accuracy_at_200": 0.06},
+    "random_projector": {"parse_rate": 1.0, "click_in_box_all": 0.12, "accuracy_at_50": 0.04, "accuracy_at_100": 0.12, "accuracy_at_200": 0.16},
+    "paired_ci95": {"vision_minus_blind_click": [-0.16, -0.02], "vision_minus_shuffled_click": [0.0, 0.06], "trained_minus_random_click": [-0.20, -0.02]},
+    "bootstrap": {"samples": 2000, "seed": 20260805}
+  },
+  "raw_artifacts": {
+    "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_top4_lora_short_probe_retry1",
+    "candidate_screen": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_top4_lora_screenspot_retry1",
+    "step0_screen": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_top4_lora_screenspot_step0_retry1",
+    "formal_score": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_top4_lora_formal_score_retry1/SUMMARY.json",
+    "formal_score_sha256": "d8464dbf8e5a8d3802979b02c21d74b36b8e265e6279785c20ed9b1ea7f7c6fc",
+    "candidate_summary_sha256": "235239d123d532731a762e83bfecc2aa9fdd41fec453e281cb46b13aa8bb4395",
+    "train_health_sha256": "f7c36d4d1725f85de2b6156ca8f65780b8775c94a39b9a9c10732c292a838e17"
+  },
+  "capability_claim_allowed": false,
+  "deepseek_transfer_label": "transferable_with_runtime_validation",
+  "conclusion": "Top-layer LoRA is not a grounding improvement under this short matched probe; it is retained as evidence for the frozen-receiver/deep-fusion hypothesis, not as a candidate."
+}

@@ -1136,3 +1136,9 @@ Qwen2.5-7B V2 projector-only 训练完成了 900 optimizer steps / 57,600 exampl
 同一最终 checkpoint 的多任务 selection（每项 8 条）已补跑：TextVQA soft VQA `vision/blind/shuffled/random=0.125/0/0.125/0`；DocVQA ANLS `0.12/0/0.12/0`；OCRBench exact match 四条件全为 `0`。vision 与 shuffled 打平，不能宣称视觉增益；raw reports、commands、CURVE.csv、SVG 和 SHA pointer 为 `qwen25_7b_v2_multitask_final_limit8_POINTER.json`。
 无视觉 control 已登记为 parse `100%`、click `10%`、A@50/@100/@200 `2/6/18%`；原生 Qwen VLM 阳性 control 为 parse `80%`、click `42%`，blind click `6%`。这两条只用于锚定文本先验和“原生视觉链路确实能工作”的上界，绝不并入 external MoonViT projector 排名。
 文献调研已写入 `docs/vlm-alignment-literature.md`。最关键的迁移判断是：LLaVA/BLIP-2/DeepSeek-VL 都把 projector-only 当 Stage-1 bridge，VILA/CogVLM 证明冻结 receiver 常形成浅层 prefix；Shikra 证明粗粒度 image-text 对齐不能自动产生空间 grounding。下一条应预注册 matched top-layer LoRA/visual expert 或 ITM hard-negative bridge，并保留 projector-only control。
+
+## 2026-08-08 顶部 LoRA 负结果与 K26 回归
+
+`qwen25_7b_v2_top4_lora_short_probe` 已完成 100 steps / 6,400 examples。它在 Qwen2.5-7B V2 projector 上只给第 24–27 层 q/v/o 加 rank-8 LoRA；health 全程 finite，但 ScreenSpot50 vision click 为 2%，blind 为 10%，shuffled 为 0%，random projector 为 12%。paired click CI 为 vision−blind `[-16,-2] pp`、vision−shuffled `[0,+6] pp`、trained−random `[-20,-2] pp`。判定 `valid_result_negative`，不得升为 previous-best；它只支持“少量顶部 LoRA 不足以解决深层融合”的机制假设。raw artifact 由 `qwen25_7b_v2_top4_lora_short_probe_retry1_POINTER.json` 和矩阵行绑定。
+
+Kimi K2.6/MoonViT-3d 版本已完成真实单图 forward 和 50 条固定 ScreenSpot cache：输出 `(3354,4,1152)`、FP16 RMS 约 3.04、50/50 cache rows、0 failures。loader qkv 参数修复已推送为 `a6b4ee1`。Qwen2.5-7B 的 6,400 条 K26 训练 cache 正在工作站 tmux `moonvit_cache_k26_train` 中生成；完成后按同一 projector-only 100-step、health、四条件 ScreenSpot 合同运行。

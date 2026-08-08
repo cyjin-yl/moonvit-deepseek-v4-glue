@@ -302,3 +302,11 @@ Qwen2.5-7B V2 的 matched `5e-5` 短探针完成 100 steps / 6,400 examples seen
 Baseten 文章和 HF model card（见仓库报告中的直接链接）明确说明社区 GLM-5.2V 使用 Kimi K2.6 的 MoonViT-3d，而不是当前项目的 1024-d MoonViT-V2。社区塔是 27 层、1152-d、2×2 merge；projector 是约 49.5M 的 `pre_norm → linear_1 → GELU → linear_2`。SFT 使用 66k 图文问答、batch 64、LR `5e-4`，约 900 steps 出现 grokking，随后还有只训练 projector 的 reasoning RL。这个证据把“版本/输入维度不匹配”重新提升为首要排查变量，同时也说明 900 steps 不是完整能力训练。
 
 我们已从公开 Kimi K2.6 分片中验证出 834MB、仅视觉塔的 27-layer/1152-d 权重。注意 Kimi 分片中附带的原生 projector 输出宽度是 7168，属于 Kimi receiver，不能直接拿来给 GLM-5.2（6144）或 Qwen；要比较的是视觉塔/merge 结构，projector 仍按 receiver 重新训练。下一项版本回归因此固定为 `k26_moonvit3d_1152` vs 当前 V2-1024，并保留匹配 projector-only control。
+
+## 顶部 LoRA 深融合短探针：负结果
+
+在相同 100-step/6,400-example 合同下，仅给 Qwen2.5-7B V2 receiver 第 24–27 层 q/v/o 加 rank-8 LoRA，训练 health 全程 finite，但 vision click-in-box 仅 2%，低于 blind 10% 和 random projector 12%；vision−blind paired CI 为 `[-16,-2] pp`。因此“轻量顶部 LoRA 就能把浅层 prefix 变成可用 grounding”被当前实验反驳。它仍然是有价值的机制对照：下一步若要测试深融合，应改为更明确的 visual-expert/cross-attention 或 paired grounding/ITM 目标，而不是继续放大这条 LoRA。
+
+## Kimi K2.6/MoonViT-3d 接口边界
+
+K26 视觉塔 forward 已真实输出 `(3354,4,1152)`，并完成 50 条固定 ScreenSpot cache；这证明“视觉特征能被提取和缓存”，不证明语言模型已经识图。只有对应 projector 训练后在自由生成中同时胜过 blind 和 shuffled，才可称为视觉能力。Kimi 自带 projector 的 7168 输出只适配 Kimi receiver，不能直接拿到 Qwen 或 GLM；当前 K26 arm 必须重新训练到 canonical 4096，再做四条件 benchmark。

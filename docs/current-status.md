@@ -675,3 +675,20 @@ paired bootstrap 95% CI（2,000 次，seed `20260805`）为 vision−blind click
 用户提供的 [Baseten GLM-5.2 with vision 文章](https://www.baseten.co/blog/glm-52-with-vision/) 与 [官方 HF model card](https://huggingface.co/baseten/GLM-5.2-Vision-NVFP4) 现在纳入主合同。直接证据是：社区把 Kimi K2.6 的 MoonViT-3d 视觉塔接到 GLM-5.2，视觉塔和语言主干都冻结，只训练约 49.5M projector；视觉塔为 27 层、1152 维，2×2 PatchMerger，projector 结构为 `pre_norm → linear_1 → GELU → linear_2`。文章明确写的是 66k 图文问答、global batch 64、constant LR `5e-4`、两 epoch；约 900 steps（每 epoch 1035 steps）出现 grokking。之后还有只训练 projector 的视觉 reasoning RL 阶段，不能把 SFT 的 900 steps 当成最终完整训练。
 
 这次核对改正了项目中的一个关键表述：当前 `MoonViT-V2` 是 1024 维 K3 合同，不能直接称为社区 GLM-5.2V 的视觉塔；已有 `MoonViT-SO-400M` V1 1152 维结果也只是同维度代理，不能称为 Kimi K2.6 MoonViT-3d。已从公开 Kimi K2.6 权重下载并严格验证仅含视觉塔的 834MB shard（27 层、1152 维）；接下来将建立独立的 `k26_moonvit3d_1152` cache/projector arm。Kimi shard 中自带的原生 projector 输出 7168，是 Kimi 自身 receiver 的权重，不能直接冒充 GLM projector；GLM-5.2 的官方主干 hidden size 为 6144，因此社区 projector 仍需按 GLM 接收器重新训练。这进一步支持“每个 receiver 必须重新训练 projector”的合同。
+
+### 2026-08-08：顶部 LoRA 深融合短探针（负结果）
+
+为检验“冻结 Qwen receiver 只能形成浅层 soft prefix”这一机制假设，保持 Qwen2.5-7B、MoonViT-V2、数据顺序、6400 examples、greedy parser 和 2,000 次 bootstrap 完全不变，只在第 24–27 层的 q/v/o 加入 rank-8 LoRA。100 steps 全程 finite，projector+LoRA 共 34.15M 可训练参数；这证明了 LoRA 路径能运行，但不是能力证明。
+
+| 条件 | parse rate | click-in-box | Accuracy@50/@100/@200 |
+|---|---:|---:|---|
+| vision（projector+top4 LoRA） | 28% | 2% | 0% / 0% / 0% |
+| blind | 100% | 10% | 2% / 6% / 18% |
+| shuffled | 36% | 0% | 0% / 0% / 6% |
+| random projector | 100% | 12% | 4% / 12% / 16% |
+
+paired click-in-box CI 为 vision−blind `[-16,-2] pp`、vision−shuffled `[0,+6] pp`、trained−random `[-20,-2] pp`。所以顶部 LoRA 没有修复视觉 grounding，反而损害格式和文本先验；它被封存为 `valid_result_negative`，不能进入 previous-best。这支持“需要更完整的视觉—语言 bridge/深层视觉专家或 grounding 监督”，反驳“只给最后四层少量 LoRA 就足够”的假设。原始结果绑定在 `qwen25_7b_v2_top4_lora_short_probe_retry1_POINTER.json`。
+
+### Kimi K2.6/MoonViT-3d 版本回归状态
+
+社区同源塔已完成真实 forward：单张 ScreenSpot 图片输出 `(3354, 4, 1152)` 的有限特征（FP16 RMS 约 3.04），并在固定 50 条 `screenspot_glm50_v1` 上完成 50/50 cache、0 failures。这里修复了 loader 的 qkv 合同：配置字段是单头 qkv 宽度 1152，实际投影矩阵才是 3×1152；代码已由 commit `a6b4ee1` 推送。K26 的 Qwen2.5-7B projector-only 6400-example 训练 cache 正在生成，随后按同一 100-step health screen 和四条件 ScreenSpot 运行，结果出来前不预设 V1/V2 谁更好。
