@@ -327,8 +327,12 @@ def load_tower(args: argparse.Namespace, *, dtype: torch.dtype):
             vt_hidden_size=1152,
             vt_intermediate_size=4304,
             vt_num_attention_heads=16,
-            qkv_hidden_size=3456,
+            qkv_hidden_size=1152,
             mm_hidden_size=1152,
+            norm_type="layernorm",
+            attn_bias=True,
+            patch_embed_proj_bias=True,
+            linear_bias=True,
         )
     if args.vision_tower == "v2":
         if args.moonvit_v2_weights is None:
