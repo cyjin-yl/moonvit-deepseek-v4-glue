@@ -9,8 +9,16 @@
         "evaluation": "screenspot_glm50_v1_positive_control",
         "artifact": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/native_qwen_vlm_positive_screenspot50.json",
         "artifact_sha256": "a88ad6f350f799521c7451c3b4f26fbe92d63edfc8444c35d80d5665c39f42a6",
-        "vision": {"parse_rate": 0.8, "click_in_box_accuracy": 0.42, "mean_error": 188.6100722395738},
-        "blind": {"parse_rate": 0.98, "click_in_box_accuracy": 0.06, "mean_error": 460.2920343658068},
+        "vision": {
+          "parse_rate": 0.8,
+          "click_in_box_accuracy": 0.42,
+          "mean_error": 188.6100722395738
+        },
+        "blind": {
+          "parse_rate": 0.98,
+          "click_in_box_accuracy": 0.06,
+          "mean_error": 460.2920343658068
+        },
         "interpretation": "Independent native Qwen VLM positive control; not an external MoonViT projector result."
       },
       "status": "valid_positive_control",
@@ -29,7 +37,7 @@
         "artifact": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/no_vision_control_screenspot_glm50/SUMMARY.json",
         "artifact_sha256": "14a93a13c00292c7d5dd749b4dcd72605863d360a6840a466e9f248f1091d6ca",
         "parse_rate": 1.0,
-        "click_in_box_accuracy": 0.10,
+        "click_in_box_accuracy": 0.1,
         "accuracy_at_50": 0.02,
         "accuracy_at_100": 0.06,
         "accuracy_at_200": 0.18,
@@ -118,9 +126,24 @@
         "multitask_selection_pointer": "experiments/community_scale_model_ablation_20260808/qwen25_7b_v2_multitask_final_limit8_POINTER.json",
         "multitask_selection": {
           "limit_per_dataset": 8,
-          "textvqa_soft_vqa": {"vision": 0.125, "blind": 0.0, "shuffled": 0.125, "random_projector": 0.0},
-          "docvqa_anls": {"vision": 0.12, "blind": 0.0, "shuffled": 0.12, "random_projector": 0.0},
-          "ocrbench_exact_match": {"vision": 0.0, "blind": 0.0, "shuffled": 0.0, "random_projector": 0.0},
+          "textvqa_soft_vqa": {
+            "vision": 0.125,
+            "blind": 0.0,
+            "shuffled": 0.125,
+            "random_projector": 0.0
+          },
+          "docvqa_anls": {
+            "vision": 0.12,
+            "blind": 0.0,
+            "shuffled": 0.12,
+            "random_projector": 0.0
+          },
+          "ocrbench_exact_match": {
+            "vision": 0.0,
+            "blind": 0.0,
+            "shuffled": 0.0,
+            "random_projector": 0.0
+          },
           "interpretation": "Selection-only result: vision ties shuffled on TextVQA and DocVQA and all conditions tie on OCRBench; no image-specific causal gain."
         },
         "vision": {
@@ -132,7 +155,7 @@
         },
         "blind": {
           "parse_rate": 1.0,
-          "click_in_box_all": 0.10,
+          "click_in_box_all": 0.1,
           "accuracy_at_50_all": 0.02,
           "accuracy_at_100_all": 0.06,
           "accuracy_at_200_all": 0.18
@@ -146,15 +169,24 @@
         },
         "random_projector": {
           "parse_rate": 0.96,
-          "click_in_box_all": 0.10,
+          "click_in_box_all": 0.1,
           "accuracy_at_50_all": 0.02,
-          "accuracy_at_100_all": 0.10,
+          "accuracy_at_100_all": 0.1,
           "accuracy_at_200_all": 0.14
         },
         "paired_ci95": {
-          "vision_minus_blind_click_in_box_all": [-0.16, 0.02],
-          "vision_minus_shuffled_click_in_box_all": [0.0, 0.10],
-          "trained_minus_random_projector_click_in_box_all": [-0.16, 0.02]
+          "vision_minus_blind_click_in_box_all": [
+            -0.16,
+            0.02
+          ],
+          "vision_minus_shuffled_click_in_box_all": [
+            0.0,
+            0.1
+          ],
+          "trained_minus_random_projector_click_in_box_all": [
+            -0.16,
+            0.02
+          ]
         },
         "decision": "failed_capability_screen",
         "capability_claim_allowed": false,
@@ -178,17 +210,27 @@
       }
     },
     "qwen25_7b_v2_lr5e5_short_probe": {
-      "failure_history": [],
+      "failure_history": [
+        {
+          "attempt": 1,
+          "class": "implementation_path_mismatch",
+          "artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v2_lr5e5_short_probe_attempt1/FAILURE.json",
+          "reason": "Training never reached step 0: the pre-registered probe command referenced community_scale_20260808/architecture_controls instead of the fixed qwen3b_contract/architecture_controls projector initialization path; no capability result was produced."
+        }
+      ],
       "result": null,
-      "status": "preregistered",
-      "attempts": 0,
+      "status": "failed_runtime",
+      "attempts": 1,
       "current_attempt": {
-        "attempt": 0,
-        "status": "preregistered",
+        "attempt": 1,
+        "status": "failed_runtime",
         "contract_examples_seen": 6400,
         "optimizer_steps_requested": 100,
-        "variable": "learning_rate=5e-5",
-        "contract": "experiments/community_scale_model_ablation_20260808/qwen25_7b_v2_lr5e5_short_probe_contract.json",
+        "optimizer_step_stopped": null,
+        "examples_seen_stopped": null,
+        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_lr5e5_short_probe",
+        "failure_artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v2_lr5e5_short_probe_attempt1/FAILURE.json",
+        "failure_class": "implementation_path_mismatch",
         "capability_claim_allowed": false
       }
     },
@@ -294,5 +336,5 @@
     }
   },
   "schema_version": "community-matrix-summary-v1",
-  "updated_at": "2026-08-08T13:26:00.701522+08:00"
+  "updated_at": "2026-08-08T14:27:56.888821+08:00"
 }

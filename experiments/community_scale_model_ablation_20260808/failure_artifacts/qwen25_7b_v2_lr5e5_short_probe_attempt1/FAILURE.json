@@ -1,0 +1,18 @@
+{
+  "schema_version": "community-matrix-failure-v1",
+  "captured_at": "2026-08-08T14:27:56.888821+08:00",
+  "git_sha": "97126e48b8a56650a10ade48a040dcb08622ac93",
+  "arm": "qwen25_7b_v2_lr5e5_short_probe",
+  "attempt": 1,
+  "contract_examples_seen": 6400,
+  "optimizer_steps_requested": 100,
+  "stop_optimizer_step": null,
+  "examples_seen": null,
+  "run_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_lr5e5_short_probe",
+  "failure_class": "implementation_path_mismatch",
+  "capability_claim_allowed": false,
+  "reason": "Training never reached step 0: the pre-registered probe command referenced community_scale_20260808/architecture_controls instead of the fixed qwen3b_contract/architecture_controls projector initialization path; no capability result was produced.",
+  "raw_artifacts": [
+    "qwen25_7b_v2_lr5e5_short_probe.log"
+  ]
+}

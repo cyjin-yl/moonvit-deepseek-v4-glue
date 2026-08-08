@@ -1,0 +1,19 @@
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<02:05,  2.70it/s]Loading weights:  16%|#5        | 53/339 [00:00<00:02, 138.39it/s]Loading weights:  23%|##3       | 79/339 [00:00<00:01, 160.81it/s]Loading weights:  33%|###3      | 113/339 [00:00<00:01, 201.62it/s]Loading weights:  41%|####1     | 139/339 [00:00<00:00, 207.68it/s]Loading weights:  48%|####8     | 164/339 [00:00<00:00, 213.76it/s]Loading weights:  58%|#####7    | 196/339 [00:01<00:00, 224.91it/s]Loading weights:  65%|######5   | 221/339 [00:01<00:00, 203.75it/s]Loading weights:  76%|#######5  | 256/339 [00:01<00:00, 221.97it/s]Loading weights:  83%|########2 | 280/339 [00:01<00:00, 217.24it/s]Loading weights:  93%|#########3| 316/339 [00:01<00:00, 232.36it/s]Loading weights: 100%|##########| 339/339 [00:01<00:00, 202.24it/s]
+Traceback (most recent call last):
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_overfit.py", line 938, in <module>
+    main()
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_overfit.py", line 474, in main
+    donor = PatchMergerProjector.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/src/moonvit_glue/projector.py", line 203, in from_pretrained
+    **json.loads((source / cls.config_filename).read_text(encoding="utf-8"))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ezra/.conda/envs/tsenv/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ezra/.conda/envs/tsenv/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/architecture_controls/local_v2_exact_k3/projector_initializations/step0/projector_config.json'
