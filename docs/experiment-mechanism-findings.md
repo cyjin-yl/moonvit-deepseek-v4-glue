@@ -266,3 +266,24 @@ blind and shuffled click-in-box were `0%/2%/0%`, with paired CIs `[-6,0]` and `[
 percentage points. The scale arm is therefore a format-collapse rejection, not a visual
 capability result. It reinforces the separation between training health, teacher-forced
 attribution and free-generation grounding.
+
+## Qwen2.5-7B V2：teacher-forced 归因与自由生成 grounding 分离（2026-08-08）
+
+V2 在 900 steps / 57,600 examples seen 后 health 全程 finite，且 held-out teacher-forced
+`eval_true_loss=2.3286`、`eval_shuffled_loss=4.5610`，shuffle delta 为 `+2.2324`。
+如果只看 CE 或目标答案的 teacher-forced log-prob，会很容易把它写成“图像对齐成功”。
+但同一 checkpoint 的固定 ScreenSpot50 四条件自由生成是：vision parse/click `6%/4%`，
+blind `100%/10%`，shuffled `6%/0%`，random projector `96%/10%`；vision 的
+Accuracy@50/@100/@200 为 `0/2/2%`，blind 为 `2/6/18%`。2,000-bootstrap 的
+vision−blind click CI 为 `[-16,+2] pp`，vision−shuffled 为 `[0,+10] pp`。
+
+机制解释：projector 的训练信号确实改变了“在已给定答案前缀下的答案概率”，但没有教会
+自回归解码器把正确图片转换成可解析、位置正确的 click。更糟的是，训练后的视觉条件
+破坏了输出格式，导致 parse rate 从 step0 的 94% 掉到 6%。因此这是一条可重复的假阳性
+模式：`CE 下降 + teacher-forced shuffle delta 为正 ≠ 真实视觉能力`。
+
+工程经验也纳入合同：本轮先后出现 cache feature 与 projector dtype 不匹配、random
+projector dtype 不匹配、以及变量初始化顺序错误；每次都保留不可变 failure artifact，
+修复后的 retry 才能进入正式 scorer。后续任何结果必须同时有 preflight、逐样本 raw rows、
+四条件、step0/previous-best/current-candidate 和 paired bootstrap；工程失败不能混入
+能力排行榜，健康指标也不能替代真实 ScreenSpot、TextVQA、DocVQA、OCRBench。

@@ -1,0 +1,18 @@
+{
+  "schema_version": "community-matrix-failure-v1",
+  "captured_at": "2026-08-08T12:37:54.794963+08:00",
+  "git_sha": "04a0110af3b53fa98f395c28eeb37ad6647b7469",
+  "arm": "qwen35_4b_v1_stripped",
+  "attempt": 1,
+  "contract_examples_seen": 57600,
+  "optimizer_steps_requested": 900,
+  "stop_optimizer_step": null,
+  "examples_seen": null,
+  "run_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen35_4b_v1_train_57600",
+  "failure_class": "training_no_report",
+  "capability_claim_allowed": false,
+  "reason": "training exited rc=1 without overfit_report",
+  "raw_artifacts": [
+    "qwen35_4b_v1_train_57600.log"
+  ]
+}

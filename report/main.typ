@@ -2210,3 +2210,33 @@ The version-only explanation is therefore rejected. The next local experiment is
 The preregistered single-variable screen changed only the projector runtime scale from `0.1` to `0.03`. Training stayed finite for three projector-only steps and the final teacher-forced vision-minus-shuffle was `+0.0306`, but ScreenSpot50 vision and shuffled generations were both unparseable (`0%` parse) while blind remained at `100%`. Click-in-box was `0%/2%/0%` for vision/blind/shuffled; paired CIs were `[-6,0]` and `[0,0]` percentage points. The arm is rejected for format collapse, not promoted, and is not expanded to the full public set.
 
 This supports treating projector output scale as a receiver-interface constraint and rejects the idea that simply shrinking the scale restores grounding. Keep scale `0.1` as the matched control; test placeholder/position or loss-mask semantics next. Gate D remains NO-GO.
+
+#heading[Qwen2.5-7B V2：正式生成评测与经验（2026-08-08）]
+
+Qwen2.5-7B-Instruct + MoonViT-V2 projector-only 训练完成 900 optimizer steps、57,600
+examples seen，health 全程 finite；但同一 checkpoint 的固定 `screenspot_glm50_v1`
+50 条四条件自由生成没有建立视觉 grounding：
+
+#table(
+  columns: 5,
+  table.header([条件], [parse rate], [click-in-box], [A@50], [A@100/A@200]),
+  [vision], [6%], [4%], [0%], [2% / 2%],
+  [blind], [100%], [10%], [2%], [6% / 18%],
+  [shuffled], [6%], [0%], [0%], [0% / 0%],
+  [random projector], [96%], [10%], [2%], [10% / 14%],
+  [step0], [94%], [8%], [2%], [6% / 16%],
+)
+
+2,000-bootstrap 的 click-in-box paired CI 为 vision−blind `[-16,+2]` 个百分点，
+vision−shuffled `[0,+10]`，trained−random projector `[-16,+2]`。所以“正确图片比 blind
+和 shuffled 更好”两个条件都没有同时成立；训练后还出现了严重的生成格式退化。旧的
+teacher-forced shuffle delta `+2.2324` 只能说明答案概率受到图像条件影响，不能替代
+自由生成的正确点击。这组结果记为 `valid_result_negative`，不续训同一 V2 arm，不进入
+previous-best 或 DeepSeek 候选。
+
+本轮也固定记录了三条工程经验：cache feature、candidate projector 和 random projector
+必须在同一 dtype 边界；变量初始化顺序错误应作为独立工程失败保存；只有修复后的 retry
+才能进入正式 scorer。今后的能力表必须同时带上 preflight、四条件逐样本 raw rows、
+step0/previous-best/current-candidate、paired bootstrap 以及 ScreenSpot/TextVQA/DocVQA/
+OCRBench/language-retention 的节点曲线。健康指标、loss 或 teacher-forced attribution
+都不能单独升级为视觉能力声明。

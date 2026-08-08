@@ -1,0 +1,15 @@
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/760 [00:00<?, ?it/s]Loading weights:   0%|          | 1/760 [00:00<09:02,  1.40it/s]Loading weights:  16%|#5        | 119/760 [00:00<00:03, 192.97it/s]Loading weights:  24%|##3       | 180/760 [00:01<00:02, 226.12it/s]Loading weights:  30%|##9       | 227/760 [00:01<00:02, 231.52it/s]Loading weights:  35%|###4      | 265/760 [00:01<00:02, 243.74it/s]Loading weights:  39%|###9      | 300/760 [00:01<00:01, 259.42it/s]Loading weights:  44%|####3     | 334/760 [00:01<00:01, 256.08it/s]Loading weights:  48%|####8     | 365/760 [00:01<00:01, 253.71it/s]Loading weights:  52%|#####2    | 398/760 [00:01<00:01, 270.47it/s]Loading weights:  60%|######    | 456/760 [00:01<00:00, 346.50it/s]Loading weights:  99%|#########9| 753/760 [00:02<00:00, 1017.83it/s]Loading weights: 100%|##########| 760/760 [00:02<00:00, 371.97it/s] 
+loaded complete step0 projector from /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/architecture_controls/local_v2_exact_k3/projector_initializations/step0
+healthy checkpoint saved: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen35_9b_v2_train_57600/healthy-checkpoints/step-000000
+/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_overfit.py:618: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  step_loss += float(outputs.loss) / accumulation_steps
+Traceback (most recent call last):
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_overfit.py", line 938, in <module>
+    main()
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_overfit.py", line 719, in main
+    raise RuntimeError(f"collapse/NaN health guard triggered at step {step}: {failure_dir}")
+RuntimeError: collapse/NaN health guard triggered at step 1: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen35_9b_v2_train_57600/failure-checkpoints/step-000001

@@ -632,3 +632,20 @@ vision−blind click CI `[-6,0] pp`，vision−shuffled `[0,0] pp`。因此 scal
 这条结果支持“projector 输出尺度是 receiver 接口的硬约束”，反驳“只要把尺度调小
 就能恢复视觉能力”。下一项不再继续扫 scale，而是转向 placeholder/位置或 loss-mask
 语义的单变量屏幕，并保留 scale `0.1` 的 CE-only matched control。
+### 2026-08-08：Qwen2.5-7B V2 正式 ScreenSpot50 复核结果
+
+Qwen2.5-7B-Instruct + MoonViT-V2 projector-only arm 已完成社区预算的 900 optimizer steps、57,600 examples seen。训练 health 全程 finite，projector/receiver 没有触发 collapse guard；旧的 teacher-forced held-out 指标 `eval_true_loss=2.3286`、`eval_shuffled_loss=4.5610`（shuffle delta `+2.2324`）看起来很好，但这不是自由生成能力。
+
+在修复并冻结 evaluator 的 cache/projector/random-projector dtype 边界后，固定 `screenspot_glm50_v1` 50 条样本、相同 prompt/parser/greedy decoding 下完成了 vision、blind、shuffled、random_projector 和 step0。正式结果为：
+
+| 条件 | parse rate | click-in-box | Accuracy@50/@100/@200 |
+|---|---:|---:|---|
+| vision（训练后） | 6% | 4% | 0% / 2% / 2% |
+| blind | 100% | 10% | 2% / 6% / 18% |
+| shuffled | 6% | 0% | 0% / 0% / 0% |
+| random projector | 96% | 10% | 2% / 10% / 14% |
+| step0（作为 previous-best 对照） | 94% | 8% | 2% / 6% / 16% |
+
+2,000 次 paired bootstrap 的 all-sample click-in-box CI：vision−blind 为 `[-16,+2]` 个百分点，vision−shuffled 为 `[0,+10]`，trained−random_projector 为 `[-16,+2]`。因此正确图片没有显著优于 blind、shuffle 或随机 projector，且训练后格式解析率从 step0 的 94% 降至 6%。判定是 `valid_result_negative`，`capability_claim_allowed=false`；不能把它叫作视觉能力，也不继续无条件延长同一 V2 arm。
+
+这次复核保留了三个不可混淆的事实：训练没坏（health 通过）、teacher-forced loss 能区分 shuffle（模型在训练答案上看到了差异）、自由生成没有 grounding（正确图反而比 blind 差）。此前三次 dtype/变量顺序失败作为 immutable engineering artifacts 保存，不能混入能力排行榜。后续正式训练在每个健康节点之外，必须运行同合同的多任务 eval（ScreenSpot、TextVQA、DocVQA、OCRBench 和 language-retention），并画出固定 examples-seen 增长曲线。

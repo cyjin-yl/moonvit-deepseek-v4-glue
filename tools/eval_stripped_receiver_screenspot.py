@@ -85,10 +85,13 @@ def main() -> None:
     ).to(device).eval()
     model.requires_grad_(False)
     projector = PatchMergerProjector.from_pretrained(args.projector_dir, device=device, dtype=dtype).eval()
+    projector_dtype = next(projector.parameters()).dtype
     text_config = config.get("text_config") or config
     receiver_width = int(text_config.get("hidden_size") or model.config.hidden_size)
     receiver = FixedGroupedReceiverAdapter(4096, receiver_width, seed=20260806).to(device) if receiver_width != 4096 else None
-    random_projector = seeded_projector(projector.config, seed=args.random_seed).to(device).eval()
+    random_projector = seeded_projector(
+        projector.config, seed=args.random_seed
+    ).to(device=device, dtype=projector_dtype).eval()
     cache = FeatureCache(args.feature_cache)
     cache_records = {str(row["id"]): row for row in cache.manifest.get("records", [])}
     missing = [str(row["sample_id"]) for row in samples if str(row["sample_id"]) not in cache_records]
@@ -97,7 +100,6 @@ def main() -> None:
 
     rows_by_condition = {name: [] for name in ("vision", "blind", "shuffled", "random_projector")}
     all_rows = []
-    projector_dtype = next(projector.parameters()).dtype
     for index, sample in enumerate(samples):
         sample_id = str(sample["sample_id"])
         shuffled_id = mapping[sample_id]

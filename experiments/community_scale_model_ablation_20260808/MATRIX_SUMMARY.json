@@ -78,75 +78,181 @@
           "class": "evaluation_failed",
           "artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v2_attempt1/FAILURE.json",
           "reason": "ScreenSpot evaluator failed before producing valid rows: cached feature dtype float32 reached float16 projector (mat1 float != mat2 Half)"
+        },
+        {
+          "attempt": 2,
+          "class": "evaluation_failed",
+          "artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v2_attempt2/FAILURE.json",
+          "reason": "ScreenSpot retry3 failed after dtype repair"
+        },
+        {
+          "attempt": 3,
+          "class": "evaluation_failed",
+          "artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v2_attempt3/FAILURE.json",
+          "reason": "ScreenSpot retry4 failed before the final projector-dtype ordering fix; retained as an immutable engineering failure"
         }
       ],
-      "result": null,
-      "status": "failed_evaluation",
-      "attempts": 1,
+      "result": {
+        "evaluation": "formal_community_grounding_v1",
+        "dataset": "screenspot_glm50_v1",
+        "sample_count": 50,
+        "candidate_summary": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_screenspot_glm50_retry4/SUMMARY.json",
+        "formal_score": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_formal_score_retry4/SUMMARY.json",
+        "vision": {
+          "parse_rate": 0.06,
+          "click_in_box_all": 0.04,
+          "accuracy_at_50_all": 0.0,
+          "accuracy_at_100_all": 0.02,
+          "accuracy_at_200_all": 0.02
+        },
+        "blind": {
+          "parse_rate": 1.0,
+          "click_in_box_all": 0.10,
+          "accuracy_at_50_all": 0.02,
+          "accuracy_at_100_all": 0.06,
+          "accuracy_at_200_all": 0.18
+        },
+        "shuffled": {
+          "parse_rate": 0.06,
+          "click_in_box_all": 0.0,
+          "accuracy_at_50_all": 0.0,
+          "accuracy_at_100_all": 0.0,
+          "accuracy_at_200_all": 0.0
+        },
+        "random_projector": {
+          "parse_rate": 0.96,
+          "click_in_box_all": 0.10,
+          "accuracy_at_50_all": 0.02,
+          "accuracy_at_100_all": 0.10,
+          "accuracy_at_200_all": 0.14
+        },
+        "paired_ci95": {
+          "vision_minus_blind_click_in_box_all": [-0.16, 0.02],
+          "vision_minus_shuffled_click_in_box_all": [0.0, 0.10],
+          "trained_minus_random_projector_click_in_box_all": [-0.16, 0.02]
+        },
+        "decision": "failed_capability_screen",
+        "capability_claim_allowed": false,
+        "deepseek_transfer_label": "transferable_with_runtime_validation",
+        "interpretation": "The community-format evaluator completed, but correct images were worse than blind and random_projector on all-sample click accuracy and parse rate. The positive teacher-forced shuffle loss delta is therefore not sufficient evidence of grounding."
+      },
+      "status": "valid_result_negative",
+      "attempts": 4,
       "current_attempt": {
-        "attempt": 1,
-        "status": "failed_evaluation",
+        "attempt": 4,
+        "status": "valid_result_negative",
         "contract_examples_seen": 57600,
         "optimizer_steps_requested": 900,
-        "optimizer_step_stopped": null,
-        "examples_seen_stopped": null,
-        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_screenspot_glm50",
-        "failure_artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v2_attempt1/FAILURE.json",
-        "failure_class": "evaluation_failed",
+        "optimizer_steps_completed": 900,
+        "examples_seen": 57600,
+        "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_train_57600_retry1",
+        "evaluation_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_screenspot_glm50_retry4",
+        "formal_score_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_formal_score_retry4",
+        "failure_class": null,
         "capability_claim_allowed": false
       }
     },
     "qwen35_4b_v1_stripped": {
-      "failure_history": [],
+      "failure_history": [
+        {
+          "attempt": 1,
+          "class": "numerical_nan_projector_gradient",
+          "artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen35_4b_v1_stripped_attempt1/FAILURE.json",
+          "reason": "step 1 health guard stopped training: projector gradient norm was NaN while CE remained finite; failure checkpoint and rollback state were saved"
+        }
+      ],
       "result": null,
-      "status": "queued_after_qwen7",
+      "status": "failed_runtime",
       "attempts": 1,
       "current_attempt": {
         "attempt": 1,
+        "status": "failed_runtime",
         "contract_examples_seen": 57600,
+        "optimizer_steps_requested": 900,
+        "optimizer_step_stopped": null,
+        "examples_seen_stopped": null,
         "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen35_4b_v1_train_57600",
-        "native_vision_stripped": true
+        "failure_artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen35_4b_v1_stripped_attempt1/FAILURE.json",
+        "failure_class": "numerical_nan_projector_gradient",
+        "capability_claim_allowed": false
       }
     },
     "qwen35_4b_v2_stripped": {
-      "failure_history": [],
+      "failure_history": [
+        {
+          "attempt": 1,
+          "class": "numerical_nan_projector_gradient",
+          "artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen35_4b_v2_stripped_attempt1/FAILURE.json",
+          "reason": "step 1 health guard stopped training: projector gradient norm was NaN while CE remained finite; failure checkpoint and rollback state were saved"
+        }
+      ],
       "result": null,
-      "status": "queued_after_qwen7",
+      "status": "failed_runtime",
       "attempts": 1,
       "current_attempt": {
         "attempt": 1,
+        "status": "failed_runtime",
         "contract_examples_seen": 57600,
+        "optimizer_steps_requested": 900,
+        "optimizer_step_stopped": null,
+        "examples_seen_stopped": null,
         "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen35_4b_v2_train_57600",
-        "native_vision_stripped": true
+        "failure_artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen35_4b_v2_stripped_attempt1/FAILURE.json",
+        "failure_class": "numerical_nan_projector_gradient",
+        "capability_claim_allowed": false
       }
     },
     "qwen35_9b_v1_stripped": {
-      "failure_history": [],
+      "failure_history": [
+        {
+          "attempt": 1,
+          "class": "numerical_nan_projector_gradient",
+          "artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen35_9b_v1_stripped_attempt1/FAILURE.json",
+          "reason": "step 1 health guard stopped training: projector gradient norm was NaN while CE remained finite; failure checkpoint and rollback state were saved"
+        }
+      ],
       "result": null,
-      "status": "queued_after_qwen35_4b",
+      "status": "failed_runtime",
       "attempts": 1,
       "current_attempt": {
         "attempt": 1,
+        "status": "failed_runtime",
         "contract_examples_seen": 57600,
+        "optimizer_steps_requested": 900,
+        "optimizer_step_stopped": null,
+        "examples_seen_stopped": null,
         "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen35_9b_v1_train_57600",
-        "native_vision_stripped": true,
-        "hardware_note": "full contract attempt; may end as immutable resource failure if V100 cannot hold the receiver"
+        "failure_artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen35_9b_v1_stripped_attempt1/FAILURE.json",
+        "failure_class": "numerical_nan_projector_gradient",
+        "capability_claim_allowed": false
       }
     },
     "qwen35_9b_v2_stripped": {
-      "failure_history": [],
+      "failure_history": [
+        {
+          "attempt": 1,
+          "class": "numerical_nan_projector_gradient",
+          "artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen35_9b_v2_stripped_attempt1/FAILURE.json",
+          "reason": "step 1 health guard stopped training: projector gradient norm was NaN while CE remained finite; failure checkpoint and rollback state were saved"
+        }
+      ],
       "result": null,
-      "status": "queued_after_qwen35_4b",
+      "status": "failed_runtime",
       "attempts": 1,
       "current_attempt": {
         "attempt": 1,
+        "status": "failed_runtime",
         "contract_examples_seen": 57600,
+        "optimizer_steps_requested": 900,
+        "optimizer_step_stopped": null,
+        "examples_seen_stopped": null,
         "train_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen35_9b_v2_train_57600",
-        "native_vision_stripped": true,
-        "hardware_note": "full contract attempt; may end as immutable resource failure if V100 cannot hold the receiver"
+        "failure_artifact": "experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen35_9b_v2_stripped_attempt1/FAILURE.json",
+        "failure_class": "numerical_nan_projector_gradient",
+        "capability_claim_allowed": false
       }
     }
   },
   "schema_version": "community-matrix-summary-v1",
-  "updated_at": "2026-08-08T12:32:27.423531+08:00"
+  "updated_at": "2026-08-08T13:26:00.701522+08:00"
 }

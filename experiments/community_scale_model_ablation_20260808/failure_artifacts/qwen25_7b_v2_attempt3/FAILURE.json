@@ -1,0 +1,18 @@
+{
+  "schema_version": "community-matrix-failure-v1",
+  "captured_at": "2026-08-08T13:26:00.701522+08:00",
+  "git_sha": "04a0110af3b53fa98f395c28eeb37ad6647b7469",
+  "arm": "qwen25_7b_v2",
+  "attempt": 3,
+  "contract_examples_seen": 57600,
+  "optimizer_steps_requested": 900,
+  "stop_optimizer_step": null,
+  "examples_seen": null,
+  "run_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_screenspot_glm50_retry4",
+  "failure_class": "evaluation_failed",
+  "capability_claim_allowed": false,
+  "reason": "ScreenSpot candidate failed after both dtype boundaries were repaired",
+  "raw_artifacts": [
+    "qwen25_7b_v2_screenspot_retry4.log"
+  ]
+}
