@@ -1,0 +1,26 @@
+{
+  "schema_version": "community-transferable-variable-contract-v1",
+  "arm": "qwen25_7b_v2_lr5e5_short_probe",
+  "status": "preregistered_before_results",
+  "hypothesis": "The community LR 5e-4 update may be too large for the frozen Qwen2.5-7B receiver interface; 5e-5 may preserve generation format and improve correct-image attribution.",
+  "receiver": "Qwen2.5-7B-Instruct",
+  "tower": "MoonViT-V2 exact K3 cache",
+  "projector": "kimi_k3_v2 canonical 4096 projector",
+  "trainable": "projector_only",
+  "matched_control": "qwen25_7b_v2 at lr=5e-4, same step0/order/cache/receiver",
+  "variable": {"learning_rate": 0.00005},
+  "fixed_contract": {
+    "seed": 20260805,
+    "micro_batch_size": 1,
+    "gradient_accumulation_steps": 64,
+    "max_image_side": 448,
+    "dtype": "float16 receiver / float32 projector",
+    "examples_seen_screen": 6400,
+    "optimizer_steps_screen": 100,
+    "evaluation": "screenspot_glm50_v1; vision/blind/shuffled/random_projector; 2000 paired bootstrap; seed 20260805",
+    "promotion": "extend to 57600 examples seen only if vision-minus-blind and vision-minus-shuffled causal lower bounds are positive and parse rate does not regress"
+  },
+  "failure_policy": "Any health guard, NaN/Inf, or causal-screen failure is an immutable negative result; do not extend training.",
+  "deepseek_transfer_label": "transferable_with_runtime_validation",
+  "raw_output_root": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_v2_lr5e5_short_probe"
+}
