@@ -56,7 +56,8 @@ from moonvit_glue import (
 from moonvit_glue.screenspot_runtime import validate_feature_cache_interface
 from moonvit_glue.metrics import score_record, summarize
 from tools_common import build_prompt_ids, encode_image, load_records
-from training_protocol import records_manifest_sha256
+from training_protocol import make_derangements, records_manifest_sha256
+from moonvit_glue.proxy_receiver import FixedGroupedReceiverAdapter
 
 
 def parse_args() -> argparse.Namespace:
@@ -76,6 +77,8 @@ def parse_args() -> argparse.Namespace:
                         choices=["eager", "sdpa", "flash_attention_2"])
     parser.add_argument("--projector", help="Directory with projector_config.json + projector.safetensors")
     parser.add_argument("--random-projector", action="store_true", help="Use a freshly initialized projector (smoke runs)")
+    parser.add_argument("--canonical-projector", action="store_true", help="Load a canonical 4096-wide projector and apply the fixed receiver adapter.")
+    parser.add_argument("--receiver-adapter-seed", type=int, default=20260806)
     parser.add_argument(
         "--projector-variant",
         choices=["legacy_pre_norm", "kimi_k3_v2"],
@@ -110,6 +113,7 @@ def parse_args() -> argparse.Namespace:
                         help="HF repo id; the report JSON is uploaded to eval/<tag>/")
     parser.add_argument("--run-tag", default=None, help="HF path segment; default UTC timestamp")
     parser.add_argument("--blind", action="store_true", help="Also score every record without its image")
+    parser.add_argument("--shuffled", action="store_true", help="Generate with a seeded derangement of the images while scoring original answers.")
     parser.add_argument("--shuffle-loss", action="store_true", help="Teacher-forced true-vs-shuffled image loss")
     parser.add_argument("--shuffle-repeats", type=int, default=3)
     parser.add_argument("--seed", type=int, default=0)
@@ -191,9 +195,18 @@ def build_model(args: argparse.Namespace, feature_cache=None):
     projector.to(device=device, dtype=dtype)
 
     pad_token_id = tokenizer.pad_token_id if tokenizer.pad_token_id is not None else 0
+    receiver_width = int(getattr(language_model.config, "hidden_size", 0))
+    receiver_adapter = None
+    if args.canonical_projector and receiver_width != int(projector.config.language_width):
+        receiver_adapter = FixedGroupedReceiverAdapter(
+            int(projector.config.language_width),
+            receiver_width,
+            seed=args.receiver_adapter_seed,
+        ).to(device=device)
     model = VisionCausalLM(
         language_model=language_model,
         projector=projector,
+        receiver_adapter=receiver_adapter,
         placeholder_token_id=placeholder_token_id,
         backbone_kind="auto",
         freeze_language_model=True,
@@ -240,6 +253,8 @@ def build_metadata(
         "vision_revision": getattr(args, "moonvit_revision", None),
         "projector": args.projector or "random",
         "projector_variant": getattr(args, "projector_variant", None),
+        "canonical_projector": bool(getattr(args, "canonical_projector", False)),
+        "receiver_adapter_seed": getattr(args, "receiver_adapter_seed", None),
         "random_projector_seed": getattr(args, "random_projector_seed", None),
         "data": args.data.name,
         "limit": args.limit,
@@ -300,12 +315,14 @@ def feature_groups_for(args, model, moonvit, device, record, feature_cache):
 
 
 def run_generation(
-    args, model, moonvit, tokenizer, placeholder_token_id, device, records, feature_cache=None
+    args, model, moonvit, tokenizer, placeholder_token_id, device, records,
+    feature_cache=None, image_records=None,
 ):
     scored = []
     for index, record in enumerate(records):
+        image_record = record if image_records is None else image_records[index]
         feature_groups = feature_groups_for(
-            args, model, moonvit, device, record, feature_cache
+            args, model, moonvit, device, image_record, feature_cache
         )
         input_ids = build_prompt_ids(
             tokenizer, args.prompt_template, record["question"], placeholder_token_id, device
@@ -437,6 +454,13 @@ def main() -> None:
         )
         report = {"mode": "shuffle_loss", "summary": summary, "records": rows}
     else:
+        shuffled_records = None
+        if args.shuffled:
+            shuffled_records = make_derangements(
+                records,
+                repeats=1,
+                seed=args.seed + 1_000_003,
+            )[0]
         scored = run_generation(
             args,
             model,
@@ -446,8 +470,14 @@ def main() -> None:
             device,
             records,
             feature_cache,
+            image_records=shuffled_records,
         )
-        report = {"mode": "generation", "summary": summarize(scored), "records": scored}
+        report = {
+            "mode": "generation",
+            "condition": "shuffled" if args.shuffled else "vision",
+            "summary": summarize(scored),
+            "records": scored,
+        }
         if args.blind:
             blind_records = [
                 {**record, "image": None, "question": record["question"]} for record in records
