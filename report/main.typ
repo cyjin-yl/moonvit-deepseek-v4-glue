@@ -21,13 +21,14 @@
 #outline()
 #pagebreak()
 
-= 当前状态（2026-08-08，唯一 live 入口）
+= 归档状态（2026-08-08，历史参考）
 
-当前唯一权威状态页是 `docs/current-status.md`，运行入口审计是
+归档后的唯一权威总账是 `docs/FINAL_ARCHIVE_REPORT.md`；状态页、运行入口审计和
 `docs/runtime-entrypoint-audit.md`，架构身份矩阵是
 `docs/architecture-matrix.md`。最终目标固定为
 `MoonViT-V2 → 4096 维 projector → DeepSeek-V4-Flash-0731`。
-Qwen2.5-3B 只承担冻结纯文本 receiver 的低成本代理角色。
+Qwen2.5-3B 只承担冻结纯文本 receiver 的低成本代理角色。本文后续出现的“下一步”、
+“queued”或 Gate D 运行顺序均是历史计划，不代表当前仍在执行。
 
 当前没有可用 VLM，也没有 checkpoint 获得晋升。Qwen2.5-7B 已完成完整 1,272 条
 ScreenSpot：vision/blind/shuffled click-in-box 为 `3.30%/3.46%/2.67%`，

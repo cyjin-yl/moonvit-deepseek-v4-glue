@@ -2,9 +2,11 @@
 
 本项目已停止活跃开发并准备归档。V100 代理矩阵没有 external MoonViT projector 通过正确图片优于 blind/shuffled 的能力门槛；我们负担不起社区 GLM-5.2V 所需的 Blackwell 级硬件，完整 DeepSeek-V4-Flash-0731 Gate D 也未通过。外部 WebBrain 包只作为未核验工程参考，不能替代我们的真实能力证据。完整总账见 docs/FINAL_ARCHIVE_REPORT.md。
 
-# 当前工程状态与下一步
+# 历史状态记录（归档后不再作为执行计划）
 
-更新日期：2026-08-08
+更新日期：2026-08-08；以下内容是归档前的时间线，最终结论以 `docs/FINAL_ARCHIVE_REPORT.md` 为准。
+
+> **归档后的最终权威状态：** 软件 glue、缓存、训练健康止损和评测合同已复现；没有 external MoonViT projector 通过 `vision > blind` 与 `vision > shuffled` 的真实能力门槛。Qwen2.5-7B exact V2 的完整 57,600-example 结果为 negative；Qwen3.5 native VLM 只是独立阳性对照；DeepSeek Gate D 为 NO-GO。下面所有“下一步/queued/running”均为历史计划，不应再执行。
 
 > **live matrix execution (2026-08-08):** qwen25_7b_v1 retry4 已加载全部 339 个 Qwen2.5-7B 分片并越过此前 step-2 NaN 点，但在 optimizer step 33（2,112 examples seen）触发冻结的 RMS critical guard：receiver RMS ratio `50.7792× > 50×`，relative-spread ratio `0.4593`，CE 仍 finite（`3.4664`）。因此 FP32 projector/AdamW 修复得到“数值稳定到 step32”，但 V1 社区规模臂正式记为 `failed_health_guard`，不能写成视觉能力结果。完整 failure checkpoint、optimizer/RNG、health/log、SHA 与失败原因已封存于 `experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v1_retry4/`，MATRIX_SUMMARY 已登记。Qwen2.5-7B V2 的 57,600 条 MoonViT-V2 cache 已于 06:36:58 完成：`cached=57600, failed=0, shards=75, tower_forwards=29999, reused_by_image_sha256=27601`，manifest records SHA 为 `055d7f9d…dcc1ba7`。V2 训练已启动并在 step560（35,840 examples seen）仍 finite、无 NaN/Inf、未触发 guard；projector/receiver RMS ratio 约 `1.012/1.081`，spread ratio 约 `0.949/0.946`。这只是健康证据，能力仍待多任务评测。后续每个固定节点将同时记录 ScreenSpot、TextVQA、DocVQA、OCRBench 和语言保持曲线；Qwen3.5/controls 继续等待 GPU 排程。
 

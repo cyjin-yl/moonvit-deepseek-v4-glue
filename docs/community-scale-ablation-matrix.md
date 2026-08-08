@@ -2,8 +2,8 @@
 
 The registered matrix attempt set is archived. The completion rule was satisfied for the 11 MATRIX_SUMMARY rows by a valid result or immutable failure artifact, but this does not mean every receiver completed the full community two-epoch budget. Qwen2.5-7B V2 is the only stable external arm that reached 57,600 examples; all external arms failed the visual capability gate.
 
-This is the complete comparison table for the current V100 phase. A row is a planned model condition; it is not a
-result until its checkpoint has been trained and evaluated under the same contract.
+This is the archived comparison table for the V100 phase. The registration table is retained for provenance; the
+status column below is the final outcome, not a live queue. No row authorizes new execution after this archive.
 
 ## 项目级完成标准：完整对比矩阵（2026-08-08 修订）
 
@@ -18,18 +18,18 @@ result until its checkpoint has been trained and evaluated under the same contra
 | ID | Receiver condition | Visual path | Trainable part | Role | Current status |
 |---|---|---|---|---|---|
 | `qwen25_05b_historical` | Qwen2.5-0.5B pure text | MoonViT V1/V2 | projector only | old toy capacity reference | archived; not community-comparable |
-| `qwen25_3b_v1` | Qwen2.5-3B-Instruct pure text | MoonViT V1 | projector only, canonical 4096 + fixed receiver adapter | official 3B proxy baseline | queued |
-| `qwen25_3b_v2` | Qwen2.5-3B-Instruct pure text | MoonViT V2 | projector only, canonical 4096 + fixed receiver adapter | official 3B proxy baseline | queued |
-| `qwen25_7b_v1` | Qwen2.5-7B-Instruct pure text | MoonViT V1 | projector only, canonical 4096 + fixed receiver adapter | first active capacity run | running after cache |
-| `qwen25_7b_v2` | Qwen2.5-7B-Instruct pure text | MoonViT V2 | projector only, canonical 4096 + fixed receiver adapter | matched tower control | queued |
-| `qwen35_4b_v1_stripped` | Qwen3.5-4B language receiver, native vision disabled | MoonViT V1 | projector only | tests whether visual pretraining prior helps read an external tower | queued |
-| `qwen35_4b_v2_stripped` | Qwen3.5-4B language receiver, native vision disabled | MoonViT V2 | projector only | matched V2 control | queued |
-| `qwen35_9b_v1_stripped` | Qwen3.5-9B language receiver, native vision disabled | MoonViT V1 | projector only | larger receiver capacity probe | queued if V100 memory permits |
-| `qwen35_9b_v2_stripped` | Qwen3.5-9B language receiver, native vision disabled | MoonViT V2 | projector only | matched V2 control | queued if V100 memory permits |
+| `qwen25_3b_v1` | Qwen2.5-3B-Instruct pure text | MoonViT V1 | projector only, canonical 4096 + fixed receiver adapter | official 3B proxy baseline | archived; no full 57.6k run |
+| `qwen25_3b_v2` | Qwen2.5-3B-Instruct pure text | MoonViT V2 | projector only, canonical 4096 + fixed receiver adapter | official 3B proxy baseline | archived; short/full diagnostic only |
+| `qwen25_7b_v1` | Qwen2.5-7B-Instruct pure text | MoonViT V1 | projector only, canonical 4096 + fixed receiver adapter | first active capacity run | failed_health_guard |
+| `qwen25_7b_v2` | Qwen2.5-7B-Instruct pure text | MoonViT V2 | projector only, canonical 4096 + fixed receiver adapter | matched tower control | valid_result_negative |
+| `qwen35_4b_v1_stripped` | Qwen3.5-4B language receiver, native vision disabled | MoonViT V1 | projector only | tests whether visual pretraining prior helps read an external tower | failed_runtime |
+| `qwen35_4b_v2_stripped` | Qwen3.5-4B language receiver, native vision disabled | MoonViT V2 | projector only | matched V2 control | failed_runtime |
+| `qwen35_9b_v1_stripped` | Qwen3.5-9B language receiver, native vision disabled | MoonViT V1 | projector only | larger receiver capacity probe | failed_runtime/resource limit |
+| `qwen35_9b_v2_stripped` | Qwen3.5-9B language receiver, native vision disabled | MoonViT V2 | projector only | matched V2 control | failed_runtime/resource limit |
 | `qwen35_4b_native` | Qwen3.5-4B native VLM intact | native Qwen vision tower + native merger | frozen positive control | confirms the benchmark can see a working VLM | separate leaderboard |
-| `qwen35_9b_native` | Qwen3.5-9B native VLM intact | native Qwen vision tower + native merger | frozen positive control | larger native-VLM reference | separate leaderboard if runnable |
-| `qwen14b_capacity` | approximately 14B receiver | matched external MoonViT V1/V2 | projector only | capacity-only probe | only if a local checkpoint and V100 memory permit |
-| `deepseek_v4_flash` | DeepSeek-V4-Flash-0731 real receiver | matched selected MoonViT tower | projector only | final target | blocked by real-weight Gate D; no paid run |
+| `qwen35_9b_native` | Qwen3.5-9B native VLM intact | native Qwen vision tower + native merger | frozen positive control | larger native-VLM reference | not run; resource limit |
+| `qwen14b_capacity` | approximately 14B receiver | matched external MoonViT V1/V2 | projector only | capacity-only probe | not run; resource limit |
+| `deepseek_v4_flash` | DeepSeek-V4-Flash-0731 real receiver | matched selected MoonViT tower | projector only | final target | blocked; Gate D NO-GO, no paid run |
 
 The native Qwen VLM rows are positive controls, never external-MoonViT projector results. The stripped-native rows use
 the Qwen language receiver and its tokenizer only; they bypass Qwen's visual tower, merger and multimodal forward.

@@ -4,9 +4,16 @@ The active research line is discontinued and this repository is being archived. 
 
 # Handoff
 
-> **Live run (2026-08-08 03:26–06:38 CST):** Qwen2.5-7B V1 retry4 passed the former FP16 optimizer NaN at step2, then stopped at step33 (2,112 examples seen) on the frozen receiver-RMS critical guard: `50.7792× > 50×`; CE was still finite at `3.4664` and spread ratio was `0.4593`. This is an immutable `failed_health_guard` matrix result, not a visual-capability result. The full failure checkpoint and raw health/log/SHA artifact is `experiments/community_scale_model_ablation_20260808/failure_artifacts/qwen25_7b_v1_retry4/FAILURE.json`; the matrix summary now records it. Qwen2.5-7B V2's full 57,600-record MoonViT-V2 cache is now complete with `failed=0`, 75 shards, 29,999 unique tower forwards, and 27,601 same-image aliases. The follow-on is building the fixed ScreenSpot50 V2 cache; training has not started yet. The other receiver arms remain queued behind the GPU chain.
+## Final authority (2026-08-08)
 
-## Current authority (2026-08-08)
+No further execution is authorized by this archived handoff. The final result is in
+`docs/FINAL_ARCHIVE_REPORT.md`: Qwen2.5-7B exact V2 reached 57,600 examples and was
+numerically healthy, but its free-generation ScreenSpot click rate was 3.30% for
+vision versus 3.46% blind. No external MoonViT projector passed the causal gate,
+and DeepSeek-V4-Flash-0731 Gate D remains NO-GO. The rest of this file is a
+historical execution log and has no live queue authority.
+
+## Archived historical snapshot (no execution authority)
 
 The trainer has since been repaired to save full healthy projector/optimizer/RNG checkpoints at the frozen early-node schedule and to write `STOP_REASON.json` on guard failure. The targeted checkpoint/health/projector tests pass (`12 passed` with `PYTHONPATH=src:tools`).
 
