@@ -1,0 +1,34 @@
+{
+  "schema_version": "project-status-external-discussion-v1",
+  "recorded_on": "2026-08-08",
+  "repository": "cyjin-yl/moonvit-deepseek-v4-glue",
+  "external_reference": {
+    "repository": "webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4",
+    "discussion_url": "https://huggingface.co/webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4/discussions/3",
+    "discussion_scope": "request for exact-package GPU/image validation evidence and reproducible raw outputs"
+  },
+  "our_repository_state": {
+    "latest_commit": "9fcdcfa",
+    "matrix_status": "complete_community_comparable_matrix",
+    "external_moonvit_projector_capability_gate": "no_pass",
+    "deepseek_gate_d": "NO-GO",
+    "deepseek_full_weight_image_generation": "not_run",
+    "deepseek_full_weight_projector_backward": "not_run",
+    "qwen_proxy_summary": "Qwen2.5-7B V1/V2/K26 external projector arms did not show correct-image superiority over blind and shuffled; top-layer LoRA short probe was also negative",
+    "k26_tower_interface": "real finite feature extraction and 50-image cache passed; this is not a visual-language capability result",
+    "native_vlm_positive_control": "passed as an independent evaluator sanity/upper-bound control; not an external MoonViT projector result"
+  },
+  "evidence_boundary": {
+    "webbrain_artifact": "projector/tower files and provenance hashes are public",
+    "webbrain_training_claim": "self-described as trained projector; no public training trace or loss/checkpoint log located",
+    "webbrain_exact_package_validation": "manifest states gpu_validated_for_this_0731_package=false; README says fresh full-GPU/image smoke has not been rerun",
+    "webbrain_public_capability_benchmark": "no fixed ScreenSpot, TextVQA, DocVQA, OCRBench, vision-minus-blind, or vision-minus-shuffled results located",
+    "allowed_claim": "engineering reference and unverified experimental vision overlay",
+    "disallowed_claim": "that the authors fabricated training, or that the package has proven usable visual ability"
+  },
+  "next_action": {
+    "priority": "implement optional DeepSeek-only OOV image sentinel plus deterministic 64-ID palette-cycle routing bridge",
+    "local_gate": "tiny/local Gate D forward, finite input gradient, checkpoint round-trip, greedy image smoke",
+    "hardware_boundary": "no paid server, cloud GPU, or full 0731 run without explicit authorization"
+  }
+}

@@ -705,3 +705,14 @@ paired click-in-box CI 为 vision−blind `[-16,-2] pp`、vision−shuffled `[0,
 WebBrain 的 projector 张量形状 `pre_norm → 4608×4608 → GELU → 4608×4096` 与我们 K26 Qwen projector 的 40,119,040 参数形状相同。关键差异不是“又一个更宽的 MLP”，而是 DeepSeek 专用的输入路由：WebBrain 使用词表外 image sentinel `129280`，在 prefill 期间按照图像位置循环替换为固定 64-ID palette；我们当前 `merge.py` 仍把视觉位置的 `routing_input_ids` 重复成 placeholder ID，没有这个 palette bridge。因此 K26 在 Qwen 上 step13 塌缩，并不能反驳 WebBrain 的 DeepSeek-specific 路径。
 
 完整组件 SHA、来源和判断写入 `experiments/external_model_audits/glm52v_webbrain_deepseek_20260808.json`。下一条最短路径是实现可选的 DeepSeek-only `palette_cycle`/OOV-sentinel bridge，先用 tiny/local Gate D 做 forward、input-gradient、checkpoint round-trip 和生成 smoke；不把 WebBrain projector 当作 Qwen 结果，也不自动下载/运行其约 0731 全量权重或租用付费 GPU。
+### 外部讨论与项目状态登记（2026-08-08）
+
+针对 [WebBrain DeepSeek-V4-Flash-0731-Vision 的公开讨论](https://huggingface.co/webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4/discussions/3)，本项目状态固定如下：
+
+- 我们已经完成社区可比的 receiver×vision 矩阵和独立 verifier；目前没有 external MoonViT projector arm 通过“vision 显著优于 blind 且显著优于 shuffled”的能力门槛。
+- Kimi K2.6/MoonViT-3d 的真实 forward 与 50 条缓存接口通过，只证明视觉特征可提取，不证明语言接收器会识图。
+- Qwen2.5-7B 的 V1、V2、K26 以及顶部 LoRA 结果均未形成可用 grounding；K26 arm 还在 step13 触发表征塌缩，未进入生成评测。
+- 原生 Qwen VLM 只作为独立阳性对照，说明评测链路和视觉任务本身可以产生正结果，不能并入 external MoonViT projector 排名。
+- DeepSeek-V4-Flash-0731 的完整真实权重 image forward/backward、FP4/FP8 输入梯度、checkpoint 恢复和生成仍未在本地执行，Gate D 继续为 'NO-GO'。
+
+对 WebBrain 的证据等级也固定为：公开了 projector/vision 权重与 provenance，属于高价值工程参考；但 manifest 明确 'gpu_validated_for_this_0731_package=false'，且没有公开训练轨迹或固定视觉因果 benchmark。因此我们可以要求其补充验证，但不能声称作者没有训练或存在造假。完整状态记录见 experiments/external_model_audits/webbrain_discussion3_status_20260808.json。

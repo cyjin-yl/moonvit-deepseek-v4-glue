@@ -2279,3 +2279,8 @@ OCRBench/language-retention 的节点曲线。健康指标、loss 或 teacher-fo
 #link("https://huggingface.co/webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4")[WebBrain DeepSeek-V4-Flash-0731-Vision] 发布了训练好的 40,119,040 参数、4096-wide projector 与 SGLang glue。其 projector 形状与本项目 K26 Qwen projector 相同；关键差异是词表外 image sentinel `129280` 加 prefill 期间固定 64-ID palette-cycle routing。我们当前 DeepSeek merge 仍重复 placeholder routing ID，尚无该 bridge。WebBrain 自己的 manifest 标注 `gpu_validated_for_this_0731_package=false`，也未给出 ScreenSpot/TextVQA/DocVQA/OCRBench 或 blind/shuffled 结果；因此它是高优先级接口参考，不是已验证能力上界。
 
 下一步实现可选的 DeepSeek-only `palette_cycle`/OOV-sentinel bridge，先通过本地 tiny Gate D 的 forward、input-gradient、checkpoint round-trip 和 greedy image smoke，再考虑任何付费硬件。不得把 WebBrain projector 当作 Qwen 结果，也不得把其 stale deployment checkbox 当成当前 0731 包已完成 GPU 验证。
+#heading[外部讨论后的状态边界]
+
+已登记 #link("https://huggingface.co/webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4/discussions/3")[WebBrain 公开讨论]。本项目的社区可比矩阵已完成，但没有 external MoonViT projector 通过 vision 显著优于 blind 且显著优于 shuffled 的能力门槛；Kimi K2.6/MoonViT-3d 的 forward/cache 只证明特征接口。DeepSeek 完整权重 image forward/backward、FP4/FP8 输入梯度、checkpoint round-trip 与生成仍未执行，Gate D 维持 'NO-GO'。
+
+WebBrain 的公开 projector/vision 文件和 provenance 是有价值的工程参考，但 VISION_ADAPTER_MANIFEST.json 明确 gpu_validated_for_this_0731_package=false，且未提供固定视觉因果 benchmark 或训练轨迹。可公开要求补充复现证据，不应据此指控其未训练或造假。机器可读登记位于 experiments/external_model_audits/webbrain_discussion3_status_20260808.json。

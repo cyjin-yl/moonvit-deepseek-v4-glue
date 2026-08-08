@@ -322,3 +322,10 @@ Baseten 的 [GLM-5.2V model card](https://huggingface.co/baseten/GLM-5.2-Vision-
 WebBrain 的 [DeepSeek-V4-Flash-0731-Vision card](https://huggingface.co/webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4) 更直接暴露了我们遗漏的 target-specific 接口：其 projector 为 `pre_norm → Linear(4608,4608) → GELU → Linear(4608,4096)`，正好是 40,119,040 参数；但 image slot 使用词表外 sentinel `129280`，prefill 时再以固定 64-ID palette 按位置循环替换，decode 恢复普通 token route。我们当前 `merge.py` 只重复 placeholder routing ID。于是 K26 Qwen step13 的塌缩不能作为 DeepSeek path 的否证，Qwen 与 DeepSeek 的失败机制必须分开。
 
 这会把下一项研究从“继续调 Qwen projector”改成一个可证伪的接口变量：实现可选 `palette_cycle`/OOV-sentinel bridge，先跑 tiny/local DeepSeek Gate D（forward、input dgrad、save/resume、greedy image smoke），再决定是否值得申请付费硬件。WebBrain 没有公开 ScreenSpot、TextVQA、DocVQA、OCRBench 或 paired blind/shuffle CI，且 manifest 写明当前 0731 包 `gpu_validated_for_this_0731_package=false`，所以它是工程参考，不是已经通过我们能力门槛的外部 baseline。
+## 外部讨论后的证据边界（2026-08-08）
+
+已登记讨论链接：https://huggingface.co/webbrain-one/DeepSeek-V4-Flash-0731-Vision-NVFP4/discussions/3
+
+这次状态更新把三个层次分开：权重/代码发布、exact-package 工程验证、可归因视觉能力。WebBrain 有第一层的公开证据，但其 manifest 仍标记 'gpu_validated_for_this_0731_package=false'，没有第二层的当前包 GPU/image smoke 证据，也没有第三层的 ScreenSpot 或 vision-minus-blind/shuffled 结果。因而合理结论是“高价值、未核验的 DeepSeek 视觉 overlay”，不是“已经证明失败”，也不是“已经证明可用”。
+
+对本项目而言，K26 的有限视觉 feature forward 不是视觉能力；Qwen projector 的 collapse/negative grounding 结果不能直接外推到 WebBrain 的 DeepSeek-specific routing。后续应优先实现 OOV image sentinel 加 64-ID palette-cycle bridge，并继续将所有外部声明绑定到可复现的 raw artifact 和 paired benchmark。
