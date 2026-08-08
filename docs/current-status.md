@@ -691,4 +691,4 @@ paired click-in-box CI 为 vision−blind `[-16,-2] pp`、vision−shuffled `[0,
 
 ### Kimi K2.6/MoonViT-3d 版本回归状态
 
-社区同源塔已完成真实 forward：单张 ScreenSpot 图片输出 `(3354, 4, 1152)` 的有限特征（FP16 RMS 约 3.04），并在固定 50 条 `screenspot_glm50_v1` 上完成 50/50 cache、0 failures。这里修复了 loader 的 qkv 合同：配置字段是单头 qkv 宽度 1152，实际投影矩阵才是 3×1152；代码已由 commit `a6b4ee1` 推送。K26 的 Qwen2.5-7B projector-only 6400-example 训练 cache 正在生成，随后按同一 100-step health screen 和四条件 ScreenSpot 运行，结果出来前不预设 V1/V2 谁更好。
+社区同源塔已完成真实 forward：单张 ScreenSpot 图片输出 `(3354, 4, 1152)` 的有限特征（FP16 RMS 约 3.04），并在固定 50 条 `screenspot_glm50_v1` 上完成 50/50 cache、0 failures。这里修复了 loader 的 qkv 合同：配置字段是单头 qkv 宽度 1152，实际投影矩阵才是 3×1152；代码已由 commit `a6b4ee1` 推送。K26 的 Qwen2.5-7B projector-only cache 随后完成了 6,400/6,400、0 failures，但 100-step 训练在 step13 自动止损：relative spread 从 step1 的 0.092 降至约 0.03--0.04，projector RMS 从 0.20 升至 4.34，触发表征塌缩门槛。因此 K26 版本目前也没有视觉能力 benchmark 结果，正式状态是 `failed_evaluation`，不能把接口成功写成识图成功；失败日志和 health 原始数据由 immutable failure artifact 绑定。

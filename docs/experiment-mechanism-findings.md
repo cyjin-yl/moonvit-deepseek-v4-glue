@@ -310,3 +310,7 @@ Baseten 文章和 HF model card（见仓库报告中的直接链接）明确说�
 ## Kimi K2.6/MoonViT-3d 接口边界
 
 K26 视觉塔 forward 已真实输出 `(3354,4,1152)`，并完成 50 条固定 ScreenSpot cache；这证明“视觉特征能被提取和缓存”，不证明语言模型已经识图。只有对应 projector 训练后在自由生成中同时胜过 blind 和 shuffled，才可称为视觉能力。Kimi 自带 projector 的 7168 输出只适配 Kimi receiver，不能直接拿到 Qwen 或 GLM；当前 K26 arm 必须重新训练到 canonical 4096，再做四条件 benchmark。
+
+## K26 Qwen7 projector-only 的早期塌缩
+
+社区同源的 1152-d tower 并没有自动解决问题。对应 Qwen2.5-7B projector-only arm 在 step1 就出现 relative spread=`0.092`，随后约 `0.03--0.04`；projector output RMS 从 `0.20` 增至 `4.34`（step13），因此按预注册 guard 自动停止。训练虽未 NaN，不能继续用 CE loss 下降来掩盖 image-agnostic 轨迹。这个结果把“版本不对”从唯一解释降级为必要但不充分条件：V2/K26 都需要正确的视觉—语言目标、尺度控制和/或深层融合。该臂没有 ScreenSpot 能力分数，immutable failure artifact 是唯一有效结果。

@@ -1,0 +1,181 @@
+/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/cuda/__init__.py:1007: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:52<4:56:00, 52.54s/it]Loading weights:   1%|          | 2/339 [00:52<2:02:03, 21.73s/it]Loading weights:   1%|          | 3/339 [00:52<1:06:34, 11.89s/it]Loading weights:   1%|1         | 4/339 [00:52<40:24,  7.24s/it]  Loading weights:   1%|1         | 5/339 [00:53<26:04,  4.68s/it]Loading weights:   2%|1         | 6/339 [00:53<17:28,  3.15s/it]Loading weights:   2%|2         | 7/339 [00:53<12:05,  2.19s/it]Loading weights:   2%|2         | 8/339 [00:53<08:33,  1.55s/it]Loading weights:   3%|2         | 9/339 [00:53<06:05,  1.11s/it]Loading weights:   3%|2         | 10/339 [00:54<04:28,  1.22it/s]Loading weights:   3%|3         | 11/339 [00:54<03:20,  1.63it/s]Loading weights:   4%|3         | 12/339 [00:54<02:30,  2.17it/s]Loading weights:   4%|3         | 13/339 [00:54<02:02,  2.67it/s]Loading weights:  22%|##2       | 76/339 [00:56<00:09, 26.36it/s]Loading weights:  23%|##3       | 78/339 [00:56<00:10, 24.89it/s]Loading weights:  24%|##3       | 80/339 [00:56<00:11, 23.06it/s]Loading weights:  24%|##4       | 82/339 [00:56<00:11, 21.47it/s]Loading weights:  25%|##4       | 84/339 [00:56<00:12, 20.49it/s]Loading weights:  25%|##5       | 86/339 [00:56<00:13, 19.15it/s]Loading weights:  29%|##9       | 100/339 [00:57<00:15, 15.72it/s]Loading weights:  30%|###       | 102/339 [00:58<00:14, 15.88it/s]Loading weights:  33%|###3      | 112/339 [00:58<00:10, 22.67it/s]Loading weights:  34%|###3      | 115/339 [00:58<00:10, 21.27it/s]Loading weights:  35%|###4      | 118/339 [00:58<00:10, 20.54it/s]Loading weights:  36%|###5      | 121/339 [00:58<00:11, 19.14it/s]Loading weights:  36%|###6      | 123/339 [00:58<00:12, 17.89it/s]Loading weights:  37%|###6      | 125/339 [00:59<00:26,  8.20it/s]Loading weights:  37%|###7      | 127/339 [01:00<00:44,  4.76it/s]Loading weights:  38%|###7      | 128/339 [01:00<00:42,  4.96it/s]Loading weights:  38%|###8      | 129/339 [01:01<00:39,  5.38it/s]Loading weights:  38%|###8      | 130/339 [01:01<00:36,  5.77it/s]Loading weights:  41%|####      | 138/339 [01:01<00:23,  8.49it/s]Loading weights:  41%|####1     | 139/339 [01:02<00:23,  8.52it/s]Loading weights:  44%|####3     | 148/339 [01:02<00:20,  9.48it/s]Loading weights:  44%|####3     | 149/339 [01:03<00:22,  8.42it/s]Loading weights:  44%|####4     | 150/339 [01:03<00:22,  8.54it/s]Loading weights:  47%|####7     | 160/339 [01:07<00:53,  3.33it/s]Loading weights:  47%|####7     | 161/339 [01:07<00:51,  3.45it/s]Loading weights:  48%|####7     | 162/339 [01:08<01:01,  2.86it/s]Loading weights:  51%|#####     | 172/339 [01:14<01:27,  1.90it/s]Loading weights:  51%|#####1    | 173/339 [01:15<01:25,  1.95it/s]Loading weights:  51%|#####1    | 174/339 [01:16<01:34,  1.74it/s]Loading weights:  52%|#####1    | 175/339 [01:16<01:24,  1.93it/s]Loading weights:  54%|#####4    | 184/339 [01:21<01:23,  1.86it/s]Loading weights:  55%|#####4    | 185/339 [01:22<01:23,  1.84it/s]Loading weights:  55%|#####4    | 186/339 [01:23<01:36,  1.59it/s]Loading weights:  58%|#####7    | 196/339 [01:28<01:15,  1.90it/s]Loading weights:  58%|#####8    | 197/339 [01:28<01:19,  1.79it/s]Loading weights:  58%|#####8    | 198/339 [01:29<01:16,  1.85it/s]Loading weights:  59%|#####8    | 199/339 [01:29<01:08,  2.05it/s]Loading weights:  61%|######1   | 208/339 [01:33<01:03,  2.07it/s]Loading weights:  62%|######1   | 209/339 [01:34<01:01,  2.10it/s]Loading weights:  62%|######1   | 210/339 [01:35<01:09,  1.85it/s]Loading weights:  65%|######4   | 220/339 [01:38<00:51,  2.30it/s]Loading weights:  65%|######5   | 221/339 [01:39<00:54,  2.15it/s]Loading weights:  65%|######5   | 222/339 [01:40<00:58,  1.99it/s]Loading weights:  66%|######5   | 223/339 [01:40<00:53,  2.16it/s]Loading weights:  66%|######6   | 224/339 [01:40<00:47,  2.41it/s]Loading weights:  66%|######6   | 225/339 [01:41<00:41,  2.75it/s]Loading weights:  68%|######8   | 232/339 [01:45<00:56,  1.90it/s]Loading weights:  69%|######8   | 233/339 [01:45<00:52,  2.01it/s]Loading weights:  69%|######9   | 234/339 [01:46<00:50,  2.07it/s]Loading weights:  69%|######9   | 235/339 [01:46<00:44,  2.34it/s]Loading weights:  70%|######9   | 236/339 [01:46<00:38,  2.68it/s]Loading weights:  70%|######9   | 237/339 [01:46<00:32,  3.15it/s]Loading weights:  72%|#######1  | 244/339 [01:50<00:46,  2.06it/s]Loading weights:  72%|#######2  | 245/339 [01:51<00:56,  1.66it/s]Loading weights:  73%|#######2  | 246/339 [01:52<00:53,  1.73it/s]Loading weights:  76%|#######5  | 256/339 [01:55<00:32,  2.58it/s]Loading weights:  76%|#######5  | 257/339 [01:55<00:31,  2.58it/s]Loading weights:  76%|#######6  | 258/339 [01:58<00:49,  1.63it/s]Loading weights:  76%|#######6  | 259/339 [01:58<00:44,  1.82it/s]Loading weights:  79%|#######9  | 268/339 [02:01<00:32,  2.15it/s]Loading weights:  79%|#######9  | 269/339 [02:02<00:32,  2.18it/s]Loading weights:  80%|#######9  | 270/339 [02:02<00:29,  2.35it/s]Loading weights:  83%|########2 | 280/339 [02:10<00:38,  1.52it/s]Loading weights:  83%|########2 | 281/339 [02:10<00:36,  1.60it/s]Loading weights:  83%|########3 | 282/339 [02:12<00:41,  1.39it/s]Loading weights:  83%|########3 | 283/339 [02:12<00:35,  1.56it/s]Loading weights:  86%|########6 | 292/339 [02:15<00:22,  2.06it/s]Loading weights:  86%|########6 | 293/339 [02:22<00:47,  1.02s/it]Loading weights:  87%|########6 | 294/339 [02:22<00:41,  1.08it/s]Loading weights:  87%|########7 | 295/339 [02:22<00:35,  1.23it/s]Loading weights:  90%|########9 | 304/339 [02:29<00:26,  1.35it/s]Loading weights:  90%|######### | 306/339 [02:31<00:28,  1.16it/s]Loading weights:  91%|######### | 307/339 [02:32<00:25,  1.28it/s]Loading weights:  91%|######### | 308/339 [02:32<00:21,  1.43it/s]Loading weights:  93%|#########3| 316/339 [02:37<00:15,  1.51it/s]Loading weights:  94%|#########3| 317/339 [02:37<00:14,  1.52it/s]Loading weights:  94%|#########3| 318/339 [02:38<00:13,  1.56it/s]Loading weights:  97%|#########6| 328/339 [02:45<00:07,  1.41it/s]Loading weights: 100%|##########| 339/339 [02:45<00:00,  2.04it/s]
+loaded complete step0 projector from /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/architecture_controls/k26_moonvit3d_1152/projector_initializations/step0
+healthy checkpoint saved: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_k26_moonvit3d_1152_projector_short_probe_train_retry1/healthy-checkpoints/step-000000
+/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_overfit.py:711: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  step_loss += float(outputs.loss) / accumulation_steps
+online eval step 1: true_loss=9.5350 shuffled_loss=9.3118 shuffle_delta=-0.2232
+healthy checkpoint saved: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_k26_moonvit3d_1152_projector_short_probe_train_retry1/healthy-checkpoints/step-000001
+optimizer_step 1/100 loss=12.6879 examples_seen=64 answer_tokens_seen=319 effective_epochs=0.0101
+online eval step 2: true_loss=11.9309 shuffled_loss=12.0538 shuffle_delta=+0.1229
+healthy checkpoint saved: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_k26_moonvit3d_1152_projector_short_probe_train_retry1/healthy-checkpoints/step-000002
+optimizer_step 2/100 loss=11.1752 examples_seen=128 answer_tokens_seen=618 effective_epochs=0.0201
+optimizer_step 3/100 loss=12.4906 examples_seen=192 answer_tokens_seen=922 effective_epochs=0.0302
+optimizer_step 4/100 loss=10.8696 examples_seen=256 answer_tokens_seen=1202 effective_epochs=0.0402
+online eval step 5: true_loss=9.7519 shuffled_loss=10.1117 shuffle_delta=+0.3598
+healthy checkpoint saved: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_k26_moonvit3d_1152_projector_short_probe_train_retry1/healthy-checkpoints/step-000005
+optimizer_step 5/100 loss=11.1171 examples_seen=320 answer_tokens_seen=1523 effective_epochs=0.0503
+optimizer_step 6/100 loss=10.1988 examples_seen=384 answer_tokens_seen=1774 effective_epochs=0.0603
+optimizer_step 7/100 loss=10.4062 examples_seen=448 answer_tokens_seen=2088 effective_epochs=0.0704
+optimizer_step 8/100 loss=11.0733 examples_seen=512 answer_tokens_seen=2368 effective_epochs=0.0804
+optimizer_step 9/100 loss=8.5893 examples_seen=576 answer_tokens_seen=2639 effective_epochs=0.0905
+online eval step 10: true_loss=8.7042 shuffled_loss=8.7105 shuffle_delta=+0.0063
+healthy checkpoint saved: /run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_k26_moonvit3d_1152_projector_short_probe_train_retry1/healthy-checkpoints/step-000010
+optimizer_step 10/100 loss=9.4536 examples_seen=640 answer_tokens_seen=2892 effective_epochs=0.1005
+optimizer_step 11/100 loss=8.5536 examples_seen=704 answer_tokens_seen=3140 effective_epochs=0.1106
+optimizer_step 12/100 loss=8.6991 examples_seen=768 answer_tokens_seen=3412 effective_epochs=0.1206
+optimizer_step 13/100 loss=9.1050 examples_seen=832 answer_tokens_seen=3679 effective_epochs=0.1307
+Traceback (most recent call last):
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_overfit.py", line 1061, in <module>
+    main()
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_overfit.py", line 705, in main
+    outputs = model(
+              ^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/src/moonvit_glue/model.py", line 149, in forward
+    return self._language_forward(merged, **language_model_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/src/moonvit_glue/model.py", line 109, in _language_forward
+    return self.language_model(inputs_embeds=merged.inputs_embeds, **common)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/transformers/utils/generic.py", line 907, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/transformers/models/qwen2/modeling_qwen2.py", line 462, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/transformers/utils/generic.py", line 1036, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/transformers/utils/output_capturing.py", line 252, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/transformers/models/qwen2/modeling_qwen2.py", line 399, in forward
+    hidden_states = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/transformers/modeling_layers.py", line 93, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/transformers/models/qwen2/modeling_qwen2.py", line 293, in forward
+    hidden_states, _ = self.self_attn(
+                       ^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/transformers/models/qwen2/modeling_qwen2.py", line 218, in forward
+    key_states = self.k_proj(hidden_states).view(hidden_shape).transpose(1, 2)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/linear.py", line 134, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_overfit.py", line 1061, in <module>
+    main()
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/tools/train_overfit.py", line 705, in main
+    outputs = model(
+              ^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/src/moonvit_glue/model.py", line 149, in forward
+    return self._language_forward(merged, **language_model_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/moonvit-deepseek-v4-glue/src/moonvit_glue/model.py", line 109, in _language_forward
+    return self.language_model(inputs_embeds=merged.inputs_embeds, **common)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/transformers/utils/generic.py", line 907, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/transformers/models/qwen2/modeling_qwen2.py", line 462, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/transformers/utils/generic.py", line 1036, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/transformers/utils/output_capturing.py", line 252, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/transformers/models/qwen2/modeling_qwen2.py", line 399, in forward
+    hidden_states = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/transformers/modeling_layers.py", line 93, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/transformers/models/qwen2/modeling_qwen2.py", line 293, in forward
+    hidden_states, _ = self.self_attn(
+                       ^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/transformers/models/qwen2/modeling_qwen2.py", line 218, in forward
+    key_states = self.k_proj(hidden_states).view(hidden_shape).transpose(1, 2)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/run/media/ezra/13D010B6FDBC1A06/1CatVLLM/.venv-1cat/lib/python3.12/site-packages/torch/nn/modules/linear.py", line 134, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

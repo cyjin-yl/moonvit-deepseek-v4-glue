@@ -2267,3 +2267,7 @@ OCRBench/language-retention 的节点曲线。健康指标、loss 或 teacher-fo
 #heading[Kimi K2.6/MoonViT-3d 接口验证]
 
 社区同源视觉塔的真实单图 forward 输出 `(3354,4,1152)`，FP16 RMS 约 3.04；固定 50 条 ScreenSpot cache 为 `50/50` 成功、0 failures。这只证明视觉特征 extraction/cache 接口正确，不证明接收器已经识图。K26 projector 仍须按 Qwen receiver 重新训练并通过 vision 优于 blind/shuffled 的自由生成门槛。
+
+#heading[K26 Qwen7 projector-only 的早期塌缩]
+
+社区同源的 1152-d tower 并没有自动解决问题。对应 Qwen2.5-7B projector-only arm 在 step1 就出现 relative spread=`0.092`，随后约 `0.03--0.04`；projector output RMS 从 `0.20` 增至 `4.34`（step13），因此按预注册 guard 自动停止。训练虽未 NaN，不能继续用 CE loss 下降来掩盖 image-agnostic 轨迹。这个结果把“版本不对”从唯一解释降级为必要但不充分条件：V2/K26 都需要正确的视觉—语言目标、尺度控制和/或深层融合。该臂没有 ScreenSpot 能力分数，immutable failure artifact 是唯一有效结果。

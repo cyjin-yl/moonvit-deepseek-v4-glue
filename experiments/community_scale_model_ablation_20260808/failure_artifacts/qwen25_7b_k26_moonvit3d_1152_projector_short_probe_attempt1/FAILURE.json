@@ -1,0 +1,19 @@
+{
+  "schema_version": "community-matrix-failure-v1",
+  "captured_at": "2026-08-08T18:10:22.908055+08:00",
+  "git_sha": "cd742e78f5d6b548ef3a775c18571e50f2cc0f6e",
+  "arm": "qwen25_7b_k26_moonvit3d_1152_projector_short_probe",
+  "attempt": 1,
+  "contract_examples_seen": 6400,
+  "optimizer_steps_requested": 100,
+  "stop_optimizer_step": 13,
+  "examples_seen": 832,
+  "run_output": "/run/media/ezra/13D010B6FDBC1A06/data/qwen3b_contract/community_scale_20260808/qwen25_7b_k26_moonvit3d_1152_projector_short_probe_train_retry1",
+  "failure_class": "projector_representation_collapse",
+  "capability_claim_allowed": false,
+  "reason": "Community Kimi K2.6 MoonViT-3d 1152-d projector-only arm hit preregistered collapse guard before capability evaluation: relative spread fell below 0.25 from step1 (0.092) and stayed about 0.03-0.04 while projector RMS rose 0.20 to 4.34 by step13; training stopped by SIGINT, no generation result permitted.",
+  "raw_artifacts": [
+    "train.log",
+    "train_health.jsonl"
+  ]
+}
