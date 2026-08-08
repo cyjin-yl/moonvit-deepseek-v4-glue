@@ -1,0 +1,29 @@
+{
+  "format_version": "archive-checkpoint-upload-v1",
+  "date": "2026-08-08",
+  "source_repo": "cyjin-yl/moonvit-deepseek-v4-glue",
+  "hf_repo": "cyjin-yl/DeepSeek-V4-Flash-0731-Vision",
+  "hf_path_prefix": "archive/checkpoints/",
+  "hf_commit": "7377b865c2c0e2638e52cd130f9e4098f055e00a",
+  "file_count": 70,
+  "bytes": 497310727,
+  "verification": {
+    "remote_file_count": 70,
+    "missing_files": 0,
+    "size_mismatch": 0,
+    "method": "HfApi.list_repo_tree recursive path and byte-size comparison"
+  },
+  "deleted_from_workstation": [
+    "checkpoints/ (all local 0.5B/Smol projector checkpoint files)",
+    "experiments/**/checkpoints/*.safetensors",
+    "experiments/**/checkpoints/*.pt",
+    "experiments/**/checkpoints/*.pth",
+    "experiments/**/checkpoints/*.bin"
+  ],
+  "retained": [
+    "checkpoint MANIFEST.json, projector_config.json and adapter_config.json metadata",
+    "experiments/ non-checkpoint logs, predictions, health records and reports",
+    "data/ and source code"
+  ],
+  "note": "HF is the canonical copy of the deleted checkpoint payloads; the archive path preserves their original relative paths."
+}
