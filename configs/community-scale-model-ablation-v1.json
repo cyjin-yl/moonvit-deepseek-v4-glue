@@ -60,6 +60,17 @@
       "variable": "learning_rate=5e-5 (matched qwen25_7b_v2 control uses 5e-4)"
     },
     {
+      "id": "qwen25_7b_v2_top4_lora_short_probe",
+      "receiver": "Qwen2.5-7B-Instruct",
+      "receiver_kind": "pure_text",
+      "tower": "MoonViT-V2",
+      "trainable": "projector_plus_top4_lora",
+      "matrix_role": "screened_receiver_depth_variable",
+      "budget": {"optimizer_steps": 100, "examples_seen": 6400},
+      "variable": "matched top decoder layers 24-27 LoRA (q_proj/v_proj/o_proj, rank 8, alpha 16) at LR 5e-5; projector-only 5e-5 is the matched control",
+      "transfer_contract": "does not use native Qwen vision modules; DeepSeek migration requires runtime validation"
+    },
+    {
       "id": "qwen35_4b_v1_stripped",
       "receiver": "Qwen3.5-4B",
       "receiver_kind": "native_vision_stripped",

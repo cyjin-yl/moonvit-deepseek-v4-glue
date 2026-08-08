@@ -30,6 +30,7 @@ from dataclasses import asdict
 from pathlib import Path
 
 import torch
+from safetensors.torch import save_file
 
 from moonvit_glue import (
     FeatureCache,
@@ -46,6 +47,7 @@ from moonvit_glue.checkpointing import (
     save_training_checkpoint,
 )
 from moonvit_glue.proxy_receiver import FixedGroupedReceiverAdapter
+from moonvit_glue.lora import freeze_non_lora, inject_lora, iter_lora_parameters, lora_state_dict
 from tools_common import (
     build_prompt_ids,
     encode_image,
@@ -193,6 +195,19 @@ def parse_args() -> argparse.Namespace:
                              "language-agnostic trunk) from a projector aligned against a "
                              "different text backbone; linear_2 keeps its fresh init. "
                              "--resume overrides this (resume restores the full state)")
+    parser.add_argument(
+        "--receiver-lora-layers",
+        default=None,
+        help="Comma-separated decoder layer indices for matched top-layer LoRA; omitted keeps projector-only control.",
+    )
+    parser.add_argument(
+        "--receiver-lora-target-modules",
+        default="self_attn.q_proj,self_attn.v_proj,self_attn.o_proj",
+        help="Comma-separated relative module paths within each decoder layer.",
+    )
+    parser.add_argument("--receiver-lora-rank", type=int, default=8)
+    parser.add_argument("--receiver-lora-alpha", type=float, default=16.0)
+    parser.add_argument("--receiver-lora-seed", type=int, default=20260805)
     return parser.parse_args()
 
 
@@ -346,6 +361,47 @@ def evaluate_validation_probe(
             model.train()
 
 
+def save_lora_bundle(directory: Path, language_model, *, layer_indices, target_modules, rank, alpha, seed):
+    """Persist the optional receiver adapter beside the projector checkpoint."""
+
+    state = lora_state_dict(language_model)
+    weights_path = directory / "lora.safetensors"
+    save_file(state, str(weights_path))
+    (directory / "adapter_config.json").write_text(
+        json.dumps(
+            {
+                "format_version": "explicit-top-lora-v1",
+                "layer_indices": [int(value) for value in layer_indices],
+                "target_modules": list(target_modules),
+                "rank": int(rank),
+                "alpha": float(alpha),
+                "seed": int(seed),
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def save_training_bundle(
+    *, directory: Path, projector, optimizer, step, history, rng, language_model,
+    lora_config,
+):
+    saved = save_training_checkpoint(
+        directory=directory,
+        projector=projector,
+        optimizer=optimizer,
+        step=step,
+        history=history,
+        rng=rng,
+    )
+    if lora_config is not None:
+        save_lora_bundle(saved, language_model, **lora_config)
+    return saved
+
+
 def main() -> None:
     args = parse_args()
     started = time.time()
@@ -454,6 +510,38 @@ def main() -> None:
         getattr(language_model.config, "hidden_size", 0)
         or getattr(getattr(language_model.config, "text_config", None), "hidden_size")
     )
+    lora_layer_indices = None
+    lora_config = None
+    resolved_lora_modules = []
+    if args.receiver_lora_layers:
+        lora_layer_indices = [
+            int(value.strip())
+            for value in str(args.receiver_lora_layers).split(",")
+            if value.strip()
+        ]
+        lora_target_modules = [
+            value.strip()
+            for value in str(args.receiver_lora_target_modules).split(",")
+            if value.strip()
+        ]
+        resolved_lora_modules = inject_lora(
+            language_model,
+            layer_indices=lora_layer_indices,
+            target_modules=lora_target_modules,
+            rank=args.receiver_lora_rank,
+            alpha=args.receiver_lora_alpha,
+            seed=args.receiver_lora_seed,
+        )
+        lora_parameter_count = freeze_non_lora(language_model)
+        lora_config = {
+            "layer_indices": lora_layer_indices,
+            "target_modules": lora_target_modules,
+            "rank": args.receiver_lora_rank,
+            "alpha": args.receiver_lora_alpha,
+            "seed": args.receiver_lora_seed,
+        }
+    else:
+        lora_parameter_count = 0
 
     if args.placeholder_token_id is not None:
         placeholder_token_id = args.placeholder_token_id
@@ -520,12 +608,15 @@ def main() -> None:
         receiver_adapter=receiver_adapter,
         placeholder_token_id=placeholder_token_id,
         backbone_kind="auto",
-        freeze_language_model=True,
+        freeze_language_model=not bool(lora_config),
         pad_token_id=pad_token_id,
     )
     model.train()
 
-    optimizer = torch.optim.AdamW(projector.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    trainable_parameters = list(projector.parameters())
+    if lora_config is not None:
+        trainable_parameters.extend(iter_lora_parameters(language_model))
+    optimizer = torch.optim.AdamW(trainable_parameters, lr=args.lr, weight_decay=args.weight_decay)
 
     uploader = CheckpointUploader(args.upload_repo) if args.upload_repo else None
     start_step = 0
@@ -569,13 +660,15 @@ def main() -> None:
     existing_healthy = sorted(healthy_checkpoint_dir.glob("step-*")) if args.resume else []
     last_healthy_checkpoint = existing_healthy[-1] if existing_healthy else None
     if not args.resume and not (healthy_checkpoint_dir / "step-000000").exists():
-        last_healthy_checkpoint = save_training_checkpoint(
+        last_healthy_checkpoint = save_training_bundle(
             directory=healthy_checkpoint_dir / "step-000000",
             projector=projector,
             optimizer=optimizer,
             step=0,
             history=history,
             rng=rng,
+            language_model=language_model,
+            lora_config=lora_config,
         )
         print(f"healthy checkpoint saved: {last_healthy_checkpoint}", flush=True)
     for step in range(start_step + 1, args.steps + 1):
@@ -621,17 +714,17 @@ def main() -> None:
             math.sqrt(
                 sum(
                     float(parameter.grad.detach().float().pow(2).sum())
-                    for parameter in projector.parameters()
+                    for parameter in trainable_parameters
                     if parameter.grad is not None
                 )
             )
         )
-        torch.nn.utils.clip_grad_norm_(projector.parameters(), args.grad_clip)
+        torch.nn.utils.clip_grad_norm_(trainable_parameters, args.grad_clip)
         grad_after_clip = float(
             math.sqrt(
                 sum(
                     float(parameter.grad.detach().float().pow(2).sum())
-                    for parameter in projector.parameters()
+                    for parameter in trainable_parameters
                     if parameter.grad is not None
                 )
             )
@@ -674,6 +767,19 @@ def main() -> None:
                 "mean_direction_fraction": float(projector_means.mean(dim=0).norm() / projector_means.norm(dim=1).mean().clamp_min(1e-12)),
                 "projector_gradient_norm_before_clip": grad_before_clip,
                 "projector_gradient_norm_after_clip": grad_after_clip,
+                "receiver_lora_gradient_norm_before_clip": (
+                    float(
+                        math.sqrt(
+                            sum(
+                                float(parameter.grad.detach().float().pow(2).sum())
+                                for parameter in iter_lora_parameters(language_model)
+                                if parameter.grad is not None
+                            )
+                        )
+                    )
+                    if lora_config is not None
+                    else 0.0
+                ),
                 "ce_loss": step_loss,
                 "geometry_loss": 0.0,
                 "total_loss": step_loss,
@@ -694,13 +800,15 @@ def main() -> None:
         with health_path.open("a", encoding="utf-8") as stream:
             stream.write(json.dumps(health_row, ensure_ascii=False) + "\n")
         if health_row["critical_guard"]:
-            failure_dir = save_training_checkpoint(
+            failure_dir = save_training_bundle(
                 directory=args.out / "failure-checkpoints" / f"step-{step:06d}",
                 projector=projector,
                 optimizer=optimizer,
                 step=step,
                 history=history,
                 rng=rng,
+                language_model=language_model,
+                lora_config=lora_config,
             )
             (failure_dir / "STOP_REASON.json").write_text(
                 json.dumps(
@@ -763,13 +871,15 @@ def main() -> None:
                 f"shuffle_delta={online_validation['overall']['shuffle_delta_mean']:+.4f}",
                 flush=True,
             )
-            last_healthy_checkpoint = save_training_checkpoint(
+            last_healthy_checkpoint = save_training_bundle(
                 directory=args.out / "healthy-checkpoints" / f"step-{step:06d}",
                 projector=projector,
                 optimizer=optimizer,
                 step=step,
                 history=history,
                 rng=rng,
+                language_model=language_model,
+                lora_config=lora_config,
             )
             print(f"healthy checkpoint saved: {last_healthy_checkpoint}", flush=True)
         if step % args.log_every == 0 or step == 1:
@@ -782,13 +892,15 @@ def main() -> None:
                 flush=True,
             )
         if args.checkpoint_every and step % args.checkpoint_every == 0:
-            checkpoint_dir = save_training_checkpoint(
+            checkpoint_dir = save_training_bundle(
                 directory=args.out / "checkpoints" / f"step-{step:06d}",
                 projector=projector,
                 optimizer=optimizer,
                 step=step,
                 history=history,
                 rng=rng,
+                language_model=language_model,
+                lora_config=lora_config,
             )
             print(f"checkpoint saved: {checkpoint_dir}", flush=True)
             if uploader:
@@ -875,6 +987,15 @@ def main() -> None:
         "projector_parameters": sum(
             parameter.numel() for parameter in projector.parameters()
         ),
+        "receiver_lora": {
+            "enabled": lora_config is not None,
+            "layer_indices": lora_layer_indices,
+            "target_modules": lora_config["target_modules"] if lora_config is not None else [],
+            "rank": lora_config["rank"] if lora_config is not None else None,
+            "alpha": lora_config["alpha"] if lora_config is not None else None,
+            "resolved_modules": resolved_lora_modules,
+            "trainable_parameters": lora_parameter_count,
+        },
         "checkpoint_source": (
             args.resume or args.init_projector_trunk or "scratch"
         ),
@@ -915,13 +1036,15 @@ def main() -> None:
         ) + "\n",
         encoding="utf-8",
     )
-    final_dir = save_training_checkpoint(
+    final_dir = save_training_bundle(
         directory=args.out / "checkpoints" / f"step-{args.steps:06d}",
         projector=projector,
         optimizer=optimizer,
         step=args.steps,
         history=history,
         rng=rng,
+        language_model=language_model,
+        lora_config=lora_config,
     )
     print(f"final checkpoint: {final_dir}", flush=True)
     if uploader:

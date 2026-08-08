@@ -11,6 +11,7 @@ import time
 from pathlib import Path
 
 import torch
+from safetensors.torch import load_file
 
 from moonvit_glue import FeatureCache
 from moonvit_glue.grounding_contract import score_click_prediction, summarize_click_scores
@@ -18,6 +19,7 @@ from moonvit_glue.projector import PatchMergerProjector, seeded_projector
 from moonvit_glue.token_selection import select_visual_tokens
 from probe_stripped_receiver import FixedGroupedReceiverAdapter
 from generate_stripped_receiver_probe import _prompt_inputs
+from moonvit_glue.lora import inject_lora, load_lora_state_dict
 
 
 def parse_args() -> argparse.Namespace:
@@ -26,6 +28,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--feature-cache", type=Path, required=True)
     p.add_argument("--screenspot-manifest", type=Path, required=True)
     p.add_argument("--projector-dir", type=Path, required=True)
+    p.add_argument("--lora-dir", type=Path, default=None, help="Optional top-layer receiver LoRA checkpoint directory")
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--dtype", choices=("float16", "bfloat16"), default="float16")
     p.add_argument("--device", default="cuda")
@@ -83,6 +86,18 @@ def main() -> None:
     model = model_class.from_pretrained(
         str(args.model_dir), dtype=dtype, local_files_only=True, low_cpu_mem_usage=True,
     ).to(device).eval()
+    lora_config = None
+    if args.lora_dir is not None:
+        lora_config = json.loads((args.lora_dir / "adapter_config.json").read_text(encoding="utf-8"))
+        inject_lora(
+            model,
+            layer_indices=lora_config["layer_indices"],
+            target_modules=lora_config["target_modules"],
+            rank=int(lora_config["rank"]),
+            alpha=float(lora_config["alpha"]),
+            seed=int(lora_config.get("seed", 20260805)),
+        )
+        load_lora_state_dict(model, load_file(str(args.lora_dir / "lora.safetensors"), device="cpu"))
     model.requires_grad_(False)
     projector = PatchMergerProjector.from_pretrained(args.projector_dir, device=device, dtype=dtype).eval()
     projector_dtype = next(projector.parameters()).dtype
@@ -151,6 +166,7 @@ def main() -> None:
         },
         "max_new_tokens": args.max_new_tokens,
         "generation": {"do_sample": False, "temperature": 0.0, "prompt_route": "grounding"},
+        "receiver_lora": lora_config,
         "condition_summaries": {k: summarize_click_scores(v) for k, v in rows_by_condition.items()},
         "paired": {
             "vision_minus_blind_click_in_box": _bootstrap_delta(rows_by_condition["blind"], rows_by_condition["vision"], "click_in_box", seed=args.bootstrap_seed, samples=args.bootstrap_samples),
