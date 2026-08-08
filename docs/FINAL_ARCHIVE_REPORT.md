@@ -182,7 +182,9 @@ Gate D = NO-GO。未完成的硬证据：
 - 外部审计：experiments/external_model_audits/；
 - 所有失败 arm：experiments/community_scale_model_ablation_20260808/failure_artifacts/；
 - V100 synthetic/机制产物：experiments/v100_perception_20260804/；
-- Qwen proxy/health/benchmark：experiments/qwen3b_community_eval_20260805/。
+- Qwen proxy/health/benchmark：experiments/qwen3b_community_eval_20260805/；
+- checkpoint offload manifest：experiments/archive_cleanup_20260808/CHECKPOINT_UPLOAD_MANIFEST.json；
+- 已上传的 70 个 checkpoint payload：HF `archive/checkpoints/`（497,310,727 bytes，路径/大小逐项核对通过）。
 
 ### 11.1 Compact-history coverage audit
 
@@ -198,7 +200,7 @@ Gate D = NO-GO。未完成的硬证据：
 
 这份归档总结的是仓库中有原始产物或明确失败记录的工作；没有把未运行的 14B、真实 0731 FP4/FP8 或外部包的未公开训练过程猜成结果。若未来发现仓库外仍有未登记日志，应作为新审计条目追加，而不能改写本报告中的现有结论。
 
-归档不删除数据、不重写失败记录、不把 proxy 成绩冒充 DeepSeek。未来若有人继续，应从 external WebBrain 的 routing bridge 和本报告的 Gate D 清单开始，而不是从旧的 replay/trigger 消融重新开始。
+归档不删除权威实验记录、不重写失败记录、不把 proxy 成绩冒充 DeepSeek；已确认上传的 checkpoint payload 从工作站删除，HF archive 是其 canonical copy，Git 中仍保留轻量 manifest/config。未来若有人继续，应从 external WebBrain 的 routing bridge 和本报告的 Gate D 清单开始，而不是从旧的 replay/trigger 消融重新开始。
 
 ## 12. Final verdict
 
