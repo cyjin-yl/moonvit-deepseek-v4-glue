@@ -170,6 +170,15 @@ def parse_args() -> argparse.Namespace:
                         help="Pinned validation IDs; create deterministically when absent")
     parser.add_argument("--shuffle-repeats", type=int, default=10,
                         help="Seeded random derangements for validation mean/std")
+    parser.add_argument(
+        "--online-eval-shuffle-repeats",
+        type=int,
+        default=1,
+        help=(
+            "Derangements per scheduled in-training teacher-forced probe. "
+            "The final validation keeps --shuffle-repeats (default 10)."
+        ),
+    )
     parser.add_argument("--answer-selection", choices=["canonical", "random"],
                         default="canonical",
                         help="Teacher answer: normalized majority or seeded acceptable-answer sample")
@@ -266,6 +275,75 @@ def losses_for(
             )
             losses.append(float(outputs.loss))
     return losses
+
+
+def evaluate_validation_probe(
+    args,
+    model,
+    moonvit,
+    tokenizer,
+    placeholder_token_id,
+    device,
+    records,
+    *,
+    feature_cache=None,
+    shuffle_repeats=None,
+):
+    """Run the fixed, cheap teacher-forced image attribution probe.
+
+    This is deliberately not a generation benchmark: it reuses the known
+    answer tokens and compares loss with the correct image against seeded
+    deranged images.  The same helper is used for scheduled online probes
+    and the final training summary so the two numbers have identical meaning.
+    """
+
+    repeats = int(args.shuffle_repeats if shuffle_repeats is None else shuffle_repeats)
+    if repeats <= 0:
+        raise ValueError("validation shuffle repeats must be positive")
+    was_training = model.training
+    model.eval()
+    try:
+        true_losses = losses_for(
+            args,
+            model,
+            moonvit,
+            tokenizer,
+            placeholder_token_id,
+            device,
+            records,
+            feature_cache=feature_cache,
+        )
+        shuffled_record_runs = make_derangements(
+            records,
+            repeats=repeats,
+            seed=args.seed + 1_000_003,
+        )
+        shuffled_loss_runs = [
+            losses_for(
+                args,
+                model,
+                moonvit,
+                tokenizer,
+                placeholder_token_id,
+                device,
+                records,
+                image_records=shuffled_records,
+                feature_cache=feature_cache,
+            )
+            for shuffled_records in shuffled_record_runs
+        ]
+        return summarize_validation_losses(
+            records,
+            true_losses=true_losses,
+            shuffled_loss_runs=shuffled_loss_runs,
+            shuffled_id_runs=[
+                [str(record["id"]) for record in shuffled_records]
+                for shuffled_records in shuffled_record_runs
+            ],
+        )
+    finally:
+        if was_training:
+            model.train()
 
 
 def main() -> None:
@@ -482,8 +560,10 @@ def main() -> None:
     cursor = progress.examples_seen
     training_started = time.time()
     health_path = args.out / "train_health.jsonl"
+    eval_path = args.out / "train_eval.jsonl"
     if not args.resume:
         health_path.write_text("", encoding="utf-8")
+        eval_path.write_text("", encoding="utf-8")
     health_baseline = None
     healthy_checkpoint_dir = args.out / "healthy-checkpoints"
     existing_healthy = sorted(healthy_checkpoint_dir.glob("step-*")) if args.resume else []
@@ -653,6 +733,36 @@ def main() -> None:
             **progress.snapshot(),
         })
         if health_checkpoint_due(step):
+            online_repeats = max(1, int(args.online_eval_shuffle_repeats))
+            online_validation = evaluate_validation_probe(
+                args,
+                model,
+                moonvit,
+                tokenizer,
+                placeholder_token_id,
+                device,
+                eval_records,
+                feature_cache=feature_cache,
+                shuffle_repeats=online_repeats,
+            )
+            online_row = {
+                "optimizer_step": step,
+                "examples_seen": progress.examples_seen,
+                "probe_kind": "teacher_forced_true_vs_shuffled",
+                "records_eval": len(eval_records),
+                "shuffle_repeats": online_repeats,
+                "validation": online_validation,
+            }
+            with eval_path.open("a", encoding="utf-8") as stream:
+                stream.write(json.dumps(online_row, ensure_ascii=False) + "\n")
+            history[-1]["online_eval"] = online_row
+            print(
+                f"online eval step {step}: "
+                f"true_loss={online_validation['overall']['true_loss']:.4f} "
+                f"shuffled_loss={online_validation['overall']['shuffled_loss_mean']:.4f} "
+                f"shuffle_delta={online_validation['overall']['shuffle_delta_mean']:+.4f}",
+                flush=True,
+            )
             last_healthy_checkpoint = save_training_checkpoint(
                 directory=args.out / "healthy-checkpoints" / f"step-{step:06d}",
                 projector=projector,
@@ -685,7 +795,7 @@ def main() -> None:
                 uploader.upload_async(checkpoint_dir, f"checkpoints/step-{step:06d}")
 
     # Acceptance check: true-vs-seeded-deranged image loss, overall and by source.
-    true_losses = losses_for(
+    validation_summary = evaluate_validation_probe(
         args,
         model,
         moonvit,
@@ -694,34 +804,7 @@ def main() -> None:
         device,
         eval_records,
         feature_cache=feature_cache,
-    )
-    shuffled_record_runs = make_derangements(
-        eval_records,
-        repeats=args.shuffle_repeats,
-        seed=args.seed + 1_000_003,
-    )
-    shuffled_loss_runs = [
-        losses_for(
-            args,
-            model,
-            moonvit,
-            tokenizer,
-            placeholder_token_id,
-            device,
-            eval_records,
-            image_records=shuffled_records,
-            feature_cache=feature_cache,
-        )
-        for shuffled_records in shuffled_record_runs
-    ]
-    validation_summary = summarize_validation_losses(
-        eval_records,
-        true_losses=true_losses,
-        shuffled_loss_runs=shuffled_loss_runs,
-        shuffled_id_runs=[
-            [str(record["id"]) for record in shuffled_records]
-            for shuffled_records in shuffled_record_runs
-        ],
+        shuffle_repeats=args.shuffle_repeats,
     )
     true_loss = validation_summary["overall"]["true_loss"]
     shuffled_loss = validation_summary["overall"]["shuffled_loss_mean"]
@@ -768,6 +851,9 @@ def main() -> None:
         "validation_manifest": str(validation_manifest_path),
         "validation_counts_by_source": validation_manifest["counts_by_source"],
         "shuffle_repeats": args.shuffle_repeats,
+        "online_eval_path": str(eval_path),
+        "online_eval_schedule": "step 1,2,5,10,20,30,50,75,100; then every 50 steps",
+        "online_eval_shuffle_repeats": int(args.online_eval_shuffle_repeats),
         "actual_batched_forward": False,
         "forward_backward_calls_per_optimizer_step": accumulation_steps,
         "feature_cache": str(args.feature_cache) if args.feature_cache else None,

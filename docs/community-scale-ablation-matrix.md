@@ -72,3 +72,17 @@ At every candidate checkpoint, run the same four conditions: `vision`, `blind`, 
 
 The current active run is only the first row that can be executed on the V100 immediately. The table is the goal; the first
 run is not the conclusion.
+
+## Evaluation cadence and growth curves (2026-08-08)
+
+Training health and capability evaluation are separate streams. Health is written every optimizer step and may stop a broken
+run. At the frozen early/periodic nodes (`1/2/5/10/20/30/50/75/100`, then every 50 steps), the runner also writes a cheap
+teacher-forced attribution probe to `train_eval.jsonl`: fixed held-out rows, correct image versus deterministic shuffled image,
+answer loss, and the loss gap. This is an early warning signal, not a free-generation capability score.
+
+At the community examples-seen nodes (`4,096/8,192/16,384/32,768/57,600/59,136/132,480`), each surviving checkpoint gets a
+multi-task generation evaluation rather than a ScreenSpot-only check. The curve includes ScreenSpot GLM-format and click-in-box
+metrics, TextVQA soft accuracy, DocVQA ANLS, OCRBench accuracy, synthetic paired metrics, and language retention. Every task is
+run under the same `vision/blind/shuffled/random_projector` conditions where its contract supports them; raw per-sample JSONL,
+summary JSON, CSV rows and SVG growth charts are retained. A falling training loss or a healthy projector cannot substitute for
+an improving multi-task curve.

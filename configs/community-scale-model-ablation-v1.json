@@ -192,6 +192,47 @@
     ],
     "promotion_rule": "No visual-improvement claim without matched budget, ScreenSpot click gain, positive paired CI against blind and shuffled, and no unexplained VQA/OCR or language regression."
   },
+  "evaluation_schedule": {
+    "purpose": "Track capability growth across the same multi-task contract instead of selecting a checkpoint from ScreenSpot alone.",
+    "online_teacher_forced": {
+      "schedule": "step 1,2,5,10,20,30,50,75,100; then every 50 optimizer steps",
+      "datasets": [
+        "heldout_train_mix_attribution",
+        "TextVQA_selection",
+        "DocVQA_selection",
+        "OCRBench_selection",
+        "screenspot_glm50_v1_teacher_forced"
+      ],
+      "conditions": ["vision", "blind", "shuffled", "random_projector"],
+      "metric_boundary": "teacher-forced loss/log-prob and vision-minus-blind/vision-minus-shuffled; not a free-generation capability claim",
+      "raw_artifact": "train_eval.jsonl"
+    },
+    "generation_curve": {
+      "examples_seen_nodes": [4096, 8192, 16384, 32768, 57600, 59136, 132480],
+      "datasets": [
+        "screenspot_glm50_v1",
+        "screenspot_public_test_v1",
+        "TextVQA_selection",
+        "DocVQA_selection",
+        "OCRBench_selection",
+        "synthetic_six_tasks",
+        "language_retention"
+      ],
+      "conditions": ["vision", "blind", "shuffled", "random_projector"],
+      "metrics": [
+        "ScreenSpot click-in-box, parse rate, Accuracy@50/@100/@200, mean/median distance",
+        "TextVQA soft accuracy",
+        "DocVQA ANLS",
+        "OCRBench accuracy",
+        "vision-minus-blind",
+        "vision-minus-shuffled",
+        "trained-minus-random_projector",
+        "language retention"
+      ],
+      "artifacts": ["raw per-sample JSONL", "summary JSON", "curve CSV", "SVG growth charts", "SHA256 manifest"]
+    },
+    "interpretation": "Health can stop a broken run; only the multi-task generation curve can select a candidate or claim visual ability."
+  },
   "promotion_gate": [
     "vision click-in-box exceeds previous_best at matched examples_seen",
     "paired vision-minus-blind CI lower bound > 0",
