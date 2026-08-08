@@ -243,7 +243,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument(
         "--vision-tower",
-        choices=["v1", "v2"],
+        choices=["v1", "v2", "k26"],
         default="v2",
         help=(
             "v1 loads the standalone MoonViT-SO-400M tower used by the "
@@ -279,6 +279,18 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--moonvit-v2-attn", default="eager",
                         choices=["eager", "sdpa", "flash_attention_2"])
+    parser.add_argument(
+        "--moonvit-k26-vision-weights",
+        type=Path,
+        default=None,
+        help="Kimi-K2.6 model shard containing the frozen MoonViT-3d vision_tower.* weights",
+    )
+    parser.add_argument(
+        "--moonvit-k26-processor-config",
+        type=Path,
+        default=None,
+        help="Kimi-K2.6 preprocessor_config.json for the exact MoonViT-3d processor",
+    )
     parser.add_argument("--dtype", default="float32")
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--max-image-side", type=int, default=448)
@@ -304,6 +316,20 @@ def load_tower(args: argparse.Namespace, *, dtype: torch.dtype):
     order when comparing the community V1 structure with our V2 path.
     """
 
+    if args.vision_tower == "k26":
+        if args.moonvit_k26_vision_weights is None:
+            raise ValueError("--vision-tower k26 requires --moonvit-k26-vision-weights")
+        return load_moonvit_v2_encoder(
+            args.moonvit_k26_vision_weights,
+            attn_implementation=args.moonvit_v2_attn,
+            torch_dtype=dtype,
+            processor_config_path=args.moonvit_k26_processor_config,
+            vt_hidden_size=1152,
+            vt_intermediate_size=4304,
+            vt_num_attention_heads=16,
+            qkv_hidden_size=3456,
+            mm_hidden_size=1152,
+        )
     if args.vision_tower == "v2":
         if args.moonvit_v2_weights is None:
             raise ValueError("--vision-tower v2 requires --moonvit-v2-weights")
@@ -346,7 +372,11 @@ def main() -> None:
         raise ValueError("feature cache selection is empty")
     dtype = getattr(torch, args.dtype)
     device = torch.device(args.device)
-    if args.vision_tower == "v2":
+    if args.vision_tower == "k26":
+        if args.moonvit_k26_vision_weights is None:
+            raise ValueError("--vision-tower k26 requires --moonvit-k26-vision-weights")
+        weights_path = args.moonvit_k26_vision_weights
+    elif args.vision_tower == "v2":
         if args.moonvit_v2_weights is None:
             raise ValueError("--vision-tower v2 requires --moonvit-v2-weights")
         weights_path = args.moonvit_v2_weights
@@ -360,7 +390,7 @@ def main() -> None:
         if args.moonvit_snapshot is None:
             args.moonvit_snapshot = snapshot_path
         weights_sha256 = snapshot_files["__weights_manifest__"]
-    if args.vision_tower == "v2":
+    if args.vision_tower in {"v2", "k26"}:
         snapshot_files = {}
         weights_sha256 = sha256_file(weights_path)
     if training_order is not None:
@@ -417,7 +447,7 @@ def main() -> None:
             else None
         ),
         "vision_tower": args.vision_tower,
-        "moonvit_model": args.moonvit_model if args.vision_tower == "v1" else None,
+        "moonvit_model": args.moonvit_model if args.vision_tower == "v1" else ("moonshotai/Kimi-K2.6" if args.vision_tower == "k26" else None),
         "moonvit_revision": args.moonvit_revision if args.vision_tower == "v1" else None,
         "moonvit_snapshot": str(args.moonvit_snapshot.resolve())
         if args.moonvit_snapshot is not None
@@ -431,6 +461,11 @@ def main() -> None:
         "moonvit_architecture": type(tower.model).__name__,
         "moonvit_config_sha256": hashlib.sha256(config_json).hexdigest(),
         "moonvit_weights_path": str(weights_path.resolve()) if weights_path else None,
+        "moonvit_k26_processor_config": (
+            str(args.moonvit_k26_processor_config.resolve())
+            if args.moonvit_k26_processor_config is not None
+            else None
+        ),
         "moonvit_weights_sha256": weights_sha256,
         "moonvit_attention": args.moonvit_v2_attn,
         "vision_width": tower.vision_width,

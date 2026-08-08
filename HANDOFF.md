@@ -1107,6 +1107,12 @@ Next local run: one DeepSeek-transferable placeholder/position, projector-scale,
 `qwen25_7b_v2_lr5e5_short_probe` attempt 2 使用与主合同相同的 MoonViT-V2 exact K3、receiver、cache、样本顺序、prompt 和四条件 scorer，仅将 projector LR 从 `5e-4` 改为 `5e-5`。100 steps / 6,400 examples 全程健康通过，但 ScreenSpot50 vision parse/click 为 `2%/0%`，blind 为 `100%/10%`，shuffled 为 `0%/0%`，random projector 为 `96%/10%`。paired click CI 为 vision−blind `[-20,-2] pp`、vision−shuffled `[0,0]`、trained−random `[-20,-2]`，所以判定 `valid_result_negative`，不扩展到 57.6k。
 
 经验：LR 调整解决的是数值健康，不等于解决视觉对齐；该结果反驳“只要降低 LR，projector-only CE 就会获得 grounding”。原始训练 health、checkpoint、逐样本生成、formal score 和 SHA 由 `qwen25_7b_v2_lr5e5_short_probe_retry2_POINTER.json` 绑定。下一条优先做可迁移的 ITM/hard-negative bridge 或 matched top-layer LoRA/visual expert，并继续保留 projector-only control。
+
+## GLM-5.2V 直接社区来源核对
+
+Baseten 的 [GLM-5.2 with vision](https://www.baseten.co/blog/glm-52-with-vision/) 和 [HF model card](https://huggingface.co/baseten/GLM-5.2-Vision-NVFP4) 明确给出社区路线：Kimi K2.6 的 MoonViT-3d（27 层、1152-d、2×2 merge）接 GLM-5.2；视觉塔和语言主干冻结，只训练约 49.5M 的两层 PatchMerger projector。文章给出的 SFT 是 66k 图文问答、global batch 64、LR `5e-4`、两 epoch，约 step900（每 epoch 1035）发生 grokking；随后还有只训练 projector 的视觉 reasoning RL。900 步是能力形成的早期节点，不是全部训练闭环。
+
+这也修正了版本命名：我们的 V2 是 1024-d K3，不能称作社区 5.2V MoonViT-3d；现有 V1 1152-d SO-400M 只是同维代理，不是 Kimi K2.6 权重。已下载并严格加载 Kimi K2.6 的 834MB vision-only shard，新增 `k26_moonvit3d_1152` cache arm。Kimi shard 自带 projector 是 7168-d Kimi receiver 版本，不能复用给 GLM/Qwen；每个 receiver 仍必须单独重训 projector。
 ## Scale screen result (2026-08-08)
 
 The preregistered Qwen3.5-4B external MoonViT V1 scale `0.03` CE-only arm finished

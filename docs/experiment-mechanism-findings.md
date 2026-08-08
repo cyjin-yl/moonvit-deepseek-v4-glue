@@ -296,3 +296,9 @@ projector dtype 不匹配、以及变量初始化顺序错误；每次都保留�
 Qwen2.5-7B V2 的 matched `5e-5` 短探针完成 100 steps / 6,400 examples seen，健康指标全部 finite；但 ScreenSpot50 vision/blind/shuffled/random 的 parse 为 `2%/100%/0%/96%`，click-in-box 为 `0%/10%/0%/10%`。vision−blind click CI 为 `[-20,-2] pp`，vision−shuffled 为 `[0,0]`。这说明降低 projector LR 抑制了早期 RMS/格式崩坏，却没有建立图片到坐标的因果通路。与 900-step、`5e-4` V2 的负结果结合后，当前解释不再是单一“LR 太大”，而是“数值稳定”和“视觉—语言对齐”两个独立问题。
 
 该失败样例强化一条研究规则：teacher-forced loss 或 shuffle delta 只能作为训练归因诊断；只有自由生成在固定 parser、blind/shuffle paired CI 和 click-in-box 上同时通过，才算视觉能力。下一项应改变监督或 receiver 融合深度，并保留严格匹配的 projector-only CE 控制。
+
+## 社区 GLM-5.2V 的版本与训练标准核对
+
+Baseten 文章和 HF model card（见仓库报告中的直接链接）明确说明社区 GLM-5.2V 使用 Kimi K2.6 的 MoonViT-3d，而不是当前项目的 1024-d MoonViT-V2。社区塔是 27 层、1152-d、2×2 merge；projector 是约 49.5M 的 `pre_norm → linear_1 → GELU → linear_2`。SFT 使用 66k 图文问答、batch 64、LR `5e-4`，约 900 steps 出现 grokking，随后还有只训练 projector 的 reasoning RL。这个证据把“版本/输入维度不匹配”重新提升为首要排查变量，同时也说明 900 steps 不是完整能力训练。
+
+我们已从公开 Kimi K2.6 分片中验证出 834MB、仅视觉塔的 27-layer/1152-d 权重。注意 Kimi 分片中附带的原生 projector 输出宽度是 7168，属于 Kimi receiver，不能直接拿来给 GLM-5.2（6144）或 Qwen；要比较的是视觉塔/merge 结构，projector 仍按 receiver 重新训练。下一项版本回归因此固定为 `k26_moonvit3d_1152` vs 当前 V2-1024，并保留匹配 projector-only control。

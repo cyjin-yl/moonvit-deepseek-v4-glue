@@ -297,6 +297,22 @@
         "transfer_label": "transferable_with_runtime_validation"
       }
     },
+    "qwen25_7b_k26_moonvit3d_1152_projector_short_probe": {
+      "failure_history": [],
+      "result": null,
+      "status": "preregistered",
+      "attempts": 0,
+      "current_attempt": {
+        "attempt": 0,
+        "status": "preregistered",
+        "contract_examples_seen": 6400,
+        "optimizer_steps_requested": 100,
+        "train_output": null,
+        "evaluation_output": null,
+        "capability_claim_allowed": false,
+        "transfer_label": "transferable_with_runtime_validation"
+      }
+    },
     "qwen35_4b_v1_stripped": {
       "failure_history": [
         {

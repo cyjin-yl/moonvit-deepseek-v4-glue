@@ -71,6 +71,17 @@
       "transfer_contract": "does not use native Qwen vision modules; DeepSeek migration requires runtime validation"
     },
     {
+      "id": "qwen25_7b_k26_moonvit3d_1152_projector_short_probe",
+      "receiver": "Qwen2.5-7B-Instruct",
+      "receiver_kind": "pure_text",
+      "tower": "MoonViT-3d from Kimi-K2.6, 1152-d",
+      "trainable": "projector_only",
+      "matrix_role": "community_version_regression",
+      "budget": {"optimizer_steps": 100, "examples_seen": 6400},
+      "variable": "community MoonViT-3d 1152-d tower vs current MoonViT-V2 1024-d; same canonical 4096 receiver boundary",
+      "transfer_contract": "visual tower is final MoonViT candidate; projector is retrained for each receiver"
+    },
+    {
       "id": "qwen35_4b_v1_stripped",
       "receiver": "Qwen3.5-4B",
       "receiver_kind": "native_vision_stripped",

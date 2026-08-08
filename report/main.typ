@@ -2251,3 +2251,11 @@ OCRBench/language-retention 的节点曲线。健康指标、loss 或 teacher-fo
 预注册的 projector learning-rate `5e-5` arm 完成 100 optimizer steps / 6,400 examples seen，训练 health 全程 finite，说明它避免了 `5e-4` arm 的早期数值崩坏。可是固定 ScreenSpot50 的 vision/blind/shuffled/random parse 为 `2%/100%/0%/96%`，click-in-box 为 `0%/10%/0%/10%`；paired click CI 为 vision-minus-blind `[-20,-2]` 个百分点、vision-minus-shuffled `[0,0]`、trained-minus-random `[-20,-2]`。低学习率只修复了健康，不产生视觉 grounding；该 arm 标为 `valid_result_negative`，不延长到社区规模训练。
 
 这与 900-step、`5e-4` V2 的结果合起来，把问题拆成两个部分：数值/尺度稳定性和真正的视觉—语言对齐。后者仍需改变监督（ITM/hard negative、GUI/box/OCR）或 receiver 融合深度（matched top-layer LoRA/visual expert），并保留 projector-only CE control。
+
+#heading[GLM-5.2V 直接社区来源核对]
+
+#link("https://www.baseten.co/blog/glm-52-with-vision/")[Baseten GLM-5.2 with vision] 与
+#link("https://huggingface.co/baseten/GLM-5.2-Vision-NVFP4")[官方 HF model card]
+明确写出社区结构：Kimi K2.6 的 MoonViT-3d（27 层、1152-d、2×2 merge）接到 GLM-5.2，视觉塔和语言主干冻结，只训练约 49.5M 的 PatchMerger projector。文章给出的 SFT 为 66k 图文问答、global batch 64、LR `5e-4`、两 epoch，约 900 steps（每 epoch 1035）出现 grokking；之后还有只训练 projector 的 reasoning RL。因此 900 steps 是早期对齐节点，不是完整能力闭环。
+
+这次核对修正了版本判断：项目当前 MoonViT-V2 是 1024-d K3，不是社区 GLM-5.2V 使用的 1152-d MoonViT-3d；已有 1152-d SO-400M V1 结果也只是同维代理。公开 Kimi K2.6 834MB vision-only shard 已严格加载，下一条加入 `k26_moonvit3d_1152` cache/projector arm。Kimi 原生 projector 输出 7168，属于 Kimi receiver，不能复用给 GLM-5.2 的 6144 hidden 或 Qwen；projector 仍须按 receiver 重训。

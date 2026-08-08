@@ -669,3 +669,9 @@ Qwen2.5-7B-Instruct + MoonViT-V2 projector-only arm 已完成社区预算的 900
 paired bootstrap 95% CI（2,000 次，seed `20260805`）为 vision−blind click `[-20,-2] pp`、vision−shuffled `[0,0] pp`、trained−random `[-20,-2] pp`。因此低 LR 让训练“不爆”，却没有让模型“看懂”：正确图像反而不如 blind，且视觉输出几乎全部不可解析。按预注册规则不延长到 57.6k；该臂记录为 `valid_result_negative`，完整 raw artifact 与 SHA 见 `qwen25_7b_v2_lr5e5_short_probe_retry2_POINTER.json`。
 
 这条结果把假设分开：`5e-4` 的主要问题包含数值/尺度不稳定，但“只改 LR 就会得到视觉能力”被反驳。下一条改进应进入视觉—语言目标或深层 receiver 融合（matched top-layer LoRA/visual expert、ITM/hard-negative bridge、GUI/box/OCR 监督），而不是继续无条件堆同一 CE projector-only 训练。
+
+### GLM-5.2V 直接社区来源核对（2026-08-08）
+
+用户提供的 [Baseten GLM-5.2 with vision 文章](https://www.baseten.co/blog/glm-52-with-vision/) 与 [官方 HF model card](https://huggingface.co/baseten/GLM-5.2-Vision-NVFP4) 现在纳入主合同。直接证据是：社区把 Kimi K2.6 的 MoonViT-3d 视觉塔接到 GLM-5.2，视觉塔和语言主干都冻结，只训练约 49.5M projector；视觉塔为 27 层、1152 维，2×2 PatchMerger，projector 结构为 `pre_norm → linear_1 → GELU → linear_2`。文章明确写的是 66k 图文问答、global batch 64、constant LR `5e-4`、两 epoch；约 900 steps（每 epoch 1035 steps）出现 grokking。之后还有只训练 projector 的视觉 reasoning RL 阶段，不能把 SFT 的 900 steps 当成最终完整训练。
+
+这次核对改正了项目中的一个关键表述：当前 `MoonViT-V2` 是 1024 维 K3 合同，不能直接称为社区 GLM-5.2V 的视觉塔；已有 `MoonViT-SO-400M` V1 1152 维结果也只是同维度代理，不能称为 Kimi K2.6 MoonViT-3d。已从公开 Kimi K2.6 权重下载并严格验证仅含视觉塔的 834MB shard（27 层、1152 维）；接下来将建立独立的 `k26_moonvit3d_1152` cache/projector arm。Kimi shard 中自带的原生 projector 输出 7168，是 Kimi 自身 receiver 的权重，不能直接冒充 GLM projector；GLM-5.2 的官方主干 hidden size 为 6144，因此社区 projector 仍需按 GLM 接收器重新训练。这进一步支持“每个 receiver 必须重新训练 projector”的合同。
