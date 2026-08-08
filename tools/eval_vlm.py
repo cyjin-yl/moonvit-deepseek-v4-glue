@@ -175,9 +175,10 @@ def build_model(args: argparse.Namespace, feature_cache=None):
         placeholder_token_id = resolve_placeholder_token_id(tokenizer, args.image_token)
 
     if args.random_projector:
+        projector_width = 4096 if args.canonical_projector else int(language_model.config.hidden_size)
         projector_config = ProjectorConfig(
             vision_width=vision_width,
-            language_width=int(language_model.config.hidden_size),
+            language_width=projector_width,
             merge_factor=merge_factor,
             projector_variant=args.projector_variant,
         )
